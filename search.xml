@@ -9,6 +9,12 @@
       <url>/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/</url>
       
       
+      <categories>
+          
+          <category> hexo </category>
+          
+      </categories>
+      
       
         <tags>
             
@@ -198,6 +204,29 @@
     
     
     <entry>
+      <title>日志 ☞ logrotate 轮转</title>
+      <link href="/2020/05/14/%E6%97%A5%E5%BF%97%E2%98%9Elogrotate/"/>
+      <url>/2020/05/14/%E6%97%A5%E5%BF%97%E2%98%9Elogrotate/</url>
+      
+      
+      <categories>
+          
+          <category> 日志 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> logrotate </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>问题记录</title>
       <link href="/2020/05/08/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/"/>
       <url>/2020/05/08/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</url>
@@ -261,6 +290,31 @@
         <tags>
             
             <tag> linux </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>日志☞ELK简单部署-容器方式</title>
+      <link href="/2019/12/11/%E6%97%A5%E5%BF%97%E2%98%9EELK%E7%AE%80%E5%8D%95%E9%83%A8%E7%BD%B2-%E5%AE%B9%E5%99%A8%E6%96%B9%E5%BC%8F/"/>
+      <url>/2019/12/11/%E6%97%A5%E5%BF%97%E2%98%9EELK%E7%AE%80%E5%8D%95%E9%83%A8%E7%BD%B2-%E5%AE%B9%E5%99%A8%E6%96%B9%E5%BC%8F/</url>
+      
+      
+      <categories>
+          
+          <category> 日志 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> ELK </tag>
+            
+            <tag> docker </tag>
             
         </tags>
       

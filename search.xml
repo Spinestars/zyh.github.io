@@ -4,17 +4,6 @@
   
     
     <entry>
-      <title>test</title>
-      <link href="/2020/05/14/test/"/>
-      <url>/2020/05/14/test/</url>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>zabbix ☞ web 监控</title>
       <link href="/2020/05/14/zabbix%E2%98%9EWEB%E7%9B%91%E6%8E%A7/"/>
       <url>/2020/05/14/zabbix%E2%98%9EWEB%E7%9B%91%E6%8E%A7/</url>
@@ -90,31 +79,6 @@
     
     
     <entry>
-      <title>监控 ☞ 微信预警</title>
-      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E5%BE%AE%E4%BF%A1%E9%A2%84%E8%AD%A6/"/>
-      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E5%BE%AE%E4%BF%A1%E9%A2%84%E8%AD%A6/</url>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 企业微信 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>监控☞企业微信机器人</title>
       <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%9C%BA%E5%99%A8%E4%BA%BA/"/>
       <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%9C%BA%E5%99%A8%E4%BA%BA/</url>
@@ -140,9 +104,9 @@
     
     
     <entry>
-      <title>监控 ☞ 邮件预警</title>
-      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/"/>
-      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/</url>
+      <title>监控 ☞ 微信预警</title>
+      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E5%BE%AE%E4%BF%A1%E9%A2%84%E8%AD%A6/"/>
+      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E5%BE%AE%E4%BF%A1%E9%A2%84%E8%AD%A6/</url>
       
       
       <categories>
@@ -156,7 +120,7 @@
             
             <tag> 监控 </tag>
             
-            <tag> 邮件 </tag>
+            <tag> 企业微信 </tag>
             
         </tags>
       
@@ -182,6 +146,31 @@
             <tag> 监控 </tag>
             
             <tag> 磁盘 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>监控 ☞ 邮件预警</title>
+      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/"/>
+      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/</url>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> 邮件 </tag>
             
         </tags>
       

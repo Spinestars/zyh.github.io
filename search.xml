@@ -1,1061 +1,508 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>ansible☞playbook-lookup插件</title>
-      <link href="/2020/05/15/ansible%E2%98%9Eplaybook-lookup%E6%8F%92%E4%BB%B6/"/>
-      <url>/2020/05/15/ansible%E2%98%9Eplaybook-lookup%E6%8F%92%E4%BB%B6/</url>
-      
-      
+<search>
+  <entry>
+    <title>linux ☞ df与du数据不一致的原因</title>
+    <url>/2015/11/15/linux%E2%98%9Edf%E4%B8%8Edu%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E5%8E%9F%E5%9B%A0/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>系统</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-            <tag> lookup </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>安装脚本☞nginx编译方式</title>
-      <link href="/2020/05/15/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Enginx%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/"/>
-      <url>/2020/05/15/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Enginx%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/</url>
-      
-      
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx ☞ 基本认证</title>
+    <url>/2019/09/04/nginx%E2%98%9E%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> shell </category>
-          
+        <category>web</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-            <tag> 安装 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>hexo☞图片显示</title>
-      <link href="/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/"/>
-      <url>/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/</url>
-      
-      
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx ☞ 泛域名_变量截取</title>
+    <url>/2018/09/06/nginx%E2%98%9E%E6%B3%9B%E5%9F%9F%E5%90%8D_%E5%8F%98%E9%87%8F%E6%88%AA%E5%8F%96/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> hexo </category>
-          
+        <category>web</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> hexo </tag>
-            
-            <tag> 图片 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix ☞ web 监控</title>
-      <link href="/2020/05/14/zabbix%E2%98%9EWEB%E7%9B%91%E6%8E%A7/"/>
-      <url>/2020/05/14/zabbix%E2%98%9EWEB%E7%9B%91%E6%8E%A7/</url>
-      
-      
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>windows 包管理工具 scoop</title>
+    <url>/2020/04/13/windows-%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-scoop/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 监控 </category>
-          
+        <category>其它</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix ☞ agent和proxy</title>
-      <link href="/2020/05/14/zabbix%E2%98%9Eagent%E5%92%8Cproxy/"/>
-      <url>/2020/05/14/zabbix%E2%98%9Eagent%E5%92%8Cproxy/</url>
-      
-      
+      <tags>
+        <tag>windws</tag>
+        <tag>scoop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>php-fpm ☞ 静态配置</title>
+    <url>/2018/05/11/php-fpm%E2%98%9E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 监控 </category>
-          
+        <category>web</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix ☞ nginx</title>
-      <link href="/2020/05/14/zabbix%E2%98%9Enginx/"/>
-      <url>/2020/05/14/zabbix%E2%98%9Enginx/</url>
-      
-      
+      <tags>
+        <tag>php</tag>
+        <tag>php-fpm</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>web ☞ 系统基本优化</title>
+    <url>/2017/01/20/web%E2%98%9E%E7%B3%BB%E7%BB%9F%E5%9F%BA%E6%9C%AC%E4%BC%98%E5%8C%96/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 监控 </category>
-          
+        <category>web</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控 ☞ 远程磁盘检测</title>
-      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E8%BF%9C%E7%A8%8B%E7%A3%81%E7%9B%98%E6%A3%80%E6%B5%8B/"/>
-      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E8%BF%9C%E7%A8%8B%E7%A3%81%E7%9B%98%E6%A3%80%E6%B5%8B/</url>
-      
-      
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zabbix ☞ web 监控</title>
+    <url>/2020/05/14/zabbix%E2%98%9EWEB%E7%9B%91%E6%8E%A7/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 监控 </category>
-          
+        <category>监控</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 磁盘 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控☞企业微信机器人</title>
-      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%9C%BA%E5%99%A8%E4%BA%BA/"/>
-      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%9C%BA%E5%99%A8%E4%BA%BA/</url>
-      
-      
+      <tags>
+        <tag>zabbix</tag>
+        <tag>监控</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zabbix ☞ agent和proxy</title>
+    <url>/2020/05/14/zabbix%E2%98%9Eagent%E5%92%8Cproxy/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 监控 </category>
-          
+        <category>监控</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 企业微信 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控 ☞ 微信预警</title>
-      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E5%BE%AE%E4%BF%A1%E9%A2%84%E8%AD%A6/"/>
-      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E5%BE%AE%E4%BF%A1%E9%A2%84%E8%AD%A6/</url>
-      
-      
+      <tags>
+        <tag>zabbix</tag>
+        <tag>监控</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux ☞ 软 raid 创建</title>
+    <url>/2019/07/01/linux%E2%98%9E%E8%BD%AFraid%E5%88%9B%E5%BB%BA/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 监控 </category>
-          
+        <category>系统</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 企业微信 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控 ☞ 邮件预警</title>
-      <link href="/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/"/>
-      <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/</url>
-      
-      
+      <tags>
+        <tag>linux</tag>
+        <tag>raid</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zabbix ☞ nginx</title>
+    <url>/2020/05/14/zabbix%E2%98%9Enginx/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 监控 </category>
-          
+        <category>监控</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 邮件 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>日志 ☞ logrotate 轮转</title>
-      <link href="/2020/05/14/%E6%97%A5%E5%BF%97%E2%98%9Elogrotate/"/>
-      <url>/2020/05/14/%E6%97%A5%E5%BF%97%E2%98%9Elogrotate/</url>
-      
-      
+      <tags>
+        <tag>zabbix</tag>
+        <tag>监控</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>监控 ☞ 远程磁盘检测</title>
+    <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E8%BF%9C%E7%A8%8B%E7%A3%81%E7%9B%98%E6%A3%80%E6%B5%8B/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 日志 </category>
-          
+        <category>监控</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> logrotate </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>nginx☞日志切割脚本</title>
-      <link href="/2020/05/14/nginx%E2%98%9E%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2/"/>
-      <url>/2020/05/14/nginx%E2%98%9E%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2/</url>
-      
-      
+      <tags>
+        <tag>监控</tag>
+        <tag>磁盘</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>监控☞企业微信机器人</title>
+    <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%9C%BA%E5%99%A8%E4%BA%BA/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> shell </category>
-          
+        <category>监控</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-            <tag> log </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>安装脚本☞redis</title>
-      <link href="/2020/05/14/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Eredis/"/>
-      <url>/2020/05/14/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Eredis/</url>
-      
-      
+      <tags>
+        <tag>监控</tag>
+        <tag>企业微信</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>监控 ☞ 微信预警</title>
+    <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E5%BE%AE%E4%BF%A1%E9%A2%84%E8%AD%A6/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> shell </category>
-          
+        <category>监控</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞playbook-过滤器</title>
-      <link href="/2020/05/11/ansible%E2%98%9Eplaybook-%E8%BF%87%E6%BB%A4%E5%99%A8/"/>
-      <url>/2020/05/11/ansible%E2%98%9Eplaybook-%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
-      
-      
+      <tags>
+        <tag>监控</tag>
+        <tag>企业微信</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>问题记录</title>
+    <url>/2020/05/08/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>其它</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞常用模块-文本文件操作</title>
-      <link href="/2020/05/10/ansible%E2%98%9Eplaybook-%E5%8F%98%E9%87%8F/"/>
-      <url>/2020/05/10/ansible%E2%98%9Eplaybook-%E5%8F%98%E9%87%8F/</url>
-      
-      
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>监控 ☞ 邮件预警</title>
+    <url>/2020/05/14/%E7%9B%91%E6%8E%A7%E2%98%9E%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>监控</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>linux☞输出个性化开机状态</title>
-      <link href="/2020/05/09/linux%E2%98%9E%E8%BE%93%E5%87%BA%E4%B8%AA%E6%80%A7%E5%8C%96%E5%BC%80%E6%9C%BA%E7%8A%B6%E6%80%81/"/>
-      <url>/2020/05/09/linux%E2%98%9E%E8%BE%93%E5%87%BA%E4%B8%AA%E6%80%A7%E5%8C%96%E5%BC%80%E6%9C%BA%E7%8A%B6%E6%80%81/</url>
-      
-      
-      
-        <tags>
-            
-            <tag> linux </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>问题记录</title>
-      <link href="/2020/05/08/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/"/>
-      <url>/2020/05/08/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</url>
-      
-      
+      <tags>
+        <tag>监控</tag>
+        <tag>邮件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo☞图片显示</title>
+    <url>/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 其它 </category>
-          
+        <category>hexo</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> linux </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞playbook-tags</title>
-      <link href="/2020/05/04/ansible%E2%98%9Eplaybook-tags/"/>
-      <url>/2020/05/04/ansible%E2%98%9Eplaybook-tags/</url>
-      
-      
+      <tags>
+        <tag>hexo</tag>
+        <tag>图片</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>日志☞ELK简单部署-容器方式</title>
+    <url>/2019/12/11/%E6%97%A5%E5%BF%97%E2%98%9EELK%E7%AE%80%E5%8D%95%E9%83%A8%E7%BD%B2-%E5%AE%B9%E5%99%A8%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>日志</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞playbook-错误捕获</title>
-      <link href="/2020/05/04/ansible%E2%98%9Eplaybook-%E9%94%99%E8%AF%AF%E6%8D%95%E8%8E%B7/"/>
-      <url>/2020/05/04/ansible%E2%98%9Eplaybook-%E9%94%99%E8%AF%AF%E6%8D%95%E8%8E%B7/</url>
-      
-      
+      <tags>
+        <tag>ELK</tag>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>日志 ☞ logrotate 轮转</title>
+    <url>/2020/05/14/%E6%97%A5%E5%BF%97%E2%98%9Elogrotate/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>日志</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞playbook-条件判断</title>
-      <link href="/2020/05/04/ansible%E2%98%9Eplaybook-%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD/"/>
-      <url>/2020/05/04/ansible%E2%98%9Eplaybook-%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD/</url>
-      
-      
+      <tags>
+        <tag>logrotate</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-handle</title>
+    <url>/2020/04/28/ansible%E2%98%9Eplaybook-handle/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞playbook-循环</title>
-      <link href="/2020/05/04/ansible%E2%98%9Eplaybook-%E5%BE%AA%E7%8E%AF/"/>
-      <url>/2020/05/04/ansible%E2%98%9Eplaybook-%E5%BE%AA%E7%8E%AF/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+        <tag>handle</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-循环</title>
+    <url>/2020/05/04/ansible%E2%98%9Eplaybook-%E5%BE%AA%E7%8E%AF/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞常用模块-系统相关</title>
-      <link href="/2020/04/29/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3/"/>
-      <url>/2020/04/29/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-过滤器</title>
+    <url>/2020/05/11/ansible%E2%98%9Eplaybook-%E8%BF%87%E6%BB%A4%E5%99%A8/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞playbook-handle</title>
-      <link href="/2020/04/28/ansible%E2%98%9Eplaybook-handle/"/>
-      <url>/2020/04/28/ansible%E2%98%9Eplaybook-handle/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-条件判断</title>
+    <url>/2020/05/04/ansible%E2%98%9Eplaybook-%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-            <tag> handle </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>redis☞备份</title>
-      <link href="/2020/04/27/redis%E2%98%9E%E5%A4%87%E4%BB%BD/"/>
-      <url>/2020/04/27/redis%E2%98%9E%E5%A4%87%E4%BB%BD/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞常用模块-文本文件操作</title>
+    <url>/2020/04/20/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 数据库 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-            <tag> 备份 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞常用模块-软件包管理</title>
-      <link href="/2020/04/26/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/"/>
-      <url>/2020/04/26/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-lookup插件</title>
+    <url>/2020/05/15/ansible%E2%98%9Eplaybook-lookup%E6%8F%92%E4%BB%B6/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞常用模块-命令调用</title>
-      <link href="/2020/04/20/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E5%91%BD%E4%BB%A4%E8%B0%83%E7%94%A8/"/>
-      <url>/2020/04/20/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E5%91%BD%E4%BB%A4%E8%B0%83%E7%94%A8/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+        <tag>lookup</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-aws</title>
+    <url>/2020/04/14/ansible%E2%98%9Eplaybook-aws/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞常用模块-文本文件操作</title>
-      <link href="/2020/04/20/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/"/>
-      <url>/2020/04/20/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+        <tag>aws</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞基础信息</title>
+    <url>/2020/03/15/ansible%E2%98%9E%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞playbook-aws</title>
-      <link href="/2020/04/14/ansible%E2%98%9Eplaybook-aws/"/>
-      <url>/2020/04/14/ansible%E2%98%9Eplaybook-aws/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-错误捕获</title>
+    <url>/2020/05/04/ansible%E2%98%9Eplaybook-%E9%94%99%E8%AF%AF%E6%8D%95%E8%8E%B7/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-            <tag> aws </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>windows 包管理工具 scoop</title>
-      <link href="/2020/04/13/windows-%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-scoop/"/>
-      <url>/2020/04/13/windows-%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-scoop/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞常用模块-系统相关</title>
+    <url>/2020/04/29/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E7%B3%BB%E7%BB%9F%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 其它 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> windws </tag>
-            
-            <tag> scoop </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>jenkins☞安装和基本配置</title>
-      <link href="/2020/03/25/jenkins%E2%98%9E%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/"/>
-      <url>/2020/03/25/jenkins%E2%98%9E%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞常用模块-软件包管理</title>
+    <url>/2020/04/26/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> docker </tag>
-            
-            <tag> jenkins </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>安装脚本☞php包管理方式</title>
-      <link href="/2020/03/22/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Ephp%E5%8C%85%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F/"/>
-      <url>/2020/03/22/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Ephp%E5%8C%85%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞常用模块-命令调用</title>
+    <url>/2020/04/20/ansible%E2%98%9E%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97-%E5%91%BD%E4%BB%A4%E8%B0%83%E7%94%A8/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> shell </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> php </tag>
-            
-            <tag> 安装 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ansible☞基础信息</title>
-      <link href="/2020/03/15/ansible%E2%98%9E%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF/"/>
-      <url>/2020/03/15/ansible%E2%98%9E%E5%9F%BA%E7%A1%80%E4%BF%A1%E6%81%AF/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux☞输出个性化开机状态</title>
+    <url>/2020/05/09/linux%E2%98%9E%E8%BE%93%E5%87%BA%E4%B8%AA%E6%80%A7%E5%8C%96%E5%BC%80%E6%9C%BA%E7%8A%B6%E6%80%81/</url>
+    <content><![CDATA[]]></content>
+      <tags>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx☞日志切割脚本</title>
+    <url>/2020/05/14/nginx%E2%98%9E%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 自动化 </category>
-          
+        <category>shell</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ansible </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>linux☞时间</title>
-      <link href="/2020/02/11/linux%E2%98%9E%E6%97%B6%E9%97%B4/"/>
-      <url>/2020/02/11/linux%E2%98%9E%E6%97%B6%E9%97%B4/</url>
-      
-      
+      <tags>
+        <tag>nginx</tag>
+        <tag>log</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>redis☞调整内核参数</title>
+    <url>/2018/02/02/redis%E2%98%9E%E8%B0%83%E6%95%B4%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 系统 </category>
-          
+        <category>数据库</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> linux </tag>
-            
-            <tag> 时区 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>日志☞ELK简单部署-容器方式</title>
-      <link href="/2019/12/11/%E6%97%A5%E5%BF%97%E2%98%9EELK%E7%AE%80%E5%8D%95%E9%83%A8%E7%BD%B2-%E5%AE%B9%E5%99%A8%E6%96%B9%E5%BC%8F/"/>
-      <url>/2019/12/11/%E6%97%A5%E5%BF%97%E2%98%9EELK%E7%AE%80%E5%8D%95%E9%83%A8%E7%BD%B2-%E5%AE%B9%E5%99%A8%E6%96%B9%E5%BC%8F/</url>
-      
-      
+      <tags>
+        <tag>redis</tag>
+        <tag>优化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>redis☞备份</title>
+    <url>/2020/04/27/redis%E2%98%9E%E5%A4%87%E4%BB%BD/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 日志 </category>
-          
+        <category>数据库</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> ELK </tag>
-            
-            <tag> docker </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>nginx ☞ 基本认证</title>
-      <link href="/2019/09/04/nginx%E2%98%9E%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81/"/>
-      <url>/2019/09/04/nginx%E2%98%9E%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81/</url>
-      
-      
+      <tags>
+        <tag>redis</tag>
+        <tag>备份</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>jenkins☞安装和基本配置</title>
+    <url>/2020/03/25/jenkins%E2%98%9E%E5%AE%89%E8%A3%85%E5%92%8C%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> web </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>linux ☞ 软 raid 创建</title>
-      <link href="/2019/07/01/linux%E2%98%9E%E8%BD%AFraid%E5%88%9B%E5%BB%BA/"/>
-      <url>/2019/07/01/linux%E2%98%9E%E8%BD%AFraid%E5%88%9B%E5%BB%BA/</url>
-      
-      
+      <tags>
+        <tag>docker</tag>
+        <tag>jenkins</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞常用模块-文本文件操作</title>
+    <url>/2020/05/10/ansible%E2%98%9Eplaybook-%E5%8F%98%E9%87%8F/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 系统 </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> linux </tag>
-            
-            <tag> raid </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>nginx ☞ 泛域名_变量截取</title>
-      <link href="/2018/09/06/nginx%E2%98%9E%E6%B3%9B%E5%9F%9F%E5%90%8D_%E5%8F%98%E9%87%8F%E6%88%AA%E5%8F%96/"/>
-      <url>/2018/09/06/nginx%E2%98%9E%E6%B3%9B%E5%9F%9F%E5%90%8D_%E5%8F%98%E9%87%8F%E6%88%AA%E5%8F%96/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ansible☞playbook-tags</title>
+    <url>/2020/05/04/ansible%E2%98%9Eplaybook-tags/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> web </category>
-          
+        <category>自动化</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>安装脚本☞php编译方式</title>
-      <link href="/2018/08/21/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Ephp%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/"/>
-      <url>/2018/08/21/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Ephp%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/</url>
-      
-      
+      <tags>
+        <tag>ansible</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安装脚本☞openvpn-docker方式</title>
+    <url>/2018/03/22/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Eopenvpn-docker%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> shell </category>
-          
+        <category>其它</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> php </tag>
-            
-            <tag> 安装 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>php-fpm ☞ 静态配置</title>
-      <link href="/2018/05/11/php-fpm%E2%98%9E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/"/>
-      <url>/2018/05/11/php-fpm%E2%98%9E%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/</url>
-      
-      
+      <tags>
+        <tag>docker</tag>
+        <tag>openvpn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安装脚本☞php包管理方式</title>
+    <url>/2020/03/22/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Ephp%E5%8C%85%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> web </category>
-          
+        <category>shell</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> php </tag>
-            
-            <tag> php-fpm </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>安装脚本☞openvpn-docker方式</title>
-      <link href="/2018/03/22/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Eopenvpn-docker%E6%96%B9%E5%BC%8F/"/>
-      <url>/2018/03/22/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Eopenvpn-docker%E6%96%B9%E5%BC%8F/</url>
-      
-      
+      <tags>
+        <tag>php</tag>
+        <tag>安装</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux☞时间</title>
+    <url>/2020/02/11/linux%E2%98%9E%E6%97%B6%E9%97%B4/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 其它 </category>
-          
+        <category>系统</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> docker </tag>
-            
-            <tag> openvpn </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>redis☞调整内核参数</title>
-      <link href="/2018/02/02/redis%E2%98%9E%E8%B0%83%E6%95%B4%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0/"/>
-      <url>/2018/02/02/redis%E2%98%9E%E8%B0%83%E6%95%B4%E5%86%85%E6%A0%B8%E5%8F%82%E6%95%B0/</url>
-      
-      
+      <tags>
+        <tag>linux</tag>
+        <tag>时区</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shell☞if判定</title>
+    <url>/2016/10/02/shell%E2%98%9Eif%E5%88%A4%E5%AE%9A/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 数据库 </category>
-          
+        <category>shell</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-            <tag> 优化 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>web ☞ 系统基本优化</title>
-      <link href="/2017/01/20/web%E2%98%9E%E7%B3%BB%E7%BB%9F%E5%9F%BA%E6%9C%AC%E4%BC%98%E5%8C%96/"/>
-      <url>/2017/01/20/web%E2%98%9E%E7%B3%BB%E7%BB%9F%E5%9F%BA%E6%9C%AC%E4%BC%98%E5%8C%96/</url>
-      
-      
+      <tags>
+        <tag>shell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安装脚本☞nginx编译方式</title>
+    <url>/2020/05/15/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Enginx%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> web </category>
-          
+        <category>shell</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> linux </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>shell☞if判定</title>
-      <link href="/2016/10/02/shell%E2%98%9Eif%E5%88%A4%E5%AE%9A/"/>
-      <url>/2016/10/02/shell%E2%98%9Eif%E5%88%A4%E5%AE%9A/</url>
-      
-      
+      <tags>
+        <tag>nginx</tag>
+        <tag>安装</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安装脚本☞redis</title>
+    <url>/2020/05/14/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Eredis/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> shell </category>
-          
+        <category>shell</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> shell </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>linux ☞ df与du数据不一致的原因</title>
-      <link href="/2015/11/15/linux%E2%98%9Edf%E4%B8%8Edu%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E5%8E%9F%E5%9B%A0/"/>
-      <url>/2015/11/15/linux%E2%98%9Edf%E4%B8%8Edu%E6%95%B0%E6%8D%AE%E4%B8%8D%E4%B8%80%E8%87%B4%E7%9A%84%E5%8E%9F%E5%9B%A0/</url>
-      
-      
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安装脚本☞php编译方式</title>
+    <url>/2018/08/21/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Ephp%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[]]></content>
       <categories>
-          
-          <category> 系统 </category>
-          
+        <category>shell</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> linux </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-  
-  
+      <tags>
+        <tag>php</tag>
+        <tag>安装</tag>
+      </tags>
+  </entry>
 </search>

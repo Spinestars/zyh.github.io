@@ -4,6 +4,60 @@
   
     
     <entry>
+      <title>linux☞ssh-MFA自动登陆</title>
+      <link href="/2020/06/06/linux%E2%98%9Essh-MFA%E8%87%AA%E5%8A%A8%E7%99%BB%E9%99%86/"/>
+      <url>/2020/06/06/linux%E2%98%9Essh-MFA%E8%87%AA%E5%8A%A8%E7%99%BB%E9%99%86/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>ssh 关联MFA后,安全度增加了很多,但是每次手动输入MFA动态口令比较麻烦.所以记录一下自动交互输入MFA口令</p><h2 id="命令安装"><a href="#命令安装" class="headerlink" title="命令安装"></a>命令安装</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt install oathtool gnupg2 expect</span><br></pre></td></tr></table></figure><blockquote><p>oathtool 是我们用来生成MFA口令的工具.</p><p>expect 用来编写交互程序</p></blockquote><h2 id="登陆交互脚本"><a href="#登陆交互脚本" class="headerlink" title="登陆交互脚本"></a>登陆交互脚本</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/expect</span></span><br><span class="line"><span class="built_in">set</span> timeout 5</span><br><span class="line"><span class="built_in">set</span> MFAToken <span class="string">"我是MFA的TOKEN"</span></span><br><span class="line">spawn 我是ssh命令</span><br><span class="line">expect <span class="string">"MFA auth"</span></span><br><span class="line">send <span class="string">"[exec oathtool -b --totp <span class="variable">$MFAToken</span>]\r"</span>;</span><br><span class="line">interact</span><br></pre></td></tr></table></figure><blockquote><p>将脚本中的TOKEN和命令替换为自己的.</p></blockquote><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>如果你发现你登陆不了, 每次都验证错误, 那么你应该检查下你机器的时间是否正常.</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 系统 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
+            
+            <tag> ssh </tag>
+            
+            <tag> mfa </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>jdk☞安装和配置</title>
+      <link href="/2020/06/01/jdk%E2%98%9E%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/"/>
+      <url>/2020/06/01/jdk%E2%98%9E%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>oracle jdk 现在是商业产品了, 所以线上最好还是用 openjdk.</p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><a href="https://adoptopenjdk.net/installation.html#linux-pkg" target="_blank" rel="noopener">https://adoptopenjdk.net/installation.html#linux-pkg</a></p><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/<span class="built_in">local</span>/jdk</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="built_in">export</span> MANPATH=<span class="variable">$JAVA_HOME</span>/man</span><br><span class="line"><span class="built_in">export</span> CLASSPATH=.:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar:<span class="variable">$JAVA_HOME</span>/jre/lib/rt.jar</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> jdk </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>nginx☞alias</title>
       <link href="/2020/05/27/nginx%E2%98%9Ealias/"/>
       <url>/2020/05/27/nginx%E2%98%9Ealias/</url>
@@ -1044,7 +1098,7 @@
       <link href="/2019/09/04/nginx%E2%98%9E%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81/"/>
       <url>/2019/09/04/nginx%E2%98%9E%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81/</url>
       
-        <content type="html"><![CDATA[<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装 htpasswd 工具</span></span><br><span class="line">yum install httpd-tools -y</span><br><span class="line"><span class="comment"># 生成密码文件</span></span><br><span class="line">htpasswd -c /usr/<span class="built_in">local</span>/nginx/conf/.passwd <span class="comment">#创建文件</span></span><br><span class="line">htpasswd -b /usr/<span class="built_in">local</span>/nginx/conf/.passwd usera passworda <span class="comment"># 追加用户</span></span><br><span class="line">htpasswd -D /usr/<span class="built_in">local</span>/nginx/conf/.passwd usera <span class="comment"># 删除用户</span></span><br><span class="line"><span class="comment"># nginx配置</span></span><br><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  xxx.com;</span><br><span class="line">    index index.html;</span><br><span class="line">    location /auth &#123;</span><br><span class="line">        auth_basic <span class="string">"nginx auth"</span>;</span><br><span class="line">        auth_basic_user_file /usr/<span class="built_in">local</span>/nginx/conf/.passwd;</span><br><span class="line">        <span class="built_in">alias</span> /<span class="built_in">export</span>/webapps/xxx.com;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+        <content type="html"><![CDATA[<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装 htpasswd 工具</span></span><br><span class="line">yum install httpd-tools -y</span><br><span class="line"><span class="comment"># 生成密码文件</span></span><br><span class="line">htpasswd -bc /usr/<span class="built_in">local</span>/nginx/conf/.passwd usera <span class="built_in">pwd</span> <span class="comment"># 创建用户usera, 并写入 .passwd</span></span><br><span class="line">htpasswd -b /usr/<span class="built_in">local</span>/nginx/conf.passwd userb <span class="built_in">pwd</span>  <span class="comment"># 追加用户 userb</span></span><br><span class="line">htpasswd -D /usr/<span class="built_in">local</span>/nginx/conf/.passwd usera <span class="comment"># 删除用户</span></span><br><span class="line"><span class="comment"># nginx配置</span></span><br><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    server_name  xxx.com;</span><br><span class="line">    index index.html;</span><br><span class="line">    location /auth &#123;</span><br><span class="line">        auth_basic <span class="string">"nginx auth"</span>;</span><br><span class="line">        auth_basic_user_file /usr/<span class="built_in">local</span>/nginx/conf/.passwd;</span><br><span class="line">        <span class="built_in">alias</span> /<span class="built_in">export</span>/webapps/xxx.com;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>

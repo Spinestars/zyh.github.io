@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>zabbix ☞ server安装注意事项</title>
+      <link href="/2020/07/23/zabbix%E2%98%9Eserver%E5%AE%89%E8%A3%85%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"/>
+      <url>/2020/07/23/zabbix%E2%98%9Eserver%E5%AE%89%E8%A3%85%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</url>
+      
+        <content type="html"><![CDATA[<ol><li><p>数据库编码一定要安装官方来命令来设置，例如zabbix5编码是 utf8和utf8_bin</p></li><li><p>最后web控制台安装界面，要确保zabbix-server可以访问设置的 hostname 的 10051 端口。如果hostname写的域名，那么要确保zabbix-server可以通过 hosts本地解析或者外网访问10051端口</p></li><li><p>zabbix-server 的 agent 要使用拉取模式，因为官方给的模板无法直接修正为推流模式</p></li><li><p>报警媒介设置</p><p>脚本设置</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">脚本参数</span><br><span class="line">&#123;ALERT.SENDTO&#125;</span><br><span class="line">&#123;ALERT.SUBJECT&#125;</span><br><span class="line">&#123;ALERT.MESSAGE&#125;</span><br></pre></td></tr></table></figure><p>问题模板</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">故障: &#123;TRIGGER.NAME&#125;</span><br><span class="line"></span><br><span class="line">【[骷髅]】=》&#123;TRIGGER.SEVERITY&#125; 事件ID : &#123;EVENT.ID&#125;</span><br><span class="line">【UTC+0】: &#123;EVENT.DATE&#125; &#123;EVENT.TIME&#125;</span><br><span class="line">【告警等级】: &#123;TRIGGER.SEVERITY&#125;</span><br><span class="line">【主机信息1】: &#123;HOST.NAME&#125;</span><br><span class="line">【主机信息2】: &#123;HOSTNAME1&#125;</span><br><span class="line">【告警信息】: &#123;TRIGGER.NAME&#125;</span><br><span class="line">【告警项目】: &#123;TRIGGER.KEY1&#125;</span><br><span class="line">【问题详情】: &#123;ITEM.NAME&#125;:&#123;ITEM.VALUE&#125;</span><br><span class="line">【当前状态】: &#123;TRIGGER.STATUS&#125;:&#123;ITEM.VALUE1&#125;</span><br></pre></td></tr></table></figure><p>恢复模板</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">恢复: &#123;TRIGGER.NAME&#125;</span><br><span class="line"></span><br><span class="line">【[OK]】=》&#123;TRIGGER.SEVERITY&#125; 事件ID : &#123;EVENT.ID&#125;</span><br><span class="line">【UTC+0】: &#123;EVENT.DATE&#125; &#123;EVENT.TIME&#125;</span><br><span class="line">【告警等级】: &#123;TRIGGER.SEVERITY&#125;</span><br><span class="line">【主机信息1】: &#123;HOST.NAME&#125;</span><br><span class="line">【主机信息2】: &#123;HOSTNAME1&#125;</span><br><span class="line">【告警信息】: &#123;TRIGGER.NAME&#125;</span><br><span class="line">【告警项目】: &#123;TRIGGER.KEY1&#125;</span><br><span class="line">【问题详情】: &#123;ITEM.NAME&#125;:&#123;ITEM.VALUE&#125;</span><br><span class="line">【当前状态】: &#123;TRIGGER.STATUS&#125;:&#123;ITEM.VALUE1&#125;</span><br></pre></td></tr></table></figure></li><li><p>预警用户添加超管权限</p></li><li><p>中文字体</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum install google-noto-sans-simplified-chinese-fonts.noarch -y</span><br><span class="line">rm -rf /etc/alternatives/zabbix-web-font</span><br><span class="line">ln -s /usr/share/fonts/google-noto/NotoSansSC-Regular.otf /etc/alternatives/zabbix-web-font</span><br></pre></td></tr></table></figure></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>jenkins☞从容器中访问宿主机docker命令</title>
       <link href="/2020/06/09/jenkins%E2%98%9E%E4%BB%8E%E5%AE%B9%E5%99%A8%E4%B8%AD%E8%AE%BF%E9%97%AE%E5%AE%BF%E4%B8%BB%E6%9C%BAdocker%E5%91%BD%E4%BB%A4/"/>
       <url>/2020/06/09/jenkins%E2%98%9E%E4%BB%8E%E5%AE%B9%E5%99%A8%E4%B8%AD%E8%AE%BF%E9%97%AE%E5%AE%BF%E4%B8%BB%E6%9C%BAdocker%E5%91%BD%E4%BB%A4/</url>

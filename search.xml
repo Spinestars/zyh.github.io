@@ -4,11 +4,65 @@
   
     
     <entry>
+      <title>mysql☞离线迁移脚本</title>
+      <link href="/2020/08/29/mysql%E2%98%9E%E7%A6%BB%E7%BA%BF%E8%BF%81%E7%A7%BB%E8%84%9A%E6%9C%AC/"/>
+      <url>/2020/08/29/mysql%E2%98%9E%E7%A6%BB%E7%BA%BF%E8%BF%81%E7%A7%BB%E8%84%9A%E6%9C%AC/</url>
+      
+        <content type="html"><![CDATA[<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">databases=<span class="string">""</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">mysqltonew</span></span>()&#123;</span><br><span class="line">    olddatabasehost=</span><br><span class="line">    olddatabaseport=</span><br><span class="line">    olddatabase=<span class="variable">$1</span></span><br><span class="line">    oldUserName=</span><br><span class="line">    oldpassword=</span><br><span class="line"></span><br><span class="line">    newdatabasehost=</span><br><span class="line">    newolddatabaseport=</span><br><span class="line">    newdatabase=<span class="variable">$&#123;olddatabase&#125;</span></span><br><span class="line">    newUserName=</span><br><span class="line">    newpassword=</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># utf8 / utf8mb4</span></span><br><span class="line">    <span class="built_in">read</span> -p <span class="string">"character [utf8/utf8mb4/latin1]:"</span> Character</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 导出老库</span></span><br><span class="line">    mysqldump -u<span class="variable">$&#123;oldUserName&#125;</span> -p<span class="variable">$&#123;oldpassword&#125;</span> -h<span class="variable">$&#123;olddatabasehost&#125;</span> -P<span class="variable">$&#123;olddatabaseport&#125;</span> --default-character-set=<span class="variable">$&#123;Character&#125;</span> --single-transaction <span class="variable">$&#123;olddatabase&#125;</span> &gt; <span class="variable">$&#123;olddatabase&#125;</span>.sql</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 创建新库</span></span><br><span class="line">    mysql -u<span class="variable">$&#123;newUserName&#125;</span> -p<span class="variable">$&#123;newpassword&#125;</span> -h<span class="variable">$&#123;newdatabasehost&#125;</span> -P<span class="variable">$&#123;newolddatabaseport&#125;</span> -e <span class="string">"CREATE DATABASE <span class="variable">$&#123;newdatabase&#125;</span> DEFAULT CHARSET <span class="variable">$&#123;Character&#125;</span> COLLATE <span class="variable">$&#123;Character&#125;</span>_general_ci;"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 导入新库</span></span><br><span class="line">    mysql -u<span class="variable">$&#123;newUserName&#125;</span> -p<span class="variable">$&#123;newpassword&#125;</span> -h<span class="variable">$&#123;newdatabasehost&#125;</span> -P<span class="variable">$&#123;newolddatabaseport&#125;</span> --default-character-set=<span class="variable">$&#123;Character&#125;</span> <span class="variable">$&#123;newdatabase&#125;</span> &lt; <span class="variable">$&#123;olddatabase&#125;</span>.sql</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$&#123;databases&#125;</span>;<span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"start <span class="variable">$i</span>"</span></span><br><span class="line">        mysqltonew <span class="variable">$i</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+            <tag> mysqldump </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>k8s☞静态pod</title>
       <link href="/2020/08/26/k8s%E2%98%9E%E9%9D%99%E6%80%81pod/"/>
       <url>/2020/08/26/k8s%E2%98%9E%E9%9D%99%E6%80%81pod/</url>
       
         <content type="html"><![CDATA[<h2 id="静态pod"><a href="#静态pod" class="headerlink" title="静态pod"></a>静态pod</h2><p>特点：</p><ol><li>永远运行在固定节点</li><li>由所在节点的kubelet管理，但只负责保活，即pod崩溃重生</li><li>kubelet会让apiserver创建一个镜像pod，便于可以通过kubectl查询到静态pod</li></ol><p>配置：</p><ol><li>存放在 /etc/kubernetes/manifests 当采用kubeadm安装的时候，一般位于此目录。具体需要去看kubelet配置。</li><li>配置本身可以按照标准pod方式来创建</li></ol><p>检测：</p><ol><li>kubelet会定期检测配置目录加载配置创建/重建pod</li></ol><blockquote><p>当你通过kubeadm创建的时候，那么k8s的几个重要组件均会以静态pod的方式在master节点上创建，你可以在/etc/kubernetes/manifests/这里找到他们的配置</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@k8s00 ~]<span class="comment"># ll /etc/kubernetes/manifests/</span></span><br><span class="line">total 16</span><br><span class="line">-rw------- 1 root root 1848 Aug 25 16:28 etcd.yaml</span><br><span class="line">-rw------- 1 root root 2709 Aug 25 16:28 kube-apiserver.yaml</span><br><span class="line">-rw------- 1 root root 2564 Aug 25 16:33 kube-controller-manager.yaml</span><br><span class="line">-rw------- 1 root root 1120 Aug 25 16:33 kube-scheduler.yaml</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> k8s </tag>
+            
+            <tag> pod </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞pod钩子函数</title>
+      <link href="/2020/08/26/k8s%E2%98%9Epod%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0/"/>
+      <url>/2020/08/26/k8s%E2%98%9Epod%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。</p><p>k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop</p><h2 id="postStart"><a href="#postStart" class="headerlink" title="postStart"></a>postStart</h2><ol><li>它将在容器创建后立即运行，但不保证在 ENTRYPOINT 之前运行</li><li>它是同步状态，如果它卡住，pod 无法达到 running 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">poststart-test</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">poststart-test</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">lifecycle:</span></span><br><span class="line">      <span class="attr">postStart:</span></span><br><span class="line">        <span class="attr">exec:</span></span><br><span class="line">          <span class="attr">command:</span> <span class="string">["/bin/sh",</span> <span class="string">"-c"</span><span class="string">,</span> <span class="string">"echo This is postStart-test &gt; /usr/share/nginx/html/index.html"</span><span class="string">]</span></span><br></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@k8s00 ~]<span class="comment"># kubectl apply -f poststart-test.yaml</span></span><br><span class="line">pod/poststart-test created</span><br><span class="line">[root@k8s00 ~]<span class="comment"># kubectl get pod -o wide</span></span><br><span class="line">NAME             READY   STATUS              RESTARTS   AGE   IP       NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">poststart-test   0/1     ContainerCreating   0          7s    &lt;none&gt;   k8s02   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">[root@k8s00 ~]<span class="comment"># kubectl get pod -o wide</span></span><br><span class="line">NAME             READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATES</span><br><span class="line">poststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">[root@k8s00 ~]<span class="comment"># curl 10.97.2.6</span></span><br><span class="line">This is postStart-test</span><br></pre></td></tr></table></figure><h2 id="preStop"><a href="#preStop" class="headerlink" title="preStop"></a>preStop</h2><ol><li>它将在容器结束之前运行</li><li>它是同步的，如果它卡住，pod 将停留在 running 状态，无法达到 failed 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">prestop-test</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">prestop-test</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">volumeMounts:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">prestop-test-tmp</span></span><br><span class="line">      <span class="attr">mountPath:</span> <span class="string">/usr/share</span></span><br><span class="line">    <span class="attr">lifecycle:</span></span><br><span class="line">      <span class="attr">preStop:</span></span><br><span class="line">        <span class="attr">exec:</span></span><br><span class="line">          <span class="attr">command:</span> <span class="string">["/bin/sh",</span> <span class="string">"-c"</span><span class="string">,</span> <span class="string">"echo This is preStop &gt; /usr/share/message"</span><span class="string">]</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">prestop-test-tmp</span></span><br><span class="line">    <span class="attr">hostPath:</span></span><br><span class="line">      <span class="attr">path:</span> <span class="string">/tmp</span></span><br></pre></td></tr></table></figure><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[root@k8s00 ~]<span class="comment"># kubectl delete pod prestop-test</span></span><br><span class="line"><span class="comment"># 这里 prestop-test 被调度到 k8s02</span></span><br><span class="line">[root@k8s02 ~]<span class="comment"># cat /tmp/message</span></span><br><span class="line">This is preStop</span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
@@ -1269,6 +1323,31 @@
             <tag> aws </tag>
             
             <tag> s3 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞常见术语概念</title>
+      <link href="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5/"/>
+      <url>/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5/</url>
+      
+        <content type="html"><![CDATA[<h2 id="物理"><a href="#物理" class="headerlink" title="物理"></a>物理</h2><ol><li><p>master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。</p></li><li><p>node 是 k8s 的工作节点，也就是实际跑容器的节点。</p></li></ol><h2 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h2><p>master 节点服务</p><ol><li>kube-apiserver 是master节点服务， 是k8s 的 api 服务，是集群入口，提供 http rset 服务。</li><li>kube-controller-manager 是master节点服务，维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化中心。</li><li>kube-scheduler 是负责 pod 的调度, 即如何将pod分发到node</li><li>etcd 注册中心，保存集群状态。</li></ol><p>node 节点服务</p><ol><li><p>kubelet 是节点代理程序，部署在 node 上。它是k8s master和k8s node之间的纽带。处理 pod 创建/启动/监控/重启/销毁等工作。</p><p>开启 register-node = true 的情况下 会自动向 apiserver 服务注册自己。</p></li><li><p>kube-proxy 是实现node节点上各资源的通信</p></li></ol><h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ol><li><p>Namespace</p><p>命名空间是一个逻辑概念，起到了隔离作用。通过它，你可以找到它内部的其它资源对象，例如 pod，svc，deployment等</p></li><li><p>Pod</p><p>pod 内包含多个容器，所以多个容器共享以下资源。</p><ul><li>PID命名空间: pod内的进程能互相看到PID</li><li>网络命名空间: pod中的多个容器共享一个ip (唯一)</li><li>IPC命名空间: pod中的多个容器之间可以互相通信</li><li>UTS命名空间: pod中的多个容器共享一个主机名 (唯一)</li><li>存储卷: pod多个容器可以共同访问pod定义的存储卷</li></ul></li><li><p>Label</p><p>label用于表示资源，从而方便的被其它资源找到。它很重要。</p><p>标签定义 <code>key: value</code></p><p>选择器: <code>key &lt;= !=&gt; value</code>  <code>key &lt;not&gt; in (value1, value2)</code> </p><p>RC 和 Service 通过 selector 选择器来选择 Pod 对象范围, 从而精细化的将 Pod 进行分组。</p></li><li><p>Deployment</p><p>用来部署一个 pod 组，它通过 ReplicaSet 来进行缩放， 并需要 pod 模板创建 pod， 需要 Label 监控 pod。Deployment 通过 RC 严格执行配置所定义的pod副本数量。可以比喻为 aws 的目标组或者nginx的upstream组。</p></li><li><p>Service</p><p>svc 用来构建一个负载配置。可以比喻为aws的elb内网负载均衡器或者nginx的service proxy配置。</p><p>svc 通过 pod 定义的 label 发现一组 pod。这些 pod 本身有 endpoint 地址。 </p><p>svc 创建后，会拿到一个集群内部ip和dns。kube-proxy 服务会将 svc 的 ip 和 pod 的 endpoint 地址关联起来。</p><p>最终，其它容器可以通过这个ip和dns来访问svc关联的pod资源。</p></li><li><p>Ingress</p><p>映射一个端口到宿主ip，提供服务的外部访问</p></li></ol><h2 id="服务组件流程图"><a href="#服务组件流程图" class="headerlink" title="服务组件流程图"></a>服务组件流程图</h2><blockquote><ul><li>apiserver 负责 etcd 存储的所有操作，且只有 apiserver 才直接操作 etcd 集群</li><li>apiserver 对内（集群中的其他组件）和对外（用户）提供统一的 REST API，其他组件均通过 apiserver 进行通信<ul><li>controller manager、scheduler、kube-proxy 和 kubelet 等均通过 apiserver watch API 监测资源变化情况，并对资源作相应的操作</li><li>所有需要更新资源状态的操作均通过 apiserver 的 REST API 进行</li></ul></li><li>apiserver 也会直接调用 kubelet API（如 logs, exec, attach 等），默认不校验 kubelet 证书，但可以通过 <code>--kubelet-certificate-authority</code> 开启（而 GKE 通过 SSH 隧道保护它们之间的通信）</li></ul></blockquote><p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5//image-20200823102314477.png" alt="image-20200823102314477"></p><p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5//image-20200823103640732.png" alt="image-20200823103640732"></p><blockquote><p>以一个pod的构建为例:</p><ul><li>用户通过 REST API 创建一个 Pod</li><li>apiserver 将其写入 etcd</li><li>scheduluer 检测到未绑定 Node 的 Pod，开始调度并更新 Pod 的 Node 绑定</li><li>kubelet 检测到有新的 Pod 调度过来，通过 container runtime 运行该 Pod</li><li>kubelet 通过 container runtime 取到 Pod 状态，并更新到 apiserver 中</li></ul></blockquote><p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5//image-20200823102430144.png" alt="image-20200823102430144"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> k8s </tag>
             
         </tags>
       

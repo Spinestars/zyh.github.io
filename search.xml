@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>zabbix☞容器搭建</title>
+      <link href="/2020/08/30/zabbix%E2%98%9E%E5%AE%B9%E5%99%A8%E6%90%AD%E5%BB%BA/"/>
+      <url>/2020/08/30/zabbix%E2%98%9E%E5%AE%B9%E5%99%A8%E6%90%AD%E5%BB%BA/</url>
+      
+        <content type="html"><![CDATA[<h2 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p /<span class="built_in">export</span>/docker-data-mysql/&#123;config,logs,data&#125;</span><br><span class="line">docker run --name mysql57 \</span><br><span class="line">-p 3306:3306 \</span><br><span class="line">--network zbnet \</span><br><span class="line">--restart=always \</span><br><span class="line">--mount <span class="string">'type=bind,src=/export/docker-data-mysql/config,dst=/etc/mysql'</span> \</span><br><span class="line">--mount <span class="string">'type=bind,src=/export/docker-data-mysql/logs,dst=/var/log/mysql'</span> \</span><br><span class="line">--mount <span class="string">'type=bind,src=/export/docker-data-mysql/data,dst=/var/lib/mysql'</span> \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD=123456 \</span><br><span class="line">-d mysql:5.7</span><br></pre></td></tr></table></figure><h2 id="zabbix-server"><a href="#zabbix-server" class="headerlink" title="zabbix-server"></a>zabbix-server</h2><blockquote><p><a href="https://hub.docker.com/r/zabbix/zabbix-server-mysql" target="_blank" rel="noopener">https://hub.docker.com/r/zabbix/zabbix-server-mysql</a></p></blockquote><p>安装 centos + server + mysql 版本</p><p>默认，环境变量 <code>MYSQL_USER</code> and <code>MYSQL_PASSWORD</code> are <code>zabbix</code>, <code>zabbix</code>.</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;export&#x2F;docker-data-zbserver&#x2F;alertscripts</span><br><span class="line">docker volume create zabbixServerEtc</span><br><span class="line">docker run --name&#x3D;zabbix_server \</span><br><span class="line">-p 10051:10051 \</span><br><span class="line">--network zbnet \</span><br><span class="line">--restart&#x3D;always \</span><br><span class="line">--mount &#39;type&#x3D;volume,src&#x3D;zabbixServerEtc,dst&#x3D;&#x2F;etc&#x2F;zabbix&#39; \</span><br><span class="line">--mount &#39;type&#x3D;bind,src&#x3D;&#x2F;export&#x2F;docker-data-zbserver&#x2F;alertscripts,dst&#x3D;&#x2F;usr&#x2F;lib&#x2F;zabbix&#x2F;alertscripts&#39; \</span><br><span class="line">-e DB_SERVER_HOST&#x3D;&quot;mysql57&quot; \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;&quot;zabbixserver&quot; \</span><br><span class="line">-e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">-e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;&quot;123456&quot; \</span><br><span class="line">-d zabbix&#x2F;zabbix-server-mysql:centos-latest</span><br></pre></td></tr></table></figure><h2 id="zabbix-server-web"><a href="#zabbix-server-web" class="headerlink" title="zabbix-server-web"></a>zabbix-server-web</h2><blockquote><p><a href="https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql" target="_blank" rel="noopener">https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql</a></p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装字体</span></span><br><span class="line">yum install google-noto-sans-simplified-chinese-fonts.noarch -y</span><br><span class="line">docker run --name zabbix_web \</span><br><span class="line">-p 80:8080 \</span><br><span class="line">-p 443:8443 \</span><br><span class="line">--restart=always \</span><br><span class="line">--network zbnet \</span><br><span class="line">--mount <span class="string">'type=bind,src=/usr/share/fonts/google-noto/NotoSansSC-Regular.otf,dst=/usr/share/zabbix/assets/fonts/DejaVuSans.ttf'</span> \</span><br><span class="line">-e DB_SERVER_HOST=<span class="string">"mysql57"</span> \</span><br><span class="line">-e MYSQL_DATABASE=<span class="string">"zabbixserver"</span> \</span><br><span class="line">-e MYSQL_USER=<span class="string">"zabbix"</span> \</span><br><span class="line">-e MYSQL_PASSWORD=<span class="string">"zabbix"</span> \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD=<span class="string">"123456"</span> \</span><br><span class="line">-e ZBX_SERVER_HOST=<span class="string">"zabbix_server"</span> \</span><br><span class="line">-e PHP_TZ=<span class="string">"Asia/Shanghai"</span> \</span><br><span class="line">-d zabbix/zabbix-web-nginx-mysql:latest</span><br></pre></td></tr></table></figure><blockquote><p><a href="http://ip" target="_blank" rel="noopener">http://ip</a> 即可</p><p>初始账户密码是 Admin/zabbix</p></blockquote><p>需要注意的是，因为默认zabbix server的主机配置项监听的是 127.0.0.1:10050, 并且主机名配置的是 zabbix server. 这和我们的容器环境有一些冲突。所以需要修改一些配置。</p><ol><li>因为 agent 和 server 的容器 ip 并不一致（原因是这里我用的是网络模型是桥接），所以默认的被动模板会导致 zabbix server 找不到 agent，从而报警。因此这里主机配置项需要关联 active 模板。</li><li>修改主机配置中的 hostname 为 agent 容器中的环境变量 ZBX_HOSTNAME。这里我们暂定为 zabbix_server</li></ol><h2 id="zabbix-agent"><a href="#zabbix-agent" class="headerlink" title="zabbix-agent"></a>zabbix-agent</h2><blockquote><p><a href="https://hub.docker.com/r/zabbix/zabbix-agent" target="_blank" rel="noopener">https://hub.docker.com/r/zabbix/zabbix-agent</a></p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker volume create zbAgentEtc</span><br><span class="line">docker run --name zabbix_agent \</span><br><span class="line">--network zbnet \</span><br><span class="line">--mount <span class="string">'type=volume,src=zbAgentEtc,dst=/etc/zabbix/zabbix_agentd.d'</span> \</span><br><span class="line">-e ZBX_DEBUGLEVEL=<span class="string">"3"</span> \</span><br><span class="line">-e ZBX_HOSTNAME=<span class="string">"zabbix_server"</span> \</span><br><span class="line">-e ZBX_SERVER_HOST=<span class="string">"zabbix_server"</span> \</span><br><span class="line">-d zabbix/zabbix-agent:latest</span><br></pre></td></tr></table></figure><p>其它配置变量详见上面官方文档</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> docker </tag>
+            
+            <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>mysql☞离线迁移脚本</title>
       <link href="/2020/08/29/mysql%E2%98%9E%E7%A6%BB%E7%BA%BF%E8%BF%81%E7%A7%BB%E8%84%9A%E6%9C%AC/"/>
       <url>/2020/08/29/mysql%E2%98%9E%E7%A6%BB%E7%BA%BF%E8%BF%81%E7%A7%BB%E8%84%9A%E6%9C%AC/</url>

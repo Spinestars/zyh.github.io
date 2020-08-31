@@ -16,6 +16,17 @@
 <p>默认，环境变量 <code>MYSQL_USER</code> and <code>MYSQL_PASSWORD</code> are <code>zabbix</code>, <code>zabbix</code>.</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;export&#x2F;docker-data-zbserver&#x2F;alertscripts</span><br><span class="line">docker volume create zabbixServerEtc</span><br><span class="line">docker run --name&#x3D;zabbix_server \</span><br><span class="line">-p 10051:10051 \</span><br><span class="line">--network zbnet \</span><br><span class="line">--restart&#x3D;always \</span><br><span class="line">--mount &#39;type&#x3D;volume,src&#x3D;zabbixServerEtc,dst&#x3D;&#x2F;etc&#x2F;zabbix&#39; \</span><br><span class="line">--mount &#39;type&#x3D;bind,src&#x3D;&#x2F;export&#x2F;docker-data-zbserver&#x2F;alertscripts,dst&#x3D;&#x2F;usr&#x2F;lib&#x2F;zabbix&#x2F;alertscripts&#39; \</span><br><span class="line">-e DB_SERVER_HOST&#x3D;&quot;mysql57&quot; \</span><br><span class="line">-e MYSQL_DATABASE&#x3D;&quot;zabbixserver&quot; \</span><br><span class="line">-e MYSQL_USER&#x3D;&quot;zabbix&quot; \</span><br><span class="line">-e MYSQL_PASSWORD&#x3D;&quot;zabbix&quot; \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD&#x3D;&quot;123456&quot; \</span><br><span class="line">-d zabbix&#x2F;zabbix-server-mysql:centos-latest</span><br></pre></td></tr></table></figure>
 
+<ol>
+<li>默认安装完之后，容器内缺少一些开发环境，这会导致我们的告警脚本执行失败，比如我是用 python3 写的微信告警，而环境里没有。因此需要额外加装。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker logs -f zabbix_server </span><br><span class="line"><span class="comment"># 可以看到如下错误</span></span><br><span class="line">203:20200831:030724.713 Failed to execute <span class="built_in">command</span> <span class="string">"/usr/lib/zabbix/alertscripts/wechat.py 'it' '自动注册: xxx-use-001-10-240-128-100' '主机名: xxx-use-001-10-240-128-100</span></span><br><span class="line"><span class="string">主机ip: xxx</span></span><br><span class="line"><span class="string">代理端口: 10050'"</span>: env: <span class="string">'python3'</span>: No such file or directory</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it -u root zabbix_server yum install python3</span><br><span class="line">docker <span class="built_in">exec</span> -it -u root zabbix_server pip3 install requests configparser</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>alertscripts 目录需要有 other 可执行权限</li>
+</ol>
+<p>因为 zabbix_server 在执行告警脚本的时候，用的是普通用户</p>
 <h2 id="zabbix-server-web"><a href="#zabbix-server-web" class="headerlink" title="zabbix-server-web"></a>zabbix-server-web</h2><blockquote>
 <p><a href="https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql" target="_blank" rel="noopener">https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql</a></p>
 </blockquote>

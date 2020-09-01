@@ -428,14 +428,8 @@
       <link href="/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/"/>
       <url>/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/</url>
       
-        <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>写作工具：typora</p><p>部署端：github</p><p>部署包：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 你可以通过hexo的根目录下的package.json来确认版本</span><br><span class="line">&quot;hexo&quot;: &quot;^4.0.0&quot;,</span><br><span class="line">&quot;hexo-asset-image&quot;: &quot;^1.0.0&quot;</span><br></pre></td></tr></table></figure><p>目前网上大多数的博文描述的场景，均不是当前场景（截至到2020.05.14），所以博文里虽然展示都正常，但是按照博文的操作却会有路径问题，具体表现是图片前多了一级路径（路径应该是1级域名，比如.com，.io等，根据你的域名来定）</p><p>那么，请按照下面我的步骤来操作，如果还有问题，那就不是上述我所说的情况了。</p><h4 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h4><ol><li><p>修改 hexo-asset-image，修改内容如图所示</p><p><img src="/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/image-20200514185529806.png" alt="image-20200514185529806"></p></li><li><p>修改typora的图片存放路径，修改内容如图所示</p><p><img src="/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/image-20200514185631903.png" alt="image-20200514185631903"></p><blockquote><p>这不是必须的，但是我想没人会拒绝方便的操作。 typora 在进行如上操作后，就可以在你往文章里粘贴图片的时候，自动生成以文件名前缀命名的目录（效果就如同你开启了hexo的post_asset_folder: true参数），并将图片存放在此目录中。</p></blockquote></li><li><p>开启 hexo 的 _config.yml 中 post_asset_folder: true 参数配置</p></li></ol><h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>经过上述操作，我想你已经可以在本地 md 文件和线上同时看到图片了。</p>]]></content>
+        <content type="html"><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>写作工具：typora</p><p>部署端：github</p><p>部署包：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 你可以通过hexo的根目录下的package.json来确认版本</span><br><span class="line">&quot;hexo&quot;: &quot;^4.0.0&quot;,</span><br><span class="line">&quot;hexo-asset-image&quot;: &quot;^1.0.0&quot;</span><br></pre></td></tr></table></figure><p>目前网上大多数的博文描述的场景，均不是当前场景（截至到2020.05.14），所以博文里虽然展示都正常，但是按照博文的操作却会有路径问题，具体表现是图片前多了一级路径（路径应该是1级域名，比如.com，.io等，根据你的域名来定）</p><p>那么，请按照下面我的步骤来操作，如果还有问题，那就不是上述我所说的情况了。</p><h4 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h4><ol><li><p>修改 hexo-asset-image，修改内容如图所示</p><p><img src="/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/image-20200901195338475.png" alt="image-20200901195338475">修改typora的图片存放路径，修改内容如图所示</p><p><img src="/2020/05/14/hexo%E2%98%9E%E5%9B%BE%E7%89%87%E6%98%BE%E7%A4%BA/image-20200514185631903.png" alt="image-20200514185631903"></p><blockquote><p>这不是必须的，但是我想没人会拒绝方便的操作。 typora 在进行如上操作后，就可以在你往文章里粘贴图片的时候，自动生成以文件名前缀命名的目录（效果就如同你开启了hexo的post_asset_folder: true参数），并将图片存放在此目录中。</p></blockquote></li><li><p>开启 hexo 的 _config.yml 中 post_asset_folder: true 参数配置</p></li></ol><h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>经过上述操作，我想你已经可以在本地 md 文件和线上同时看到图片了。</p>]]></content>
       
-      
-      <categories>
-          
-          <category> hexo </category>
-          
-      </categories>
       
       
         <tags>

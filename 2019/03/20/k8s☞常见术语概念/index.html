@@ -72,8 +72,8 @@
 <li>apiserver 也会直接调用 kubelet API（如 logs, exec, attach 等），默认不校验 kubelet 证书，但可以通过 <code>--kubelet-certificate-authority</code> 开启（而 GKE 通过 SSH 隧道保护它们之间的通信）</li>
 </ul>
 </blockquote>
-<p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5//image-20200823102314477.png" alt="image-20200823102314477"></p>
-<p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5//image-20200823103640732.png" alt="image-20200823103640732"></p>
+<p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5/image-20200823102314477.png" alt="image-20200823102314477"></p>
+<p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5/image-20200823103640732.png" alt="image-20200823103640732"></p>
 <blockquote>
 <p>以一个pod的构建为例:</p>
 <ul>
@@ -84,7 +84,7 @@
 <li>kubelet 通过 container runtime 取到 Pod 状态，并更新到 apiserver 中</li>
 </ul>
 </blockquote>
-<p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5//image-20200823102430144.png" alt="image-20200823102430144"></p>
+<p><img src="/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5/image-20200823102430144.png" alt="image-20200823102430144"></p>
 </div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">zyh</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://zyh.cool/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5/">https://zyh.cool/2019/03/20/k8s%E2%98%9E%E5%B8%B8%E8%A7%81%E6%9C%AF%E8%AF%AD%E6%A6%82%E5%BF%B5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zyh.cool">zyh</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/k8s/">k8s</a></div><div class="addthis_inline_share_toolbox pull-right"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5ebcbd4086e8aa2b" async></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/05/23/aws%E2%98%9Es3%20%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%9B%E5%BB%BA/"><i class="fa fa-chevron-left">  </i><span>aws☞s3 初始化安装</span></a></div><div class="next-post pull-right"><a href="/2018/09/06/nginx%E2%98%9E%E6%B3%9B%E5%9F%9F%E5%90%8D_%E5%8F%98%E9%87%8F%E6%88%AA%E5%8F%96/"><span>nginx ☞ 泛域名_变量截取</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
   clientID: '5d6fb59b1508af7318d7',
   clientSecret: 'bca058cc7e0b4b62ce5d43b046bb18d9484e5163',

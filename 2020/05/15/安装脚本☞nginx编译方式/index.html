@@ -15,7 +15,7 @@
 </ul>
 <h4 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h4><p>因为是编译安装，所以产出目录均在 /usr/local/&lt;nginx/openresty/tengine&gt;，除了 logs 做了软链<code>/usr/local/xxx/logs -&gt; /export/logs/nginx</code></p>
 <p><code>/usr/local/xxx/conf 目录结构</code></p>
-<p><img src="/2020/05/15/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Enginx%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F//image-20200515120037239.png" alt="image-20200515120037239"></p>
+<p><img src="/2020/05/15/%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%E2%98%9Enginx%E7%BC%96%E8%AF%91%E6%96%B9%E5%BC%8F/image-20200515120037239.png" alt="image-20200515120037239"></p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 下面两个主配置文件会告诉你，相应的上下文配置，应该以什么结尾！！！</span></span><br><span class="line">include /usr/<span class="built_in">local</span>/<span class="variable">$&#123;NginxVer&#125;</span>/nginx/conf/server/*.server;</span><br><span class="line">include /usr/<span class="built_in">local</span>/<span class="variable">$&#123;NginxVer&#125;</span>/nginx/conf/upstream/*.upstream;</span><br></pre></td></tr></table></figure>
 
 

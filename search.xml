@@ -1431,6 +1431,33 @@
     
     
     <entry>
+      <title>mysql☞5.7容器基本搭建</title>
+      <link href="/2019/02/10/mysql%E2%98%9E5.7%E5%AE%B9%E5%99%A8%E5%9F%BA%E6%9C%AC%E6%90%AD%E5%BB%BA/"/>
+      <url>/2019/02/10/mysql%E2%98%9E5.7%E5%AE%B9%E5%99%A8%E5%9F%BA%E6%9C%AC%E6%90%AD%E5%BB%BA/</url>
+      
+        <content type="html"><![CDATA[<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p /<span class="built_in">export</span>/docker-data-mysql/&#123;config,logs,data&#125;</span><br><span class="line">docker run --name mysql57 \</span><br><span class="line">-p 3306:3306 \</span><br><span class="line">--restart=always \</span><br><span class="line">--mount <span class="string">'type=bind,src=/export/docker-data-mysql/config,dst=/etc/mysql'</span> \</span><br><span class="line">--mount <span class="string">'type=bind,src=/export/docker-data-mysql/logs,dst=/var/log/mysql'</span> \</span><br><span class="line">--mount <span class="string">'type=bind,src=/export/docker-data-mysql/data,dst=/var/lib/mysql'</span> \</span><br><span class="line">-e MYSQL_ROOT_PASSWORD=123456 \</span><br><span class="line">-d mysql:5.7</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> docker </tag>
+            
+            <tag> mysql </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>nginx ☞ 泛域名_变量截取</title>
       <link href="/2018/09/06/nginx%E2%98%9E%E6%B3%9B%E5%9F%9F%E5%90%8D_%E5%8F%98%E9%87%8F%E6%88%AA%E5%8F%96/"/>
       <url>/2018/09/06/nginx%E2%98%9E%E6%B3%9B%E5%9F%9F%E5%90%8D_%E5%8F%98%E9%87%8F%E6%88%AA%E5%8F%96/</url>

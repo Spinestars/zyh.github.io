@@ -69,18 +69,26 @@
 
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get all -n ingress-nginx</span><br><span class="line">===</span><br><span class="line">NAME                                            READY   STATUS    RESTARTS   AGE</span><br><span class="line">pod/ingress-nginx-controller-5886685d54-hf6l6   1/1     Running   0          68m</span><br><span class="line"></span><br><span class="line">NAME                                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE</span><br><span class="line">service/ingress-nginx-controller             LoadBalancer   10.96.210.139   &lt;pending&gt;     80:32489/TCP,443:30936/TCP   68m</span><br><span class="line">service/ingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;        443/TCP                      68m</span><br><span class="line"></span><br><span class="line">NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">deployment.apps/ingress-nginx-controller   1/1     1            1           68m</span><br><span class="line"></span><br><span class="line">NAME                                                  DESIRED   CURRENT   READY   AGE</span><br><span class="line">replicaset.apps/ingress-nginx-controller-5886685d54   1         1         1       68m</span><br></pre></td></tr></table></figure>
 
-<p>:star:这里我们可以最需要关注的是 service/ingress-nginx-controller. 因为它的类型决定了, 我们如何解析将要暴漏的服务域名.</p>
-<p>我们可以看到通过helm默认安装的 ingress crotroller 的 Service 对象是 LB 类型. 这种类型我们一般是用于云端环境的. 而我这里测试环境是裸机,因此你可以看到这里它一直无法获取到<code>EXTERNAL-IP</code></p>
+<p>我们可以看到 ingress-nginx 控制器创建了一个 pod, 这个 pod 其实就是一个 nginx. 它通过接收 ingress 定义的规则, 来动态的变更nginx配置,从而正确的将流量转发给后端应用的service对象.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl describe pod/ingress-nginx <span class="built_in">exec</span> -it pod/ingress-nginx-controller-5886685d54-hf6l6</span><br><span class="line">===</span><br><span class="line">    Requests:</span><br><span class="line">      cpu:      100m</span><br><span class="line">      memory:   90Mi</span><br></pre></td></tr></table></figure>
+
+<p>当前配置默认没有做limit限制. 所以需要关注ingress-nginx创建的pod所在物理节点的性能是否可以满足. 建议强制绑定到多个node节点, 这批节点专门跑用来进行ingress控制器.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl --namespace ingress-nginx <span class="built_in">exec</span> -it pod/ingress-nginx-controller-5886685d54-hf6l6 -- /bin/bash</span><br><span class="line">==</span><br><span class="line">cat /etc/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
+
+<p>这里我们可以看到ingress-nginx会动态的加载ingress定义的路由规则.</p>
+<p>最后, 我们可能最需要关注的是 service/ingress-nginx-controller. 因为它的类型决定了, 我们如何解析将要暴漏的服务域名. </p>
+<p>我们可以看到通过helm默认安装的 ingress crotroller 的 Service 对象是LoadBalancer类型. 这种类型我们一般是用于云端环境的. 而我这里测试环境是裸机,因此你可以看到这里它一直无法获取到<code>EXTERNAL-IP</code>.</p>
 <p>如何解决这个问题.k8s官方文档这里提供了多种方案. <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/baremetal/">https://kubernetes.github.io/ingress-nginx/deploy/baremetal/</a></p>
 <p>我们这里通过 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb">https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb</a> 来解决 LB 类型的 <code>EXTERNAL-IP</code>获取问题. 其它方案并不是采用的 LB 类型, 因为这里不再叙说.</p>
 <p>metallb 方案在当前并不是一个成熟的方案,当然它应该是可用的:smile: 所以用于本地测试环境是可以的. 线上环境建议直接用云服务的LB即可.</p>
 <h2 id="metallb"><a href="#metallb" class="headerlink" title="metallb"></a>metallb</h2><p><a target="_blank" rel="noopener" href="https://metallb.universe.tf/installation/">https://metallb.universe.tf/installation/</a></p>
+<p>metallb 模拟了云环境中的负载均衡器功能.</p>
 <p>:star2:If you’re using kube-proxy in IPVS mode, since Kubernetes v1.14.2 you have to enable strict ARP mode.</p>
 <p>如果你是ipvs 且 k8s 版本在1.14.2以上, 那么你需要启动严格arp模式.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl edit configmap -n kube-system kube-proxy</span><br><span class="line">===</span><br><span class="line">ipvs:</span><br><span class="line">  strictARP: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
 
 <p>开始安装</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml</span><br><span class="line">kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml</span><br><span class="line">kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml</span><br><span class="line"><span class="comment"># 下面这个命令仅在你初始安装的时候需要运行</span></span><br><span class="line">kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey=<span class="string">&quot;<span class="subst">$(openssl rand -base64 128)</span>&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>metallb将会在一个新的ns: metallb-system下创建.</p>
 <p>开始配置地址池</p>
@@ -93,6 +101,15 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get svc -n ingress-nginx</span><br><span class="line">===</span><br><span class="line">NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE</span><br><span class="line">ingress-nginx-controller             LoadBalancer   10.96.210.139   10.200.16.11   80:32489/TCP,443:30936/TCP   88m</span><br><span class="line">ingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;         443/TCP                      88m</span><br></pre></td></tr></table></figure>
 
 <p>终于它拿到了一个我们想让它获得的ip, 现在你就可以将域名解析到<code>EXTERNAL-IP</code>, 并通过这个域名来访问你的应用了.(而且它必须是能通过80访问的.):smile:</p>
+<p>同时, 让我们来看看 ingress 对象信息.</p>
+<p>:star:我暴漏的应用在ns: it中.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">kubectl get ingress -n it</span><br><span class="line">===</span><br><span class="line">NAME                   CLASS    HOSTS          ADDRESS        PORTS   AGE </span><br><span class="line">nas-it-local-ingress   &lt;none&gt;   nas.it.local   10.200.16.11   80      106m</span><br></pre></td></tr></table></figure>
+
+<p>可以看到. ingress 的信息也更新了, 并拿到了 metallb 的下发的ip.</p>
+<p>你可以在任意一个节点上通过 ipvs 规则来看到转发情况.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ipvsadm -L -n</span><br><span class="line">===</span><br><span class="line">TCP  10.200.16.11:80 rr</span><br><span class="line">  -&gt; 10.97.2.57:80                Masq    1      0          0</span><br><span class="line">TCP  10.200.16.11:443 rr</span><br><span class="line">  -&gt; 10.97.2.57:443               Masq    1      0          0</span><br></pre></td></tr></table></figure>
+
+<p>这里 10.97.2.57 是 ingress 控制器的 pod ip.</p>
 </div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">zyh</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://zyh.cool/2020/09/22/k8s%E2%98%9E13%E9%AB%98%E7%BA%A7%E7%89%88%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1ingress/">https://zyh.cool/2020/09/22/k8s%E2%98%9E13%E9%AB%98%E7%BA%A7%E7%89%88%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1ingress/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zyh.cool">zyh</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/k8s/">k8s</a><a class="post-meta__tags" href="/tags/ingress/">ingress</a></div><div class="addthis_inline_share_toolbox pull-right"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5ebcbd4086e8aa2b" async></script><nav id="pagination"><div class="next-post pull-right"><a href="/2020/09/21/k8s%E2%98%9E12-2%E6%9C%89%E7%8A%B6%E6%80%81%E6%9C%8D%E5%8A%A1/"><span>k8s☞12有状态服务</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
   clientID: '5d6fb59b1508af7318d7',
   clientSecret: 'bca058cc7e0b4b62ce5d43b046bb18d9484e5163',

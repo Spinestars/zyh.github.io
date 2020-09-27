@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="k8s☞01常见术语概念"><meta name="keywords" content="k8s"><meta name="author" content="zyh"><meta name="copyright" content="zyh"><title>k8s☞01常见术语概念 | zyh</title><link rel="shortcut icon" href="/niu.ico"><link rel="stylesheet" href="/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 5.1.1"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">物理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%BA%90"><span class="toc-number">3.</span> <span class="toc-text">资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">4.</span> <span class="toc-text">服务组件流程图</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://spinestars.github.io/assets.github.io/niu.png"></div><div class="author-info__name text-center">zyh</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">79</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">55</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">13</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">zyh</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">k8s☞01常见术语概念</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-03-20</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/k8s/">k8s</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="物理">物理</h2>
+<ol>
+<li>
+<p>master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。</p>
+</li>
+<li>
+<p>node 是 k8s 的工作节点，也就是实际跑容器的节点。</p>
+</li>
+</ol>
+<h2 id="服务">服务</h2>
+<p>master 节点服务</p>
+<ol>
+<li>kube-apiserver 是master节点服务， 是k8s 的 api 服务，是集群入口，提供 http rset 服务。</li>
+<li>kube-controller-manager 是master节点服务，维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化中心。</li>
+<li>kube-scheduler 是负责 pod 的调度, 即如何将pod分发到node</li>
+<li>etcd 注册中心，保存集群状态。</li>
+</ol>
+<p>node 节点服务</p>
+<ol>
+<li>
+<p>kubelet 是节点代理程序，部署在 node 上。它是k8s master和k8s node之间的纽带。处理 pod 创建/启动/监控/重启/销毁等工作。</p>
+<p>开启 register-node = true 的情况下 会自动向 apiserver 服务注册自己。</p>
+</li>
+<li>
+<p>kube-proxy 是实现node节点上各资源的通信</p>
+</li>
+</ol>
+<h2 id="资源">资源</h2>
+<ol>
+<li>
+<p>Namespace</p>
+<p>命名空间是一个逻辑概念，起到了隔离作用。通过它，你可以找到它内部的其它资源对象，例如 pod，svc，deployment等</p>
+</li>
+<li>
+<p>Pod</p>
+<p>pod 内包含多个容器，所以多个容器共享以下资源。</p>
+<ul>
+<li>PID命名空间: pod内的进程能互相看到PID</li>
+<li>网络命名空间: pod中的多个容器共享一个ip (唯一)</li>
+<li>IPC命名空间: pod中的多个容器之间可以互相通信</li>
+<li>UTS命名空间: pod中的多个容器共享一个主机名 (唯一)</li>
+<li>存储卷: pod多个容器可以共同访问pod定义的存储卷</li>
+</ul>
+</li>
+<li>
+<p>Label</p>
+<p>label用于表示资源，从而方便的被其它资源找到。它很重要。</p>
+<p>标签定义 <code>key: value</code></p>
+<p>选择器: <code>key &lt;= !=&gt; value</code>  <code>key &lt;not&gt; in (value1, value2)</code></p>
+<p>RC 和 Service 通过 selector 选择器来选择 Pod 对象范围, 从而精细化的将 Pod 进行分组。</p>
+</li>
+<li>
+<p>Deployment</p>
+<p>无状态副本集。用来部署一个 pod 组，它通过 ReplicaSet 来进行缩放， 并需要 pod 模板创建 pod， 需要 Label 监控 pod。Deployment 通过 RC 严格执行配置所定义的pod副本数量。可以比喻为 aws 的目标组或者nginx的upstream组。</p>
+</li>
+<li>
+<p>Satefulset</p>
+<p>有状态副本集。</p>
+</li>
+<li>
+<p>Service</p>
+<p>svc 用来构建一个负载配置。可以比喻为aws的elb内网负载均衡器或者nginx的service proxy配置。</p>
+<p>svc 通过 pod 定义的 label 发现一组 pod。这些 pod 本身有 endpoint 地址。</p>
+<p>svc 创建后，会拿到一个集群内部ip和dns。kube-proxy 服务会将 svc 的 ip 和 pod 的 endpoint 地址关联起来。</p>
+<p>最终，其它容器可以通过这个ip和dns来访问svc关联的pod资源。</p>
+</li>
+<li>
+<p>Ingress</p>
+<p>映射一个端口到宿主ip，提供服务的外部访问</p>
+</li>
+</ol>
+<h2 id="服务组件流程图">服务组件流程图</h2>
+<blockquote>
+<ul>
+<li>apiserver 负责 etcd 存储的所有操作，且只有 apiserver 才直接操作 etcd 集群</li>
+<li>apiserver 对内（集群中的其他组件）和对外（用户）提供统一的 REST API，其他组件均通过 apiserver 进行通信
+<ul>
+<li>controller manager、scheduler、kube-proxy 和 kubelet 等均通过 apiserver watch API 监测资源变化情况，并对资源作相应的操作</li>
+<li>所有需要更新资源状态的操作均通过 apiserver 的 REST API 进行</li>
+</ul>
+</li>
+<li>apiserver 也会直接调用 kubelet API（如 logs, exec, attach 等），默认不校验 kubelet 证书，但可以通过 <code>--kubelet-certificate-authority</code> 开启（而 GKE 通过 SSH 隧道保护它们之间的通信）</li>
+</ul>
+</blockquote>
+<p><img src="/posts/aaf9b7.htmlimage-20200823102314477.png" alt="image-20200823102314477"></p>
+<p><img src="/posts/aaf9b7.htmlimage-20200823103640732.png" alt="image-20200823103640732"></p>
+<blockquote>
+<p>以一个pod的构建为例:</p>
+<ul>
+<li>用户通过 REST API 创建一个 Pod</li>
+<li>apiserver 将其写入 etcd</li>
+<li>scheduluer 检测到未绑定 Node 的 Pod，开始调度并更新 Pod 的 Node 绑定</li>
+<li>kubelet 检测到有新的 Pod 调度过来，通过 container runtime 运行该 Pod</li>
+<li>kubelet 通过 container runtime 取到 Pod 状态，并更新到 apiserver 中</li>
+</ul>
+</blockquote>
+<p><img src="/posts/aaf9b7.htmlimage-20200823102430144.png" alt="image-20200823102430144"></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">zyh</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://zyh.cool/posts/aaf9b7.html">https://zyh.cool/posts/aaf9b7.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zyh.cool">zyh</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/k8s/">k8s</a></div><div class="addthis_inline_share_toolbox pull-right"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5ebcbd4086e8aa2b" async></script><nav id="pagination"><div class="prev-post pull-left"><a href="/posts/2c5a64ff.html"><i class="fa fa-chevron-left">  </i><span>aws☞s3 初始化安装</span></a></div><div class="next-post pull-right"><a href="/posts/b824edd8.html"><span>mysql☞5.7容器基本搭建</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '5d6fb59b1508af7318d7',
+  clientSecret: 'bca058cc7e0b4b62ce5d43b046bb18d9484e5163',
+  repo: 'zyh.github.io',
+  owner: 'Spinestars',
+  admin: 'Spinestars',
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN'
+})
+gitalk.render('gitalk-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By zyh</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, welcome to <a href="https://zyh.cool">zyh.cool</a>!</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.7.0"></script><script src="/js/fancybox.js?version=1.7.0"></script><script src="/js/sidebar.js?version=1.7.0"></script><script src="/js/copy.js?version=1.7.0"></script><script src="/js/fireworks.js?version=1.7.0"></script><script src="/js/transition.js?version=1.7.0"></script><script src="/js/scroll.js?version=1.7.0"></script><script src="/js/head.js?version=1.7.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

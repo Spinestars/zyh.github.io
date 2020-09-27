@@ -7,13 +7,17 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script><meta name="generator" content="Hexo 5.1.1"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">物理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%BA%90"><span class="toc-number">3.</span> <span class="toc-text">资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">4.</span> <span class="toc-text">服务组件流程图</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://spinestars.github.io/assets.github.io/niu.png"></div><div class="author-info__name text-center">zyh</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">78</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">55</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">13</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">zyh</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">k8s☞01常见术语概念</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-03-20</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/k8s/">k8s</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="物理"><a href="#物理" class="headerlink" title="物理"></a>物理</h2><ol>
-<li><p>master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。</p>
+} </script><meta name="generator" content="Hexo 5.1.1"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">物理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%BA%90"><span class="toc-number">3.</span> <span class="toc-text">资源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">4.</span> <span class="toc-text">服务组件流程图</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://spinestars.github.io/assets.github.io/niu.png"></div><div class="author-info__name text-center">zyh</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">78</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">55</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">13</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">zyh</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">k8s☞01常见术语概念</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-03-20</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/k8s/">k8s</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="物理">物理</h2>
+<ol>
+<li>
+<p>master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。</p>
 </li>
-<li><p>node 是 k8s 的工作节点，也就是实际跑容器的节点。</p>
+<li>
+<p>node 是 k8s 的工作节点，也就是实际跑容器的节点。</p>
 </li>
 </ol>
-<h2 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h2><p>master 节点服务</p>
+<h2 id="服务">服务</h2>
+<p>master 节点服务</p>
 <ol>
 <li>kube-apiserver 是master节点服务， 是k8s 的 api 服务，是集群入口，提供 http rset 服务。</li>
 <li>kube-controller-manager 是master节点服务，维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化中心。</li>
@@ -22,17 +26,22 @@
 </ol>
 <p>node 节点服务</p>
 <ol>
-<li><p>kubelet 是节点代理程序，部署在 node 上。它是k8s master和k8s node之间的纽带。处理 pod 创建/启动/监控/重启/销毁等工作。</p>
+<li>
+<p>kubelet 是节点代理程序，部署在 node 上。它是k8s master和k8s node之间的纽带。处理 pod 创建/启动/监控/重启/销毁等工作。</p>
 <p>开启 register-node = true 的情况下 会自动向 apiserver 服务注册自己。</p>
 </li>
-<li><p>kube-proxy 是实现node节点上各资源的通信</p>
+<li>
+<p>kube-proxy 是实现node节点上各资源的通信</p>
 </li>
 </ol>
-<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ol>
-<li><p>Namespace</p>
+<h2 id="资源">资源</h2>
+<ol>
+<li>
+<p>Namespace</p>
 <p>命名空间是一个逻辑概念，起到了隔离作用。通过它，你可以找到它内部的其它资源对象，例如 pod，svc，deployment等</p>
 </li>
-<li><p>Pod</p>
+<li>
+<p>Pod</p>
 <p>pod 内包含多个容器，所以多个容器共享以下资源。</p>
 <ul>
 <li>PID命名空间: pod内的进程能互相看到PID</li>
@@ -42,32 +51,39 @@
 <li>存储卷: pod多个容器可以共同访问pod定义的存储卷</li>
 </ul>
 </li>
-<li><p>Label</p>
+<li>
+<p>Label</p>
 <p>label用于表示资源，从而方便的被其它资源找到。它很重要。</p>
 <p>标签定义 <code>key: value</code></p>
-<p>选择器: <code>key &lt;= !=&gt; value</code>  <code>key &lt;not&gt; in (value1, value2)</code> </p>
+<p>选择器: <code>key &lt;= !=&gt; value</code>  <code>key &lt;not&gt; in (value1, value2)</code></p>
 <p>RC 和 Service 通过 selector 选择器来选择 Pod 对象范围, 从而精细化的将 Pod 进行分组。</p>
 </li>
-<li><p>Deployment</p>
+<li>
+<p>Deployment</p>
 <p>无状态副本集。用来部署一个 pod 组，它通过 ReplicaSet 来进行缩放， 并需要 pod 模板创建 pod， 需要 Label 监控 pod。Deployment 通过 RC 严格执行配置所定义的pod副本数量。可以比喻为 aws 的目标组或者nginx的upstream组。</p>
 </li>
-<li><p>Satefulset</p>
+<li>
+<p>Satefulset</p>
 <p>有状态副本集。</p>
 </li>
-<li><p>Service</p>
+<li>
+<p>Service</p>
 <p>svc 用来构建一个负载配置。可以比喻为aws的elb内网负载均衡器或者nginx的service proxy配置。</p>
-<p>svc 通过 pod 定义的 label 发现一组 pod。这些 pod 本身有 endpoint 地址。 </p>
+<p>svc 通过 pod 定义的 label 发现一组 pod。这些 pod 本身有 endpoint 地址。</p>
 <p>svc 创建后，会拿到一个集群内部ip和dns。kube-proxy 服务会将 svc 的 ip 和 pod 的 endpoint 地址关联起来。</p>
 <p>最终，其它容器可以通过这个ip和dns来访问svc关联的pod资源。</p>
 </li>
-<li><p>Ingress</p>
+<li>
+<p>Ingress</p>
 <p>映射一个端口到宿主ip，提供服务的外部访问</p>
 </li>
 </ol>
-<h2 id="服务组件流程图"><a href="#服务组件流程图" class="headerlink" title="服务组件流程图"></a>服务组件流程图</h2><blockquote>
+<h2 id="服务组件流程图">服务组件流程图</h2>
+<blockquote>
 <ul>
 <li>apiserver 负责 etcd 存储的所有操作，且只有 apiserver 才直接操作 etcd 集群</li>
-<li>apiserver 对内（集群中的其他组件）和对外（用户）提供统一的 REST API，其他组件均通过 apiserver 进行通信<ul>
+<li>apiserver 对内（集群中的其他组件）和对外（用户）提供统一的 REST API，其他组件均通过 apiserver 进行通信
+<ul>
 <li>controller manager、scheduler、kube-proxy 和 kubelet 等均通过 apiserver watch API 监测资源变化情况，并对资源作相应的操作</li>
 <li>所有需要更新资源状态的操作均通过 apiserver 的 REST API 进行</li>
 </ul>

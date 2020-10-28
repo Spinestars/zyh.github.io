@@ -17,6 +17,16 @@
 <li>删除当前pv并重新创建, 或者修改当前pv的配置, 删除spec.claimRef信息.</li>
 </ol>
 </li>
+<li>
+<p>pod无法正常启动，报错：“mounting \“/var/lib/lxcfs/proc/loadavg\”<br>
+to rootfs \&quot;/export/docker-data-root/overlay2/710d09a6715d88a01b417ba1a669dab69b67c3d57e576c1ae6d79aa03e1b294a/merged”</p>
+<p>根据信息可知问题点应该是 lxcfs 问题。</p>
+<p>查看故障pod所在节点的 lxcfs pod 日志，得到信息</p>
+<p>“fuse: mountpoint is not empty<br>
+fuse: if you are sure this is safe, use the ‘nonempty’ mount option”</p>
+<p>因此删除节点 lxcfs 目录，并重建 lxcfs pod</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rm -rf  /var/lib/lxcfs/ &amp;&amp; kubectl delete pod/lxcfs-hthgq</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
 </div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">zyh</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://zyh.cool/posts/e1096625/">https://zyh.cool/posts/e1096625/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zyh.cool">zyh</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/k8s/">k8s</a></div><div class="addthis_inline_share_toolbox pull-right"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5ebcbd4086e8aa2b" async></script><nav id="pagination"><div class="prev-post pull-left"><a href="/posts/9602dad/"><i class="fa fa-chevron-left">  </i><span>k8s☞02v1.18.6安装</span></a></div><div class="next-post pull-right"><a href="/posts/ed865d2f/"><span>zabbix ☞ server安装注意事项</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
   clientID: '5d6fb59b1508af7318d7',

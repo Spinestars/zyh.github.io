@@ -71,7 +71,7 @@
       
       <categories>
           
-          <category> 其他 </category>
+          <category> 其它 </category>
           
           <category> 网络 </category>
           
@@ -606,11 +606,11 @@
     
     
     <entry>
-      <title>k8s☞07无状态服务deployment-pod扩缩</title>
-      <link href="posts/f6e328b5/"/>
-      <url>posts/f6e328b5/</url>
+      <title>k8s☞06无状态服务deployment-pod更新</title>
+      <link href="posts/18e4fa73/"/>
+      <url>posts/18e4fa73/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>k8s的pod缩放功能,和aws的auto scaling功能是一回事.虽然可能没有aws的auto scaling功能强大.</p><p>k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设定的cpu阈值,来自动调整deployment中的pod数量.</p><h2 id="metrics-server">metrics-server</h2><p><a href="https://github.com/kubernetes-sigs/metrics-server">https://github.com/kubernetes-sigs/metrics-server</a></p><p>metrics 服务器可以通过资源度量值 API 对外提供度量数据，Horizontal Pod Autoscaler 正是根据此 API 来获取度量数据.如果没有此服务,HPA将无法工作.</p><pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml</code></pre><p>默认 metrics-server 的 deployment 无法直接使用, 我们需要添加几个参数,  来禁止 ca 认证和开通 dns</p><p>在 deployment.spec.template.spec.containers 中新加入下列配置:</p><pre><code class="language-yaml">        command:          - /metrics-server          - --kubelet-insecure-tls          - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname</code></pre><pre><code class="language-bash">kubectl apply -f components.yaml</code></pre><h2 id="hpa">hpa</h2><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/</a></p><p>创建一个用于测试的web服务, hpa-test.yaml</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: php-apachespec:  selector:    matchLabels:      run: php-apache  replicas: 1  template:    metadata:      labels:        run: php-apache    spec:      containers:      - name: php-apache        image: k8s.gcr.io/hpa-example        ports:        - containerPort: 80        resources:          limits:            cpu: 500m          requests:            cpu: 200m---apiVersion: v1kind: Servicemetadata:  name: php-apache  labels:    run: php-apachespec:  ports:  - port: 80  selector:    run: php-apache</code></pre><p>给web服务开启hpa</p><p>命令方式:</p><pre><code class="language-bash">kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=5</code></pre><p>声明方式:</p><pre><code class="language-yaml">apiVersion: autoscaling/v1kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 5  targetCPUUtilizationPercentage: 50</code></pre><blockquote><p>这里的意思是, cpu 阈值50%, 最小pod数1, 最大pod数5. hpa会将所有pod的平均cpu利用率维持在50%, 并且pod数量在1~5的范围内波动</p></blockquote><p>查看当前cpu使用率</p><pre><code class="language-bash">kubectl get hpa===NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          57m</code></pre><p>添加测试用的客户端, 访问web服务, 增加web服务的cpu使用率</p><pre><code class="language-bash">kubectl run -it --rm load-generator --image=busybox /bin/shwhile true; do wget -q -O- http://php-apache; done=== 会输出大量OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!</code></pre><p>在经过一段时间等待后(不会超过1分钟, 默认监控抓取数据间隔时间是1分钟),我们可以看到 pod 数量发生变化</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60m[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60m[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61m[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61m[root@k8s00 test-yaml]# kubectl get deployment/php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           68m[root@k8s00 test-yaml]# </code></pre><p>现在,关闭客户端请求,等待1分钟以上.再次看hpa, 这时候cpu利用率已经下降</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   11%/50%   1         5         5          64m</code></pre><p>这时候,再看pod数量,它应该已经开始缩减,但是这个缩减并不是在cpu使用率下降之后就立即执行,而是内部有一个算法.它避免因立即执行从而导致资源出现反复波动.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get deployment php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           70m[root@k8s00 test-yaml]# kubectl describe deployment/php-apacheName:                   php-apacheNamespace:              defaultCreationTimestamp:      Wed, 16 Sep 2020 10:22:32 +0800Labels:                 &lt;none&gt;Annotations:            deployment.kubernetes.io/revision: 1Selector:               run=php-apacheReplicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailableStrategyType:           RollingUpdateMinReadySeconds:        0RollingUpdateStrategy:  25% max unavailable, 25% max surgePod Template:  Labels:  run=php-apache  Containers:   php-apache:    Image:      k8s.gcr.io/hpa-example    Port:       80/TCP    Host Port:  0/TCP    Limits:      cpu:  500m    Requests:      cpu:        200m    Environment:  &lt;none&gt;    Mounts:       &lt;none&gt;  Volumes:        &lt;none&gt;Conditions:  Type           Status  Reason  ----           ------  ------  Progressing    True    NewReplicaSetAvailable  Available      True    MinimumReplicasAvailableOldReplicaSets:  &lt;none&gt;NewReplicaSet:   php-apache-5c4f475bf5 (1/1 replicas created)Events:  Type    Reason             Age    From                   Message  ----    ------             ----   ----                   -------  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 5  Normal  ScalingReplicaSet  6m50s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  4m49s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 1</code></pre><h2 id="其它">其它</h2><p>当前hpa的api版本是autoscaling/v1,它只能抓取cpu指标.如果你想抓取内存指标(当前也只支持内存)或自定义指标,那么需要将版本变更为autoscaling/v2beta2</p><p>autoscaling/v2beta2版本的配置有了一些变化,且可能随时会有新的变化.你可以在</p><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a></p><p>找到它的例子.</p><pre><code class="language-yaml">apiVersion: autoscaling/v2beta2kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 10  metrics:  - type: Resource    resource:      name: cpu      target:        type: Utilization        averageUtilization: 50status:  observedGeneration: 1  lastScaleTime: &lt;some-time&gt;  currentReplicas: 1  desiredReplicas: 1  currentMetrics:  - type: Resource    resource:      name: cpu      current:        averageUtilization: 0        averageValue: 0</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>对于更新,我们一般会采用滚动更新,即:</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换.</li></ul><p>对于回滚,我们想回滚到任何一个之前的版本.</p><p>而deployment对象可以帮我们实现这些.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p><h2 id="更新">更新</h2><p>一个更新nginx版本的例子. 首先,我们创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-dep.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><blockquote><p>这里dep的配置中spec.template.spec.container.image=nginx, 我没有设置具体版本</p></blockquote><p>此时,查看版本历史, 这里涉及到 rollout 指令, 回滚的时候也会用到.</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         &lt;none&gt;</code></pre><p>此时我们发现没有关于这个版本1的相关描述, 我们手动进行添加</p><pre><code class="language-bash">kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;first&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first</code></pre><blockquote><p>你也可以在执行写入命令的时候, 追加 --record 来将执行的命令写入到当前change-cause</p></blockquote><p>现在, 将所有deployment中所有nginx的image版本从默认变更为了1.19.2</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2 &amp;&amp; kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.2</code></pre><p>我们再生成一个版本1.18</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18 &amp;&amp; kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.23         nginx image to 1.18</code></pre><p>这样,我们总共有三个版本, 你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep --revision=&lt;num&gt;</code></pre><h2 id="回滚">回滚</h2><p>我们选择将nginx版本回滚到first第一个版本.</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-dep --to-revision=1kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE2         nginx image to 1.19.23         nginx image to 1.184         first</code></pre><h2 id="策略">策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间, 在此时间之前, deploy 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate, 还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的, 就关多少个老的</p></blockquote><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history # 查看对象历史kubectl rollout undo # 对象版本回退kubectl rollout status # 展示执行状态kubectl rollout pause # 暂停此次版本操作行为kubectl rollout resume # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre>]]></content>
       
       
       <categories>
@@ -637,11 +637,11 @@
     
     
     <entry>
-      <title>k8s☞06无状态服务deployment-pod更新</title>
-      <link href="posts/18e4fa73/"/>
-      <url>posts/18e4fa73/</url>
+      <title>k8s☞07无状态服务deployment-pod扩缩</title>
+      <link href="posts/f6e328b5/"/>
+      <url>posts/f6e328b5/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>对于更新,我们一般会采用滚动更新,即:</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换.</li></ul><p>对于回滚,我们想回滚到任何一个之前的版本.</p><p>而deployment对象可以帮我们实现这些.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p><h2 id="更新">更新</h2><p>一个更新nginx版本的例子. 首先,我们创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-dep.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><blockquote><p>这里dep的配置中spec.template.spec.container.image=nginx, 我没有设置具体版本</p></blockquote><p>此时,查看版本历史, 这里涉及到 rollout 指令, 回滚的时候也会用到.</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         &lt;none&gt;</code></pre><p>此时我们发现没有关于这个版本1的相关描述, 我们手动进行添加</p><pre><code class="language-bash">kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;first&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first</code></pre><blockquote><p>你也可以在执行写入命令的时候, 追加 --record 来将执行的命令写入到当前change-cause</p></blockquote><p>现在, 将所有deployment中所有nginx的image版本从默认变更为了1.19.2</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2 &amp;&amp; kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.2</code></pre><p>我们再生成一个版本1.18</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18 &amp;&amp; kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.23         nginx image to 1.18</code></pre><p>这样,我们总共有三个版本, 你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep --revision=&lt;num&gt;</code></pre><h2 id="回滚">回滚</h2><p>我们选择将nginx版本回滚到first第一个版本.</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-dep --to-revision=1kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE2         nginx image to 1.19.23         nginx image to 1.184         first</code></pre><h2 id="策略">策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间, 在此时间之前, deploy 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate, 还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的, 就关多少个老的</p></blockquote><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history # 查看对象历史kubectl rollout undo # 对象版本回退kubectl rollout status # 展示执行状态kubectl rollout pause # 暂停此次版本操作行为kubectl rollout resume # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>k8s的pod缩放功能,和aws的auto scaling功能是一回事.虽然可能没有aws的auto scaling功能强大.</p><p>k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设定的cpu阈值,来自动调整deployment中的pod数量.</p><h2 id="metrics-server">metrics-server</h2><p><a href="https://github.com/kubernetes-sigs/metrics-server">https://github.com/kubernetes-sigs/metrics-server</a></p><p>metrics 服务器可以通过资源度量值 API 对外提供度量数据，Horizontal Pod Autoscaler 正是根据此 API 来获取度量数据.如果没有此服务,HPA将无法工作.</p><pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml</code></pre><p>默认 metrics-server 的 deployment 无法直接使用, 我们需要添加几个参数,  来禁止 ca 认证和开通 dns</p><p>在 deployment.spec.template.spec.containers 中新加入下列配置:</p><pre><code class="language-yaml">        command:          - /metrics-server          - --kubelet-insecure-tls          - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname</code></pre><pre><code class="language-bash">kubectl apply -f components.yaml</code></pre><h2 id="hpa">hpa</h2><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/</a></p><p>创建一个用于测试的web服务, hpa-test.yaml</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: php-apachespec:  selector:    matchLabels:      run: php-apache  replicas: 1  template:    metadata:      labels:        run: php-apache    spec:      containers:      - name: php-apache        image: k8s.gcr.io/hpa-example        ports:        - containerPort: 80        resources:          limits:            cpu: 500m          requests:            cpu: 200m---apiVersion: v1kind: Servicemetadata:  name: php-apache  labels:    run: php-apachespec:  ports:  - port: 80  selector:    run: php-apache</code></pre><p>给web服务开启hpa</p><p>命令方式:</p><pre><code class="language-bash">kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=5</code></pre><p>声明方式:</p><pre><code class="language-yaml">apiVersion: autoscaling/v1kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 5  targetCPUUtilizationPercentage: 50</code></pre><blockquote><p>这里的意思是, cpu 阈值50%, 最小pod数1, 最大pod数5. hpa会将所有pod的平均cpu利用率维持在50%, 并且pod数量在1~5的范围内波动</p></blockquote><p>查看当前cpu使用率</p><pre><code class="language-bash">kubectl get hpa===NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          57m</code></pre><p>添加测试用的客户端, 访问web服务, 增加web服务的cpu使用率</p><pre><code class="language-bash">kubectl run -it --rm load-generator --image=busybox /bin/shwhile true; do wget -q -O- http://php-apache; done=== 会输出大量OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!</code></pre><p>在经过一段时间等待后(不会超过1分钟, 默认监控抓取数据间隔时间是1分钟),我们可以看到 pod 数量发生变化</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60m[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60m[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61m[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61m[root@k8s00 test-yaml]# kubectl get deployment/php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           68m[root@k8s00 test-yaml]# </code></pre><p>现在,关闭客户端请求,等待1分钟以上.再次看hpa, 这时候cpu利用率已经下降</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   11%/50%   1         5         5          64m</code></pre><p>这时候,再看pod数量,它应该已经开始缩减,但是这个缩减并不是在cpu使用率下降之后就立即执行,而是内部有一个算法.它避免因立即执行从而导致资源出现反复波动.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get deployment php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           70m[root@k8s00 test-yaml]# kubectl describe deployment/php-apacheName:                   php-apacheNamespace:              defaultCreationTimestamp:      Wed, 16 Sep 2020 10:22:32 +0800Labels:                 &lt;none&gt;Annotations:            deployment.kubernetes.io/revision: 1Selector:               run=php-apacheReplicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailableStrategyType:           RollingUpdateMinReadySeconds:        0RollingUpdateStrategy:  25% max unavailable, 25% max surgePod Template:  Labels:  run=php-apache  Containers:   php-apache:    Image:      k8s.gcr.io/hpa-example    Port:       80/TCP    Host Port:  0/TCP    Limits:      cpu:  500m    Requests:      cpu:        200m    Environment:  &lt;none&gt;    Mounts:       &lt;none&gt;  Volumes:        &lt;none&gt;Conditions:  Type           Status  Reason  ----           ------  ------  Progressing    True    NewReplicaSetAvailable  Available      True    MinimumReplicasAvailableOldReplicaSets:  &lt;none&gt;NewReplicaSet:   php-apache-5c4f475bf5 (1/1 replicas created)Events:  Type    Reason             Age    From                   Message  ----    ------             ----   ----                   -------  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 5  Normal  ScalingReplicaSet  6m50s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  4m49s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 1</code></pre><h2 id="其它">其它</h2><p>当前hpa的api版本是autoscaling/v1,它只能抓取cpu指标.如果你想抓取内存指标(当前也只支持内存)或自定义指标,那么需要将版本变更为autoscaling/v2beta2</p><p>autoscaling/v2beta2版本的配置有了一些变化,且可能随时会有新的变化.你可以在</p><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a></p><p>找到它的例子.</p><pre><code class="language-yaml">apiVersion: autoscaling/v2beta2kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 10  metrics:  - type: Resource    resource:      name: cpu      target:        type: Utilization        averageUtilization: 50status:  observedGeneration: 1  lastScaleTime: &lt;some-time&gt;  currentReplicas: 1  desiredReplicas: 1  currentMetrics:  - type: Resource    resource:      name: cpu      current:        averageUtilization: 0        averageValue: 0</code></pre>]]></content>
       
       
       <categories>
@@ -735,7 +735,7 @@
       
       <categories>
           
-          <category> zabbix </category>
+          <category> 监控 </category>
           
           <category> zabbix </category>
           
@@ -764,7 +764,7 @@
       
       <categories>
           
-          <category> zabbix </category>
+          <category> 监控 </category>
           
           <category> zabbix </category>
           
@@ -815,11 +815,11 @@
     
     
     <entry>
-      <title>k8s☞04pod钩子函数</title>
-      <link href="posts/3ec72f7e/"/>
-      <url>posts/3ec72f7e/</url>
+      <title>k8s☞03pod</title>
+      <link href="posts/94518966/"/>
+      <url>posts/94518966/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。</p><p>k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop</p><h2 id="postStart">postStart</h2><ol><li>它将在容器创建后立即运行，但不保证在 ENTRYPOINT 之前运行</li><li>它是同步状态，如果它卡住，pod 无法达到 running 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: poststart-testspec:  containers:  - name: poststart-test    image: nginx    lifecycle:      postStart:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is postStart-test &gt; /usr/share/nginx/html/index.html&quot;]</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl apply -f poststart-test.yamlpod/poststart-test created[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS              RESTARTS   AGE   IP       NODE    NOMINATED NODE   READINESS GATESpoststart-test   0/1     ContainerCreating   0          7s    &lt;none&gt;   k8s02   &lt;none&gt;           &lt;none&gt;[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATESpoststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none&gt;[root@k8s00 ~]# curl 10.97.2.6This is postStart-test</code></pre><h2 id="preStop">preStop</h2><ol><li>它将在容器结束之前运行</li><li>它是同步的，如果它卡住，pod 将停留在 running 状态，无法达到 failed 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: prestop-testspec:  containers:  - name: prestop-test    image: nginx    volumeMounts:    - name: prestop-test-tmp      mountPath: /usr/share    lifecycle:      preStop:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is preStop &gt; /usr/share/message&quot;]  volumes:  - name: prestop-test-tmp    hostPath:      path: /tmp</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl delete pod prestop-test# 这里 prestop-test 被调度到 k8s02[root@k8s02 ~]# cat /tmp/messageThis is preStop</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.</p><p>你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/pods/">https://kubernetes.io/docs/concepts/workloads/pods/</a></p><h2 id="Pod-与-控制器">Pod 与 控制器</h2><p>pod 一般不单独使用, 因为单独使用意味着没有高可用.k8s建议 pod 要始终和控制器一起使用. 你可以认为控制器就如同云环境中的资源目标组.这个概念的实际对象一般是于负载均衡服务的缩放组概念. 例如aws的auto scaling.</p><p>k8s将app控制器分为三种:</p><ul><li>Deployment 无状态 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></li><li>StatefulSet 有状态 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/</a></li><li>DaemonSet 守护态 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</a></li></ul><p>还有CronJob这类计划任务类型的.</p><p>这里我们不说控制器如何用. 但是你可以自行了解.</p><p>控制器既然类同云服务的缩放组概念. 那么它必然需要依托于镜像模板和缩放规则.</p><p>镜像模板在k8s中叫 pod 模板(pod template).</p><h2 id="Pod-模板">Pod 模板</h2><p>特点:</p><ul><li>模板修改会导致重建新的pod, 并终止现有pod.</li></ul><p>例子:</p><pre><code class="language-yaml">apiVersion: batch/v1beta1kind: CronJobmetadata:  name: hellospec:  schedule: &quot;*/1 * * * *&quot;  jobTemplate:    spec:      template:   ## 从这里开始, 以下内容就是 Pod 模板.        spec:          containers:          - name: hello            image: busybox            args:            - /bin/sh            - -c            - date; echo Hello from the Kubernetes cluster          restartPolicy: OnFailure</code></pre><h2 id="Pod-存储-网络">Pod 存储/网络</h2><h3 id="pod-存储">pod 存储</h3><p>这是一个大问题. 如果你想真正的使用k8s的pod资源, 那么需要先看这一部分的内容.</p><p>简单来说, 存储资源主要分网络和本地两大类.</p><p>本地这一类一般用于临时或者特殊环境. 就如同云服务中的存储类节点里的那种本地盘, 它不可靠. 因为pod本身默认是不强制绑定某个节点的,因此如果你pod异常了,那么它有可能重建的时候漂移到其它节点.</p><p>网络这一类,可以对接的有云服务厂家的存储资源,也可以对接自建的nfs这一类网络存储.</p><p>细致的说明, 参考官方文档https://kubernetes.io/docs/concepts/storage/</p><h3 id="pod-网络">pod 网络</h3><p>鉴于前面提到的pod类同于ecs/ec2. 因此. pod中的容器都是共享网络的.所以这些容器都有相同的ip, 端口范围, 主机名.</p><p>k8s的网络基于各种插件.每一种插件的实现详情见官网. <a href="https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model">https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model</a></p><p>如果你是本地搭建, 那么常用的插件是Flannel. 如果你是在云服务上搭建,那么建议使用云服务已有的k8s服务.</p><p>如果你必须在云服务上自己搭建,那么aws/azure/gcp都有对应的网络插件.它可以让你在k8s中结合使用云服务的网络组件.</p><h2 id="静态pod">静态pod</h2><p>特点：</p><ol><li>永远运行在固定节点</li><li>由所在节点的kubelet管理，但只负责保活，即pod崩溃重生</li><li>kubelet会让apiserver创建一个镜像pod，便于可以通过kubectl查询到静态pod</li></ol><p>配置：</p><ol><li>存放在 /etc/kubernetes/manifests 当采用kubeadm安装的时候，一般位于此目录。具体需要去看kubelet配置。</li><li>配置本身可以按照标准pod方式来创建</li></ol><p>检测：</p><ol><li>kubelet会定期检测配置目录加载配置创建/重建pod</li></ol><blockquote><p>当你通过kubeadm创建的时候，那么k8s的几个重要组件均会以静态pod的方式在master节点上创建，你可以在/etc/kubernetes/manifests/这里找到他们的配置</p></blockquote><pre><code class="language-bash">[root@k8s00 ~]# ll /etc/kubernetes/manifests/total 16-rw------- 1 root root 1848 Aug 25 16:28 etcd.yaml-rw------- 1 root root 2709 Aug 25 16:28 kube-apiserver.yaml-rw------- 1 root root 2564 Aug 25 16:33 kube-controller-manager.yaml-rw------- 1 root root 1120 Aug 25 16:33 kube-scheduler.yaml</code></pre>]]></content>
       
       
       <categories>
@@ -846,11 +846,11 @@
     
     
     <entry>
-      <title>k8s☞03pod</title>
-      <link href="posts/94518966/"/>
-      <url>posts/94518966/</url>
+      <title>k8s☞04pod钩子函数</title>
+      <link href="posts/3ec72f7e/"/>
+      <url>posts/3ec72f7e/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.</p><p>你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/pods/">https://kubernetes.io/docs/concepts/workloads/pods/</a></p><h2 id="Pod-与-控制器">Pod 与 控制器</h2><p>pod 一般不单独使用, 因为单独使用意味着没有高可用.k8s建议 pod 要始终和控制器一起使用. 你可以认为控制器就如同云环境中的资源目标组.这个概念的实际对象一般是于负载均衡服务的缩放组概念. 例如aws的auto scaling.</p><p>k8s将app控制器分为三种:</p><ul><li>Deployment 无状态 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></li><li>StatefulSet 有状态 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/</a></li><li>DaemonSet 守护态 <a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</a></li></ul><p>还有CronJob这类计划任务类型的.</p><p>这里我们不说控制器如何用. 但是你可以自行了解.</p><p>控制器既然类同云服务的缩放组概念. 那么它必然需要依托于镜像模板和缩放规则.</p><p>镜像模板在k8s中叫 pod 模板(pod template).</p><h2 id="Pod-模板">Pod 模板</h2><p>特点:</p><ul><li>模板修改会导致重建新的pod, 并终止现有pod.</li></ul><p>例子:</p><pre><code class="language-yaml">apiVersion: batch/v1beta1kind: CronJobmetadata:  name: hellospec:  schedule: &quot;*/1 * * * *&quot;  jobTemplate:    spec:      template:   ## 从这里开始, 以下内容就是 Pod 模板.        spec:          containers:          - name: hello            image: busybox            args:            - /bin/sh            - -c            - date; echo Hello from the Kubernetes cluster          restartPolicy: OnFailure</code></pre><h2 id="Pod-存储-网络">Pod 存储/网络</h2><h3 id="pod-存储">pod 存储</h3><p>这是一个大问题. 如果你想真正的使用k8s的pod资源, 那么需要先看这一部分的内容.</p><p>简单来说, 存储资源主要分网络和本地两大类.</p><p>本地这一类一般用于临时或者特殊环境. 就如同云服务中的存储类节点里的那种本地盘, 它不可靠. 因为pod本身默认是不强制绑定某个节点的,因此如果你pod异常了,那么它有可能重建的时候漂移到其它节点.</p><p>网络这一类,可以对接的有云服务厂家的存储资源,也可以对接自建的nfs这一类网络存储.</p><p>细致的说明, 参考官方文档https://kubernetes.io/docs/concepts/storage/</p><h3 id="pod-网络">pod 网络</h3><p>鉴于前面提到的pod类同于ecs/ec2. 因此. pod中的容器都是共享网络的.所以这些容器都有相同的ip, 端口范围, 主机名.</p><p>k8s的网络基于各种插件.每一种插件的实现详情见官网. <a href="https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model">https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model</a></p><p>如果你是本地搭建, 那么常用的插件是Flannel. 如果你是在云服务上搭建,那么建议使用云服务已有的k8s服务.</p><p>如果你必须在云服务上自己搭建,那么aws/azure/gcp都有对应的网络插件.它可以让你在k8s中结合使用云服务的网络组件.</p><h2 id="静态pod">静态pod</h2><p>特点：</p><ol><li>永远运行在固定节点</li><li>由所在节点的kubelet管理，但只负责保活，即pod崩溃重生</li><li>kubelet会让apiserver创建一个镜像pod，便于可以通过kubectl查询到静态pod</li></ol><p>配置：</p><ol><li>存放在 /etc/kubernetes/manifests 当采用kubeadm安装的时候，一般位于此目录。具体需要去看kubelet配置。</li><li>配置本身可以按照标准pod方式来创建</li></ol><p>检测：</p><ol><li>kubelet会定期检测配置目录加载配置创建/重建pod</li></ol><blockquote><p>当你通过kubeadm创建的时候，那么k8s的几个重要组件均会以静态pod的方式在master节点上创建，你可以在/etc/kubernetes/manifests/这里找到他们的配置</p></blockquote><pre><code class="language-bash">[root@k8s00 ~]# ll /etc/kubernetes/manifests/total 16-rw------- 1 root root 1848 Aug 25 16:28 etcd.yaml-rw------- 1 root root 2709 Aug 25 16:28 kube-apiserver.yaml-rw------- 1 root root 2564 Aug 25 16:33 kube-controller-manager.yaml-rw------- 1 root root 1120 Aug 25 16:33 kube-scheduler.yaml</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。</p><p>k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop</p><h2 id="postStart">postStart</h2><ol><li>它将在容器创建后立即运行，但不保证在 ENTRYPOINT 之前运行</li><li>它是同步状态，如果它卡住，pod 无法达到 running 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: poststart-testspec:  containers:  - name: poststart-test    image: nginx    lifecycle:      postStart:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is postStart-test &gt; /usr/share/nginx/html/index.html&quot;]</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl apply -f poststart-test.yamlpod/poststart-test created[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS              RESTARTS   AGE   IP       NODE    NOMINATED NODE   READINESS GATESpoststart-test   0/1     ContainerCreating   0          7s    &lt;none&gt;   k8s02   &lt;none&gt;           &lt;none&gt;[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATESpoststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none&gt;[root@k8s00 ~]# curl 10.97.2.6This is postStart-test</code></pre><h2 id="preStop">preStop</h2><ol><li>它将在容器结束之前运行</li><li>它是同步的，如果它卡住，pod 将停留在 running 状态，无法达到 failed 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: prestop-testspec:  containers:  - name: prestop-test    image: nginx    volumeMounts:    - name: prestop-test-tmp      mountPath: /usr/share    lifecycle:      preStop:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is preStop &gt; /usr/share/message&quot;]  volumes:  - name: prestop-test-tmp    hostPath:      path: /tmp</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl delete pod prestop-test# 这里 prestop-test 被调度到 k8s02[root@k8s02 ~]# cat /tmp/messageThis is preStop</code></pre>]]></content>
       
       
       <categories>
@@ -962,7 +962,7 @@
     
     
     <entry>
-      <title>zabbix ☞ server安装注意事项</title>
+      <title>zabbix☞server安装注意事项</title>
       <link href="posts/ed865d2f/"/>
       <url>posts/ed865d2f/</url>
       
@@ -1029,7 +1029,7 @@
           
           <category> 系统 </category>
           
-          <category> 系统 </category>
+          <category> linux </category>
           
       </categories>
       
@@ -1058,7 +1058,9 @@
       
       <categories>
           
-          <category> 其他 </category>
+          <category> 语言 </category>
+          
+          <category> java </category>
           
       </categories>
       
@@ -1209,7 +1211,7 @@
     
     
     <entry>
-      <title>安装脚本☞nginx</title>
+      <title>安装库☞nginx</title>
       <link href="posts/6209085/"/>
       <url>posts/6209085/</url>
       
@@ -1284,40 +1286,11 @@
     
     
     <entry>
-      <title>zabbix ☞ web 监控</title>
+      <title>zabbix☞web监控</title>
       <link href="posts/3d20f83e/"/>
       <url>posts/3d20f83e/</url>
       
         <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if args in line:            if &quot;??&quot; in line:                line = line.strip('\n').split(&quot;??&quot;)            elif &quot;?&quot; in line:                line = line.strip('\n').split(&quot;?&quot;)            else:                line = line.strip('\n')            try:                try:                    response = urllib2.urlopen(line[0], data=line[1], timeout=5)                    print response.code                except IndexError:                    response = urllib2.urlopen(line[0], timeout=5)                    print response.code                finally:                    response = urllib2.urlopen(line, timeout=5)                    print response.code            except urllib2.URLError,e:                if hasattr(e, 'code'):                    print e.code                elif hasattr(e, 'reason'):                    print 53            finally:                if response:                    response.close()                exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>构建一个主机项，监控 agentd</p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182457232.png" alt="image-20200616182457232"></p></li><li><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182509904.png" alt="image-20200616182509904"></p><blockquote><p>100秒以内，收集到三次不是200的数据，就报警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182538573.png" alt="image-20200616182538573"></p></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix ☞ nginx</title>
-      <link href="posts/b35b5965/"/>
-      <url>posts/b35b5965/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
       
       
       <categories>
@@ -1371,7 +1344,36 @@
     
     
     <entry>
-      <title>zabbix ☞ redis</title>
+      <title>zabbix ☞ nginx</title>
+      <link href="posts/b35b5965/"/>
+      <url>posts/b35b5965/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞redis</title>
       <link href="posts/6c093771/"/>
       <url>posts/6c093771/</url>
       
@@ -1508,33 +1510,6 @@
     
     
     <entry>
-      <title>监控 ☞ 微信预警</title>
-      <link href="posts/f9b08c30/"/>
-      <url>posts/f9b08c30/</url>
-      
-        <content type="html"><![CDATA[<pre><code class="language-bash"># conf.ini[wechat]corpid = [app]it = &lt;app_agent_id&gt;:&lt;app_secret&gt;[group]it = usera|userb</code></pre><pre><code class="language-python">#!/usr/bin/env python3&quot;&quot;&quot;@author: zyh@contact: aaa103439@hotmail.com@software: vscode@file: sendchat.py@time: 2020/02/05&quot;&quot;&quot;import sys, os, requests, pathlib, json, configparserimport loggingimport logging.handlersfrom datetime import datetimeclass PySendchat():    def __init__(self, corpid, agentid, secret, touser, content):        self.corpid=corpid        self.agentid=agentid        self.secret=secret        self.touser=touser        self.content=content        LOG_PATHDIR=os.path.dirname(os.path.abspath(__file__))        LOG_FILENAME = '&#123;0&#125;/sendchat.log'.format(LOG_PATHDIR)        self.my_logger = logging.getLogger('SendChat')        self.my_logger.setLevel(logging.INFO)        # Add the log message handler to the logger        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=102400000, backupCount=5)        # create formatter and add it to the handlers        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')        handler.setFormatter(formatter)        self.my_logger.addHandler(handler)    def gettoken(self):        self.my_logger.info('-----------------------------------------------------------------------------------------')        pwd=os.path.dirname(os.path.abspath(__file__))        tokenfile='&#123;0&#125;/wechat.&#123;1&#125;'.format(pwd,self.agentid)        if pathlib.Path(tokenfile).exists():            tokenfilectime=os.path.getctime(tokenfile)            currenttime=datetime.now().timestamp()            dtime=currenttime-tokenfilectime            self.my_logger.info('&#123;0&#125; lived &#123;1&#125;s.'.format(tokenfile, dtime))            if dtime &gt;= 7200:                try:                    os.remove(tokenfile)                    self.my_logger.info('Token file &#123;0&#125;: delete success'.format(tokenfile))                except Exception as e:                    self.my_logger.error('Token file:&#123;0&#125; delete error.Reason:&#123;1&#125;'.format(tokenfile,e))                    exit        # check token file        try:            tokensize = os.path.getsize(tokenfile)        except Exception as e:            self.my_logger.info('Token file is not exist.Reason:&#123;0&#125;'.format(e))            tokensize = 0        # get token from token file        if tokensize != 0:            with open(tokenfile, 'rb') as fd:                token = fd.read() # get token success                self.my_logger.info('Get token from token file.')            jsonObject = json.loads(token.decode(encoding='utf8'))            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token        # get token from weixin api        else:            try:                self.my_logger.info('New Token Create.')                f = requests.get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=&#123;0&#125;&amp;corpsecret=&#123;1&#125;'.format(self.corpid, self.secret))                token = f.content                self.my_logger.info('Get token from weixin api.')                jsonObject = json.loads(token.decode(encoding='utf8'))                errcode=int(jsonObject.get(&quot;errcode&quot;))                if errcode != 0:                    errmsg=jsonObject.get(&quot;errmsg&quot;)                    self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(errmsg))                    exit()            except Exception as e:                self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(e))                exit()            try:                self.my_logger.info('Write token to &#123;0&#125;.'.format(tokenfile))                with open(tokenfile, 'wb') as fd:                    fd.write(token)            except Exception as e:                self.my_logger.error('Write &#123;0&#125; error!Reason:&#123;1&#125;'.format(tokenfile,e))                exit()            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token    def sendmsg(self):        accessToken = self.gettoken()        self.my_logger.info('Token:&#123;0&#125;'.format(accessToken))        sendMapDirectroy = &#123;&#125;        sendMapDirectroy[&quot;agentid&quot;] = self.agentid        sendMapDirectroy[&quot;touser&quot;] = self.touser        sendMapDirectroy[&quot;msgtype&quot;] = &quot;text&quot;        sendMapDirectroy[&quot;safe&quot;] = &quot;0&quot;        contentDirectory = &#123;&#125;        sendMapDirectroy[&quot;text&quot;] = contentDirectory        contentDirectory[&quot;content&quot;] = self.content        bodyStr = json.dumps(sendMapDirectroy, ensure_ascii=False).encode(encoding=&quot;utf-8&quot;)        try:            f = requests.post(url=&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&quot; % accessToken,                          data=bodyStr, timeout=5)            self.my_logger.info(f.content)        except Exception as e:            self.my_logger.error('Send chat network error!Reason:&#123;0&#125;'.format(e))if __name__ == '__main__':    appname = sys.argv[1]    content = sys.argv[3]    # read conf.ini    conf = configparser.ConfigParser()    conf_path = os.path.dirname(os.path.abspath(__file__))    conf_ini = &quot;&#123;0&#125;/conf.ini&quot;.format(conf_path)    if pathlib.Path(conf_ini).exists():        conf.read(conf_ini)        corpid = conf.get(&quot;wechat&quot;, &quot;corpid&quot;)        appinfo = conf.get(&quot;app&quot;, appname)        agentid = appinfo.split(':')[0]        secret = appinfo.split(':')[1]        groupname = conf.get(&quot;group&quot;, appname)        touser = groupname.split(':')[0]        chatobj = PySendchat(corpid, agentid, secret, touser, content)    else:        print('conf.ini error')        exit()    try:        chatobj.sendmsg()    except:        chatobj.my_logger.error(&quot;Send chat failure!&quot;)</code></pre><p>eg:</p><p>python <a href="http://sendchat.py">sendchat.py</a> it ‘’ &lt;预警内容&gt;</p><blockquote><p>创建好app，并关联用户到app</p><p>执行上述命令，会将预警内容通过&lt;app_agent_id&gt; 应用发送给用户usera和userb</p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 企业微信 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>监控 ☞ 邮件预警</title>
       <link href="posts/f8f9b4d0/"/>
       <url>posts/f8f9b4d0/</url>
@@ -1554,6 +1529,33 @@
             <tag> 监控 </tag>
             
             <tag> 邮件 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>监控 ☞ 微信预警</title>
+      <link href="posts/f9b08c30/"/>
+      <url>posts/f9b08c30/</url>
+      
+        <content type="html"><![CDATA[<pre><code class="language-bash"># conf.ini[wechat]corpid = [app]it = &lt;app_agent_id&gt;:&lt;app_secret&gt;[group]it = usera|userb</code></pre><pre><code class="language-python">#!/usr/bin/env python3&quot;&quot;&quot;@author: zyh@contact: aaa103439@hotmail.com@software: vscode@file: sendchat.py@time: 2020/02/05&quot;&quot;&quot;import sys, os, requests, pathlib, json, configparserimport loggingimport logging.handlersfrom datetime import datetimeclass PySendchat():    def __init__(self, corpid, agentid, secret, touser, content):        self.corpid=corpid        self.agentid=agentid        self.secret=secret        self.touser=touser        self.content=content        LOG_PATHDIR=os.path.dirname(os.path.abspath(__file__))        LOG_FILENAME = '&#123;0&#125;/sendchat.log'.format(LOG_PATHDIR)        self.my_logger = logging.getLogger('SendChat')        self.my_logger.setLevel(logging.INFO)        # Add the log message handler to the logger        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=102400000, backupCount=5)        # create formatter and add it to the handlers        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')        handler.setFormatter(formatter)        self.my_logger.addHandler(handler)    def gettoken(self):        self.my_logger.info('-----------------------------------------------------------------------------------------')        pwd=os.path.dirname(os.path.abspath(__file__))        tokenfile='&#123;0&#125;/wechat.&#123;1&#125;'.format(pwd,self.agentid)        if pathlib.Path(tokenfile).exists():            tokenfilectime=os.path.getctime(tokenfile)            currenttime=datetime.now().timestamp()            dtime=currenttime-tokenfilectime            self.my_logger.info('&#123;0&#125; lived &#123;1&#125;s.'.format(tokenfile, dtime))            if dtime &gt;= 7200:                try:                    os.remove(tokenfile)                    self.my_logger.info('Token file &#123;0&#125;: delete success'.format(tokenfile))                except Exception as e:                    self.my_logger.error('Token file:&#123;0&#125; delete error.Reason:&#123;1&#125;'.format(tokenfile,e))                    exit        # check token file        try:            tokensize = os.path.getsize(tokenfile)        except Exception as e:            self.my_logger.info('Token file is not exist.Reason:&#123;0&#125;'.format(e))            tokensize = 0        # get token from token file        if tokensize != 0:            with open(tokenfile, 'rb') as fd:                token = fd.read() # get token success                self.my_logger.info('Get token from token file.')            jsonObject = json.loads(token.decode(encoding='utf8'))            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token        # get token from weixin api        else:            try:                self.my_logger.info('New Token Create.')                f = requests.get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=&#123;0&#125;&amp;corpsecret=&#123;1&#125;'.format(self.corpid, self.secret))                token = f.content                self.my_logger.info('Get token from weixin api.')                jsonObject = json.loads(token.decode(encoding='utf8'))                errcode=int(jsonObject.get(&quot;errcode&quot;))                if errcode != 0:                    errmsg=jsonObject.get(&quot;errmsg&quot;)                    self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(errmsg))                    exit()            except Exception as e:                self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(e))                exit()            try:                self.my_logger.info('Write token to &#123;0&#125;.'.format(tokenfile))                with open(tokenfile, 'wb') as fd:                    fd.write(token)            except Exception as e:                self.my_logger.error('Write &#123;0&#125; error!Reason:&#123;1&#125;'.format(tokenfile,e))                exit()            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token    def sendmsg(self):        accessToken = self.gettoken()        self.my_logger.info('Token:&#123;0&#125;'.format(accessToken))        sendMapDirectroy = &#123;&#125;        sendMapDirectroy[&quot;agentid&quot;] = self.agentid        sendMapDirectroy[&quot;touser&quot;] = self.touser        sendMapDirectroy[&quot;msgtype&quot;] = &quot;text&quot;        sendMapDirectroy[&quot;safe&quot;] = &quot;0&quot;        contentDirectory = &#123;&#125;        sendMapDirectroy[&quot;text&quot;] = contentDirectory        contentDirectory[&quot;content&quot;] = self.content        bodyStr = json.dumps(sendMapDirectroy, ensure_ascii=False).encode(encoding=&quot;utf-8&quot;)        try:            f = requests.post(url=&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&quot; % accessToken,                          data=bodyStr, timeout=5)            self.my_logger.info(f.content)        except Exception as e:            self.my_logger.error('Send chat network error!Reason:&#123;0&#125;'.format(e))if __name__ == '__main__':    appname = sys.argv[1]    content = sys.argv[3]    # read conf.ini    conf = configparser.ConfigParser()    conf_path = os.path.dirname(os.path.abspath(__file__))    conf_ini = &quot;&#123;0&#125;/conf.ini&quot;.format(conf_path)    if pathlib.Path(conf_ini).exists():        conf.read(conf_ini)        corpid = conf.get(&quot;wechat&quot;, &quot;corpid&quot;)        appinfo = conf.get(&quot;app&quot;, appname)        agentid = appinfo.split(':')[0]        secret = appinfo.split(':')[1]        groupname = conf.get(&quot;group&quot;, appname)        touser = groupname.split(':')[0]        chatobj = PySendchat(corpid, agentid, secret, touser, content)    else:        print('conf.ini error')        exit()    try:        chatobj.sendmsg()    except:        chatobj.my_logger.error(&quot;Send chat failure!&quot;)</code></pre><p>eg:</p><p>python <a href="http://sendchat.py">sendchat.py</a> it ‘’ &lt;预警内容&gt;</p><blockquote><p>创建好app，并关联用户到app</p><p>执行上述命令，会将预警内容通过&lt;app_agent_id&gt; 应用发送给用户usera和userb</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> 企业微信 </tag>
             
         </tags>
       
@@ -2113,7 +2115,7 @@
           
           <category> 系统 </category>
           
-          <category> 系统 </category>
+          <category> linux </category>
           
       </categories>
       
@@ -2187,7 +2189,7 @@
     
     
     <entry>
-      <title>linux ☞ 软 raid 创建</title>
+      <title>linux☞软raid创建</title>
       <link href="posts/a7611bc1/"/>
       <url>posts/a7611bc1/</url>
       
@@ -2198,7 +2200,7 @@
           
           <category> 系统 </category>
           
-          <category> 系统 </category>
+          <category> linux </category>
           
       </categories>
       
@@ -2528,6 +2530,8 @@
       
       <categories>
           
+          <category> 语言 </category>
+          
           <category> shell </category>
           
       </categories>
@@ -2544,7 +2548,7 @@
     
     
     <entry>
-      <title>linux ☞ df与du数据不一致的原因</title>
+      <title>linux☞df与du数据不一致的原因</title>
       <link href="posts/a3dfc0e8/"/>
       <url>posts/a3dfc0e8/</url>
       
@@ -2555,7 +2559,7 @@
           
           <category> 系统 </category>
           
-          <category> 系统 </category>
+          <category> linux </category>
           
       </categories>
       

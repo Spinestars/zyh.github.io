@@ -13999,4 +13999,3 @@ object-assign
                 /***/ })
             /******/ ]);
 });
-//# sourceMappingURL=gitalk.js.map

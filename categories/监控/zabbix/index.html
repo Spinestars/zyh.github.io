@@ -83,11 +83,13 @@
 		<li class="menu-item">
 			<a href="/about" class="menu-item-link">ABOUT</a>
 		</li>
-		//<li class="menu-item">
-		//	<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
-		//		<i class="fa fa-github fa-2x"></i>
-		//	</a>
-		//</li>
+<!--
+		<li class="menu-item">
+			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+-->
 	</ul>
 </header>
 
@@ -1333,18 +1335,21 @@ docker run --name mysql57 \
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					zabbix☞nginx
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
-etc
-├── zabb
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
+
+
+1，nginx增加配置 server_status.server
+
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -1418,21 +1423,18 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					zabbix☞WEB监控
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
-
-
-1，nginx增加配置 server_status.server
-
-cat &gt; /usr/local/nginx/
+					1. 构建 zabbix_agentd 端配置
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+etc
+├── zabb
 					...
 				</div>
 			</a>

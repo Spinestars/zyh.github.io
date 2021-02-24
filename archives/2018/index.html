@@ -185,12 +185,77 @@
 									</a>
 									
 							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										aws
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2e07203a/">
+										aws☞EC2-GPU实例安装显卡驱动
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/438aa722/">
+										aws☞rds-mysql参数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/604c5952/">
+										aws☞rds-mysql日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
 								<li class="file">
 									<a href="/posts/2c5a64ff/">
 										aws☞s3初始化创建
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7cac5d21/">
+										aws☞s3跨账户访问
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ddc4c969/">
+										aws☞利用cf服务初始化aws环境
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2e304ad6/">
+										aws☞国内外之间迁移-AMI
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
 							</ul>
 			
 							<ul>
@@ -291,6 +356,15 @@
 										安装
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/d4de86f1/">
+										安装库☞gitlab安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/b824edd8/">
@@ -1204,6 +1278,132 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/438aa722/">
+				<h2 class="index-title">
+					aws☞rds-mysql参数
+				</h2>
+				<div class="index-brief">
+					# 下列是非默认值
+character_set_client: utf8
+character_set_connection: utf8
+character_set_database: utf8
+character_set_filesystem: utf8
+character_set_results:
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2e304ad6/">
+				<h2 class="index-title">
+					aws☞国内外之间迁移-AMI
+				</h2>
+				<div class="index-brief">
+					
+
+aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。
+
+
+命令步骤如下：
+#源机器上：
+dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M
+
+#aws EC服务器上：
+dd if=/文件A of=/dev/盘B bs=1M ofl
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/ddc4c969/">
+				<h2 class="index-title">
+					aws☞利用cf服务初始化aws环境
+				</h2>
+				<div class="index-brief">
+					
+因公司小项目多，账户多，每次构建aws初始化环境均很麻烦，且每个人操作的时候，想法都不一样，规则不统一，导致环境信息无法通用.
+所以准备使用 cf 来构建一个通用模板，保持环境一致性.
+之前一直没有使用，是因为 cf 本身编写不是太方便，然而我低估了 aws 的牛逼，仔细看了文档才知道， 有个 c
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/78ceb386/">
 				<h2 class="index-title">
 					nginx☞泛域名_变量截取
@@ -1270,6 +1470,83 @@ c
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/安装/">安装</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/d4de86f1/">
+				<h2 class="index-title">
+					安装库☞gitlab安装及备份
+				</h2>
+				<div class="index-brief">
+					
+https://docs.gitlab.com/omnibus/docker/
+
+安装
+# 确保 /export 存在
+# create
+domainName=
+docker run --detach   --hostname $&#123;domainName&#125;   --publish
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-07-24</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/安装/">安装</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2e07203a/">
+				<h2 class="index-title">
+					aws☞EC2-GPU实例安装显卡驱动
+				</h2>
+				<div class="index-brief">
+					
+以下命令均在 ubuntu 用户中执行
+
+安装 awscli 到 ubuntu 用户下
+sudo apt-get update -y
+sudo apt-get install python3-pip -y
+pip3 install awscli --upgrade --user
+
+更新系统内核和g
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-05-23</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
 										
                                     </span>
                                 
@@ -1388,48 +1665,10 @@ func: 获取数据库中没有设置ttl的 key
                 </div>
 		</div>	
 	
-		<div class="index-li">
-			<a href="/posts/28361833/">
-				<h2 class="index-title">
-					redis☞调整内核参数
-				</h2>
-				<div class="index-brief">
-					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-02-02</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
 	
 	<div id="index-paginator">
+		
+			<span class="page-number current">1</span><a class="page-number" href="/archives/2018/page/2/">2</a><a class="extend next" rel="next" href="/archives/2018/page/2/">&gt;</a>
 		
 	</div>
 </div>

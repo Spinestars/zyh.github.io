@@ -185,12 +185,77 @@
 									</a>
 									
 							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										aws
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2e07203a/">
+										aws☞EC2-GPU实例安装显卡驱动
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/438aa722/">
+										aws☞rds-mysql参数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/604c5952/">
+										aws☞rds-mysql日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
 								<li class="file">
 									<a href="/posts/2c5a64ff/">
 										aws☞s3初始化创建
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7cac5d21/">
+										aws☞s3跨账户访问
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ddc4c969/">
+										aws☞利用cf服务初始化aws环境
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2e304ad6/">
+										aws☞国内外之间迁移-AMI
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
 							</ul>
 			
 							<ul>
@@ -291,6 +356,15 @@
 										安装
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/d4de86f1/">
+										安装库☞gitlab安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/b824edd8/">
@@ -1204,24 +1278,20 @@
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/aaf9b7/">
+			<a href="/posts/b7cf7b1f/">
 				<h2 class="index-title">
-					k8s☞01常见术语概念
+					docker☞01安装
 				</h2>
 				<div class="index-brief">
-					物理
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
 
-
-master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
-
-
-node 是 k8s 的工作节点，也就是实际跑容器的节点。
-
-
-服务
-master 节点服务
-
-kube-apiserver 是 master 节点服务， 
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
 					...
 				</div>
 			</a>
@@ -1242,7 +1312,7 @@ kube-apiserver 是 master 节点服务，
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 
@@ -1271,6 +1341,132 @@ docker run --name mysql8 \
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/安装/">安装</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/438aa722/">
+				<h2 class="index-title">
+					aws☞rds-mysql参数
+				</h2>
+				<div class="index-brief">
+					# 下列是非默认值
+character_set_client: utf8
+character_set_connection: utf8
+character_set_database: utf8
+character_set_filesystem: utf8
+character_set_results:
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2e304ad6/">
+				<h2 class="index-title">
+					aws☞国内外之间迁移-AMI
+				</h2>
+				<div class="index-brief">
+					
+
+aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。
+
+
+命令步骤如下：
+#源机器上：
+dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M
+
+#aws EC服务器上：
+dd if=/文件A of=/dev/盘B bs=1M ofl
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/ddc4c969/">
+				<h2 class="index-title">
+					aws☞利用cf服务初始化aws环境
+				</h2>
+				<div class="index-brief">
+					
+因公司小项目多，账户多，每次构建aws初始化环境均很麻烦，且每个人操作的时候，想法都不一样，规则不统一，导致环境信息无法通用.
+所以准备使用 cf 来构建一个通用模板，保持环境一致性.
+之前一直没有使用，是因为 cf 本身编写不是太方便，然而我低估了 aws 的牛逼，仔细看了文档才知道， 有个 c
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
 										
                                     </span>
                                 
@@ -1355,6 +1551,83 @@ c
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/d4de86f1/">
+				<h2 class="index-title">
+					安装库☞gitlab安装及备份
+				</h2>
+				<div class="index-brief">
+					
+https://docs.gitlab.com/omnibus/docker/
+
+安装
+# 确保 /export 存在
+# create
+domainName=
+docker run --detach   --hostname $&#123;domainName&#125;   --publish
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-07-24</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/安装/">安装</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2e07203a/">
+				<h2 class="index-title">
+					aws☞EC2-GPU实例安装显卡驱动
+				</h2>
+				<div class="index-brief">
+					
+以下命令均在 ubuntu 用户中执行
+
+安装 awscli 到 ubuntu 用户下
+sudo apt-get update -y
+sudo apt-get install python3-pip -y
+pip3 install awscli --upgrade --user
+
+更新系统内核和g
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-05-23</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/d1d65c30/">
 				<h2 class="index-title">
 					php☞fpm静态配置
@@ -1381,194 +1654,6 @@ listen.group =
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/web/">web</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/7c1abbe1/">
-				<h2 class="index-title">
-					安装库☞openvpn
-				</h2>
-				<div class="index-brief">
-					前言
-openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需要一个linux系统的主机。
-至于土豪公司，可以无视。
-文档包含安装脚本，创建用户脚本，删除用户脚本。使用的时候，安装脚本和创建用户脚本，需要自行修改一些变量。
-
-需要注意的是，发现移动网络连接其它运营商网络的时候，不稳定。
-比如
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-03-22</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/安装/">安装</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/28361833/">
-				<h2 class="index-title">
-					redis☞获取没有设置ttl的key
-				</h2>
-				<div class="index-brief">
-					前言
-redis 内存占用爆炸. 所以网上找了一个
-# encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-02-02</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/28361833/">
-				<h2 class="index-title">
-					redis☞调整内核参数
-				</h2>
-				<div class="index-brief">
-					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-02-02</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f41d0763/">
-				<h2 class="index-title">
-					web☞系统基本优化
-				</h2>
-				<div class="index-brief">
-					# 内核参数
-# 系统级别上限， 即整个系统所有进程单位时间可打开的文件描述符数量
-fs.file-max = 6553500
-# 三次握手请求频次
-net.ipv4.tcp_syn_retries = 5
-# 放弃回应一个TCP请求之前，需要尝试多少次
-net.ipv4.tcp_retries1 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-01-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/241ce96c/">
-				<h2 class="index-title">
-					shell☞if判定
-				</h2>
-				<div class="index-brief">
-					-a FILE：存在则为真；否则则为假；
--e FILE: 存在则为真；否则则为假；
--f FILE: 存在并且为普通文件，则为真；否则为假；
--d DIR: 存在并且为目录，则为真；否则为假；
--L/-h FILE: 存在并且为符号链接文件，则为真；否则为假；
--b: 存在并且为块设备，则为真；否
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2016-10-02</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/shell/">shell</a>
 										
                                     </span>
                                 

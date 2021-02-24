@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		aws☞利用cf服务初始化aws环境 | 
+	 
+	zyh
+	</title>
+	
+	<!-- keywords,description -->
+	 
+
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
+
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
+		}
+		var homeHost = "zyh.cool";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
+		}
+	</script>
+
+
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/styles/darcula.min.css">
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+
+	
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+	
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/highlight.min.js"></script>
+
+	
+<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+	
+		
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+
+		
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+
+	
+	
+		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+	<header id="header">
+    <a id="title" href="/" class="logo">zyh</a>
+
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+<!--
+		<li class="menu-item">
+			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+-->
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle" ><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										web
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/58a1c0c7/">
+										nginx☞fcgi中alias的使用
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18de0eed/">
+										nginx☞基本认证
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/445cf088/">
+										nginx☞日志切割
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/78ceb386/">
+										nginx☞泛域名_变量截取
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1d65c30/">
+										php☞fpm静态配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7c44c2e8/">
+										web☞服务器承载能力计算
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f41d0763/">
+										web☞系统基本优化
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										公有云
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										aws
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2e07203a/">
+										aws☞EC2-GPU实例安装显卡驱动
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/438aa722/">
+										aws☞rds-mysql参数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/604c5952/">
+										aws☞rds-mysql日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2c5a64ff/">
+										aws☞s3初始化创建
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7cac5d21/">
+										aws☞s3跨账户访问
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/ddc4c969/">
+										aws☞利用cf服务初始化aws环境
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2e304ad6/">
+										aws☞国内外之间迁移-AMI
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										阿里云
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b5d7d6ee/">
+										aliyun☞oss
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										hexo
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/662e9d4d/">
+										hexo☞图片显示404错误的解决办法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5c218d/">
+										hexo☞本地搜索
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3827a60a/">
+										工具库
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5290b79d/">
+										网络☞S5700配置攻击朔源
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ddb9d4e/">
+										问题记录
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										安装
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/d4de86f1/">
+										安装库☞gitlab安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b824edd8/">
+										安装库☞mysql容器搭建
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6209085/">
+										安装库☞nginx
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7c1abbe1/">
+										安装库☞openvpn
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b73a61bf/">
+										安装库☞php包管理方式
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3321a2dc/">
+										安装库☞php编译方式
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/65ab632a/">
+										安装库☞redis
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/894f9595/">
+										安装库☞vsftpd
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										容器
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b7cf7b1f/">
+										docker☞01安装
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										k8s
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/aaf9b7/">
+										k8s☞01常见术语概念
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9602dad/">
+										k8s☞02v1.18.6安装
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/94518966/">
+										k8s☞03pod
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3ec72f7e/">
+										k8s☞04pod钩子函数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9aa66899/">
+										k8s☞05pod探测器
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18e4fa73/">
+										k8s☞06无状态服务deployment-pod更新
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e328b5/">
+										k8s☞07无状态服务deployment-pod扩缩
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d3b80b5f/">
+										k8s☞08负载均衡service
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1080c6b6/">
+										k8s☞09存储资源
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4b0e4a5/">
+										k8s☞09应用配置与密码与信息提供
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4b0e4a5/">
+										k8s☞10应用配置与密码与信息提供
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/64fa9c84/">
+										k8s☞11-1pod资源约束
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ed4c29d5/">
+										k8s☞11-2namespace资源约束
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/63d8d3d4/">
+										k8s☞12-1守护进程
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4bf29cf0/">
+										k8s☞12-2有状态服务StatefulSet
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7627a41d/">
+										k8s☞13高级版负载均衡ingress
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a5ed67a6/">
+										k8s☞14认证授权
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55da993d/">
+										k8s☞15证书管理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7538d100/">
+										k8s☞16kubeadm集群升级
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e1096625/">
+										k8s☞记录点
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										数据库
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e6ae9474/">
+										mysql☞常用命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c83ca575/">
+										mysql☞离线迁移脚本
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2c2d50a0/">
+										redis☞备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28361833/">
+										redis☞获取没有设置ttl的key
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28361833/">
+										redis☞调整内核参数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										日志
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/3475106c/">
+										日志☞ELK简单部署-容器方式
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/421d605e/">
+										日志☞logrotate
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										监控
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										prometheus
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/65820315/">
+										prometheus☞01搭建
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										zabbix
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/3d20f83e/">
+										zabbix☞WEB监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1587f6e8/">
+										zabbix☞agent和proxy(yum)
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b35b5965/">
+										zabbix☞nginx
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6c093771/">
+										zabbix☞redis
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ed865d2f/">
+										zabbix☞server安装注意事项
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/25f36846/">
+										zabbix☞容器搭建
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4ebbd3a8/">
+										zabbix☞预警
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/ae41ae33/">
+										监控☞monit
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ab1247fb/">
+										监控☞mysql慢sql预警
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c33f887/">
+										监控☞企业微信机器人
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f9b08c30/">
+										监控☞微信预警
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fac36d/">
+										监控☞远程磁盘检测
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8f9b4d0/">
+										监控☞邮件预警
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										系统
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										linux
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/a3dfc0e8/">
+										linux☞df与du数据不一致的原因
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5db0cd07/">
+										linux☞ssh-MFA自动登陆
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4f7ce4c/">
+										linux☞ubuntu20-04纯命令行网卡配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cd32aa48/">
+										linux☞时间
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a7611bc1/">
+										linux☞软raid创建
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3988a5f2/">
+										linux☞输出个性化开机状态
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										windows
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/22b82d75/">
+										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										自动化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ansible
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/15aa7d2e/">
+										ansible☞playbook-aws
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b0929188/">
+										ansible☞playbook-handle
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ce01f58/">
+										ansible☞playbook-include
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/25732c33/">
+										ansible☞playbook-lookup插件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/960fc783/">
+										ansible☞playbook-tags
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4235ddf4/">
+										ansible☞playbook-变量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/14bc184e/">
+										ansible☞playbook-循环
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/29683589/">
+										ansible☞playbook-条件判断
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f43dca37/">
+										ansible☞playbook-过滤器
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4126d5a/">
+										ansible☞playbook-错误捕获
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d3e413b7/">
+										ansible☞基础信息
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e274151/">
+										ansible☞常用模块-命令调用
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4235ddf4/">
+										ansible☞常用模块-文本文件操作
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/84eb900/">
+										ansible☞常用模块-系统相关
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3d9b9ec1/">
+										ansible☞常用模块-软件包管理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/724fda19/">
+										ansible☞模板
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/720afd15/">
+										ansible☞角色
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										jenkins
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/3e0f2183/">
+										jenkins☞从容器中访问宿主机docker命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3b5cd3e1/">
+										jenkins☞动态agent
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d9cdb70/">
+										jenkins☞安装和基本配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										语言
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										java
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/ac6b3b36/">
+										jdk☞安装和配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										shell
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/241ce96c/">
+										shell☞if判定
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+
+	aws☞利用cf服务初始化aws环境
+</h1>
+<div class="article-meta">
+	
+	<span>zyh</span>
+	<span>2018-09-11 12:10:25</span>
+    
+		<div id="article-categories">
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true"></i>
+                        <a href="/categories/公有云/">公有云</a>
+						
+							>
+						
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true"></i>
+                        <a href="/categories/公有云/aws/">aws</a>
+						
+                    </span>
+                
+            
+		</div>
+    
+</div>
+
+<div id="article-content">
+	<blockquote>
+<p>因公司小项目多，账户多，每次构建aws初始化环境均很麻烦，且每个人操作的时候，想法都不一样，规则不统一，导致环境信息无法通用.</p>
+<p>所以准备使用 cf 来构建一个通用模板，保持环境一致性.</p>
+<p>之前一直没有使用，是因为 cf 本身编写不是太方便，然而我低估了 aws 的牛逼，仔细看了文档才知道， 有个 cf 本身有个堆栈，可以直接复刻当前环境.</p>
+<p>这个工具就是 <code>cloudformer</code></p>
+<p>官方文档是: <a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/cfn-using-cloudformer.html#launch-cloudformer">https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/cfn-using-cloudformer.html#launch-cloudformer</a></p>
+</blockquote>
+<h2 id="那么步骤来了">那么步骤来了~</h2>
+<ul>
+<li>
+<p>先通过 web 控制台生成一个适合本地化的通用环境，比如 vpc，子网，安全组，数据库子网组，参数组，s3以及相应的s3生命周期规则等等</p>
+</li>
+<li>
+<p>构建 cloudformer 堆栈，并通过 cloudformer 服务生成当前环境模板</p>
+</li>
+<li>
+<p>将当前环境模板的一些非通用内容，换成变量，并构建成 cf 参数或者脚本</p>
+</li>
+<li>
+<p>最后通过执行脚本，并输入变量值，来生成新模板</p>
+</li>
+<li>
+<p>在新环境里调用新模板来初始化环境</p>
+</li>
+</ul>
+<h2 id="下面是我贴出的一个基础环境生成脚本">下面是我贴出的一个基础环境生成脚本</h2>
+<ul>
+<li>
+<p>vpc: x.x.0.0/16</p>
+</li>
+<li>
+<p>prod: x.x.128.0/17</p>
+<ul>
+<li>prod 子网默认有四个, 分别是 EC2 两个可用区, Database 两个可用区</li>
+</ul>
+</li>
+<li>
+<p>qa: x.x.0.0/19</p>
+<ul>
+<li>qa 子网默认有四个, 分别是 EC2 两个可用区, Database 两个可用区</li>
+</ul>
+</li>
+<li>
+<p>prod 和 qa 通过安全组来分割</p>
+<ul>
+<li>
+<p>prod 规则示例如下(qa一样):</p>
+</li>
+<li>
+<p>Prod-EC2-common:</p>
+<table>
+<thead>
+<tr>
+<th>规则名</th>
+<th>协议</th>
+<th>开放端口</th>
+<th>源ip或者其它安全组ID</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>所有流量</td>
+<td>全部</td>
+<td>全部</td>
+<td>10.130.128.0/17</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<p>| SSH      | TCP  | 22       | ${src_allow_ssh_ip}  |      |</p>
+<ul>
+<li>
+<p>Prod-Database-common:</p>
+<table>
+<thead>
+<tr>
+<th>规则名</th>
+<th>协议</th>
+<th>开放端口</th>
+<th>源ip或者其它安全组ID</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自定义 TCP 规则</td>
+<td>TCP</td>
+<td>1025 - 65535</td>
+<td>${src_allow_rds_ip}</td>
+<td></td>
+</tr>
+<tr>
+<td>自定义 TCP 规则</td>
+<td>TCP</td>
+<td>1025 - 65535</td>
+<td>Prod-EC2-common-Group-ID</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+<li>
+<p>SNS 默认预警主题</p>
+</li>
+<li>
+<p>mysql 子网组</p>
+</li>
+<li>
+<p>redis 子网组</p>
+</li>
+<li>
+<p>s3以及初始化生命周期规则</p>
+</li>
+<li>
+<p>vpc 路由表不会添加默认路由, 还请自行添加(Internet 网关会自动生成)</p>
+</li>
+</ul>
+<pre><code class="language-bash">#!/bin/bash
+# 本脚本用来生成一份基础环境的 cf 模板
+# 网络A和B段，例如 10.10 那么 vpc 就是 10.10.0.0/16
+VpcCidrBlockAB=
+# 大区区域, 例如 新加坡 那么区域就写 ap-southeast-1
+Region=
+# 项目名，用于区分资源以及添加 Team 标签 (只能是字母数字组合)
+TagTeamValue=
+# 允许访问EC2的22号端口的ip (指的是非vpc内网)，通常应该是堡垒机或者公司外网
+src_allow_ssh_ip=
+# 允许访问数据库端口的ip (指的是非vpc内网)，通常应该是堡垒机或者公司外网
+src_allow_rds_ip=
+# 默认 SNS 服务主体名 SNSThemeName
+SNSThemeName=$&#123;TagTeamValue&#125;
+# 默认 SNS 服务信息接收用户邮箱, cf 模板执行完后，需要用户邮箱读取邮件自行确认消息
+SNSEmail=
+# 设置 vpc 任意两个可用区 字母标识, 比如 a b
+AvailabilityZoneOne=a
+AvailabilityZoneTwo=b
+
+######## 本模板, 不会添加 vpc 默认路由, 请自行加  #########
+
+cat &gt; cf-common.yml &lt;&lt; EOF
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  vpc12345:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.0.0/16
+      InstanceTenancy: default
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 84f85642-9390-4126-b347-95ca2ebf1c15
+  subnet0qa0database0$&#123;AvailabilityZoneOne&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.3.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneOne&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-qa-database-$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 864ecf93-1ce6-4b4d-9b29-c3d89f07141b
+  subnet0prod0database0$&#123;AvailabilityZoneOne&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.131.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneOne&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-prod-database-$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 7ef6daea-3bcd-4913-ab55-ba4f7bced319
+  subnet0qa0ec20$&#123;AvailabilityZoneTwo&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.2.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneTwo&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-qa-ec2-$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: bc2b5a08-f7b8-4699-a7ba-5c9c6c021bd8
+  subnet0qa0database0$&#123;AvailabilityZoneTwo&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.4.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneTwo&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-qa-database-$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: b4738f0a-11a6-4d75-b9f0-a24072e53228
+  subnet0prod0ec20$&#123;AvailabilityZoneTwo&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.129.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneTwo&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-prod-ec2-$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 2ffb24f6-49fd-4d3a-bdfe-69e90e228517
+  subnet0prod0ec20$&#123;AvailabilityZoneOne&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.128.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneOne&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-prod-ec2-$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 9a2789fc-b7d2-4532-811b-be3455ab7d7d
+  subnet0qa0ec20$&#123;AvailabilityZoneOne&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.1.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneOne&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-qa-ec2-$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 5c6c2638-a7b5-4185-a7a3-08d5901c252a
+  subnet0prod0database0$&#123;AvailabilityZoneTwo&#125;:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      CidrBlock: $&#123;VpcCidrBlockAB&#125;.132.0/24
+      AvailabilityZone: $&#123;Region&#125;$&#123;AvailabilityZoneTwo&#125;
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-prod-database-$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 00a78a8b-fd72-4613-bf09-8319b876ba2b
+  igw088b65cb430bc5ca0:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: $&#123;TagTeamValue&#125;-internet-gw
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: e60ac13b-274d-46db-ac2a-5afaf975e1eb
+  dopt8128ece5:
+    Type: 'AWS::EC2::DHCPOptions'
+    Properties:
+      DomainName: $&#123;Region&#125;.compute.internal
+      DomainNameServers:
+        - AmazonProvidedDNS
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 909e6481-ccca-40fe-a1b1-4abe15a2ba18
+  acl03e81a4f65756520d:
+    Type: 'AWS::EC2::NetworkAcl'
+    Properties:
+      VpcId: !Ref vpc12345
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 93e06538-fe9e-49a7-8549-e2efb97dfab7
+  dbsubnet$&#123;TagTeamValue&#125;prod:
+    Type: 'AWS::RDS::DBSubnetGroup'
+    Properties:
+      DBSubnetGroupDescription: $&#123;TagTeamValue&#125;-prod
+      SubnetIds:
+        - !Ref subnet0prod0database0$&#123;AvailabilityZoneTwo&#125;
+        - !Ref subnet0prod0database0$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 16096ba6-c5de-4a73-a083-07b2c0573362
+  dbsubnet$&#123;TagTeamValue&#125;qa:
+    Type: 'AWS::RDS::DBSubnetGroup'
+    Properties:
+      DBSubnetGroupDescription: $&#123;TagTeamValue&#125;-qa
+      SubnetIds:
+        - !Ref subnet0qa0database0$&#123;AvailabilityZoneTwo&#125;
+        - !Ref subnet0qa0database0$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 186893f8-59ef-4d56-880f-d62294d25780
+  dbpg$&#123;TagTeamValue&#125;prod:
+    Type: 'AWS::RDS::DBParameterGroup'
+    Properties:
+      Description: $&#123;TagTeamValue&#125;-prod-mysql5.6
+      Family: mysql8.0
+      Parameters:
+        binlog_cache_size: '32768'
+        binlog_format: MIXED
+        character_set_client: utf8mb4
+        character_set_connection: utf8mb4
+        character_set_database: utf8mb4
+        character_set_filesystem: utf8mb4
+        character_set_results: utf8mb4
+        character_set_server: utf8mb4
+        collation_connection: utf8mb4_general_ci
+        explicit_defaults_for_timestamp: '1'
+        innodb_buffer_pool_size: '&#123;DBInstanceClassMemory*3/4&#125;'
+        innodb_file_per_table: '1'
+        innodb_flush_method: O_DIRECT
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 87a954ed-d1b2-4626-87fe-f2515f4479b4
+  dbpg$&#123;TagTeamValue&#125;qa:
+    Type: 'AWS::RDS::DBParameterGroup'
+    Properties:
+      Description: $&#123;TagTeamValue&#125;-qa-mysql5.6
+      Family: mysql8.0
+      Parameters:
+        binlog_cache_size: '32768'
+        binlog_format: MIXED
+        character_set_client: utf8
+        character_set_connection: utf8
+        character_set_database: utf8
+        character_set_filesystem: utf8
+        character_set_results: utf8
+        character_set_server: utf8
+        collation_connection: utf8_general_ci
+        explicit_defaults_for_timestamp: '1'
+        innodb_buffer_pool_size: '&#123;DBInstanceClassMemory*3/4&#125;'
+        innodb_file_per_table: '1'
+        innodb_flush_method: O_DIRECT
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 6c4c2e1e-ec99-4e7f-b254-0f09145a0d87
+  cachesubnet$&#123;TagTeamValue&#125;databaseprod:
+    Type: 'AWS::ElastiCache::SubnetGroup'
+    Properties:
+      Description: '$&#123;TagTeamValue&#125;_prod'
+      SubnetIds:
+        - !Ref subnet0prod0database0$&#123;AvailabilityZoneTwo&#125;
+        - !Ref subnet0prod0database0$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: bdfb3d49-78d8-40df-84b6-63bf65616f5c
+  cachesubnet$&#123;TagTeamValue&#125;databaseqa:
+    Type: 'AWS::ElastiCache::SubnetGroup'
+    Properties:
+      Description: '$&#123;TagTeamValue&#125;_qa'
+      SubnetIds:
+        - !Ref subnet0qa0database0$&#123;AvailabilityZoneOne&#125;
+        - !Ref subnet0qa0database0$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 70367616-0a11-4bc9-9373-a23be1690a59
+  topicIT:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      DisplayName: $&#123;SNSThemeName&#125;
+      Subscription:
+        - Endpoint: $&#123;SNSEmail&#125;
+          Protocol: email
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 343cc3f4-4380-47e5-850e-cc3fb560f22a
+  $&#123;TagTeamValue&#125;qacommon:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: $&#123;TagTeamValue&#125;-qa-common
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value:  QA-EC2-common,Don't modify me
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: d31db020-e702-41e5-8ccc-d71a5a26f565
+  $&#123;TagTeamValue&#125;prodcommon:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: $&#123;TagTeamValue&#125;-prod-common
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value:  Prod-EC2-common,Don't modify me
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: f54456ef-e984-4b00-b04d-64b16a2057ea
+  ITLinshi:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: IT-Linshi
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value:  I'm god
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 182b7e60-f895-4519-8845-4d32a8591340
+  $&#123;TagTeamValue&#125;proddatabase:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: $&#123;TagTeamValue&#125;-prod-database
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value:  Prod-database-common,Don't modify me
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 44f0485a-2575-4eab-82b3-bc7507cd5820
+  $&#123;TagTeamValue&#125;qadatabase:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: $&#123;TagTeamValue&#125;-qa-database
+      VpcId: !Ref vpc12345
+      Tags:
+        - Key: Name
+          Value:  QA-database-common,Don't modify me
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: f903102a-c394-4301-a08d-5625293ac23f
+  snspolicyIT:
+    Type: 'AWS::SNS::TopicPolicy'
+    Properties:
+      Topics:
+        - !Ref topicIT
+      PolicyDocument:
+        Version: 2008-10-17
+        Id: __default_policy_ID
+        Statement:
+          - Sid: __default_statement_ID
+            Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+              - 'SNS:GetTopicAttributes'
+              - 'SNS:SetTopicAttributes'
+              - 'SNS:AddPermission'
+              - 'SNS:RemovePermission'
+              - 'SNS:DeleteTopic'
+              - 'SNS:Subscribe'
+              - 'SNS:ListSubscriptionsByTopic'
+              - 'SNS:Publish'
+              - 'SNS:Receive'
+            Resource: !Ref topicIT
+            Condition:
+              StringEquals:
+                'AWS:SourceOwner': '705452591009'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 66a45d1a-3c99-4ef8-9c4e-db9ba717e17e
+  acl1:
+    Type: 'AWS::EC2::NetworkAclEntry'
+    Properties:
+      CidrBlock: 0.0.0.0/0
+      Egress: 'true'
+      Protocol: '-1'
+      RuleAction: allow
+      RuleNumber: '100'
+      NetworkAclId: !Ref acl03e81a4f65756520d
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: de76822e-cddc-40d9-ba6f-4de20d1188ec
+  acl2:
+    Type: 'AWS::EC2::NetworkAclEntry'
+    Properties:
+      CidrBlock: 0.0.0.0/0
+      Protocol: '-1'
+      RuleAction: allow
+      RuleNumber: '100'
+      NetworkAclId: !Ref acl03e81a4f65756520d
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: eb6e0bf9-3c84-4991-a037-64e2a368650b
+  subnetacl1:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0prod0ec20$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 2801f8a7-901b-43b6-b4d9-9275d5639b86
+  subnetacl2:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0qa0ec20$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 67641cac-39f6-4ee1-8410-60eaba963c27
+  subnetacl3:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0qa0ec20$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 4b480f9d-e7b8-4034-b253-1c254fd83758
+  subnetacl4:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0qa0database0$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 1792de63-b1da-4c31-bab9-9925de98de6c
+  subnetacl5:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0prod0database0$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: e62f3e81-63f0-4f5e-b3e0-aa733ba6f323
+  subnetacl6:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0prod0ec20$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 28228fcf-5649-4e5e-bf03-d636ca28bffe
+  subnetacl8:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0qa0database0$&#123;AvailabilityZoneTwo&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 00ab0d37-3e37-427e-ac06-e94663719fcf
+  subnetacl9:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0qa0database0$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: ee93485d-3df4-416d-ab61-4f77c46441f1
+  subnetacl10:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl03e81a4f65756520d
+      SubnetId: !Ref subnet0prod0database0$&#123;AvailabilityZoneOne&#125;
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: a4208016-e7cf-4acf-a718-104a25fef4c3
+  gw1:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref vpc12345
+      InternetGatewayId: !Ref igw088b65cb430bc5ca0
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 3071b8a9-f4ab-4d61-83d8-d2792481e135
+  dchpassoc1:
+    Type: 'AWS::EC2::VPCDHCPOptionsAssociation'
+    Properties:
+      VpcId: !Ref vpc12345
+      DhcpOptionsId: !Ref dopt8128ece5
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 69a63971-39fa-45c9-8a17-cc730730083d
+  ingress1:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;qacommon
+      IpProtocol: '-1'
+      CidrIp: $&#123;VpcCidrBlockAB&#125;.0.0/19
+  ingress2:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;prodcommon
+      IpProtocol: '-1'
+      CidrIp: $&#123;VpcCidrBlockAB&#125;.128.0/17
+  ingress3:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;proddatabase
+      IpProtocol: tcp
+      FromPort: '1025'
+      ToPort: '65535'
+      SourceSecurityGroupId: !Ref $&#123;TagTeamValue&#125;prodcommon
+      SourceSecurityGroupOwnerId: '705452591009'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 8972689f-9301-4538-b493-bd1956559ecd
+  ingress4:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;qadatabase
+      IpProtocol: tcp
+      FromPort: '1025'
+      ToPort: '65535'
+      SourceSecurityGroupId: !Ref $&#123;TagTeamValue&#125;qacommon
+      SourceSecurityGroupOwnerId: '705452591009'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 236a8060-da9c-4be7-af29-fb6758a764a9
+  ingress5:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref ITLinshi
+      IpProtocol: '-1'
+      CidrIp: 0.0.0.0/0
+  ingress6:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;qacommon
+      IpProtocol: tcp
+      FromPort: '22'
+      ToPort: '22'
+      CidrIp: $&#123;src_allow_ssh_ip&#125;
+  ingress8:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;prodcommon
+      IpProtocol: tcp
+      FromPort: '22'
+      ToPort: '22'
+      CidrIp: $&#123;src_allow_ssh_ip&#125;
+  ingress11:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;proddatabase
+      IpProtocol: tcp
+      FromPort: '1025'
+      ToPort: '65535'
+      CidrIp: $&#123;src_allow_rds_ip&#125;
+  ingress14:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;qadatabase
+      IpProtocol: tcp
+      FromPort: '1025'
+      ToPort: '65535'
+      CidrIp: $&#123;src_allow_rds_ip&#125;
+  egress1:
+    Type: 'AWS::EC2::SecurityGroupEgress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;qacommon
+      IpProtocol: '-1'
+      CidrIp: 0.0.0.0/0
+  egress2:
+    Type: 'AWS::EC2::SecurityGroupEgress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;prodcommon
+      IpProtocol: '-1'
+      CidrIp: 0.0.0.0/0
+  egress3:
+    Type: 'AWS::EC2::SecurityGroupEgress'
+    Properties:
+      GroupId: !Ref ITLinshi
+      IpProtocol: '-1'
+      CidrIp: 0.0.0.0/0
+  egress4:
+    Type: 'AWS::EC2::SecurityGroupEgress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;proddatabase
+      IpProtocol: '-1'
+      CidrIp: 0.0.0.0/0
+  egress5:
+    Type: 'AWS::EC2::SecurityGroupEgress'
+    Properties:
+      GroupId: !Ref $&#123;TagTeamValue&#125;qadatabase
+      IpProtocol: '-1'
+      CidrIp: 0.0.0.0/0
+Description: ''
+EOF
+</code></pre>
+
+</div>
+
+
+    <div class="post-guide">
+        <div class="item left">
+            
+              <a href="/posts/2e304ad6/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  aws☞国内外之间迁移-AMI
+              </a>
+            
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/78ceb386/">
+                
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
+        </div>
+    </div>
+
+
+
+	<div id="vcomments"></div>
+
+
+<script>
+	
+		// 评论
+		new Valine({
+			av: AV,
+			el: '#vcomments',
+			notify: false,
+			verify: false,
+			path: window.location.pathname,
+			appId: 'Sq2igagqhmGqvs3eHHtcNKiB-gzGzoHsz',
+			appKey: 'cDTpqcpogeQq55SOuBHEXv9W',
+			placeholder: '写点东西吧',
+			avatar: 'retro',
+			recordIP: false
+		})
+	
+	
+</script>
+	</div>
+	<div id="footer">
+	<p>
+	©2016-<span id="footerYear"></span> 
+	<a href="/">zyh</a> 
+	
+	
+		|
+		<span id="busuanzi_container_site_pv">
+			pv
+			<span id="busuanzi_value_site_pv"></span>
+		</span>
+		|
+		<span id="busuanzi_container_site_uv"> 
+			uv
+			<span id="busuanzi_value_site_uv"></span>
+		</span>
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
+</div>
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
+</script>
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
+</body>
+</html>

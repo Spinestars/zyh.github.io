@@ -185,12 +185,77 @@
 									</a>
 									
 							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										aws
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2e07203a/">
+										aws☞EC2-GPU实例安装显卡驱动
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/438aa722/">
+										aws☞rds-mysql参数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/604c5952/">
+										aws☞rds-mysql日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
 								<li class="file">
 									<a href="/posts/2c5a64ff/">
 										aws☞s3初始化创建
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7cac5d21/">
+										aws☞s3跨账户访问
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ddc4c969/">
+										aws☞利用cf服务初始化aws环境
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2e304ad6/">
+										aws☞国内外之间迁移-AMI
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
 							</ul>
 			
 							<ul>
@@ -291,6 +356,15 @@
 										安装
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/d4de86f1/">
+										安装库☞gitlab安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/b824edd8/">
@@ -1204,24 +1278,21 @@
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/f9b08c30/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					监控☞微信预警
+					zabbix☞nginx
 				</h2>
 				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
 
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
 
-[group]
-it = usera|userb
+1，nginx增加配置 server_status.server
 
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -1234,6 +1305,16 @@ it = usera|userb
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
 										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
                                     </span>
                                 
                             
@@ -1242,18 +1323,19 @@ it = usera|userb
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
+			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
-					监控☞邮件预警
+					zabbix☞agent和proxy(yum)
 				</h2>
 				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
+					
+https://repo.zabbix.com/zabbix/
+
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+
+agent 安装
+
 					...
 				</div>
 			</a>
@@ -1266,6 +1348,16 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
 										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
                                     </span>
                                 
                             
@@ -1274,18 +1366,38 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/6c093771/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					zabbix☞redis
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					zabbix 模板
+
+自动发现规则
+
+
+
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
 					...
 				</div>
 			</a>
@@ -1297,6 +1409,16 @@ i
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

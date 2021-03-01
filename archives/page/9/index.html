@@ -1278,20 +1278,24 @@
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
+			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
-					docker☞01安装
+					k8s☞01常见术语概念
 				</h2>
 				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
+					物理
 
-仓库
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux
+
+master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
+
+
+node 是 k8s 的工作节点，也就是实际跑容器的节点。
+
+
+服务
+master 节点服务
+
+kube-apiserver 是 master 节点服务， 
 					...
 				</div>
 			</a>
@@ -1312,7 +1316,7 @@ yum-config-manager \
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -1350,17 +1354,22 @@ docker run --name mysql8 \
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/438aa722/">
+			<a href="/posts/2e304ad6/">
 				<h2 class="index-title">
-					aws☞rds-mysql参数
+					aws☞国内外之间迁移-AMI
 				</h2>
 				<div class="index-brief">
-					# 下列是非默认值
-character_set_client: utf8
-character_set_connection: utf8
-character_set_database: utf8
-character_set_filesystem: utf8
-character_set_results:
+					
+
+aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。
+
+
+命令步骤如下：
+#源机器上：
+dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M
+
+#aws EC服务器上：
+dd if=/文件A of=/dev/盘B bs=1M ofl
 					...
 				</div>
 			</a>
@@ -1391,22 +1400,17 @@ character_set_results:
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/2e304ad6/">
+			<a href="/posts/438aa722/">
 				<h2 class="index-title">
-					aws☞国内外之间迁移-AMI
+					aws☞rds-mysql参数
 				</h2>
 				<div class="index-brief">
-					
-
-aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。
-
-
-命令步骤如下：
-#源机器上：
-dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M
-
-#aws EC服务器上：
-dd if=/文件A of=/dev/盘B bs=1M ofl
+					# 下列是非默认值
+character_set_client: utf8
+character_set_connection: utf8
+character_set_database: utf8
+character_set_filesystem: utf8
+character_set_results:
 					...
 				</div>
 			</a>

@@ -1451,21 +1451,38 @@ etc
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/6c093771/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					zabbix☞redis
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+					zabbix 模板
+
+自动发现规则
 
 
-1，nginx增加配置 server_status.server
 
-cat &gt; /usr/local/nginx/
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
 					...
 				</div>
 			</a>
@@ -1539,38 +1556,21 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					zabbix☞redis
+					zabbix☞nginx
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
 
 
+1，nginx增加配置 server_status.server
 
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>

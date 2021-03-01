@@ -1312,32 +1312,51 @@
 
 <div id="article-content">
 	<h1>前言</h1>
-<p>所需准备：</p>
-<ol>
-<li>所有资源机器，确保时间一致</li>
-</ol>
+<p>prometheus 监控的构建，相比 zabbix 来说，还是要麻烦一些。</p>
+<p>当然，如果你完全熟悉之后，配置文件化也更容易被其他系统所修改。</p>
 <h1>监控端组件</h1>
 <p>搞之前，先创建一个网络</p>
 <p>docker network create promsnet</p>
-<h2 id="grafana-界面">grafana 界面</h2>
+<h2 id="grafana">grafana</h2>
 <blockquote>
 <p>数据展示，部署在 proms 端</p>
 </blockquote>
-<pre><code class="language-bash">docker volume create grafana
-docker run -d \
-  --network promsnet \
-  --name grafana \
-  --mount 'type=volume,src=grafana,dst=/var/lib/grafana' \
-  -p 3000:3000 \
-grafana/grafana
+<pre><code class="language-bash">mkdir -p /export/docker-data-grafana/&#123;data,conf&#125;
+chmod 777 /export/docker-data-grafana/data
+docker run --name grafana \
+--network promsnet \
+--mount 'type=bind,src=/export/docker-data-grafana/data,dst=/var/lib/grafana' \
+--mount 'type=bind,src=/export/docker-data-grafana/conf,dst=/usr/share/grafana/conf' \
+-p 3000:3000 -d grafana/grafana:7.3.5
 </code></pre>
 <blockquote>
 <p>默认账户/初始密码都是admin</p>
+<p>默认配置库是sqlite 3</p>
 </blockquote>
-<h2 id="alertmanager-告警管理">alertmanager 告警管理</h2>
+<h3 id="配置">配置</h3>
 <blockquote>
-<p>告警管理器，部署在 proms 端</p>
+<p>/export/docker-data-grafana/conf/default.ini</p>
 </blockquote>
+<pre><code class="language-ini">[server]
+domain = 域名
+http_port = 端口
+[database]
+type = sqlite3
+host = 127.0.0.1:3306
+name = grafana
+user = root
+password =
+[smtp]
+enabled = true
+host = smtp.feishu.cn:465
+user = 
+password = 
+skip_verify = true
+from_address = 
+from_name = GrafanaAdmin
+</code></pre>
+<h2 id="alertmanager-告警管理">alertmanager 告警管理</h2>
+<p>告警管理器，接收 proms 发来的告警，并加以处理后发出</p>
 <pre><code class="language-bash">docker volume create alertmanager
 docker run --name alertmanager -d \
   --network promsnet \
@@ -1345,9 +1364,8 @@ docker run --name alertmanager -d \
   --mount 'type=volume,src=alertmanager,dst=/etc/alertmanager' \
 prom/alertmanager
 </code></pre>
-<ul>
-<li>alertmanager.yml</li>
-</ul>
+<h3 id="配置-2">配置</h3>
+<p>alertmanager.yml</p>
 <pre><code class="language-bash">global:
   resolve_timeout: 5m
 
@@ -1385,7 +1403,7 @@ route:
 receivers:
 - name: 'web.hook.prometheusalert'
   webhook_configs:
-  - url: ''
+  - url: ''   # 这里填写 webhook 调用
 inhibit_rules:
   - source_match:
       severity: 'critical'
@@ -1394,28 +1412,56 @@ inhibit_rules:
     equal: ['alertname', 'dev', 'instance']
 
 </code></pre>
-<p>💁飞书/钉钉，可以用 <a target="_blank" rel="noopener" href="https://gitee.com/feiyu563/PrometheusAlert">PrometheusAlert</a></p>
-<h2 id="Peometheus-主程">Peometheus 主程</h2>
+<p>💁飞书/钉钉，可以用部署 <a target="_blank" rel="noopener" href="https://gitee.com/feiyu563/PrometheusAlert">PrometheusAlert</a></p>
+<h3 id="告警分组、收敛、静默">告警分组、收敛、静默</h3>
+<p>分组的意思，就是将某一个组内同一时期的告警合并发送，例如根据实例来分组。</p>
+<p>收敛的意思，就是告警A规则和告警B规则同时触发，但是告警A规则出现的时候，必然会触发告警B，此时只发告警A，例如MYSQL机器挂了，那么只需要发机器挂掉的告警，MYSQL的告警就没必要发送了。</p>
+<p>静默的意思，就是用户已知这个时间点会触发告警规则，但是无需触发，例如高压力定时任务引起磁盘IO告警，虽然会触发平均指标告警，但是在用户认定的安全范围内，因而无需触发。</p>
+<ul>
+<li>分组</li>
+</ul>
+<p>根据 label 进行分组，同组的预警尽量一次性发出</p>
+<pre><code class="language-yaml">route:
+  group_by: ['alertname'] # 告警分组
+  group_wait: 10s # 分组等待时间，也就是说第一个告警等待同组内其它告警来临的时间
+  group_interval: 5m # 分组发送不同告警规则的静默周期，以及发送失败的静默周期
+  repeat_interval: 1h # 分组发送相同告警规则的静默周期，如果时间结束，告警状态未变，将再次发送.
+</code></pre>
+<ul>
+<li>收敛</li>
+</ul>
+<p>举例说明：当主机挂了，此时只需要发送主机挂掉的预警，无需再发送因主机挂掉而产出的其它预警。</p>
+<pre><code class="language-yaml">inhibit_rules:
+  - source_match:   # 匹配最底层的那个告警规则，比如服务器挂了
+      severity: 'critical'   
+    target_match:   # 匹配当 source_match 触发的时候，无需告警的规则。
+      severity: 'warn'
+    equal: ['instance']   # 根据标签确定哪些匹配到 target_match 的需要忽略。例如，equal: instance 那么当 source_match 和 target_match 的 instance 值一样的时候，target_match 被忽略。
+</code></pre>
+<blockquote>
+<p>标签的 key ，可以是你在 proms.rule 中自定义，也可以是被监控端组件采集数据后发给 proms 的。</p>
+</blockquote>
+<h2 id="Prometheus-主程">Prometheus 主程</h2>
 <pre><code class="language-bash">mkdir /export/docker-data-proms/&#123;data,conf&#125; -p
 chmod 777 /export/docker-data-proms/data
 </code></pre>
-<ul>
-<li>prometheus.yml (写入到 /export/docker-data-proms/promethesu.yml)</li>
-</ul>
+<h3 id="配置-3">配置</h3>
+<h4 id="主配置">主配置</h4>
+<p>/export/docker-data-proms/promethesu.yml</p>
 <pre><code class="language-:"># my global config
 global:
-  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  scrape_interval:     15s # 设置采集间隔为每15秒一次。默认值为每1分钟一次。
+  evaluation_interval: 15s # 每15秒评估一次规则。默认为每1分钟一次。
   # scrape_timeout is set to the global default (10s).
 
-# Alertmanager configuration
+# 告警管理器配置
 alerting:
   alertmanagers:
   - static_configs:
     - targets:
       - alertmanager:9093
 
-# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+# 一次加载规则，并根据全局的'evaluation_interval'定期评估规则。
 rule_files:
   - &quot;/etc/prometheus/conf/rules/*.yml&quot;
 
@@ -1433,29 +1479,30 @@ scrape_configs:
 
   - job_name: &quot;dockersInfo&quot;
     static_configs:
-    - targets: ['10.3.128.250:10052','47.92.212.25:10052']
+    - targets: ['192.168.1.1:10052','192.168.1.2:10052']
 
   - job_name: &quot;node_exporter&quot;
     static_configs:
-    - targets: ['10.3.128.250:9100','47.92.212.25:9100']
+    - targets: ['192.168.1.1:9100','192.168.1.2:9100']
 </code></pre>
-<ul>
-<li>rules.yml (写入到 /export/docker-data-proms/conf/rules/)</li>
-</ul>
+<h4 id="定义需要告警的指标规则">定义需要告警的指标规则</h4>
+<p>将采集的数据指标通过 expr 进行运算，并通过 record 进行命名</p>
+<h5 id="主机监控指标规则">主机监控指标规则</h5>
+<p>/export/docker-data-proms/conf/rules/node-exporter-record-rules.yml</p>
 <pre><code class="language-bash"># node-exporter-record-rules.yml
 # 标签 job 关联主配置定义的任务 node_exporter，获取任务传递的数据，从而抽取信息定义 expr
 # 给 expr 表达式设置一个别名 record, 别名可以被其它 rules 调用
 
 groups:
-  - name: node_exporter-exist
+  - name: node_exporter-record
     rules:
-    - expr: up&#123;job=~&quot;node_exporter&quot;&#125;
+    - expr: up&#123;job=~&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:up
       labels:
         desc: &quot;节点是否在线, 在线1,不在线0&quot;
         unit: &quot; &quot;
         job: &quot;node_exporter&quot;
-    - expr: time() - node_boot_time_seconds&#123;&#125;
+    - expr: time() - node_boot_time_seconds&#123;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:node_uptime
       labels:
         desc: &quot;节点的运行时间&quot;
@@ -1463,21 +1510,21 @@ groups:
         job: &quot;node_exporter&quot;
 ##############################################################################################
 #                              cpu                                                           #
-    - expr: (1 - avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100
+    - expr: (1 - avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:total:percent
       labels:
         desc: &quot;节点的cpu总消耗百分比&quot;
         unit: &quot;%&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:idle:percent
       labels:
         desc: &quot;节点的cpu idle百分比&quot;
         unit: &quot;%&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;iowait&quot;&#125;[5m])))  * 100
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;iowait&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:iowait:percent
       labels:
         desc: &quot;节点的cpu iowait百分比&quot;
@@ -1485,21 +1532,21 @@ groups:
         job: &quot;node_exporter&quot;
 
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;system&quot;&#125;[5m])))  * 100
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;system&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:system:percent
       labels:
         desc: &quot;节点的cpu system百分比&quot;
         unit: &quot;%&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;user&quot;&#125;[5m])))  * 100
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;user&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:user:percent
       labels:
         desc: &quot;节点的cpu user百分比&quot;
         unit: &quot;%&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=~&quot;softirq|nice|irq|steal&quot;&#125;[5m])))  * 100
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=~&quot;softirq|nice|irq|steal&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:other:percent
       labels:
         desc: &quot;节点的cpu 其他的百分比&quot;
@@ -1507,42 +1554,42 @@ groups:
         job: &quot;node_exporter&quot;
 ##############################################################################################
 #                                    memory                                                  #
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:total
       labels:
         desc: &quot;节点的内存总量&quot;
         unit: byte
         job: &quot;node_exporter&quot;
 
-    - expr: node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;
+    - expr: node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:free
       labels:
         desc: &quot;节点的剩余内存量&quot;
         unit: byte
         job: &quot;node_exporter&quot;
 
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:used
       labels:
         desc: &quot;节点的已使用内存量&quot;
         unit: byte
         job: &quot;node_exporter&quot;
 
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125;
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:actualused
       labels:
         desc: &quot;节点用户实际使用的内存量&quot;
         unit: byte
         job: &quot;node_exporter&quot;
 
-    - expr: (1-(node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100
+    - expr: (1-(node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:used:percent
       labels:
         desc: &quot;节点的内存使用百分比&quot;
         unit: &quot;%&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: ((node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100
+    - expr: ((node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:free:percent
       labels:
         desc: &quot;节点的内存剩余百分比&quot;
@@ -1550,21 +1597,21 @@ groups:
         job: &quot;node_exporter&quot;
 ##############################################################################################
 #                                   load                                                     #
-    - expr: sum by (instance) (node_load1&#123;job=&quot;node_exporter&quot;&#125;)
+    - expr: sum by (instance) (node_load1&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:load:load1
       labels:
         desc: &quot;系统1分钟负载&quot;
         unit: &quot; &quot;
         job: &quot;node_exporter&quot;
 
-    - expr: sum by (instance) (node_load5&#123;job=&quot;node_exporter&quot;&#125;)
+    - expr: sum by (instance) (node_load5&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:load:load5
       labels:
         desc: &quot;系统5分钟负载&quot;
         unit: &quot; &quot;
         job: &quot;node_exporter&quot;
 
-    - expr: sum by (instance) (node_load15&#123;job=&quot;node_exporter&quot;&#125;)
+    - expr: sum by (instance) (node_load15&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:load:load15
       labels:
         desc: &quot;系统15分钟负载&quot;
@@ -1573,56 +1620,56 @@ groups:
 
 ##############################################################################################
 #                                 disk                                                       #
-    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot; ,fstype=~&quot;ext4|xfs&quot;&#125;
+    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot; ,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:usage:total
       labels:
         desc: &quot;节点的磁盘总量&quot;
         unit: byte
         job: &quot;node_exporter&quot;
 
-    - expr: node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;
+    - expr: node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:usage:free
       labels:
         desc: &quot;节点的磁盘剩余空间&quot;
         unit: byte
         job: &quot;node_exporter&quot;
 
-    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;
+    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:usage:used
       labels:
         desc: &quot;节点的磁盘使用的空间&quot;
         unit: byte
         job: &quot;node_exporter&quot;
 
-    - expr:  (1 - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100
+    - expr:  (1 - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:used:percent
       labels:
         desc: &quot;节点的磁盘的使用百分比&quot;
         unit: &quot;%&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: irate(node_disk_reads_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])
+    - expr: irate(node_disk_reads_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:read:count:rate
       labels:
         desc: &quot;节点的磁盘读取速率&quot;
         unit: &quot;次/秒&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: irate(node_disk_writes_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])
+    - expr: irate(node_disk_writes_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:write:count:rate
       labels:
         desc: &quot;节点的磁盘写入速率&quot;
         unit: &quot;次/秒&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: (irate(node_disk_written_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024
+    - expr: (irate(node_disk_written_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:read:mb:rate
       labels:
         desc: &quot;节点的设备读取MB速率&quot;
         unit: &quot;MB/s&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: (irate(node_disk_read_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024
+    - expr: (irate(node_disk_read_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:write:mb:rate
       labels:
         desc: &quot;节点的设备写入MB速率&quot;
@@ -1631,7 +1678,7 @@ groups:
 
 ##############################################################################################
 #                                filesystem                                                  #
-    - expr:   (1 -node_filesystem_files_free&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_files&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100
+    - expr:   (1 -node_filesystem_files_free&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_files&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:filesystem:used:percent
       labels:
         desc: &quot;节点的inode的剩余可用的百分比&quot;
@@ -1639,14 +1686,14 @@ groups:
         job: &quot;node_exporter&quot;
 #############################################################################################
 #                                filefd                                                     #
-    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;
+    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:filefd_allocated:count
       labels:
         desc: &quot;节点的文件描述符打开个数&quot;
         unit: &quot;%&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;/node_filefd_maximum&#123;job=&quot;node_exporter&quot;&#125; * 100
+    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;/node_filefd_maximum&#123;job=&quot;node_exporter&quot;&#125; * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:filefd_allocated:percent
       labels:
         desc: &quot;节点的文件描述符打开百分比&quot;
@@ -1655,63 +1702,63 @@ groups:
 
 #############################################################################################
 #                                network                                                    #
-    - expr: avg by (environment,instance,device) (irate(node_network_receive_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))
+    - expr: avg by (environment,instance,device) (irate(node_network_receive_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netin:bit:rate
       labels:
         desc: &quot;节点网卡eth0每秒接收的比特数&quot;
         unit: &quot;bit/s&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: avg by (environment,instance,device) (irate(node_network_transmit_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))
+    - expr: avg by (environment,instance,device) (irate(node_network_transmit_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netout:bit:rate
       labels:
         desc: &quot;节点网卡eth0每秒发送的比特数&quot;
         unit: &quot;bit/s&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: avg by (environment,instance,device) (irate(node_network_receive_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))
+    - expr: avg by (environment,instance,device) (irate(node_network_receive_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netin:packet:rate
       labels:
         desc: &quot;节点网卡每秒接收的数据包个数&quot;
         unit: &quot;个/秒&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: avg by (environment,instance,device) (irate(node_network_transmit_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))
+    - expr: avg by (environment,instance,device) (irate(node_network_transmit_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netout:packet:rate
       labels:
         desc: &quot;节点网卡发送的数据包个数&quot;
         unit: &quot;个/秒&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: avg by (environment,instance,device) (irate(node_network_receive_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))
+    - expr: avg by (environment,instance,device) (irate(node_network_receive_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netin:error:rate
       labels:
         desc: &quot;节点设备驱动器检测到的接收错误包的数量&quot;
         unit: &quot;个/秒&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: avg by (environment,instance,device) (irate(node_network_transmit_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))
+    - expr: avg by (environment,instance,device) (irate(node_network_transmit_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netout:error:rate
       labels:
         desc: &quot;节点设备驱动器检测到的发送错误包的数量&quot;
         unit: &quot;个/秒&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;established&quot;&#125;
+    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;established&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:tcp:established:count
       labels:
         desc: &quot;节点当前established的个数&quot;
         unit: &quot;个&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;time_wait&quot;&#125;
+    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;time_wait&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:tcp:timewait:count
       labels:
         desc: &quot;节点timewait的连接数&quot;
         unit: &quot;个&quot;
         job: &quot;node_exporter&quot;
 
-    - expr: sum by (environment,instance) (node_tcp_connection_states&#123;job=&quot;node_exporter&quot;&#125;)
+    - expr: sum by (environment,instance) (node_tcp_connection_states&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:tcp:total:count
       labels:
         desc: &quot;节点tcp连接总数&quot;
@@ -1719,7 +1766,7 @@ groups:
         job: &quot;node_exporter&quot;
 #############################################################################################
 #                                process                                                    #
-    - expr: node_processes_state&#123;state=&quot;Z&quot;&#125;
+    - expr: node_processes_state&#123;state=&quot;Z&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:process:zoom:total:count
       labels:
         desc: &quot;节点当前状态为zoom的个数&quot;
@@ -1727,7 +1774,7 @@ groups:
         job: &quot;node_exporter&quot;
 #############################################################################################
 #                                other                                                    #
-    - expr: abs(node_timex_offset_seconds&#123;job=&quot;node_exporter&quot;&#125;)
+    - expr: abs(node_timex_offset_seconds&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:time:offset
       labels:
         desc: &quot;节点的时间偏差&quot;
@@ -1735,9 +1782,306 @@ groups:
         job: &quot;node_exporter&quot;
 #############################################################################################
 #
-    - expr: count by (instance) ( count by (instance,cpu) (node_cpu_seconds_total&#123; mode='system'&#125;) )
+    - expr: count by (instance) ( count by (instance,cpu) (node_cpu_seconds_total&#123; mode='system'&#125;) ) * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:count
 </code></pre>
+<h5 id="容器监控指标规则">容器监控指标规则</h5>
+<p>/export/docker-data-proms/conf/rules/dockersInfo-record-rules.yml</p>
+<pre><code class="language-yaml">groups:
+  - name: node_exporter-record
+    rules:
+    - expr: up&#123;job=~&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:up
+      labels:
+        desc: &quot;节点是否在线, 在线1,不在线0&quot;
+        unit: &quot; &quot;
+        job: &quot;node_exporter&quot;
+    - expr: time() - node_boot_time_seconds&#123;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:node_uptime
+      labels:
+        desc: &quot;节点的运行时间&quot;
+        unit: &quot;s&quot;
+        job: &quot;node_exporter&quot;
+##############################################################################################
+#                              cpu                                                           #
+    - expr: (1 - avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:cpu:total:percent
+      labels:
+        desc: &quot;节点的cpu总消耗百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:cpu:idle:percent
+      labels:
+        desc: &quot;节点的cpu idle百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;iowait&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:cpu:iowait:percent
+      labels:
+        desc: &quot;节点的cpu iowait百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;system&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:cpu:system:percent
+      labels:
+        desc: &quot;节点的cpu system百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;user&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:cpu:user:percent
+      labels:
+        desc: &quot;节点的cpu user百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=~&quot;softirq|nice|irq|steal&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:cpu:other:percent
+      labels:
+        desc: &quot;节点的cpu 其他的百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+##############################################################################################
+#                                    memory                                                  #
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:memory:total
+      labels:
+        desc: &quot;节点的内存总量&quot;
+        unit: byte
+        job: &quot;node_exporter&quot;
+
+    - expr: node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:memory:free
+      labels:
+        desc: &quot;节点的剩余内存量&quot;
+        unit: byte
+        job: &quot;node_exporter&quot;
+
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:memory:used
+      labels:
+        desc: &quot;节点的已使用内存量&quot;
+        unit: byte
+        job: &quot;node_exporter&quot;
+
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:memory:actualused
+      labels:
+        desc: &quot;节点用户实际使用的内存量&quot;
+        unit: byte
+        job: &quot;node_exporter&quot;
+
+    - expr: (1-(node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:memory:used:percent
+      labels:
+        desc: &quot;节点的内存使用百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: ((node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:memory:free:percent
+      labels:
+        desc: &quot;节点的内存剩余百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+##############################################################################################
+#                                   load                                                     #
+    - expr: sum by (instance) (node_load1&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:load:load1
+      labels:
+        desc: &quot;系统1分钟负载&quot;
+        unit: &quot; &quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: sum by (instance) (node_load5&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:load:load5
+      labels:
+        desc: &quot;系统5分钟负载&quot;
+        unit: &quot; &quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: sum by (instance) (node_load15&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:load:load15
+      labels:
+        desc: &quot;系统15分钟负载&quot;
+        unit: &quot; &quot;
+        job: &quot;node_exporter&quot;
+
+##############################################################################################
+#                                 disk                                                       #
+    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot; ,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:usage:total
+      labels:
+        desc: &quot;节点的磁盘总量&quot;
+        unit: byte
+        job: &quot;node_exporter&quot;
+
+    - expr: node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:usage:free
+      labels:
+        desc: &quot;节点的磁盘剩余空间&quot;
+        unit: byte
+        job: &quot;node_exporter&quot;
+
+    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:usage:used
+      labels:
+        desc: &quot;节点的磁盘使用的空间&quot;
+        unit: byte
+        job: &quot;node_exporter&quot;
+
+    - expr:  (1 - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:used:percent
+      labels:
+        desc: &quot;节点的磁盘的使用百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: irate(node_disk_reads_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:read:count:rate
+      labels:
+        desc: &quot;节点的磁盘读取速率&quot;
+        unit: &quot;次/秒&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: irate(node_disk_writes_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:write:count:rate
+      labels:
+        desc: &quot;节点的磁盘写入速率&quot;
+        unit: &quot;次/秒&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: (irate(node_disk_written_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:read:mb:rate
+      labels:
+        desc: &quot;节点的设备读取MB速率&quot;
+        unit: &quot;MB/s&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: (irate(node_disk_read_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:disk:write:mb:rate
+      labels:
+        desc: &quot;节点的设备写入MB速率&quot;
+        unit: &quot;MB/s&quot;
+        job: &quot;node_exporter&quot;
+
+##############################################################################################
+#                                filesystem                                                  #
+    - expr:   (1 -node_filesystem_files_free&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_files&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:filesystem:used:percent
+      labels:
+        desc: &quot;节点的inode的剩余可用的百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+#############################################################################################
+#                                filefd                                                     #
+    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:filefd_allocated:count
+      labels:
+        desc: &quot;节点的文件描述符打开个数&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;/node_filefd_maximum&#123;job=&quot;node_exporter&quot;&#125; * 100 * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:filefd_allocated:percent
+      labels:
+        desc: &quot;节点的文件描述符打开百分比&quot;
+        unit: &quot;%&quot;
+        job: &quot;node_exporter&quot;
+
+#############################################################################################
+#                                network                                                    #
+    - expr: avg by (environment,instance,device) (irate(node_network_receive_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:netin:bit:rate
+      labels:
+        desc: &quot;节点网卡eth0每秒接收的比特数&quot;
+        unit: &quot;bit/s&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: avg by (environment,instance,device) (irate(node_network_transmit_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:netout:bit:rate
+      labels:
+        desc: &quot;节点网卡eth0每秒发送的比特数&quot;
+        unit: &quot;bit/s&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: avg by (environment,instance,device) (irate(node_network_receive_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:netin:packet:rate
+      labels:
+        desc: &quot;节点网卡每秒接收的数据包个数&quot;
+        unit: &quot;个/秒&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: avg by (environment,instance,device) (irate(node_network_transmit_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:netout:packet:rate
+      labels:
+        desc: &quot;节点网卡发送的数据包个数&quot;
+        unit: &quot;个/秒&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: avg by (environment,instance,device) (irate(node_network_receive_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:netin:error:rate
+      labels:
+        desc: &quot;节点设备驱动器检测到的接收错误包的数量&quot;
+        unit: &quot;个/秒&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: avg by (environment,instance,device) (irate(node_network_transmit_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:netout:error:rate
+      labels:
+        desc: &quot;节点设备驱动器检测到的发送错误包的数量&quot;
+        unit: &quot;个/秒&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;established&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:tcp:established:count
+      labels:
+        desc: &quot;节点当前established的个数&quot;
+        unit: &quot;个&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;time_wait&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:tcp:timewait:count
+      labels:
+        desc: &quot;节点timewait的连接数&quot;
+        unit: &quot;个&quot;
+        job: &quot;node_exporter&quot;
+
+    - expr: sum by (environment,instance) (node_tcp_connection_states&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:network:tcp:total:count
+      labels:
+        desc: &quot;节点tcp连接总数&quot;
+        unit: &quot;个&quot;
+        job: &quot;node_exporter&quot;
+#############################################################################################
+#                                process                                                    #
+    - expr: node_processes_state&#123;state=&quot;Z&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:process:zoom:total:count
+      labels:
+        desc: &quot;节点当前状态为zoom的个数&quot;
+        unit: &quot;个&quot;
+        job: &quot;node_exporter&quot;
+#############################################################################################
+#                                other                                                    #
+    - expr: abs(node_timex_offset_seconds&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:time:offset
+      labels:
+        desc: &quot;节点的时间偏差&quot;
+        unit: &quot;s&quot;
+        job: &quot;node_exporter&quot;
+#############################################################################################
+#
+    - expr: count by (instance) ( count by (instance,cpu) (node_cpu_seconds_total&#123; mode='system'&#125;) ) * on(instance) group_left(nodename) (node_uname_info)
+      record: node_exporter:cpu:count
+</code></pre>
+<h4 id="定义监控指标阈值规则">定义监控指标阈值规则</h4>
+<h5 id="主机监控指标阈值">主机监控指标阈值</h5>
+<p>/export/docker-data-proms/conf/rules/node-exporter-alert-rules.yml</p>
 <pre><code class="language-bash"># node-exporter-alert-rules.yml
 # 定义告警规则
 # 通过前一个 rules 文件拿到定义的 record 别名来编写 expr 判断式
@@ -1749,7 +2093,7 @@ groups:
       expr: node_exporter:up == 0
       for: 1m
       labels:
-        severity: info
+        severity: critical
       annotations:
         summary: &quot;instance: &#123;&#123; $labels.instance &#125;&#125; 宕机了&quot;
         grafana: &quot;http://jksgg.pengwin.com:3000/d/9CWBz0bik/node-exporter?orgId=1&amp;var-instance=&#123;&#123; $labels.instance &#125;&#125; &quot;
@@ -2011,9 +2355,65 @@ groups:
         summary: &quot;&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）硬盘使用率过高！&quot;
         description: '服务器&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）硬盘使用率超过80%(目前使用:&#123;&#123;printf "%.2f" $value&#125;&#125;%)'
 </code></pre>
-<ul>
-<li>docker</li>
-</ul>
+<h5 id="容器监控指标阈值">容器监控指标阈值</h5>
+<p>/export/docker-data-proms/conf/rules/dockersInfo-alert-rules.yml</p>
+<pre><code class="language-yaml">groups:
+  - name: container-alert
+    rules:
+    - alert: container-restart-times-high
+      expr: dockersInfo:container:restart &gt; 5
+      for: 1m
+      labels:
+        severity: warn
+      annotations:
+        summary: &quot;instance: &#123;&#123; $labels.instance &#125;&#125; 下的 container: &#123;&#123; $labels.name &#125;&#125; 15分钟内重启次数超过5次&quot;
+        grafana: &quot;http://proms.pengwin.com:3000/d/Ss3q6hSZk/dockersinfo?orgId=1&amp;var-node=&#123;&#123; $labels.instance &#125;&#125;&quot;
+        console: &quot;https://ecs.console.aliyun.com/#/server/&#123;&#123; $labels.instanceid &#125;&#125;/detail?regionId=cn-beijing&quot;
+        cloudmonitor: &quot;https://cloudmonitor.console.aliyun.com/#/hostDetail/chart/instanceId=&#123;&#123; $labels.instanceid &#125;&#125;&amp;system=&amp;region=cn-beijing&amp;aliyunhost=true&quot;
+        id: &quot;&#123;&#123; $labels.instanceid &#125;&#125;&quot;
+        type: &quot;aliyun_meta_ecs_info&quot;
+
+    - alert: container-cpu-usage-high
+      expr: dockersInfo:container:cpu:total:percent &gt; 90
+      for: 1m
+      labels:
+        severity: info
+      annotations:
+        summary: &quot;instance: &#123;&#123; $labels.instance &#125;&#125; 下的 container: &#123;&#123; $labels.name &#125;&#125; cpu 使用率持续超过90%.&quot;
+        grafana: &quot;http://proms.pengwin.com:3000/d/Ss3q6hSZk/dockersinfo?orgId=1&amp;var-node=&#123;&#123; $labels.instance &#125;&#125;&quot;
+        console: &quot;https://ecs.console.aliyun.com/#/server/&#123;&#123; $labels.instanceid &#125;&#125;/detail?regionId=cn-beijing&quot;
+        cloudmonitor: &quot;https://cloudmonitor.console.aliyun.com/#/hostDetail/chart/instanceId=&#123;&#123; $labels.instanceid &#125;&#125;&amp;system=&amp;region=cn-beijing&amp;aliyunhost=true&quot;
+        id: &quot;&#123;&#123; $labels.instanceid &#125;&#125;&quot;
+        type: &quot;aliyun_meta_ecs_info&quot;
+
+    - alert: container-cpu-iowait-high
+      expr: dockersInfo:cpu:iowait:percent &gt; 10
+      for: 1m
+      labels:
+        severity: warn
+      annotations:
+        summary: &quot;instance: &#123;&#123; $labels.instance &#125;&#125; 下的 container: &#123;&#123; $labels.name &#125;&#125; cpu iowait 持续超过10%&quot;
+        grafana: &quot;http://proms.pengwin.com:3000/d/Ss3q6hSZk/dockersinfo?orgId=1&amp;var-node=&#123;&#123; $labels.instance &#125;&#125;&quot;
+        console: &quot;https://ecs.console.aliyun.com/#/server/&#123;&#123; $labels.instanceid &#125;&#125;/detail?regionId=cn-beijing&quot;
+        cloudmonitor: &quot;https://cloudmonitor.console.aliyun.com/#/hostDetail/chart/instanceId=&#123;&#123; $labels.instanceid &#125;&#125;&amp;system=&amp;region=cn-beijing&amp;aliyunhost=true&quot;
+        id: &quot;&#123;&#123; $labels.instanceid &#125;&#125;&quot;
+        type: &quot;aliyun_meta_ecs_info&quot;
+
+#    - alert: container-mem-usage-high
+#      expr: dockersInfo:memory:used:percent &gt; 80
+#      for: 1m
+#      labels:
+#        severity: warn
+#      annotations:
+#        summary: &quot;instance: &#123;&#123; $labels.instance &#125;&#125; 下的 container: &#123;&#123; $labels.name &#125;&#125; 内存使用率超过80%&quot;
+#        grafana: &quot;http://proms.pengwin.com:3000/d/Ss3q6hSZk/dockersinfo?orgId=1&amp;var-node=&#123;&#123; $labels.instance &#125;&#125;&quot;
+#        console: &quot;https://ecs.console.aliyun.com/#/server/&#123;&#123; $labels.instanceid &#125;&#125;/detail?regionId=cn-beijing&quot;
+#        cloudmonitor: &quot;https://cloudmonitor.console.aliyun.com/#/hostDetail/chart/instanceId=&#123;&#123; $labels.instanceid &#125;&#125;&amp;system=&amp;region=cn-beijing&amp;aliyunhost=true&quot;
+#        id: &quot;&#123;&#123; $labels.instanceid &#125;&#125;&quot;
+#        type: &quot;aliyun_meta_ecs_info&quot;
+</code></pre>
+<h3 id="部署">部署</h3>
+<h4 id="docker-方式">docker 方式</h4>
 <pre><code class="language-bash">docker run -d \
 --network promsnet \
 -p 9090:9090 \
@@ -2023,9 +2423,7 @@ groups:
 --mount 'type=bind,src=/export/docker-data-proms/conf,dst=/etc/prometheus/conf' \
 prom/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --storage.tsdb.retention=30d
 </code></pre>
-<ul>
-<li>二进制</li>
-</ul>
+<h4 id="二进制方式">二进制方式</h4>
 <pre><code class="language-bash">wget https://github.com/prometheus/prometheus/releases/download/v2.20.0/prometheus-2.20.0.linux-amd64.tar.gz
 mkdir prometheus
 tar xf prometheus-2.20.0.linux-amd64.tar.gz --strip-components 1 -C prometheus
@@ -2048,8 +2446,9 @@ EOF
 systemctl daemon-reload
 systemctl start prometheus
 </code></pre>
+<h3 id="查看">查看</h3>
 <p>被监控端状态：<a target="_blank" rel="noopener" href="http://xxx:9090/targets">http://xxx:9090/targets</a></p>
-<p>通过上述地址，你可以看到配置中 job_name 定义的被监控任务的状态</p>
+<p>通过上述地址，你可以看到配置中 job_name 定义的被监控任务的端点状态</p>
 <p><img src="/posts/65820315/image-20201218112329166.png" alt="image-20201218112329166"></p>
 <h2 id="pushgateway-初期用不上的组件">pushgateway (初期用不上的组件)</h2>
 <blockquote>
@@ -2081,7 +2480,7 @@ count_estab_connections=`netstat -an | grep -i 'established' | wc -l`
 echo &quot;$label $count_estab_connections&quot;  | curl --data-binary @- http://$pushgatewayIp:9091/metrics/job/pushgateway/instance/$instance_name
 </code></pre>
 <h1>被监控端组件</h1>
-<h2 id="node-exporter-物理节点监控">node-exporter 物理节点监控</h2>
+<h2 id="node-exporter-物理节点监控组件">node-exporter 物理节点监控组件</h2>
 <blockquote>
 <p>宿主数据采集端，部署在被监控主机的9100端口</p>
 </blockquote>
@@ -2110,7 +2509,7 @@ systemctl status node_exporter
 curl http://localhost:9100/metrics # 查看获取的监控数据
 systemctl enable node_exporter
 </code></pre>
-<h2 id="cadvisor-容器监控">cadvisor 容器监控</h2>
+<h2 id="cadvisor-容器监控组件">cadvisor 容器监控组件</h2>
 <blockquote>
 <p>容器数据采集端，部署在被监控容器所在宿主的10052端口</p>
 </blockquote>

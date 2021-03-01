@@ -1361,21 +1361,15 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/18e4fa73/">
+			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
+					k8s☞07无状态服务deployment-pod扩缩
 				</h2>
 				<div class="index-brief">
 					前言
-对于更新,我们一般会采用滚动更新,即:
+k8s的pod缩放功能,和aws的auto scaling功能是一回事.虽然可能没有aws的auto scaling功能强大.
+k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设定的cpu阈值,来自动调整deployment中的pod数量.
 
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
@@ -1406,15 +1400,21 @@ https://kubernetes.io/docs/concepts/workl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事.虽然可能没有aws的auto scaling功能强大.
-k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设定的cpu阈值,来自动调整deployment中的pod数量.
+对于更新,我们一般会采用滚动更新,即:
 
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
@@ -1486,15 +1486,17 @@ kubelet 使用存活探测器
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/94518966/">
+			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞03pod
+					k8s☞04pod钩子函数
 				</h2>
 				<div class="index-brief">
 					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
+我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
+k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
+postStart
+
+它将在容器创建后立即运行，但不保证在 ENT
 					...
 				</div>
 			</a>
@@ -1525,17 +1527,15 @@ https://kubernete
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
-
-它将在容器创建后立即运行，但不保证在 ENT
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
@@ -1650,24 +1650,20 @@ pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/aaf9b7/">
+			<a href="/posts/b7cf7b1f/">
 				<h2 class="index-title">
-					k8s☞01常见术语概念
+					docker☞01安装
 				</h2>
 				<div class="index-brief">
-					物理
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
 
-
-master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
-
-
-node 是 k8s 的工作节点，也就是实际跑容器的节点。
-
-
-服务
-master 节点服务
-
-kube-apiserver 是 master 节点服务， 
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
 					...
 				</div>
 			</a>
@@ -1688,7 +1684,7 @@ kube-apiserver 是 master 节点服务，
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 

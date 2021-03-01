@@ -1313,9 +1313,11 @@
 <div id="article-content">
 	<h2 id="前言">前言</h2>
 <p>众所周知, nginx 在配置静态资源的时候, root 和 alias 分别是两种指定资源路径的方式.</p>
-<p>如果 url 是 <code>http://xxx.com/god/a.jpg</code>, location 匹配的是 <code>/god/</code>.</p>
-<p>则当用 root 定位资源路径时, root 指的就是 <a target="_blank" rel="noopener" href="http://xxx.com">xxx.com</a> 所对应的路径, 此时 a.jpg 的物理路径就是  $root/god/a.jpg</p>
-<p>当用 alias 定位资源路径时, alias 指的 <a target="_blank" rel="noopener" href="http://xxx.com/god/">xxx.com/god/</a> 所对应的路径, 此时 a.jpg 的物理路径就是 ${alias}a.jpg</p>
+<p>如果：</p>
+<p>​	url 是 <code>http://xxx.com/god/a.jpg</code>，且 location 匹配的是 <code>/god/</code>.</p>
+<p>则：</p>
+<p>​	当用 root 定位资源路径时, root 配置的值=域名<code>xxx.com</code> 部分所对应的路径, 此时 a.jpg 的物理路径就是  $root/god/a.jpg</p>
+<p>​	当用 alias 定位资源路径时, alias 配置的值=url<code>xxx.com/god/</code>部分所对应的路径, 此时 a.jpg 的物理路径就是 ${alias}a.jpg</p>
 <p>即</p>
 <pre><code class="language-bash">location ^~ /god/ &#123;
     root /export/webapps/xxx.com;
@@ -1327,10 +1329,22 @@ location ^~ /god/ &#123;
     alias /export/webapps/xxx.com/god/;
 &#125;
 </code></pre>
-<p>然后问题出现了. 当我采用上述规则,去配置fcgi的时候,现实给了我暴击…妥妥的404了.</p>
+<p>当我采用上述规则, 使用alias配置fcgi的时候,现实给了我暴击…妥妥的404了.</p>
 <h2 id="在fcgi环境下-alias-的配置">在fcgi环境下, alias 的配置</h2>
 <p>废话不多说, 直接上结果.</p>
 <pre><code class="language-bash">location ^~ /god/ &#123;
+     index  index.php index.html index.htm;
+     root /export/webapps/xxx.com/;
+     location ~* &quot;\.php$&quot; &#123;
+         try_files      $uri =404;
+         fastcgi_pass   127.0.0.1:9000;
+         fastcgi_index  index.php;
+         include        fastcgi.conf;
+         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+     &#125;
+ &#125;
+ 
+location ^~ /god/ &#123;
     index  index.php index.html index.htm;
     alias /export/webapps/xxx.com/god/;
     location ~* &quot;\.php$&quot; &#123;
@@ -1345,12 +1359,19 @@ location ^~ /god/ &#123;
 <p>官方的例子:</p>
 <p><a target="_blank" rel="noopener" href="https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#use-request-filename-for-script-filename">https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#use-request-filename-for-script-filename</a></p>
 </blockquote>
-<p>这里, 当你用 alias 而不是 root 的时候, 你需要将 $document_root$fastcgi_script_name 替换成 $request_filename.</p>
-<p>假设你访问 /god/api.php, 而这个文件的物理路径是 /export/webapps/xxx.com/god/api.php</p>
-<p>但是 $document_root$fastcgi_script_name 指的是 /export/webapps/xxx.com/god//god/api.php, 这是不对的.</p>
-<p>此时 $request_filename 指的是 /export/webapps/xxx.com/god/api.php.</p>
-<p>其次, 当你使用了 $request_filename 的时候, 则 fastcgi_index 将无法正常工作, 因此你需要显式的指定 index. 即:</p>
-<p>index  index.php index.html index.htm;</p>
+<p>关键点：</p>
+<ol>
+<li>当你用 alias 而不是 root 的时候, 你需要将$document_root$fastcgi_script_name替换成$request_filename</li>
+<li>当你不在使用$fastcgi_script_name的时候，你需要显性的添加index，而不是fastcgi_index ,因为$request_filename并不能关联fastcgi_index。</li>
+</ol>
+<p>原因在于$document_root的值，来自于root或者alias，$fastcgi_script_name总是拿url_path</p>
+<p>假设你访问 /god/api.php,  而这个文件的物理路径是/export/webapps/xxx.com/god/api.php。</p>
+<p>此时，</p>
+<p>当你用 alias 的时候</p>
+<p>$document_root = alias = /export/webapps/xxx.com/god/</p>
+<p>$fastcgi_script_name = /god/api.php</p>
+<p>$document_root$fastcgi_script_name=/export/webapps/xxx.com/god//god/api.php</p>
+<p>而$request_filename当前文件的请求路径，由root或者alias+uri相对路径</p>
 
 </div>
 

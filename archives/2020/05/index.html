@@ -1285,8 +1285,10 @@
 				<div class="index-brief">
 					前言
 众所周知, nginx 在配置静态资源的时候, root 和 alias 分别是两种指定资源路径的方式.
-如果 url 是 http://xxx.com/god/a.jpg, location 匹配的是 /god/.
-则当用 root 定位资源路径时, root 指的就是 xxx.com 所对
+如果：
+​	url 是 http://xxx.com/god/a.jpg，且 location 匹配的是 /god/.
+则：
+​	当用 root 定位资源路径时, root 配置的值=域名
 					...
 				</div>
 			</a>

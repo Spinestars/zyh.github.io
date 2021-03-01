@@ -1284,20 +1284,16 @@
 				</h2>
 				<div class="index-brief">
 					前言
-所需准备：
-
-所有资源机器，确保时间一致
-
+prometheus 监控的构建，相比 zabbix 来说，还是要麻烦一些。
+当然，如果你完全熟悉之后，配置文件化也更容易被其他系统所修改。
 监控端组件
 搞之前，先创建一个网络
 docker network create promsnet
-grafana 界面
+grafana
 
 数据展示，部署在 proms 端
 
-docker volume create grafana
-docker run -d \
- 
+
 					...
 				</div>
 			</a>
@@ -1503,8 +1499,10 @@ export PATH=$JAV
 				<div class="index-brief">
 					前言
 众所周知, nginx 在配置静态资源的时候, root 和 alias 分别是两种指定资源路径的方式.
-如果 url 是 http://xxx.com/god/a.jpg, location 匹配的是 /god/.
-则当用 root 定位资源路径时, root 指的就是 xxx.com 所对
+如果：
+​	url 是 http://xxx.com/god/a.jpg，且 location 匹配的是 /god/.
+则：
+​	当用 root 定位资源路径时, root 配置的值=域名
 					...
 				</div>
 			</a>

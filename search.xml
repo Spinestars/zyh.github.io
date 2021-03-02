@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>rabbitmq☞安装</title>
+      <link href="posts/b43013ef/"/>
+      <url>posts/b43013ef/</url>
+      
+        <content type="html"><![CDATA[<h2 id="安装rabbitmq-server">安装rabbitmq server</h2><h3 id="docker方式">docker方式</h3><pre><code class="language-bash"># https://hub.docker.com/_/rabbitmq, 然后搜索 management 版本 [docker pull rabbitmq:management]mkdir /export/docker-data-rabbitmqpwd=`cat /proc/sys/kernel/random/uuid | cut -d'-' -f1`echo mq@$&#123;pwd&#125;;container_name=rabbitmqnetwork=cmsdocker run --name $&#123;container_name&#125; \--hostname $&#123;container_name&#125; \--network $&#123;network&#125; \--restart always \-p 5672:5672 -p 15672:15672 \--cpus=1 \--memory=1G --memory-swap=1G \--ulimit nofile=204800 \--mount &quot;type=bind,src=/export/docker-data-rabbitmq,dst=/var/lib/rabbitmq&quot; \-e RABBITMQ_DEFAULT_VHOST=rabbitmq \-e RABBITMQ_DEFAULT_USER=admin \-e RABBITMQ_DEFAULT_PASS=mq@$&#123;pwd&#125; \-d rabbitmq:3.8.13-management</code></pre><h3 id="rpm方式">rpm方式</h3><pre><code># 安装 erlang 的 rabbitmq 兼容版方式 (卸载命令 yum erase erlang-*)yum install -y https://github.com/rabbitmq/erlang-rpm/releases/download/v22.0.7/erlang-22.0.7-1.el6.x86_64.rpm# 安装 rabbitmq-serveryum install -y https://dl.bintray.com/rabbitmq/all/rabbitmq-server/3.7.15/rabbitmq-server-3.7.15-1.el6.noarch.rpm;## 开启管理rabbitmq-plugins enable rabbitmq_management;# 修改一些小配置vim /etc/rabbitmq/rabbitmq.conflog.file.level = warninglog.file = rabbitmq.logvim /etc/rabbitmq/rabbitmq-env.confRABBITMQ_LOG_BASE=/export/rabbitmq/logsmkdir -p /export/rabbitmq/logs &amp;&amp; chown rabbitmq:rabbitmq /export/rabbitmq/logschown rabbitmq.rabbitmq /var/lib/rabbitmq/.erlang.cookie;echo '* soft nofile 202400' &gt;&gt; /etc/security/limits.confecho '* hard nofile 202400' &gt;&gt; /etc/security/limits.conf/etc/init.d/rabbitmq-server restart;</code></pre><h3 id="添加用户和虚拟主机">添加用户和虚拟主机</h3><pre><code class="language-bash">#输入http://ip:15672可以登录管理界面,# rpm 安装后，只有默认账户guest/guest.# docker 安装后，有 admin/admin 用户# 添加一个 vhostpro_vhost=rabbitmqctl add_vhost $&#123;pro_vhost&#125;# 添加一个新用户user_name=pwd=`cat /proc/sys/kernel/random/uuid | cut -d'-' -f1`rabbitmqctl add_user $&#123;user_name&#125; mq@$&#123;pwd&#125;;echo &quot;$&#123;user_name&#125;用户密码是：mq@$&#123;pwd&#125;&quot;#该命令使用户 user_name 具有 pro_vhost 中所有资源的配置、写、读权限以便管理其中的资源# rabbitmqctl set_permissions -p vhost User ConfP WriteP ReadPrabbitmqctl set_permissions -p $&#123;pro_vhost&#125; $&#123;user_name&#125; &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;; # 用户绑定 tags# tags决定了用户更高级的权限，## 超级管理员(administrator)：可登陆管理控制台(启用management plugin的情况下)，可查看所有的信息，并且可以对用户，策略(policy)进行操作。## 监控者(monitoring)：可登陆管理控制台(启用management plugin的情况下)，同时可以查看rabbitmq节点的相关信息(进程数，内存使用情况，磁盘使用情况等)## 策略制定者(policymaker)：可登陆管理控制台(启用management plugin的情况下), 同时可以对policy进行管理。但无法查看节点的相关信息(上图红框标识的部分)## 普通管理者(management)：仅可登陆管理控制台(启用management plugin的情况下)，无法看到节点信息，也无法对策略进行管理。## 其他(other)：无法登陆管理控制台，通常就是普通的生产者和消费者。user_tag=rabbitmqctl set_user_tags $&#123;user_name&#125; $&#123;user_tag&#125;;#查看所有用户rabbitmqctl list_users;</code></pre><h3 id="状态">状态</h3><pre><code class="language-bash">rabbitmqctl statusrabbitmqctl list_queues -p &lt;vhost_name&gt;</code></pre><h3 id="队列">队列</h3><pre><code class="language-bash">rabbitmqctl list_queues --vhost &lt;&gt;</code></pre><h2 id="php使用">php使用</h2><pre><code>wget https://github.com/alanxz/rabbitmq-c/releases/download/v0.7.1/rabbitmq-c-0.7.1.tar.gz;tar xf rabbitmq-c-0.7.1.tar.gz;cd rabbitmq-c-0.7.1;./configure --prefix=/usr/local/rabbitmq-c-0.7.1;make &amp;&amp; make install;cd ..;wget https://pecl.php.net/get/amqp-1.9.3.tgz;tar xf amqp-1.9.3.tgz;cd amqp-1.9.3;/usr/local/php/bin/phpize;./configure --with-php-config=/usr/local/php/bin/php-config --with-amqp --with-librabbitmq-dir=/usr/local/rabbitmq-c-0.7.1;make &amp;&amp; make install;php.ini里添加生成的amqp.so的路径信息extension = /usr/local/php/lib/php/extensions/no-debug-non-zts-20160303/amqp.so</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 中间件 </category>
+          
+          <category> rabbitmq </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 安装 </tag>
+            
+            <tag> rabbitmq </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>jenkins☞动态agent</title>
       <link href="posts/3b5cd3e1/"/>
       <url>posts/3b5cd3e1/</url>
@@ -188,9 +217,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> kubeadm </tag>
             
@@ -221,9 +250,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> 证书 </tag>
             
@@ -252,9 +281,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> authorization </tag>
             
@@ -283,9 +312,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> storage </tag>
             
@@ -305,16 +334,16 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> 其它 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> vsftpd </tag>
+            
+            <tag> 安装 </tag>
             
         </tags>
       
@@ -368,9 +397,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> ingress </tag>
             
@@ -399,9 +428,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> StatefulSet </tag>
             
@@ -430,9 +459,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> DaemonSet </tag>
             
@@ -461,13 +490,13 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
             
-            <tag> 资源约束 </tag>
+            <tag> k8s </tag>
             
             <tag> namespace </tag>
+            
+            <tag> 资源约束 </tag>
             
         </tags>
       
@@ -494,9 +523,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -527,9 +556,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> ConfigMap </tag>
             
@@ -560,9 +589,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> ConfigMap </tag>
             
@@ -593,9 +622,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> service </tag>
             
@@ -624,9 +653,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> deployment </tag>
             
@@ -655,9 +684,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> deployment </tag>
             
@@ -713,9 +742,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -773,9 +802,9 @@
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> 安装 </tag>
+            
+            <tag> docker </tag>
             
             <tag> zabbix </tag>
             
@@ -833,9 +862,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -864,9 +893,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -895,9 +924,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -924,9 +953,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -1211,7 +1240,7 @@
     
     
     <entry>
-      <title>安装库☞nginx</title>
+      <title>nginx☞安装</title>
       <link href="posts/6209085/"/>
       <url>posts/6209085/</url>
       
@@ -1220,16 +1249,18 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> web </category>
+          
+          <category> nginx </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> nginx </tag>
+            <tag> 安装 </tag>
             
-            <tag> shell </tag>
+            <tag> nginx </tag>
             
         </tags>
       
@@ -1286,7 +1317,7 @@
     
     
     <entry>
-      <title>安装库☞redis</title>
+      <title>redis☞安装</title>
       <link href="posts/65ab632a/"/>
       <url>posts/65ab632a/</url>
       
@@ -1295,72 +1326,18 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> 数据库 </category>
+          
+          <category> redis </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> docker </tag>
-            
-            <tag> shell </tag>
+            <tag> 安装 </tag>
             
             <tag> redis </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>日志 ☞ logrotate</title>
-      <link href="posts/421d605e/"/>
-      <url>posts/421d605e/</url>
-      
-        <content type="html"><![CDATA[<h4 id="前言">前言</h4><p>logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转</p><h4 id="logrotate-版本更新">logrotate 版本更新</h4><blockquote><p>确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本 <a href="logrotate">logrotate</a></p><p>或者也可以直接去 github 上拉取https://github.com/logrotate/logrotate</p></blockquote><h4 id="添加-logrotate-配置">添加 logrotate 配置</h4><pre><code class="language-bash"># 添加所需切割的日志配置cat &gt; /etc/logrotate.d/nginx &lt;&lt; 'EOF'/usr/local/nginx/logs/access.log &#123;  # 定义日志位置 hourly    # 按照小时切割 rotate 2  # 最多保留两份切割日志 missingok nocompress sharedscripts postrotate  /bin/kill -USR1 `cat /usr/local/nginx/logs/nginx.pid 2&gt;/dev/null` 2&gt;/dev/null || true endscript&#125;EOF</code></pre><h4 id="添加-crontab-配置">添加 crontab 配置</h4><pre><code class="language-bash"># 添加logrotate执行脚本cp /etc/cron.daily/logrotate /etc/cron.hourly/</code></pre><h4 id="重载-crond-服务">重载 crond 服务</h4><pre><code class="language-bash">systemctl reload crond</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 日志 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> logrotate </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞web监控</title>
-      <link href="posts/3d20f83e/"/>
-      <url>posts/3d20f83e/</url>
-      
-        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if args in line:            if &quot;??&quot; in line:                line = line.strip('\n').split(&quot;??&quot;)            elif &quot;?&quot; in line:                line = line.strip('\n').split(&quot;?&quot;)            else:                line = line.strip('\n')            try:                try:                    response = urllib2.urlopen(line[0], data=line[1], timeout=5)                    print response.code                except IndexError:                    response = urllib2.urlopen(line[0], timeout=5)                    print response.code                finally:                    response = urllib2.urlopen(line, timeout=5)                    print response.code            except urllib2.URLError,e:                if hasattr(e, 'code'):                    print e.code                elif hasattr(e, 'reason'):                    print 53            finally:                if response:                    response.close()                exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>构建一个主机项，监控 agentd</p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182457232.png" alt="image-20200616182457232"></p></li><li><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182509904.png" alt="image-20200616182509904"></p><blockquote><p>100秒以内，收集到三次不是200的数据，就报警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182538573.png" alt="image-20200616182538573"></p></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
             
         </tags>
       
@@ -1398,11 +1375,11 @@
     
     
     <entry>
-      <title>zabbix☞agent和proxy（yum）</title>
-      <link href="posts/1587f6e8/"/>
-      <url>posts/1587f6e8/</url>
+      <title>zabbix☞web监控</title>
+      <link href="posts/3d20f83e/"/>
+      <url>posts/3d20f83e/</url>
       
-        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><pre><code># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if args in line:            if &quot;??&quot; in line:                line = line.strip('\n').split(&quot;??&quot;)            elif &quot;?&quot; in line:                line = line.strip('\n').split(&quot;?&quot;)            else:                line = line.strip('\n')            try:                try:                    response = urllib2.urlopen(line[0], data=line[1], timeout=5)                    print response.code                except IndexError:                    response = urllib2.urlopen(line[0], timeout=5)                    print response.code                finally:                    response = urllib2.urlopen(line, timeout=5)                    print response.code            except urllib2.URLError,e:                if hasattr(e, 'code'):                    print e.code                elif hasattr(e, 'reason'):                    print 53            finally:                if response:                    response.close()                exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>构建一个主机项，监控 agentd</p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182457232.png" alt="image-20200616182457232"></p></li><li><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182509904.png" alt="image-20200616182509904"></p><blockquote><p>100秒以内，收集到三次不是200的数据，就报警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182538573.png" alt="image-20200616182538573"></p></li></ul>]]></content>
       
       
       <categories>
@@ -1456,11 +1433,40 @@
     
     
     <entry>
-      <title>监控☞企业微信机器人</title>
-      <link href="posts/8c33f887/"/>
-      <url>posts/8c33f887/</url>
+      <title>zabbix☞agent和proxy（yum）</title>
+      <link href="posts/1587f6e8/"/>
+      <url>posts/1587f6e8/</url>
       
-        <content type="html"><![CDATA[<h4 id="shell">shell</h4><pre><code class="language-bash">wechatUrl=wechatData=curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot;markdown&quot;: &#123;&quot;content&quot;: &quot;`'&quot;$wechatData&quot;'`&quot;&#125;&#125;'</code></pre><h4 id="python">python</h4><pre><code class="language-python">import json, requestswechatData=&#123;&quot;msgtype&quot;: &quot;text&quot;,&quot;text&quot;: &#123;&quot;content&quot;: &quot;&quot;&#125;&#125;wechatData['text']['content']='广州今日天气：29度，大部分多云，降雨概率：60%'wechatData['text']['mentioned_list']=[&quot;zyh&quot;]  # all 代表群组所有人wechatData=json.dumps(wechatData)wechatUrl=requests.post(url=wechatUrl, headers=&#123;&quot;Content-Type&quot;: &quot;application/json&quot;&#125;, data=wechatData, timeout=5)</code></pre>]]></content>
+        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><pre><code># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>监控 ☞ 微信预警</title>
+      <link href="posts/f9b08c30/"/>
+      <url>posts/f9b08c30/</url>
+      
+        <content type="html"><![CDATA[<pre><code class="language-bash"># conf.ini[wechat]corpid = [app]it = &lt;app_agent_id&gt;:&lt;app_secret&gt;[group]it = usera|userb</code></pre><pre><code class="language-python">#!/usr/bin/env python3&quot;&quot;&quot;@author: zyh@contact: aaa103439@hotmail.com@software: vscode@file: sendchat.py@time: 2020/02/05&quot;&quot;&quot;import sys, os, requests, pathlib, json, configparserimport loggingimport logging.handlersfrom datetime import datetimeclass PySendchat():    def __init__(self, corpid, agentid, secret, touser, content):        self.corpid=corpid        self.agentid=agentid        self.secret=secret        self.touser=touser        self.content=content        LOG_PATHDIR=os.path.dirname(os.path.abspath(__file__))        LOG_FILENAME = '&#123;0&#125;/sendchat.log'.format(LOG_PATHDIR)        self.my_logger = logging.getLogger('SendChat')        self.my_logger.setLevel(logging.INFO)        # Add the log message handler to the logger        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=102400000, backupCount=5)        # create formatter and add it to the handlers        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')        handler.setFormatter(formatter)        self.my_logger.addHandler(handler)    def gettoken(self):        self.my_logger.info('-----------------------------------------------------------------------------------------')        pwd=os.path.dirname(os.path.abspath(__file__))        tokenfile='&#123;0&#125;/wechat.&#123;1&#125;'.format(pwd,self.agentid)        if pathlib.Path(tokenfile).exists():            tokenfilectime=os.path.getctime(tokenfile)            currenttime=datetime.now().timestamp()            dtime=currenttime-tokenfilectime            self.my_logger.info('&#123;0&#125; lived &#123;1&#125;s.'.format(tokenfile, dtime))            if dtime &gt;= 7200:                try:                    os.remove(tokenfile)                    self.my_logger.info('Token file &#123;0&#125;: delete success'.format(tokenfile))                except Exception as e:                    self.my_logger.error('Token file:&#123;0&#125; delete error.Reason:&#123;1&#125;'.format(tokenfile,e))                    exit        # check token file        try:            tokensize = os.path.getsize(tokenfile)        except Exception as e:            self.my_logger.info('Token file is not exist.Reason:&#123;0&#125;'.format(e))            tokensize = 0        # get token from token file        if tokensize != 0:            with open(tokenfile, 'rb') as fd:                token = fd.read() # get token success                self.my_logger.info('Get token from token file.')            jsonObject = json.loads(token.decode(encoding='utf8'))            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token        # get token from weixin api        else:            try:                self.my_logger.info('New Token Create.')                f = requests.get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=&#123;0&#125;&amp;corpsecret=&#123;1&#125;'.format(self.corpid, self.secret))                token = f.content                self.my_logger.info('Get token from weixin api.')                jsonObject = json.loads(token.decode(encoding='utf8'))                errcode=int(jsonObject.get(&quot;errcode&quot;))                if errcode != 0:                    errmsg=jsonObject.get(&quot;errmsg&quot;)                    self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(errmsg))                    exit()            except Exception as e:                self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(e))                exit()            try:                self.my_logger.info('Write token to &#123;0&#125;.'.format(tokenfile))                with open(tokenfile, 'wb') as fd:                    fd.write(token)            except Exception as e:                self.my_logger.error('Write &#123;0&#125; error!Reason:&#123;1&#125;'.format(tokenfile,e))                exit()            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token    def sendmsg(self):        accessToken = self.gettoken()        self.my_logger.info('Token:&#123;0&#125;'.format(accessToken))        sendMapDirectroy = &#123;&#125;        sendMapDirectroy[&quot;agentid&quot;] = self.agentid        sendMapDirectroy[&quot;touser&quot;] = self.touser        sendMapDirectroy[&quot;msgtype&quot;] = &quot;text&quot;        sendMapDirectroy[&quot;safe&quot;] = &quot;0&quot;        contentDirectory = &#123;&#125;        sendMapDirectroy[&quot;text&quot;] = contentDirectory        contentDirectory[&quot;content&quot;] = self.content        bodyStr = json.dumps(sendMapDirectroy, ensure_ascii=False).encode(encoding=&quot;utf-8&quot;)        try:            f = requests.post(url=&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&quot; % accessToken,                          data=bodyStr, timeout=5)            self.my_logger.info(f.content)        except Exception as e:            self.my_logger.error('Send chat network error!Reason:&#123;0&#125;'.format(e))if __name__ == '__main__':    appname = sys.argv[1]    content = sys.argv[3]    # read conf.ini    conf = configparser.ConfigParser()    conf_path = os.path.dirname(os.path.abspath(__file__))    conf_ini = &quot;&#123;0&#125;/conf.ini&quot;.format(conf_path)    if pathlib.Path(conf_ini).exists():        conf.read(conf_ini)        corpid = conf.get(&quot;wechat&quot;, &quot;corpid&quot;)        appinfo = conf.get(&quot;app&quot;, appname)        agentid = appinfo.split(':')[0]        secret = appinfo.split(':')[1]        groupname = conf.get(&quot;group&quot;, appname)        touser = groupname.split(':')[0]        chatobj = PySendchat(corpid, agentid, secret, touser, content)    else:        print('conf.ini error')        exit()    try:        chatobj.sendmsg()    except:        chatobj.my_logger.error(&quot;Send chat failure!&quot;)</code></pre><p>eg:</p><p>python <a href="http://sendchat.py">sendchat.py</a> it ‘’ &lt;预警内容&gt;</p><blockquote><p>创建好app，并关联用户到app</p><p>执行上述命令，会将预警内容通过&lt;app_agent_id&gt; 应用发送给用户usera和userb</p></blockquote>]]></content>
       
       
       <categories>
@@ -1537,11 +1543,11 @@
     
     
     <entry>
-      <title>监控 ☞ 微信预警</title>
-      <link href="posts/f9b08c30/"/>
-      <url>posts/f9b08c30/</url>
+      <title>监控☞企业微信机器人</title>
+      <link href="posts/8c33f887/"/>
+      <url>posts/8c33f887/</url>
       
-        <content type="html"><![CDATA[<pre><code class="language-bash"># conf.ini[wechat]corpid = [app]it = &lt;app_agent_id&gt;:&lt;app_secret&gt;[group]it = usera|userb</code></pre><pre><code class="language-python">#!/usr/bin/env python3&quot;&quot;&quot;@author: zyh@contact: aaa103439@hotmail.com@software: vscode@file: sendchat.py@time: 2020/02/05&quot;&quot;&quot;import sys, os, requests, pathlib, json, configparserimport loggingimport logging.handlersfrom datetime import datetimeclass PySendchat():    def __init__(self, corpid, agentid, secret, touser, content):        self.corpid=corpid        self.agentid=agentid        self.secret=secret        self.touser=touser        self.content=content        LOG_PATHDIR=os.path.dirname(os.path.abspath(__file__))        LOG_FILENAME = '&#123;0&#125;/sendchat.log'.format(LOG_PATHDIR)        self.my_logger = logging.getLogger('SendChat')        self.my_logger.setLevel(logging.INFO)        # Add the log message handler to the logger        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=102400000, backupCount=5)        # create formatter and add it to the handlers        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')        handler.setFormatter(formatter)        self.my_logger.addHandler(handler)    def gettoken(self):        self.my_logger.info('-----------------------------------------------------------------------------------------')        pwd=os.path.dirname(os.path.abspath(__file__))        tokenfile='&#123;0&#125;/wechat.&#123;1&#125;'.format(pwd,self.agentid)        if pathlib.Path(tokenfile).exists():            tokenfilectime=os.path.getctime(tokenfile)            currenttime=datetime.now().timestamp()            dtime=currenttime-tokenfilectime            self.my_logger.info('&#123;0&#125; lived &#123;1&#125;s.'.format(tokenfile, dtime))            if dtime &gt;= 7200:                try:                    os.remove(tokenfile)                    self.my_logger.info('Token file &#123;0&#125;: delete success'.format(tokenfile))                except Exception as e:                    self.my_logger.error('Token file:&#123;0&#125; delete error.Reason:&#123;1&#125;'.format(tokenfile,e))                    exit        # check token file        try:            tokensize = os.path.getsize(tokenfile)        except Exception as e:            self.my_logger.info('Token file is not exist.Reason:&#123;0&#125;'.format(e))            tokensize = 0        # get token from token file        if tokensize != 0:            with open(tokenfile, 'rb') as fd:                token = fd.read() # get token success                self.my_logger.info('Get token from token file.')            jsonObject = json.loads(token.decode(encoding='utf8'))            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token        # get token from weixin api        else:            try:                self.my_logger.info('New Token Create.')                f = requests.get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=&#123;0&#125;&amp;corpsecret=&#123;1&#125;'.format(self.corpid, self.secret))                token = f.content                self.my_logger.info('Get token from weixin api.')                jsonObject = json.loads(token.decode(encoding='utf8'))                errcode=int(jsonObject.get(&quot;errcode&quot;))                if errcode != 0:                    errmsg=jsonObject.get(&quot;errmsg&quot;)                    self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(errmsg))                    exit()            except Exception as e:                self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(e))                exit()            try:                self.my_logger.info('Write token to &#123;0&#125;.'.format(tokenfile))                with open(tokenfile, 'wb') as fd:                    fd.write(token)            except Exception as e:                self.my_logger.error('Write &#123;0&#125; error!Reason:&#123;1&#125;'.format(tokenfile,e))                exit()            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token    def sendmsg(self):        accessToken = self.gettoken()        self.my_logger.info('Token:&#123;0&#125;'.format(accessToken))        sendMapDirectroy = &#123;&#125;        sendMapDirectroy[&quot;agentid&quot;] = self.agentid        sendMapDirectroy[&quot;touser&quot;] = self.touser        sendMapDirectroy[&quot;msgtype&quot;] = &quot;text&quot;        sendMapDirectroy[&quot;safe&quot;] = &quot;0&quot;        contentDirectory = &#123;&#125;        sendMapDirectroy[&quot;text&quot;] = contentDirectory        contentDirectory[&quot;content&quot;] = self.content        bodyStr = json.dumps(sendMapDirectroy, ensure_ascii=False).encode(encoding=&quot;utf-8&quot;)        try:            f = requests.post(url=&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&quot; % accessToken,                          data=bodyStr, timeout=5)            self.my_logger.info(f.content)        except Exception as e:            self.my_logger.error('Send chat network error!Reason:&#123;0&#125;'.format(e))if __name__ == '__main__':    appname = sys.argv[1]    content = sys.argv[3]    # read conf.ini    conf = configparser.ConfigParser()    conf_path = os.path.dirname(os.path.abspath(__file__))    conf_ini = &quot;&#123;0&#125;/conf.ini&quot;.format(conf_path)    if pathlib.Path(conf_ini).exists():        conf.read(conf_ini)        corpid = conf.get(&quot;wechat&quot;, &quot;corpid&quot;)        appinfo = conf.get(&quot;app&quot;, appname)        agentid = appinfo.split(':')[0]        secret = appinfo.split(':')[1]        groupname = conf.get(&quot;group&quot;, appname)        touser = groupname.split(':')[0]        chatobj = PySendchat(corpid, agentid, secret, touser, content)    else:        print('conf.ini error')        exit()    try:        chatobj.sendmsg()    except:        chatobj.my_logger.error(&quot;Send chat failure!&quot;)</code></pre><p>eg:</p><p>python <a href="http://sendchat.py">sendchat.py</a> it ‘’ &lt;预警内容&gt;</p><blockquote><p>创建好app，并关联用户到app</p><p>执行上述命令，会将预警内容通过&lt;app_agent_id&gt; 应用发送给用户usera和userb</p></blockquote>]]></content>
+        <content type="html"><![CDATA[<h4 id="shell">shell</h4><pre><code class="language-bash">wechatUrl=wechatData=curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot;markdown&quot;: &#123;&quot;content&quot;: &quot;`'&quot;$wechatData&quot;'`&quot;&#125;&#125;'</code></pre><h4 id="python">python</h4><pre><code class="language-python">import json, requestswechatData=&#123;&quot;msgtype&quot;: &quot;text&quot;,&quot;text&quot;: &#123;&quot;content&quot;: &quot;&quot;&#125;&#125;wechatData['text']['content']='广州今日天气：29度，大部分多云，降雨概率：60%'wechatData['text']['mentioned_list']=[&quot;zyh&quot;]  # all 代表群组所有人wechatData=json.dumps(wechatData)wechatUrl=requests.post(url=wechatUrl, headers=&#123;&quot;Content-Type&quot;: &quot;application/json&quot;&#125;, data=wechatData, timeout=5)</code></pre>]]></content>
       
       
       <categories>
@@ -1556,6 +1562,35 @@
             <tag> 监控 </tag>
             
             <tag> 企业微信 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>日志☞logrotate安装</title>
+      <link href="posts/421d605e/"/>
+      <url>posts/421d605e/</url>
+      
+        <content type="html"><![CDATA[<h4 id="前言">前言</h4><p>logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转</p><h4 id="logrotate-版本更新">logrotate 版本更新</h4><blockquote><p>确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本<a href="D:%5Czyh.cool%5Csource_posts%5C%E6%97%A5%E5%BF%97%5C%E5%85%B6%E5%AE%83%5C%E6%97%A5%E5%BF%97%E2%98%9Elogrotate%E5%AE%89%E8%A3%85%5Clogrotate">logrotate</a></p><p>或者也可以直接去 github 上拉取https://github.com/logrotate/logrotate</p></blockquote><h4 id="添加-logrotate-配置">添加 logrotate 配置</h4><pre><code class="language-bash"># 添加所需切割的日志配置cat &gt; /etc/logrotate.d/nginx &lt;&lt; 'EOF'/usr/local/nginx/logs/access.log &#123;  # 定义日志位置 hourly    # 按照小时切割 rotate 2  # 最多保留两份切割日志 missingok nocompress sharedscripts postrotate  /bin/kill -USR1 `cat /usr/local/nginx/logs/nginx.pid 2&gt;/dev/null` 2&gt;/dev/null || true endscript&#125;EOF</code></pre><h4 id="添加-crontab-配置">添加 crontab 配置</h4><pre><code class="language-bash"># 添加logrotate执行脚本cp /etc/cron.daily/logrotate /etc/cron.hourly/</code></pre><h4 id="重载-crond-服务">重载 crond 服务</h4><pre><code class="language-bash">systemctl reload crond</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 日志 </category>
+          
+          <category> 其它 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 安装 </tag>
+            
+            <tag> logrotate </tag>
             
         </tags>
       
@@ -2025,7 +2060,7 @@
     
     
     <entry>
-      <title>安装库☞php包管理方式</title>
+      <title>fpm☞安装-包管理方式</title>
       <link href="posts/b73a61bf/"/>
       <url>posts/b73a61bf/</url>
       
@@ -2034,16 +2069,18 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> web </category>
+          
+          <category> fpm </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> php </tag>
+            <tag> 安装 </tag>
             
-            <tag> shell </tag>
+            <tag> fpm </tag>
             
         </tags>
       
@@ -2144,16 +2181,18 @@
           
           <category> 日志 </category>
           
+          <category> ELK </category>
+          
       </categories>
       
       
         <tags>
             
+            <tag> 安装 </tag>
+            
             <tag> docker </tag>
             
             <tag> ELK </tag>
-            
-            <tag> 安装 </tag>
             
         </tags>
       
@@ -2265,9 +2304,9 @@
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> docker </tag>
             
         </tags>
       
@@ -2294,9 +2333,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -2305,7 +2344,7 @@
     
     
     <entry>
-      <title>安装库☞mysql容器搭建</title>
+      <title>mysql☞安装.</title>
       <link href="posts/b824edd8/"/>
       <url>posts/b824edd8/</url>
       
@@ -2314,43 +2353,18 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> 数据库 </category>
+          
+          <category> mysql </category>
           
       </categories>
       
       
         <tags>
+            
+            <tag> 安装 </tag>
             
             <tag> mysql </tag>
-            
-            <tag> docker </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>aws☞EC2国内外之间迁移</title>
-      <link href="posts/2e304ad6/"/>
-      <url>posts/2e304ad6/</url>
-      
-        <content type="html"><![CDATA[<ul><li><p>aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。</p></li><li><p>命令步骤如下：</p><pre><code class="language-shell">#源机器上：dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M#aws EC服务器上：dd if=/文件A of=/dev/盘B bs=1M oflag=direct#盘B打快照，再根据盘B快照生成AMI</code></pre></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 公有云 </category>
-          
-          <category> aws </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> ec2 </tag>
             
         </tags>
       
@@ -2378,6 +2392,33 @@
         <tags>
             
             <tag> rds </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>aws☞EC2国内外之间迁移</title>
+      <link href="posts/2e304ad6/"/>
+      <url>posts/2e304ad6/</url>
+      
+        <content type="html"><![CDATA[<ul><li><p>aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。</p></li><li><p>命令步骤如下：</p><pre><code class="language-shell">#源机器上：dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M#aws EC服务器上：dd if=/文件A of=/dev/盘B bs=1M oflag=direct#盘B打快照，再根据盘B快照生成AMI</code></pre></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 公有云 </category>
+          
+          <category> aws </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> ec2 </tag>
             
         </tags>
       
@@ -2440,7 +2481,7 @@
     
     
     <entry>
-      <title>安装库☞php编译方式</title>
+      <title>fpm☞安装-编译方式</title>
       <link href="posts/3321a2dc/"/>
       <url>posts/3321a2dc/</url>
       
@@ -2449,16 +2490,18 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> web </category>
+          
+          <category> fpm </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> php </tag>
+            <tag> 安装 </tag>
             
-            <tag> shell </tag>
+            <tag> fpm </tag>
             
         </tags>
       
@@ -2467,7 +2510,7 @@
     
     
     <entry>
-      <title>安装库☞gitlab安装及备份</title>
+      <title>gitlab☞安装和备份</title>
       <link href="posts/d4de86f1/"/>
       <url>posts/d4de86f1/</url>
       
@@ -2476,12 +2519,14 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> 其它 </category>
           
       </categories>
       
       
         <tags>
+            
+            <tag> 安装 </tag>
             
             <tag> gitlab </tag>
             
@@ -2523,7 +2568,7 @@
     
     
     <entry>
-      <title>php☞fpm静态配置</title>
+      <title>fpm☞静态配置</title>
       <link href="posts/d1d65c30/"/>
       <url>posts/d1d65c30/</url>
       
@@ -2533,6 +2578,8 @@
       <categories>
           
           <category> web </category>
+          
+          <category> fpm </category>
           
       </categories>
       
@@ -2548,7 +2595,7 @@
     
     
     <entry>
-      <title>安装库☞openvpn</title>
+      <title>openvpn☞安装</title>
       <link href="posts/7c1abbe1/"/>
       <url>posts/7c1abbe1/</url>
       
@@ -2557,14 +2604,14 @@
       
       <categories>
           
-          <category> 安装 </category>
+          <category> 其它 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> docker </tag>
+            <tag> 安装 </tag>
             
             <tag> openvpn </tag>
             

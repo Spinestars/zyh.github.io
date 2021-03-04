@@ -367,6 +367,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/4cc38acc/">
+										aliyun☞常见问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1547,18 +1556,18 @@ chmod 777 /export/docker-data-proms/data
 <p>/export/docker-data-proms/promethesu.yml</p>
 <pre><code class="language-:"># my global config
 global:
-  scrape_interval:     15s # 设置采集间隔为每15秒一次。默认值为每1分钟一次。
-  evaluation_interval: 15s # 每15秒评估一次规则。默认为每1分钟一次。
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
   # scrape_timeout is set to the global default (10s).
 
-# 告警管理器配置
+# Alertmanager configuration
 alerting:
   alertmanagers:
   - static_configs:
     - targets:
       - alertmanager:9093
 
-# 一次加载规则，并根据全局的'evaluation_interval'定期评估规则。
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
   - &quot;/etc/prometheus/conf/rules/*.yml&quot;
 
@@ -1574,16 +1583,40 @@ scrape_configs:
 #    static_configs:
 #    - targets: ['grafana:3000']
 
-  - job_name: &quot;dockersInfo&quot;
-    static_configs:
-    - targets: ['192.168.1.1:10052','192.168.1.2:10052']
-
-  - job_name: &quot;node_exporter&quot;
-    static_configs:
-    - targets: ['192.168.1.1:9100','192.168.1.2:9100']
+  - job_name: &quot;auto_discovery_dns&quot;
+    relabel_configs:
+    - source_labels: [&quot;__address__&quot;]  # 获取原始标签
+      regex: &quot;(.*):9100&quot; # 匹配原始标签的值
+      replacement: &quot;$1&quot; # 提取 regex 中拿到的值
+      target_label: &quot;instance&quot; # 设定要修改的目标标签
+      action: replace # 将目标标签的值替换为 replacement 提取的值
+    - source_labels: [&quot;__address__&quot;]  # 获取原始标签
+      regex: &quot;(.*):10052&quot; # 匹配原始标签的值
+      replacement: &quot;$1&quot; # 提取 regex 中拿到的值
+      target_label: &quot;instance&quot; # 设定要修改的目标标签
+      action: replace # 将目标标签的值替换为 replacement 提取的值
+    metric_relabel_configs:
+    - source_labels: [&quot;__name__&quot;] # 获取原始标签
+      regex: &quot;^go_.*|^process_.*&quot; # 匹配标签值
+      action: drop # 删除，不让数据落盘
+    dns_sd_configs: # 通过 dns srv 记录自动发现
+    - names: [&quot;_prometheus._tcp.zjk.pj&quot;]
 </code></pre>
+<h5 id="自动发现">自动发现</h5>
+<p>dns srv 自动发现，需要一个内部的dns服务器，例如阿里云的云私有解析等。</p>
+<p>如何添加 srv 记录，例如让proms发现节点服务 all.it.zjk.pj:9100 和 all.it.zjk.pj:10052</p>
+<ol>
+<li>添加私有域 zjk.pj</li>
+<li>添加A记录 all.it.zjk.pj -&gt; 192.168.1.1</li>
+<li>添加srv记录 _prometheus._tcp.zjk.pj -&gt; 10 10 9100 all.it.zjk.pj</li>
+<li>添加srv记录 _prometheus._tcp.zjk.pj -&gt; 10 10 10052 all.it.zjk.pj</li>
+</ol>
+<p>关于A记录就不说了，srv记录里 <code>10 10 9100 all.it.zjk.pj</code>的意思是<code>优先级 权重 服务端口 服务器域名</code></p>
+<p>最终，你可以在 http://&lt;prometheus_ip&gt;:9090/classic/targets 看到自动发现的节点信息。</p>
 <h4 id="定义需要告警的指标规则">定义需要告警的指标规则</h4>
-<p>将采集的数据指标通过 expr 进行运算，并通过 record 进行命名</p>
+<p>将采集的数据指标通过 expr 进行运算，并通过 record 进行命名。</p>
+<p>关于规则里的表达式语句的写法涉及到 PromQL，可以看一下文档。</p>
+<p><a target="_blank" rel="noopener" href="https://fuckcloudnative.io/prometheus/3-prometheus/basics.html">https://fuckcloudnative.io/prometheus/3-prometheus/basics.html</a></p>
 <h5 id="主机监控指标规则">主机监控指标规则</h5>
 <p>/export/docker-data-proms/conf/rules/node-exporter-record-rules.yml</p>
 <pre><code class="language-bash"># node-exporter-record-rules.yml
@@ -2405,53 +2438,6 @@ groups:
         id: &quot;&#123;&#123; $labels.instanceid &#125;&#125;&quot;
         type: &quot;aliyun_meta_ecs_info&quot;
 </code></pre>
-<p>关于规则里的表达式语句的写法涉及到 PromQL，可以看一下文档</p>
-<p><a target="_blank" rel="noopener" href="https://fuckcloudnative.io/prometheus/3-prometheus/basics.html">https://fuckcloudnative.io/prometheus/3-prometheus/basics.html</a></p>
-<pre><code class="language-bash"># 暂时无用的规则
-groups:
-  - name: ap-southeast-1服务器告警
-    rules:
-    - alert: 服务器宕机告警
-      expr: up == 0
-      for: 3m
-      labels:
-        region: ap-southeast-1
-      annotations:
-        summary: &quot;&#123;&#123;$labels.instance&#125;&#125;宕机！&quot;
-        description: &quot;服务器&#123;&#123;$labels.instance&#125;&#125;已宕机！&quot;
-    - alert: cpu使用率过高告警
-      expr: (100 - (avg(irate(node_cpu_seconds_total&#123;mode=&quot;idle&quot;&#125;[5m])) by(instance)* 100))* on(instance) group_left(nodename) (node_uname_info) &gt; 30
-      for: 5m
-      labels:
-        region: ap-southeast-1
-      annotations:
-        summary: &quot;&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）CPU使用率过高！&quot;
-        description: '服务器&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）CPU使用率超过85%(目前使用:&#123;&#123;printf "%.2f" $value&#125;&#125;%)'
-    - alert: 系统负载过高
-      expr: (node_load1/count without (cpu, mode) (node_cpu_seconds_total&#123;mode=&quot;system&quot;&#125;))* on(instance) group_left(nodename) (node_uname_info)&gt;1.1
-      for: 3m
-      labels:
-        region: ap-southeast-1
-      annotations:
-        summary: &quot;&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）系统负载过高！&quot;
-        description: '&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）当前负载超标率 &#123;&#123;printf "%.2f" $value&#125;&#125;'
-    - alert: 内存不足告警
-      expr: (100 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100)* on(instance) group_left(nodename) (node_uname_info) &gt; 80
-      for: 3m
-      labels:
-        region: ap-southeast-1
-      annotations:
-        summary: &quot;&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）内存使用率过高！&quot;
-        description: '服务器&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）内存使用率超过80%(目前使用:&#123;&#123;printf "%.2f" $value&#125;&#125;%)'
-    - alert: 硬盘空间不足告警
-      expr: (100-(node_filesystem_free_bytes&#123;fstype=~&quot;ext4|xfs&quot;&#125;/node_filesystem_size_bytes &#123;fstype=~&quot;ext4|xfs&quot;&#125;*100) )* on(instance) group_left(nodename) (node_uname_info)&gt; 80
-      for: 3m
-      labels:
-        region: ap-southeast-1
-      annotations:
-        summary: &quot;&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）硬盘使用率过高！&quot;
-        description: '服务器&#123;&#123;$labels.instance&#125;&#125;（&#123;&#123;$labels.nodename&#125;&#125;）硬盘使用率超过80%(目前使用:&#123;&#123;printf "%.2f" $value&#125;&#125;%)'
-</code></pre>
 <h5 id="容器监控指标阈值">容器监控指标阈值</h5>
 <p>/export/docker-data-proms/conf/rules/dockersInfo-alert-rules.yml</p>
 <pre><code class="language-yaml">groups:
@@ -2581,7 +2567,8 @@ echo &quot;$label $count_estab_connections&quot;  | curl --data-binary @- http:/
 <blockquote>
 <p>宿主数据采集端，部署在被监控主机的9100端口</p>
 </blockquote>
-<pre><code class="language-bash">cd /usr/local/
+<pre><code class="language-bash"># 命令针对的是 cento7 
+cd /usr/local/
 wget https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
 mkdir node_exporter
 tar xf node_exporter-1.0.1.linux-amd64.tar.gz --strip-components 1 -C node_exporter
@@ -2613,6 +2600,7 @@ systemctl enable node_exporter
 <pre><code class="language-bash">dockerRoot=`docker info | awk -F':'  '/Docker Root Dir/&#123;print $2&#125;'|sed 's@^ *@@g'`
 echo $dockerRoot
 docker run \
+  --restart=always \
   --volume=/:/rootfs:ro \
   --volume=/var/run:/var/run:rw \
   --volume=/sys:/sys:ro \

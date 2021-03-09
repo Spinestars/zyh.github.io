@@ -1067,6 +1067,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/d2fed0bf/">
+										linux☞利用acme-sh管理免费的ssl证书申请
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1391,6 +1400,51 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/1e274151/">
+				<h2 class="index-title">
+					ansible☞常用模块-命令调用
+				</h2>
+				<div class="index-brief">
+					shell
+
+远程执行一个命令
+部分参数解析：
+chdir 远程工作目录
+executable 远程执行shell，需要绝对路径
+
+ansible localhost -m shell -a &quot;chdir=/ ls&quot;
+
+localhost | CHANGED | rc=0 &gt
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-04-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/4235ddf4/">
@@ -1760,46 +1814,6 @@ Elasticsearch 搜索分析 https://www.elastic.co/cn/downloads/elasti
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/日志/ELK/">ELK</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/18de0eed/">
-				<h2 class="index-title">
-					nginx☞基本认证
-				</h2>
-				<div class="index-brief">
-					# 安装 htpasswd 工具
-yum install httpd-tools -y
-# 生成密码文件
-htpasswd -bc /usr/local/nginx/conf/.passwd usera pwd # 创建用户usera, 并写入 .passwd
-htpasswd -b /usr/lo
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-09-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 

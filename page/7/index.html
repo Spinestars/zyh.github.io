@@ -1058,6 +1058,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1382,6 +1391,38 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/1ddb9d4e/">
+				<h2 class="index-title">
+					问题记录
+				</h2>
+				<div class="index-brief">
+					Q:包管理器安装软件出现
+insserv:  loop involving service xxx at depth 2
+
+A:删除 xxx 服务，如果 xxx 服务已删除，清理 xxx 服务的启动脚本 /etc/init.d/xxx
+
+Q:crontab 如何修改时区
+A:在crontab文件最上
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-08</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/960fc783/">
@@ -1757,53 +1798,6 @@ executable 远程执行shell，需要绝对路径
 ansible localhost -m shell -a &quot;chdir=/ ls&quot;
 
 localhost | CHANGED | rc=0 &gt
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4235ddf4/">
-				<h2 class="index-title">
-					ansible☞常用模块-文本文件操作
-				</h2>
-				<div class="index-brief">
-					文本操作
-file
-
-path 文件对象地址
-state 文件类型或者动作状态 （touch: 针对文件, directory：针对目录, link：针对软连接, hard：针对硬链接)
-src 软硬链接的源文件
-owner 属主
-group 属组
-mode 数字权限
-recurse 递归操作
-
-b
 					...
 				</div>
 			</a>

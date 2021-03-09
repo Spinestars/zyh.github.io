@@ -1060,6 +1060,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1447,7 +1456,7 @@ NAME             READY   STATUS              RESTARTS   AGE   IP       NODE    N
 poststart-test   0/1     ContainerCreating   0          7s    &lt;none&gt;   k8s02   &lt;none&gt;           &lt;none&gt;
 [root@k8s00 ~]# kubectl get pod -o wide
 NAME             READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATES
-poststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none&gt;
+poststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none2
 [root@k8s00 ~]# curl 10.97.2.6
 This is postStart-test
 </code></pre>

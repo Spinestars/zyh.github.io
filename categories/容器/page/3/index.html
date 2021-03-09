@@ -1058,6 +1058,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1384,24 +1393,20 @@
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/aaf9b7/">
+			<a href="/posts/b7cf7b1f/">
 				<h2 class="index-title">
-					k8s☞01常见术语概念
+					docker☞01安装
 				</h2>
 				<div class="index-brief">
-					物理
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
 
-
-master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
-
-
-node 是 k8s 的工作节点，也就是实际跑容器的节点。
-
-
-服务
-master 节点服务
-
-kube-apiserver 是 master 节点服务， 
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
 					...
 				</div>
 			</a>
@@ -1422,7 +1427,7 @@ kube-apiserver 是 master 节点服务，
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 

@@ -1058,6 +1058,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1386,7 +1395,7 @@
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1518,9 +1527,8 @@ https://kubernetes.io/docs/concepts/workl
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事.虽然可能没有aws的auto scaling功能强大.
-k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设定的cpu阈值,来自动调整deployment中的pod数量.
-
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
 					...
 				</div>
 			</a>
@@ -1560,8 +1568,7 @@ k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设�
 
 https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
 
-探测器有三种：存活探测器，就绪探测器，启动探测器
-kubelet 使用存活探测器
+探测器有三种：启动探测器startupProbe、存活探测器livenessPr
 					...
 				</div>
 			</a>

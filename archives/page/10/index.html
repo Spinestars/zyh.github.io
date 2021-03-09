@@ -1058,6 +1058,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1384,6 +1393,39 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/d4de86f1/">
+				<h2 class="index-title">
+					gitlab☞安装和备份
+				</h2>
+				<div class="index-brief">
+					
+https://docs.gitlab.com/omnibus/docker/
+
+安装
+# 确保 /export 存在
+# create
+domainName=
+docker run --detach   --hostname $&#123;domainName&#125;   --publish
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-07-24</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/2e07203a/">
 				<h2 class="index-title">
 					aws☞EC2-GPU实例安装显卡驱动
@@ -1507,17 +1549,14 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞获取没有设置ttl的key
+					redis☞调整内核参数
 				</h2>
 				<div class="index-brief">
 					前言
-redis 内存占用爆炸. 所以网上找了一个
-# encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&
+之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
+后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
+经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
+我是问题
 					...
 				</div>
 			</a>
@@ -1550,14 +1589,17 @@ func: 获取数据库中没有设置ttl的 key
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞调整内核参数
+					redis☞获取没有设置ttl的key
 				</h2>
 				<div class="index-brief">
 					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
+redis 内存占用爆炸. 所以网上找了一个
+# encoding: utf-8
+&quot;&quot;&quot;
+author: yangyi@youzan.com
+time: 2018/4/26 下午4:34
+func: 获取数据库中没有设置ttl的 key
+&quot;&quot;&
 					...
 				</div>
 			</a>
@@ -1740,56 +1782,6 @@ net.ipv4.tcp_retries1
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/语言/shell/">shell</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/a3dfc0e8/">
-				<h2 class="index-title">
-					linux☞df与du数据不一致的原因
-				</h2>
-				<div class="index-brief">
-					linux ☞ df与du数据不一致的原因
-
-
-问题表现：
-
-
-df 数据比 du 数据小，而且是发生在删除文件之后。
-
-这个问题牵扯到 linux 系统是将如何确认和回收数据的.
-
-
-空间是如何被判定占用的
-
-
-linux文件系统判定空间是否被占用，是查看空间的 imap 是否为1，而 imap 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2015-11-15</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
 										
                                     </span>
                                 

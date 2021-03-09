@@ -1060,6 +1060,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1430,7 +1439,7 @@
 <p>master 节点服务</p>
 <ol>
 <li>kube-apiserver 是 master 节点服务， 是k8s 的 api 服务，是集群入口，提供 http rset 服务。</li>
-<li>kube-controller-manager 是 master 节点服务，维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化中心。</li>
+<li>kube-controller-manager 是 master 节点服务，维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化管理中心。</li>
 <li>kube-scheduler 是负责 pod 的调度, 即如何将 pod 分发到 node</li>
 <li>etcd 注册中心，保存集群状态。</li>
 </ol>
@@ -1466,11 +1475,11 @@
 <p>label用于表示资源，从而方便的被其它资源找到。它很重要。</p>
 <p>标签定义 <code>key: value</code></p>
 <p>选择器: <code>key &lt;= !=&gt; value</code>  <code>key &lt;not&gt; in (value1, value2)</code></p>
-<p>RC 和 Service 通过 selector 选择器来选择 Pod 对象范围, 从而精细化的将 Pod 进行分组。</p>
+<p>ReplicaSet  和 Service 通过 selector 选择器来选择 Pod 对象, 从而精细化的将 Pod 进行分组。一旦某个 pod 的 Label 被修改，那么这个 pod 将从 ReplicaSet 中脱离，而 ReplicaSet 会重新创建新的 pod 补足 ReplicaSet 定义的副本数。</p>
 </li>
 <li>
 <p>Deployment</p>
-<p>无状态副本集。用来部署一个 pod 组，它通过 ReplicaSet 来进行缩放， 并需要 pod 模板创建 pod， 需要 Label 监控 pod。Deployment 通过 RC 严格执行配置所定义的pod副本数量。可以比喻为 aws 的目标组或者nginx的upstream组。</p>
+<p>无状态副本集。用来部署一个 pod 组，它通过 ReplicaSet 来进行缩放， 并需要 pod 模板创建 pod， 需要 Label 监控 pod。Deployment 通过 ReplicaSet 严格执行配置所定义的pod副本数量。应该始终使用 ReplicaSet 来创建 pod，因为通过 ReplicaSet 可以方便的控制 pod。Deployment 可以简单的比喻为 aws 的目标组或者nginx的upstream组。</p>
 </li>
 <li>
 <p>Satefulset</p>
@@ -1521,16 +1530,16 @@
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/b7cf7b1f/">
+              <a href="/posts/2c5a64ff/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  docker☞01安装
+                  aws☞s3初始化创建
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/b824edd8/">
-                mysql☞安装
+              <a href="/posts/b7cf7b1f/">
+                docker☞01安装
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

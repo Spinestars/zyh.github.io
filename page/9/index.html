@@ -1058,6 +1058,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1384,6 +1393,52 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/a7611bc1/">
+				<h2 class="index-title">
+					linux☞软raid创建
+				</h2>
+				<div class="index-brief">
+					linux ☞ 软 raid 创建
+
+创建
+
+# 磁盘分区
+fdisk /dev/sda
+fdisk /dev/sdb
+# 构建raid0
+# --level raid级别
+# --raid-devices 盘数
+# --chunk 条带深度，决定了数据分割的标准单位大小，数值越小，则数据越分散，性
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-07-01</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/">系统</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/linux/">linux</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/2c5a64ff/">
 				<h2 class="index-title">
 					aws☞s3初始化创建
@@ -1432,50 +1487,6 @@ s3官方授权示例：https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/dev/exa
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
-				<h2 class="index-title">
-					docker☞01安装
-				</h2>
-				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-
-仓库
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
 					k8s☞01常见术语概念
@@ -1515,6 +1526,50 @@ kube-apiserver 是 master 节点服务，
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/b7cf7b1f/">
+				<h2 class="index-title">
+					docker☞01安装
+				</h2>
+				<div class="index-brief">
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 
@@ -1764,39 +1819,6 @@ c
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/web/fpm/">fpm</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/d4de86f1/">
-				<h2 class="index-title">
-					gitlab☞安装和备份
-				</h2>
-				<div class="index-brief">
-					
-https://docs.gitlab.com/omnibus/docker/
-
-安装
-# 确保 /export 存在
-# create
-domainName=
-docker run --detach   --hostname $&#123;domainName&#125;   --publish
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-07-24</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/">其它</a>
 										
                                     </span>
                                 

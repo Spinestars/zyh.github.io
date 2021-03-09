@@ -1060,6 +1060,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1427,8 +1436,36 @@
 <p>对于回滚,我们想回滚到任何一个之前的版本.</p>
 <p>而deployment对象可以帮我们实现这些.</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p>
-<h2 id="更新">更新</h2>
-<p>一个更新nginx版本的例子. 首先,我们创建一个nginx的deployment</p>
+<p>一个基本的deployment例子</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+</code></pre>
+<p>例子需要注意的点：</p>
+<ul>
+<li>metadata： 这里会定义name，labels，namespace，annotations。其中 annotations （注解）是特殊的，你可以用它来定义一些工具集，例如在阿里云的k8s服务中，你可以添加镜像快照注解信息，从而让 pod 无需从镜像仓库下载启动，而是直接通过快照加速启动。</li>
+<li>selector： deployment使用selector指定的label关联pod。</li>
+</ul>
+<h2 id="构建deployment">构建deployment</h2>
+<p>创建一个nginx的deployment</p>
 <pre><code class="language-bash">kubectl apply -f nginx-dep.yaml
 ===
 apiVersion: apps/v1
@@ -1454,16 +1491,21 @@ spec:
         - containerPort: 80
 </code></pre>
 <blockquote>
-<p>这里dep的配置中spec.template.spec.container.image=nginx, 我没有设置具体版本</p>
+<p>这里dep的配置中spec.template.spec.container.image=nginx，我没有设置具体版本</p>
 </blockquote>
-<p>此时,查看版本历史, 这里涉及到 rollout 指令, 回滚的时候也会用到.</p>
+<h2 id="确认当前版本">确认当前版本</h2>
+<p>查看版本历史，使用kubectl rollout history</p>
+<blockquote>
+<p>这里涉及到 rollout 指令，回滚的时候也会用到.</p>
+</blockquote>
 <pre><code class="language-bash">kubectl rollout history deployment/nginx-dep
 #---
 deployment.apps/nginx-dep 
 REVISION  CHANGE-CAUSE
 1         &lt;none&gt;
 </code></pre>
-<p>此时我们发现没有关于这个版本1的相关描述, 我们手动进行添加</p>
+<p>上述结果中，版本1没有添加 CHANGE-CAUSE 信息</p>
+<p>添加注释信息，使用kubectl annotate deployment/&lt;&gt; <a target="_blank" rel="noopener" href="http://kubernetes.io/change-cause=%22first%22">kubernetes.io/change-cause=“first”</a></p>
 <pre><code class="language-bash">kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;first&quot;
 kubectl rollout history deployment/nginx-dep
 #---
@@ -1472,10 +1514,14 @@ REVISION  CHANGE-CAUSE
 1         first
 </code></pre>
 <blockquote>
-<p>你也可以在执行写入命令的时候, 追加 --record 来将执行的命令写入到当前change-cause</p>
+<p>你也可以在执行命令的时候，追加 --record 来将执行的命令写入到当前change-cause</p>
+<p>如果你不小心写错了，你可以通过添加<code>-</code> 来删除注解，就像下面这样，命令最后有一个<code>-</code></p>
+<p>kubectl annotate deployment/nginx-dep &lt;注解key&gt;-</p>
 </blockquote>
-<p>现在, 将所有deployment中所有nginx的image版本从默认变更为了1.19.2</p>
-<pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2 &amp;&amp; kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;
+<h2 id="更新版本">更新版本</h2>
+<p>发布版本1.19.2，将deployment中所有nginx的image版本从默认变更为1.19.2。</p>
+<pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2
+kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;
 kubectl rollout history deployment/nginx-dep
 #---
 deployment.apps/nginx-dep 
@@ -1483,8 +1529,22 @@ REVISION  CHANGE-CAUSE
 1         first
 2         nginx image to 1.19.2
 </code></pre>
-<p>我们再生成一个版本1.18</p>
-<pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18 &amp;&amp; kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;
+<blockquote>
+<p>除了使用set指令修改，你也可以通过edit修改yaml配置的方式进行</p>
+<p>kubectl edit deployment/nginx-dep</p>
+</blockquote>
+<p>更新状态查看，可运行：</p>
+<pre><code class="language-bash">kubectl rollout status deployment/nginx-dep
+</code></pre>
+<p>更深层的rs状态查看，可运行：</p>
+<pre><code class="language-bash">kubectl get rs -l app=nginx
+</code></pre>
+<blockquote>
+<p>-l 是调用标签过滤</p>
+</blockquote>
+<p>再发布一个版本1.18，将deployment中所有nginx的image版本从1.19.2变更为1.18。</p>
+<pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18
+kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;
 kubectl rollout history deployment/nginx-dep
 #---
 deployment.apps/nginx-dep 
@@ -1493,10 +1553,10 @@ REVISION  CHANGE-CAUSE
 2         nginx image to 1.19.2
 3         nginx image to 1.18
 </code></pre>
-<p>这样,我们总共有三个版本, 你可以通过追加版本号来看具体的版本内容</p>
+<p>这样,我们总共有三个版本，你可以通过追加版本号来看具体的版本内容</p>
 <pre><code class="language-bash">kubectl rollout history deployment/nginx-dep --revision=&lt;num&gt;
 </code></pre>
-<h2 id="回滚">回滚</h2>
+<h2 id="回滚版本">回滚版本</h2>
 <p>我们选择将nginx版本回滚到first第一个版本.</p>
 <pre><code class="language-bash">kubectl rollout undo deployment/nginx-dep --to-revision=1
 kubectl rollout history deployment/nginx-dep
@@ -1507,29 +1567,75 @@ REVISION  CHANGE-CAUSE
 3         nginx image to 1.18
 4         first
 </code></pre>
-<h2 id="策略">策略</h2>
+<h2 id="更新策略">更新策略</h2>
 <p>deployment 的 .spec 中可以添加一些策略.</p>
 <pre><code class="language-bash">spec:  
-  minReadySeconds: 3  # pod 就绪时间, 在此时间之前, deploy 认为 pod 还没有准备好. 默认0
+  minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0
   revisionHistoryLimit: 10 # 最大版本保留次数. 默认10 
   strategy:
-    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate, 还可以是Recreate.Recreate指的是先删除所有pod,再创建.
+    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.
     rollingUpdate:
-      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod
-      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量
+      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字
+      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字
 </code></pre>
 <blockquote>
-<p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的, 就关多少个老的</p>
+<p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的，就关多少个老的</p>
 </blockquote>
+<h2 id="最终样子">最终样子</h2>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-dep
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0
+  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10 
+  strategy:
+    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.
+    rollingUpdate:
+      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字
+      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+</code></pre>
+<h2 id="暂停服务">暂停服务</h2>
+<pre><code class="language-yaml">kubectl rollout pause deployment/nginx-dep
+</code></pre>
+<p>启用暂停后，再启用更新，则新的更新在暂停期间不会产生任何效果</p>
+<h2 id="恢复服务">恢复服务</h2>
+<pre><code class="language-yaml">kubectl rollout resume deployment/nginx-dep
+</code></pre>
+<p>启用恢复后，则暂停期间启用的更新将开始发挥作用</p>
 <h2 id="小结">小结</h2>
-<pre><code class="language-bash">kubectl rollout history # 查看对象历史
-kubectl rollout undo # 对象版本回退
-kubectl rollout status # 展示执行状态
-kubectl rollout pause # 暂停此次版本操作行为
-kubectl rollout resume # 恢复此次版本操作行为
+<pre><code class="language-bash">kubectl rollout history deployment/&lt;&gt; # 查看对象历史
+kubectl rollout undo deployment/&lt;&gt; --to-revision=&lt;&gt; # 对象版本回退
+kubectl rollout status deployment/&lt;&gt;# 展示执行状态
+kubectl rollout pause deployment/&lt;&gt; # 暂停此次版本操作行为
+kubectl rollout resume deployment/&lt;&gt; # 恢复此次版本操作行为
 kubectl set image # 修改镜像配置
 kubectl annotate # 添加一个注释
 </code></pre>
+<p>更新过程：</p>
+<ul>
+<li>创建新的replicaset</li>
+<li>将新的replicaset扩展</li>
+<li>将旧的replicaset缩容</li>
+<li>新的replicaset对应的pod已就绪或可用</li>
+</ul>
+<p>当<code>kubectl rollout status deployment/&lt;&gt;</code>命令执行完后，$? 状态为 0，则说明 deployment 处于 complete。</p>
 
 </div>
 

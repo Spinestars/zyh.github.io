@@ -1058,6 +1058,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1386,7 +1395,7 @@
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1518,9 +1527,8 @@ https://kubernetes.io/docs/concepts/workl
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事.虽然可能没有aws的auto scaling功能强大.
-k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设定的cpu阈值,来自动调整deployment中的pod数量.
-
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
 					...
 				</div>
 			</a>
@@ -1560,8 +1568,7 @@ k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设�
 
 https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
 
-探测器有三种：存活探测器，就绪探测器，启动探测器
-kubelet 使用存活探测器
+探测器有三种：启动探测器startupProbe、存活探测器livenessPr
 					...
 				</div>
 			</a>
@@ -1756,20 +1763,24 @@ pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
+			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
-					docker☞01安装
+					k8s☞01常见术语概念
 				</h2>
 				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
+					物理
 
-仓库
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux
+
+master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
+
+
+node 是 k8s 的工作节点，也就是实际跑容器的节点。
+
+
+服务
+master 节点服务
+
+kube-apiserver 是 master 节点服务， 
 					...
 				</div>
 			</a>
@@ -1790,7 +1801,7 @@ yum-config-manager \
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 

@@ -1060,6 +1060,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+										linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/cd32aa48/">
 										linux☞时间
 									</a>
@@ -1418,9 +1427,14 @@
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>k8s的pod缩放功能,和aws的auto scaling功能是一回事.虽然可能没有aws的auto scaling功能强大.</p>
-<p>k8s的pod缩放功能称之为HPA(Horizontal Pod Autoscaler),它可以基于设定的cpu阈值,来自动调整deployment中的pod数量.</p>
-<h2 id="metrics-server">metrics-server</h2>
+<p>k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。</p>
+<p>k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量。</p>
+<h2 id="手动缩放">手动缩放</h2>
+<pre><code class="language-yaml">kubectl scale deployment.v1.apps/nginx-dep --replicas=10
+</code></pre>
+<h2 id="自动缩放">自动缩放</h2>
+<p>k8s的自动缩放首先要安装监控服务，毕竟没有监控指标，就无法根据指标进行自动缩放。</p>
+<h3 id="metrics-server">metrics-server</h3>
 <p><a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/metrics-server">https://github.com/kubernetes-sigs/metrics-server</a></p>
 <p>metrics 服务器可以通过资源度量值 API 对外提供度量数据，Horizontal Pod Autoscaler 正是根据此 API 来获取度量数据.如果没有此服务,HPA将无法工作.</p>
 <pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
@@ -1434,7 +1448,7 @@
 </code></pre>
 <pre><code class="language-bash">kubectl apply -f components.yaml
 </code></pre>
-<h2 id="hpa">hpa</h2>
+<h3 id="hpa">hpa</h3>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/</a></p>
 <p>创建一个用于测试的web服务, hpa-test.yaml</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
@@ -1474,7 +1488,10 @@ spec:
   selector:
     run: php-apache
 </code></pre>
-<p>给web服务开启hpa</p>
+<blockquote>
+<p>Service 类型给一组pod提供访问接口</p>
+</blockquote>
+<h3 id="基于CPU指标开启">基于CPU指标开启</h3>
 <p>命令方式:</p>
 <pre><code class="language-bash">kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=5
 </code></pre>
@@ -1574,11 +1591,11 @@ Events:
   Normal  ScalingReplicaSet  6m50s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 4
   Normal  ScalingReplicaSet  4m49s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 1
 </code></pre>
-<h2 id="其它">其它</h2>
-<p>当前hpa的api版本是autoscaling/v1,它只能抓取cpu指标.如果你想抓取内存指标(当前也只支持内存)或自定义指标,那么需要将版本变更为autoscaling/v2beta2</p>
+<h3 id="基于其它非资源类型的指标">基于其它非资源类型的指标</h3>
+<p>当前hpa的api版本是autoscaling/v1，它只能抓取cpu指标。</p>
+<p>如果你想抓取内存指标(当前也只支持内存)和非资源类型指标,那么需要将版本变更为autoscaling/v2beta2。</p>
 <p>autoscaling/v2beta2版本的配置有了一些变化,且可能随时会有新的变化.你可以在</p>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a></p>
-<p>找到它的例子.</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a> 找到它的例子。</p>
 <pre><code class="language-yaml">apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -1595,21 +1612,80 @@ spec:
     resource:
       name: cpu
       target:
-        type: Utilization
+        type: AverageUtilization
         averageUtilization: 50
-status:
-  observedGeneration: 1
-  lastScaleTime: &lt;some-time&gt;
-  currentReplicas: 1
-  desiredReplicas: 1
-  currentMetrics:
-  - type: Resource
-    resource:
-      name: cpu
-      current:
-        averageUtilization: 0
-        averageValue: 0
+  - type: Pods
+    pods:
+      metric:
+        name: packets-per-second
+      target:
+        type: AverageValue
+        averageValue: 1k
+  - type: Object
+    object:
+      metric:
+        name: requests-per-second
+      describedObject:
+        apiVersion: networking.k8s.io/v1beta1
+        kind: Ingress
+        name: main-route
+      target:
+        kind: Value
+        value: 10k
 </code></pre>
+<p>上面的例子意思是：</p>
+<ol>
+<li>保持每个pod的cpu使用率不超过50%，并且每秒能承受1000个数据包。</li>
+<li>所有位于ingress后面的pod，每秒能处理10000个请求。</li>
+</ol>
+<blockquote>
+<p>请注意：</p>
+<ol>
+<li>targetCPUUtilizationPercentage被metrics数组代替，metrics数组包含了多种度量指标。</li>
+<li>target中数据由两种组成：
+<ul>
+<li>averageValue：每一个pod都需要满足此指标值</li>
+<li>value：所有pod供需满足此指标</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>这些指标可以分为三类，第一类 Resource，第二类 Pods，第三类 Object。</p>
+<h3 id="基于标签的k8s对象指标">基于标签的k8s对象指标</h3>
+<pre><code class="language-yaml">- type: Object
+  object:
+    metric:
+      name: `http_requests`
+      selector: `verb=GET`
+    target:
+      type: AverageValue
+      averageValue: 30
+</code></pre>
+<blockquote>
+<p>从监控系统里获取标签verb=GET的值</p>
+</blockquote>
+<p>上述例子的意思是，确保每一个pod都能满足标签为verb=GET的http请求数量。</p>
+<h3 id="基于非k8s对象指标">基于非k8s对象指标</h3>
+<pre><code class="language-yaml">- type: External
+  external:
+    metric:
+      name: queue_messages_ready
+      selector: &quot;queue=worker_tasks&quot;
+    target:
+      type: AverageValue
+      averageValue: 30
+</code></pre>
+<p>当类型变为External的时候，就可以指定监控系统里存储的其它监控指标。</p>
+<p>例如，监控系统从消息队列服务里拿到了消息数量的指标，并附加queue=worker_tasks。那么就可以和上述例子一样，根据消息数量指标进行缩放。</p>
+<h2 id="度量">度量</h2>
+<p>hpa和度量指标API里的数据均使用k8s中称为量纲的特殊整数表示。</p>
+<p>量纲的意思就是：</p>
+<ul>
+<li>数字太小就加上后缀单位m，例如1.5写成1500m。</li>
+<li>数字刚好就是整数显示。</li>
+<li>数字大就加上后缀单位，比如k，M。</li>
+<li>总之没有小数。</li>
+</ul>
 
 </div>
 

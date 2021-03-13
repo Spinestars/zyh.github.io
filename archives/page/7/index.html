@@ -868,6 +868,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1116,6 +1125,15 @@
 								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+										windows☞win10迁移数据
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1400,6 +1418,98 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/f43dca37/">
+				<h2 class="index-title">
+					ansible☞playbook-过滤器
+				</h2>
+				<div class="index-brief">
+					前言
+不管是过滤器，lookup，query，with_xxx，很多都是获取我们想要的信息。
+过滤器
+
+https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html
+
+
+处理变量值，从而获取想要的信息.
+过滤器本身
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/4235ddf4/">
+				<h2 class="index-title">
+					ansible☞playbook-变量
+				</h2>
+				<div class="index-brief">
+					var 定义
+
+通过变量，修改playbook
+可直接写入 playbook， 也可以写入文件，然后 playbook 通过 vars_files 引用
+关键词:
+
+vars
+vars_files # 一次性加载文件内部数据，不支持文件动态修改或添加新变量
+
+
+简例
+---
+- hosts: loc
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-10</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/3988a5f2/">
@@ -1709,93 +1819,6 @@ handlers 的 playbook 样本
 			</a>
                 <div class="article-meta">
 				    <span>2020-04-28</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/2c2d50a0/">
-				<h2 class="index-title">
-					redis☞备份
-				</h2>
-				<div class="index-brief">
-					前言
-本文主要记录 redis 的两种数据磁盘固化方式。
-涉及到相关参数，简单的命令操作等。
-rdb
-
-通过fork一个子进程来存储某一时刻redis数据(bgsave方式)。rdb持久化是默认方式。
-特点：
-
-
-小幅度丢失数据(取决于save或者bgsave命令的执行周期)，这里我们不说save，
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-27</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3d9b9ec1/">
-				<h2 class="index-title">
-					ansible☞常用模块-软件包管理
-				</h2>
-				<div class="index-brief">
-					apt_repository
-
-ubuntu 下：
-repo 指定库地址，例如 nginx 地址 ppa:nginx/stable
-state 值为 absent 时为删除
-
-ansible localhost -m apt_repository -a &quot;repo=ppa:nginx/st
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-26</span>
                     
                             
                                 

@@ -868,6 +868,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1116,6 +1125,15 @@
 								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+										windows☞win10迁移数据
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1402,6 +1420,91 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/63d8d3d4/">
+				<h2 class="index-title">
+					k8s☞12-1守护进程
+				</h2>
+				<div class="index-brief">
+					前言
+DaemonSet 确保指定的node上都存在一份 pod. 常用来构建一些批量代理性质的app. 例如监控节点app, 或者日志节点app
+特点
+
+当一个节点添加到集群, 或从集群中删除, 则 pod 会被添加/删除
+当DaemonSet被删除, 则 pod 都会被删除.
+pod模板中的 R
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/ed4c29d5/">
+				<h2 class="index-title">
+					k8s☞11-2namespace资源约束
+				</h2>
+				<div class="index-brief">
+					前言
+https://kubernetes.io/docs/concepts/policy/limit-range/
+namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
+特点
+
+提供 pod 的默认资源约束.
+限制pod的资源约束.
+Lim
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/64fa9c84/">
 				<h2 class="index-title">
 					k8s☞11-1pod资源约束
@@ -1443,7 +1546,7 @@ k8s资源约束分为两种: request(软
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					k8s☞09应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1486,7 +1589,7 @@ kubernetes 提供了一种卷类型 projected volum
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1567,14 +1670,21 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
@@ -1605,21 +1715,14 @@ k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/18e4fa73/">
+			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
+					k8s☞07无状态服务deployment-pod扩缩
 				</h2>
 				<div class="index-brief">
 					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
 					...
 				</div>
 			</a>
@@ -1722,96 +1825,6 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4ebbd3a8/">
-				<h2 class="index-title">
-					zabbix☞预警
-				</h2>
-				<div class="index-brief">
-					定义预警分为几个步骤
-
-定义预警媒介
-定义预警用户
-定义预警动作
-
-触发器达到阈值，调用预警动作，预警动作调用预警用户，预警用户调用预警媒介
-预警媒介
-配置-报警媒介类型，这里有两个要素
-报警媒介类型
-类型有很多种，比如邮件，自定义脚本，这里我们选自定义脚本，来定义一个企业微信预警
-
-脚本需要接收三
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-02</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/25f36846/">
-				<h2 class="index-title">
-					zabbix☞容器搭建
-				</h2>
-				<div class="index-brief">
-					创建网络
-docker network create -d bridge zbnet
-
-mysql
-mkdir -p /export/docker-data-mysql/&#123;config,logs,data&#125;
-docker run --name mysql57 \
--p 3306:
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-30</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

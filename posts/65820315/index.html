@@ -870,6 +870,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1118,6 +1127,15 @@
 								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+										windows☞win10迁移数据
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1638,215 +1656,215 @@ scrape_configs:
 <h5 id="主机监控指标规则">主机监控指标规则</h5>
 <p>/export/docker-data-proms/conf/rules/node-exporter-record-rules.yml</p>
 <pre><code class="language-bash"># node-exporter-record-rules.yml
-# 标签 job 关联主配置定义的任务 node_exporter，获取任务传递的数据，从而抽取信息定义 expr
+# 标签 job 关联主配置定义的任务 auto_discovery_dns，获取任务传递的数据，从而抽取信息定义 expr
 # 给 expr 表达式设置一个别名 record, 别名可以被其它 rules 调用
 
 groups:
   - name: node_exporter-record
     rules:
-    - expr: up&#123;job=~&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: up&#123;job=~&quot;auto_discovery_dns&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:up
       labels:
         desc: &quot;节点是否在线, 在线1,不在线0&quot;
         unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
     - expr: time() - node_boot_time_seconds&#123;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:node_uptime
       labels:
         desc: &quot;节点的运行时间&quot;
         unit: &quot;s&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 ##############################################################################################
 #                              cpu                                                           #
-    - expr: (1 - avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr: (1 - avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;auto_discovery_dns&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:total:percent
       labels:
         desc: &quot;节点的cpu总消耗百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;auto_discovery_dns&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:idle:percent
       labels:
         desc: &quot;节点的cpu idle百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;iowait&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;auto_discovery_dns&quot;,mode=&quot;iowait&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:iowait:percent
       labels:
         desc: &quot;节点的cpu iowait百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;system&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;auto_discovery_dns&quot;,mode=&quot;system&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:system:percent
       labels:
         desc: &quot;节点的cpu system百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;user&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;auto_discovery_dns&quot;,mode=&quot;user&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:user:percent
       labels:
         desc: &quot;节点的cpu user百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=~&quot;softirq|nice|irq|steal&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;auto_discovery_dns&quot;,mode=~&quot;softirq|nice|irq|steal&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:cpu:other:percent
       labels:
         desc: &quot;节点的cpu 其他的百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 ##############################################################################################
 #                                    memory                                                  #
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:total
       labels:
         desc: &quot;节点的内存总量&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_memory_MemFree_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:free
       labels:
         desc: &quot;节点的剩余内存量&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125; - node_memory_MemFree_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:used
       labels:
         desc: &quot;节点的已使用内存量&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_memory_MemTotal_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125; - node_memory_MemAvailable_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:actualused
       labels:
         desc: &quot;节点用户实际使用的内存量&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (1-(node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
+    - expr: (1-(node_memory_MemAvailable_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:used:percent
       labels:
         desc: &quot;节点的内存使用百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: ((node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
+    - expr: ((node_memory_MemAvailable_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;auto_discovery_dns&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:memory:free:percent
       labels:
         desc: &quot;节点的内存剩余百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 ##############################################################################################
 #                                   load                                                     #
-    - expr: sum by (instance) (node_load1&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+    - expr: sum by (instance) (node_load1&#123;job=&quot;auto_discovery_dns&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:load:load1
       labels:
         desc: &quot;系统1分钟负载&quot;
         unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: sum by (instance) (node_load5&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+    - expr: sum by (instance) (node_load5&#123;job=&quot;auto_discovery_dns&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:load:load5
       labels:
         desc: &quot;系统5分钟负载&quot;
         unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: sum by (instance) (node_load15&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+    - expr: sum by (instance) (node_load15&#123;job=&quot;auto_discovery_dns&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:load:load15
       labels:
         desc: &quot;系统15分钟负载&quot;
         unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
 ##############################################################################################
 #                                 disk                                                       #
-    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot; ,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_filesystem_size_bytes&#123;job=&quot;auto_discovery_dns&quot; ,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:usage:total
       labels:
         desc: &quot;节点的磁盘总量&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_filesystem_avail_bytes&#123;job=&quot;auto_discovery_dns&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:usage:free
       labels:
         desc: &quot;节点的磁盘剩余空间&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_filesystem_size_bytes&#123;job=&quot;auto_discovery_dns&quot;,fstype=~&quot;ext4|xfs&quot;&#125; - node_filesystem_avail_bytes&#123;job=&quot;auto_discovery_dns&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:usage:used
       labels:
         desc: &quot;节点的磁盘使用的空间&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr:  (1 - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr:  (1 - node_filesystem_avail_bytes&#123;job=&quot;auto_discovery_dns&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_size_bytes&#123;job=&quot;auto_discovery_dns&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:used:percent
       labels:
         desc: &quot;节点的磁盘的使用百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: irate(node_disk_reads_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
+    - expr: irate(node_disk_reads_completed_total&#123;job=&quot;auto_discovery_dns&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:read:count:rate
       labels:
         desc: &quot;节点的磁盘读取速率&quot;
         unit: &quot;次/秒&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: irate(node_disk_writes_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
+    - expr: irate(node_disk_writes_completed_total&#123;job=&quot;auto_discovery_dns&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:write:count:rate
       labels:
         desc: &quot;节点的磁盘写入速率&quot;
         unit: &quot;次/秒&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (irate(node_disk_written_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
+    - expr: (irate(node_disk_written_bytes_total&#123;job=&quot;auto_discovery_dns&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:read:mb:rate
       labels:
         desc: &quot;节点的设备读取MB速率&quot;
         unit: &quot;MB/s&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (irate(node_disk_read_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
+    - expr: (irate(node_disk_read_bytes_total&#123;job=&quot;auto_discovery_dns&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:disk:write:mb:rate
       labels:
         desc: &quot;节点的设备写入MB速率&quot;
         unit: &quot;MB/s&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
 ##############################################################################################
 #                                filesystem                                                  #
-    - expr:   (1 -node_filesystem_files_free&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_files&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr:   (1 -node_filesystem_files_free&#123;job=&quot;auto_discovery_dns&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_files&#123;job=&quot;auto_discovery_dns&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:filesystem:used:percent
       labels:
         desc: &quot;节点的inode的剩余可用的百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 #############################################################################################
 #                                filefd                                                     #
-    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_filefd_allocated&#123;job=&quot;auto_discovery_dns&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:filefd_allocated:count
       labels:
         desc: &quot;节点的文件描述符打开个数&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;/node_filefd_maximum&#123;job=&quot;node_exporter&quot;&#125; * 100 * on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_filefd_allocated&#123;job=&quot;auto_discovery_dns&quot;&#125;/node_filefd_maximum&#123;job=&quot;auto_discovery_dns&quot;&#125; * 100 * on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:filefd_allocated:percent
       labels:
         desc: &quot;节点的文件描述符打开百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
 #############################################################################################
 #                                network                                                    #
@@ -1855,63 +1873,63 @@ groups:
       labels:
         desc: &quot;节点网卡eth0每秒接收的比特数&quot;
         unit: &quot;bit/s&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
     - expr: avg by (environment,instance,device) (irate(node_network_transmit_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netout:bit:rate
       labels:
         desc: &quot;节点网卡eth0每秒发送的比特数&quot;
         unit: &quot;bit/s&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
     - expr: avg by (environment,instance,device) (irate(node_network_receive_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netin:packet:rate
       labels:
         desc: &quot;节点网卡每秒接收的数据包个数&quot;
         unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
     - expr: avg by (environment,instance,device) (irate(node_network_transmit_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netout:packet:rate
       labels:
         desc: &quot;节点网卡发送的数据包个数&quot;
         unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
     - expr: avg by (environment,instance,device) (irate(node_network_receive_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netin:error:rate
       labels:
         desc: &quot;节点设备驱动器检测到的接收错误包的数量&quot;
         unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
     - expr: avg by (environment,instance,device) (irate(node_network_transmit_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:netout:error:rate
       labels:
         desc: &quot;节点设备驱动器检测到的发送错误包的数量&quot;
         unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;established&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_tcp_connection_states&#123;job=&quot;auto_discovery_dns&quot;, state=&quot;established&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:tcp:established:count
       labels:
         desc: &quot;节点当前established的个数&quot;
         unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;time_wait&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
+    - expr: node_tcp_connection_states&#123;job=&quot;auto_discovery_dns&quot;, state=&quot;time_wait&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:tcp:timewait:count
       labels:
         desc: &quot;节点timewait的连接数&quot;
         unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: sum by (environment,instance) (node_tcp_connection_states&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+    - expr: sum by (environment,instance) (node_tcp_connection_states&#123;job=&quot;auto_discovery_dns&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:network:tcp:total:count
       labels:
         desc: &quot;节点tcp连接总数&quot;
         unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 #############################################################################################
 #                                process                                                    #
     - expr: node_processes_state&#123;state=&quot;Z&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
@@ -1919,15 +1937,15 @@ groups:
       labels:
         desc: &quot;节点当前状态为zoom的个数&quot;
         unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 #############################################################################################
 #                                other                                                    #
-    - expr: abs(node_timex_offset_seconds&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
+    - expr: abs(node_timex_offset_seconds&#123;job=&quot;auto_discovery_dns&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
       record: node_exporter:time:offset
       labels:
         desc: &quot;节点的时间偏差&quot;
         unit: &quot;s&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 #############################################################################################
 #
     - expr: count by (instance) ( count by (instance,cpu) (node_cpu_seconds_total&#123; mode='system'&#125;) ) * on(instance) group_left(nodename) (node_uname_info)
@@ -1936,296 +1954,45 @@ groups:
 <h5 id="容器监控指标规则">容器监控指标规则</h5>
 <p>/export/docker-data-proms/conf/rules/dockersInfo-record-rules.yml</p>
 <pre><code class="language-yaml">groups:
-  - name: node_exporter-record
+  - name: dockersInfo-record
     rules:
-    - expr: up&#123;job=~&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:up
+    - expr: count by (instance, name) (count_over_time(container_last_seen&#123;job=&quot;auto_discovery_dns&quot;, name!=&quot;&quot;, container_label_restartcount!=&quot;&quot;&#125;[15m]))
+      record: dockersInfo:container:restart
       labels:
-        desc: &quot;节点是否在线, 在线1,不在线0&quot;
-        unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
-    - expr: time() - node_boot_time_seconds&#123;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:node_uptime
-      labels:
-        desc: &quot;节点的运行时间&quot;
-        unit: &quot;s&quot;
-        job: &quot;node_exporter&quot;
+        desc: &quot;15m周期内容器发生重启的次数&quot;
+        unit: &quot;&quot;
+        job: &quot;auto_discovery_dns&quot;
 ##############################################################################################
 #                              cpu                                                           #
-    - expr: (1 - avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:cpu:total:percent
+    - expr: rate(container_cpu_usage_seconds_total&#123;job=&quot;auto_discovery_dns&quot;, name!=''&#125;[5m])  * 100
+      record: dockersInfo:container:cpu:total:percent
       labels:
-        desc: &quot;节点的cpu总消耗百分比&quot;
+        desc: &quot;容器的cpu总消耗百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;idle&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:cpu:idle:percent
+    - expr: rate(container_fs_io_time_seconds_total&#123;job=&quot;auto_discovery_dns&quot;, name!=''&#125;[5m])  * 100
+      record: dockersInfo:cpu:iowait:percent
       labels:
-        desc: &quot;节点的cpu idle百分比&quot;
+        desc: &quot;容器的cpu iowait百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;iowait&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:cpu:iowait:percent
-      labels:
-        desc: &quot;节点的cpu iowait百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-
-
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;system&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:cpu:system:percent
-      labels:
-        desc: &quot;节点的cpu system百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=&quot;user&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:cpu:user:percent
-      labels:
-        desc: &quot;节点的cpu user百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: (avg by (environment,instance) (irate(node_cpu_seconds_total&#123;job=&quot;node_exporter&quot;,mode=~&quot;softirq|nice|irq|steal&quot;&#125;[5m])))  * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:cpu:other:percent
-      labels:
-        desc: &quot;节点的cpu 其他的百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
 ##############################################################################################
 #                                    memory                                                  #
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:memory:total
+    - expr: container_spec_memory_limit_bytes&#123;job=&quot;auto_discovery_dns&quot;, name!=''&#125;
+      record: dockersInfo:memory:total
       labels:
-        desc: &quot;节点的内存总量&quot;
+        desc: &quot;容器的内存总量&quot;
         unit: byte
-        job: &quot;node_exporter&quot;
+        job: &quot;auto_discovery_dns&quot;
 
-    - expr: node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:memory:free
+    - expr: container_memory_usage_bytes&#123;job=&quot;auto_discovery_dns&quot;, name!=''&#125; / container_spec_memory_limit_bytes&#123;job=&quot;auto_discovery_dns&quot;, name!=''&#125; * 100
+      record: dockersInfo:memory:used:percent
       labels:
-        desc: &quot;节点的剩余内存量&quot;
-        unit: byte
-        job: &quot;node_exporter&quot;
-
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemFree_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:memory:used
-      labels:
-        desc: &quot;节点的已使用内存量&quot;
-        unit: byte
-        job: &quot;node_exporter&quot;
-
-    - expr: node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125; - node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:memory:actualused
-      labels:
-        desc: &quot;节点用户实际使用的内存量&quot;
-        unit: byte
-        job: &quot;node_exporter&quot;
-
-    - expr: (1-(node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:memory:used:percent
-      labels:
-        desc: &quot;节点的内存使用百分比&quot;
+        desc: &quot;容器的内存使用百分比&quot;
         unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: ((node_memory_MemAvailable_bytes&#123;job=&quot;node_exporter&quot;&#125; / (node_memory_MemTotal_bytes&#123;job=&quot;node_exporter&quot;&#125;)))* 100* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:memory:free:percent
-      labels:
-        desc: &quot;节点的内存剩余百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-##############################################################################################
-#                                   load                                                     #
-    - expr: sum by (instance) (node_load1&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:load:load1
-      labels:
-        desc: &quot;系统1分钟负载&quot;
-        unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: sum by (instance) (node_load5&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:load:load5
-      labels:
-        desc: &quot;系统5分钟负载&quot;
-        unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: sum by (instance) (node_load15&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:load:load15
-      labels:
-        desc: &quot;系统15分钟负载&quot;
-        unit: &quot; &quot;
-        job: &quot;node_exporter&quot;
-
-##############################################################################################
-#                                 disk                                                       #
-    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot; ,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:usage:total
-      labels:
-        desc: &quot;节点的磁盘总量&quot;
-        unit: byte
-        job: &quot;node_exporter&quot;
-
-    - expr: node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:usage:free
-      labels:
-        desc: &quot;节点的磁盘剩余空间&quot;
-        unit: byte
-        job: &quot;node_exporter&quot;
-
-    - expr: node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:usage:used
-      labels:
-        desc: &quot;节点的磁盘使用的空间&quot;
-        unit: byte
-        job: &quot;node_exporter&quot;
-
-    - expr:  (1 - node_filesystem_avail_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_size_bytes&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:used:percent
-      labels:
-        desc: &quot;节点的磁盘的使用百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: irate(node_disk_reads_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:read:count:rate
-      labels:
-        desc: &quot;节点的磁盘读取速率&quot;
-        unit: &quot;次/秒&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: irate(node_disk_writes_completed_total&#123;job=&quot;node_exporter&quot;&#125;[1m])* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:write:count:rate
-      labels:
-        desc: &quot;节点的磁盘写入速率&quot;
-        unit: &quot;次/秒&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: (irate(node_disk_written_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:read:mb:rate
-      labels:
-        desc: &quot;节点的设备读取MB速率&quot;
-        unit: &quot;MB/s&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: (irate(node_disk_read_bytes_total&#123;job=&quot;node_exporter&quot;&#125;[1m]))/1024/1024* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:disk:write:mb:rate
-      labels:
-        desc: &quot;节点的设备写入MB速率&quot;
-        unit: &quot;MB/s&quot;
-        job: &quot;node_exporter&quot;
-
-##############################################################################################
-#                                filesystem                                                  #
-    - expr:   (1 -node_filesystem_files_free&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125; / node_filesystem_files&#123;job=&quot;node_exporter&quot;,fstype=~&quot;ext4|xfs&quot;&#125;) * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:filesystem:used:percent
-      labels:
-        desc: &quot;节点的inode的剩余可用的百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-#############################################################################################
-#                                filefd                                                     #
-    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:filefd_allocated:count
-      labels:
-        desc: &quot;节点的文件描述符打开个数&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: node_filefd_allocated&#123;job=&quot;node_exporter&quot;&#125;/node_filefd_maximum&#123;job=&quot;node_exporter&quot;&#125; * 100 * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:filefd_allocated:percent
-      labels:
-        desc: &quot;节点的文件描述符打开百分比&quot;
-        unit: &quot;%&quot;
-        job: &quot;node_exporter&quot;
-
-#############################################################################################
-#                                network                                                    #
-    - expr: avg by (environment,instance,device) (irate(node_network_receive_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:netin:bit:rate
-      labels:
-        desc: &quot;节点网卡eth0每秒接收的比特数&quot;
-        unit: &quot;bit/s&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: avg by (environment,instance,device) (irate(node_network_transmit_bytes_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:netout:bit:rate
-      labels:
-        desc: &quot;节点网卡eth0每秒发送的比特数&quot;
-        unit: &quot;bit/s&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: avg by (environment,instance,device) (irate(node_network_receive_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:netin:packet:rate
-      labels:
-        desc: &quot;节点网卡每秒接收的数据包个数&quot;
-        unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: avg by (environment,instance,device) (irate(node_network_transmit_packets_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:netout:packet:rate
-      labels:
-        desc: &quot;节点网卡发送的数据包个数&quot;
-        unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: avg by (environment,instance,device) (irate(node_network_receive_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:netin:error:rate
-      labels:
-        desc: &quot;节点设备驱动器检测到的接收错误包的数量&quot;
-        unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: avg by (environment,instance,device) (irate(node_network_transmit_errs_total&#123;device=~&quot;eth0|eth1|ens33|ens37&quot;&#125;[1m]))* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:netout:error:rate
-      labels:
-        desc: &quot;节点设备驱动器检测到的发送错误包的数量&quot;
-        unit: &quot;个/秒&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;established&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:tcp:established:count
-      labels:
-        desc: &quot;节点当前established的个数&quot;
-        unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: node_tcp_connection_states&#123;job=&quot;node_exporter&quot;, state=&quot;time_wait&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:tcp:timewait:count
-      labels:
-        desc: &quot;节点timewait的连接数&quot;
-        unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
-
-    - expr: sum by (environment,instance) (node_tcp_connection_states&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:network:tcp:total:count
-      labels:
-        desc: &quot;节点tcp连接总数&quot;
-        unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
-#############################################################################################
-#                                process                                                    #
-    - expr: node_processes_state&#123;state=&quot;Z&quot;&#125;* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:process:zoom:total:count
-      labels:
-        desc: &quot;节点当前状态为zoom的个数&quot;
-        unit: &quot;个&quot;
-        job: &quot;node_exporter&quot;
-#############################################################################################
-#                                other                                                    #
-    - expr: abs(node_timex_offset_seconds&#123;job=&quot;node_exporter&quot;&#125;)* on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:time:offset
-      labels:
-        desc: &quot;节点的时间偏差&quot;
-        unit: &quot;s&quot;
-        job: &quot;node_exporter&quot;
-#############################################################################################
-#
-    - expr: count by (instance) ( count by (instance,cpu) (node_cpu_seconds_total&#123; mode='system'&#125;) ) * on(instance) group_left(nodename) (node_uname_info)
-      record: node_exporter:cpu:count
+        job: &quot;auto_discovery_dns&quot;
 </code></pre>
 <h4 id="定义监控指标阈值规则">定义监控指标阈值规则</h4>
 <h5 id="主机监控指标阈值">主机监控指标阈值</h5>
@@ -2550,8 +2317,8 @@ systemctl start prometheus
 <h3 id="查看">查看</h3>
 <p>被监控端状态：<a target="_blank" rel="noopener" href="http://xxx:9090/targets">http://xxx:9090/targets</a></p>
 <p>通过上述地址，你可以看到配置中 job_name 定义的被监控任务的端点状态</p>
-<p><img src="/posts/65820315/image-20201218112329166.png" alt="image-20201218112329166"></p>
-<h2 id="pushgateway-初期用不上的组件">pushgateway (初期用不上的组件)</h2>
+<p><img src="/posts/65820315/image-20210311110821675.png" alt="image-20210311110821675"></p>
+<h2 id="pushgateway-未验证">pushgateway (未验证)</h2>
 <blockquote>
 <p>push 模式下的网关</p>
 <p>当前没有现成的推送模式的 node-exporter</p>

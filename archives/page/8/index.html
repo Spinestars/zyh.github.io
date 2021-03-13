@@ -868,6 +868,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1116,6 +1125,15 @@
 								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+										windows☞win10迁移数据
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1400,6 +1418,93 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/2c2d50a0/">
+				<h2 class="index-title">
+					redis☞备份
+				</h2>
+				<div class="index-brief">
+					前言
+本文主要记录 redis 的两种数据磁盘固化方式。
+涉及到相关参数，简单的命令操作等。
+rdb
+
+通过fork一个子进程来存储某一时刻redis数据(bgsave方式)。rdb持久化是默认方式。
+特点：
+
+
+小幅度丢失数据(取决于save或者bgsave命令的执行周期)，这里我们不说save，
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-04-27</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/redis/">redis</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3d9b9ec1/">
+				<h2 class="index-title">
+					ansible☞常用模块-软件包管理
+				</h2>
+				<div class="index-brief">
+					apt_repository
+
+ubuntu 下：
+repo 指定库地址，例如 nginx 地址 ppa:nginx/stable
+state 值为 absent 时为删除
+
+ansible localhost -m apt_repository -a &quot;repo=ppa:nginx/st
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-04-26</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/1e274151/">
@@ -1730,90 +1835,6 @@ https://raw.githubuserconte
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/其它/">其它</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/cd32aa48/">
-				<h2 class="index-title">
-					linux☞时间
-				</h2>
-				<div class="index-brief">
-					前言
-本文中描述的并不能涵盖所有时间设置命令，只是记录了经常用到的一些。
-时间同步
-sudo yum erase ntp*
-sudo yum -y install chrony
-sudo service chronyd start
-sed -i '1i server 10.200.16.101 pr
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-02-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3475106c/">
-				<h2 class="index-title">
-					日志☞ELK简单部署-容器方式
-				</h2>
-				<div class="index-brief">
-					前言
-
-各组件总下载页: https://www.elastic.co/cn/downloads/
-容器下载页: https://www.docker.elastic.co
-
-
-Elasticsearch 搜索分析 https://www.elastic.co/cn/downloads/elasti
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-12-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/ELK/">ELK</a>
 										
                                     </span>
                                 

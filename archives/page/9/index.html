@@ -868,6 +868,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1116,6 +1125,15 @@
 								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+										windows☞win10迁移数据
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1400,6 +1418,90 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/cd32aa48/">
+				<h2 class="index-title">
+					linux☞时间
+				</h2>
+				<div class="index-brief">
+					前言
+本文中描述的并不能涵盖所有时间设置命令，只是记录了经常用到的一些。
+时间同步
+sudo yum erase ntp*
+sudo yum -y install chrony
+sudo service chronyd start
+sed -i '1i server 10.200.16.101 pr
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-02-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/">系统</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/linux/">linux</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3475106c/">
+				<h2 class="index-title">
+					日志☞ELK简单部署-容器方式
+				</h2>
+				<div class="index-brief">
+					前言
+
+各组件总下载页: https://www.elastic.co/cn/downloads/
+容器下载页: https://www.docker.elastic.co
+
+
+Elasticsearch 搜索分析 https://www.elastic.co/cn/downloads/elasti
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-12-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/ELK/">ELK</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/18de0eed/">
@@ -1744,85 +1846,6 @@ dd if=/文件A of=/dev/盘B bs=1M ofl
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/公有云/aws/">aws</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ddc4c969/">
-				<h2 class="index-title">
-					aws☞利用cf服务初始化aws环境
-				</h2>
-				<div class="index-brief">
-					
-因公司小项目多，账户多，每次构建aws初始化环境均很麻烦，且每个人操作的时候，想法都不一样，规则不统一，导致环境信息无法通用.
-所以准备使用 cf 来构建一个通用模板，保持环境一致性.
-之前一直没有使用，是因为 cf 本身编写不是太方便，然而我低估了 aws 的牛逼，仔细看了文档才知道， 有个 c
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-09-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/">公有云</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/aws/">aws</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/78ceb386/">
-				<h2 class="index-title">
-					nginx☞泛域名_变量截取
-				</h2>
-				<div class="index-brief">
-					server &#123;
-    listen       80;
-    listen       [::]:80;
-    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
-    root /export/webapps/apple.
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-09-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 

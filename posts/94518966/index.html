@@ -870,6 +870,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1118,6 +1127,15 @@
 								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+										windows☞win10迁移数据
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1478,6 +1496,26 @@ spec:
 <blockquote>
 <p>这是一个计划任务，它会遵循 “*/1 * * * *” 时间规则来启动 hello</p>
 </blockquote>
+<h3 id="如何寻找最合适的kind所属的apiVersion">如何寻找最合适的kind所属的apiVersion</h3>
+<p>在这里可能有人不知道如何选择apiVersion。你可以通过kubectl api-versions来找到kind所属的apiGroup，然后再通过</p>
+<p>kubectl get --raw “/apis” 的输出找 preferredVersion。</p>
+<pre><code class="language-bash">➜  kubectl api-resources | grep jobs
+cronjobs                          cj           batch                          true         CronJob
+jobs                                           batch                          true         Job
+➜  kubectl get --raw &quot;/apis&quot; |python -mjson.tool | grep -B 1 batch
+        &#123;
+            &quot;name&quot;: &quot;batch&quot;,
+--
+                &#123;
+                    &quot;groupVersion&quot;: &quot;batch/v1&quot;,
+--
+                &#123;
+                    &quot;groupVersion&quot;: &quot;batch/v1beta1&quot;,
+--
+            &quot;preferredVersion&quot;: &#123;
+                &quot;groupVersion&quot;: &quot;batch/v1&quot;,
+</code></pre>
+<p>如上命令所示，在我的k8s版本中 kind: jobs 的最合适apiVersion是 batch/v1</p>
 <h2 id="Pod-存储-网络">Pod 存储/网络</h2>
 <h3 id="pod-存储">pod 存储</h3>
 <p>这是一个大问题. 如果你想真正的使用k8s的pod资源, 那么需要先看这一部分的内容.</p>
@@ -1523,16 +1561,16 @@ total 16
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/3ec72f7e/">
+              <a href="/posts/c83ca575/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞04pod钩子函数
+                  mysql☞离线迁移脚本
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/9602dad/">
-                k8s☞02v1.18.6安装
+              <a href="/posts/3ec72f7e/">
+                k8s☞04pod钩子函数
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

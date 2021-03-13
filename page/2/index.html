@@ -868,6 +868,15 @@
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1116,6 +1125,15 @@
 								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+										windows☞win10迁移数据
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1400,6 +1418,69 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/ab1247fb/">
+				<h2 class="index-title">
+					监控☞mysql慢sql预警
+				</h2>
+				<div class="index-brief">
+					用途
+检测数据库中执行缓慢的sql，并记录预警
+脚本
+#!/bin/bash
+# by zyh
+# 检查数据库耗时过长的语句
+# 所需配置文件:
+# 1. userfile.txt 用于判断程序用户的sql是否超时，超时了杀死
+  ##用户名      密码    超时时间
+# 2. databas
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-11-05</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/7c44c2e8/">
+				<h2 class="index-title">
+					web☞服务器承载能力计算
+				</h2>
+				<div class="index-brief">
+					前言
+我们在评估一个系统需要多少个服务器来支撑的时候，一般会涉及到多个点。
+
+pv
+qps
+并发
+平均响应时间
+
+如果你已经搜索过相关站点，你会看到一个公式：并发=qps*平均响应时间
+说实话，这个公式很蛋疼，猛地一看让人一脸懵逼。这里我按照我的方式来说一下。
+首先将公式变形， QPS = 工作进程
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-31</span>
+                    
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/7538d100/">
@@ -1703,91 +1784,6 @@ apiV
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-21</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/63d8d3d4/">
-				<h2 class="index-title">
-					k8s☞12-1守护进程
-				</h2>
-				<div class="index-brief">
-					前言
-DaemonSet 确保指定的node上都存在一份 pod. 常用来构建一些批量代理性质的app. 例如监控节点app, 或者日志节点app
-特点
-
-当一个节点添加到集群, 或从集群中删除, 则 pod 会被添加/删除
-当DaemonSet被删除, 则 pod 都会被删除.
-pod模板中的 R
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ed4c29d5/">
-				<h2 class="index-title">
-					k8s☞11-2namespace资源约束
-				</h2>
-				<div class="index-brief">
-					前言
-https://kubernetes.io/docs/concepts/policy/limit-range/
-namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
-特点
-
-提供 pod 的默认资源约束.
-限制pod的资源约束.
-Lim
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-19</span>
                     
                             
                                 

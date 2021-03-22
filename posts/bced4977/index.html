@@ -1667,7 +1667,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: kube-scheduler
 </code></pre>
-<p><a target="_blank" rel="noopener" href="http://xn--kube-schedulerservicemonitorapp-2i83c3y9cgsn48aq666a59a992hof0k3ne.kubernetes.io/name:">可以看到kube-scheduler的servicemonitor指向拥有app.kubernetes.io/name:</a> <a target="_blank" rel="noopener" href="http://xn--kube-schedulerports-jk56a.name">kube-scheduler和ports.name</a>: https-metrics的svc</p>
+<p>可以看到 <code>kube-scheduler</code> 的 <code>servicemonitor</code> 指向拥有 <code>app.kubernetes.io/name: kube-scheduler</code> 和 <code>ports.name: https-metrics</code> 的 svc</p>
 <h4 id="建立servicemonitor所需的svc">建立servicemonitor所需的svc</h4>
 <p>查看服务pod的标签</p>
 <pre><code class="language-bash">[root@k8s01 my-yaml]# kubectl get pod -n kube-system | grep kube-scheduler

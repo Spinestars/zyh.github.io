@@ -1793,21 +1793,17 @@ r
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/421d605e/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					日志☞logrotate安装
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
 
-
-1，nginx增加配置 server_status.server
-
-cat &gt; /usr/local/nginx/
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
 					...
 				</div>
 			</a>
@@ -1818,7 +1814,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/日志/">日志</a>
 										
 											>
 										
@@ -1828,7 +1824,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/日志/其它/">其它</a>
 										
                                     </span>
                                 

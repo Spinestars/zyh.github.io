@@ -8,7 +8,7 @@
       <link href="posts/bced4977/"/>
       <url>posts/bced4977/</url>
       
-        <content type="html"><![CDATA[<h2 id="部署文档">部署文档</h2><p><a href="https://prometheus-operator.dev/docs/prologue/quick-start/">https://prometheus-operator.dev/docs/prologue/quick-start/</a></p><p>如果采用的是kubeadm安装的k8s，或许会用到</p><p><a href="https://prometheus-operator.dev/docs/kube-prometheus-on-kubeadm/#kubeadm-pre-requisites">https://prometheus-operator.dev/docs/kube-prometheus-on-kubeadm/#kubeadm-pre-requisites</a></p><p>提到的信息。</p><h2 id="架构图">架构图</h2><p><img src="https://www.qikqiak.com/img/posts/prometheus-operator.png" alt="promtheus opeator"></p><p>这里的 servicemonitor 资源对象很关键</p><h2 id="监控的东西">监控的东西</h2><ul><li>cluster state via kube-state-metrics</li><li>nodes via the node_exporter</li><li>kubelets</li><li>apiserver</li><li>kube-scheduler</li><li>kube-controller-manager</li></ul><h2 id="基本步骤">基本步骤</h2><h3 id="拉取代码">拉取代码</h3><pre><code class="language-shell">git clone https://github.com/prometheus-operator/kube-prometheus.git</code></pre><h3 id="部署到k8s">部署到k8s</h3><p>ℹ️资源会部署在monitoring命名空间中</p><pre><code class="language-shell">kubectl create -f manifests/setup# 等待上述命令资源跑完kubectl create -f manifests/# 等待所有 pod 创建完毕kubectl get pod -n monitoring</code></pre><h3 id="添加ingress配置">添加ingress配置</h3><p>ℹ️需先部署完 ingress，例如</p><pre><code class="language-bash">kubectl get svc -n ingress-nginx===NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGEingress-nginx-controller             LoadBalancer   10.96.210.139   10.200.16.11   80:32489/TCP,443:30936/TCP   88mingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;         443/TCP                      88m</code></pre><p>上述 ingress-nginx-controller 已经分到了 EXTERNAL-IP：10.200.16.11</p><p>部署下面的 ingress 配置</p><pre><code class="language-yaml">kind: IngressapiVersion: networking.k8s.io/v1metadata:  name: prometheus-ingress  namespace: monitoring  annotations:    kubernetes.io/ingress.class: &quot;nginx&quot;spec:  rules:  - host: grafana.it.local    http:      paths:      - path: /        pathType: Prefix        backend:          service:            name: grafana            port:              number: 3000  - host: proms.it.local    http:      paths:      - path: /        pathType: Prefix        backend:          service:            name: prometheus-k8s            port:              number: 9090  - host: alert.it.local    http:      paths:      - path: /        pathType: Prefix        backend:          service:            name: alertmanager-main            port:              number: 9093    </code></pre><p>解析 grafana.it.local 和 proms.it.local 到 svc 对象 ingress-nginx-controller 关联的 EXTERNAL-IP.</p><p>最后通过 <a href="http://grafana.it.local">http://grafana.it.local</a> 和 <a href="http://proms.it.local">http://proms.it.local</a> 访问</p><p>其中 grafana 的默认账户密码都是 admin，效果如图：</p><p><img src="/posts/bced4977/image-20210319171647029.png" alt="image-20210319171647029"></p><p>其中 prometheus 的效果如图：</p><p><img src="/posts/bced4977/image-20210319171728505.png" alt="image-20210319171728505"></p><h3 id="添加告警">添加告警</h3><p>配置相关可以在 kube-prometheus/manifests/alertmanager-secret.yaml 中找到</p><pre><code class="language-bash">apiVersion: v1kind: Secretmetadata:  labels:    alertmanager: main    app.kubernetes.io/component: alert-router    app.kubernetes.io/name: alertmanager    app.kubernetes.io/part-of: kube-prometheus    app.kubernetes.io/version: 0.21.0  name: alertmanager-main  namespace: monitoringstringData:  alertmanager.yaml: |-    global:      resolve_timeout: 5m      http_config: &#123;&#125;      smtp_hello: localhost      smtp_require_tls: true      pagerduty_url: https://events.pagerduty.com/v2/enqueue      opsgenie_api_url: https://api.opsgenie.com/      wechat_api_url: https://qyapi.weixin.qq.com/cgi-bin/      victorops_api_url: https://alert.victorops.com/integrations/generic/20131114/alert/    route:      receiver: Default      group_by:      - namespace      routes:      - receiver: Watchdog        match:          alertname: Watchdog      - receiver: Critical        match:          severity: critical      group_wait: 30s      group_interval: 5m      repeat_interval: 12h    inhibit_rules:    - source_match:        severity: critical      target_match_re:        severity: warning|info      equal:      - namespace      - alertname    - source_match:        severity: warning      target_match_re:        severity: info      equal:      - namespace      - alertname    receivers:    - name: Default      webhook_configs:      - url: &quot;...&quot;    - name: Critical      webhook_configs:      - url: &quot;...&quot;    - name: Watchdog    templates: []type: Opaque</code></pre><p>如上命令所示，添加 receivers ，这里均采用 webhook 方式</p><p>部署新配置，并reload alertmanager</p><pre><code class="language-bash">kubectl apply -f alertmanager-secret.yaml curl -X POST http://&lt;alertmanager_addr&gt;/-/reload</code></pre><h3 id="修正问题">修正问题</h3><p>prometheus页面中可能会看到有一些错误，两个核心组件kube-controller-manager和kube-scheduler是down</p><p><img src="/posts/bced4977/image-20210319174713804.png" alt="image-20210319174713804"></p><p>其原因在于，prometheus-operator的ServiceMonitor资源对象指定的svc不存在</p><pre><code class="language-bash">[root@k8s01 my-yaml]# kubectl get servicemonitor -n monitoringNAME                      AGEalertmanager              2d19hblackbox-exporter         2d19hcoredns                   2d19hgrafana                   2d19hkube-apiserver            2d19hkube-controller-manager   2d19hkube-scheduler            2d19hkube-state-metrics        2d19hkubelet                   2d19hnode-exporter             2d19hprometheus-adapter        2d19hprometheus-k8s            2d19hprometheus-operator       2d19h</code></pre><p>以kube-scheduler为例</p><pre><code class="language-bash">[root@k8s01 my-yaml]# kubectl get servicemonitor kube-scheduler -n monitoring -o yamlapiVersion: monitoring.coreos.com/v1kind: ServiceMonitormetadata:......spec:  endpoints:  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token    interval: 30s    port: https-metrics    scheme: https    tlsConfig:      insecureSkipVerify: true  jobLabel: app.kubernetes.io/name  namespaceSelector:    matchNames:    - kube-system  selector:    matchLabels:      app.kubernetes.io/name: kube-scheduler</code></pre><p><a href="http://xn--kube-schedulerservicemonitorapp-2i83c3y9cgsn48aq666a59a992hof0k3ne.kubernetes.io/name:">可以看到kube-scheduler的servicemonitor指向拥有app.kubernetes.io/name:</a> <a href="http://xn--kube-schedulerports-jk56a.name">kube-scheduler和ports.name</a>: https-metrics的svc</p><h4 id="建立servicemonitor所需的svc">建立servicemonitor所需的svc</h4><p>查看服务pod的标签</p><pre><code class="language-bash">[root@k8s01 my-yaml]# kubectl get pod -n kube-system | grep kube-schedulerkube-scheduler-k8s01            1/1     Running   0          36mkube-scheduler-k8s02            1/1     Running   0          18mkube-scheduler-k8s03            1/1     Running   0          16m[root@k8s01 my-yaml]# kubectl get pod kube-scheduler-k8s01  -n kube-system -o yaml | grep -A 2 labels  labels:    component: kube-scheduler    tier: control-plane--        f:labels:          .: &#123;&#125;          f:component: &#123;&#125;</code></pre><p>如上可以看到，在kubeadm安装的k8s中，kube-scheduler的 labels 是 component: kube-scheduler。</p><p>最后生成svc配置</p><pre><code class="language-bash">apiVersion: v1kind: Servicemetadata:  namespace: kube-system  name: kube-scheduler-prometheus  labels:    app.kubernetes.io/name: kube-scheduler  # 关键spec:  selector:    component: kube-scheduler  # 关键  ports:  - name: https-metrics  # 关键    port: 10259  # 关键    targetPort: 10259  # 关键    protocol: TCP---apiVersion: v1kind: Servicemetadata:  namespace: kube-system  name: kube-controller-manager-prometheus  labels:    app.kubernetes.io/name: kube-controller-managerspec:  selector:    component: kube-controller-manager  ports:  - name: https-metrics    port: 10257    targetPort: 10257    protocol: TCP</code></pre><h4 id="修改服务监听地址">修改服务监听地址</h4><p>默认kubeadm安装的kube-controller-manager和kube-scheduler监听地址都是127.0.0.1，这导致无法被采集，因此需要改成0.0.0.0。</p><p>修改 static pod 配置即可。</p><pre><code class="language-bash">sed -e &quot;s/- --address=127.0.0.1/- --address=0.0.0.0/&quot; -i /etc/kubernetes/manifests/kube-controller-manager.yamlsed -e &quot;s/- --address=127.0.0.1/- --address=0.0.0.0/&quot; -i /etc/kubernetes/manifests/kube-scheduler.yaml</code></pre><p>修改完，k8s会自动重建相应的pod。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="部署文档">部署文档</h2><p><a href="https://prometheus-operator.dev/docs/prologue/quick-start/">https://prometheus-operator.dev/docs/prologue/quick-start/</a></p><p>如果采用的是kubeadm安装的k8s，或许会用到</p><p><a href="https://prometheus-operator.dev/docs/kube-prometheus-on-kubeadm/#kubeadm-pre-requisites">https://prometheus-operator.dev/docs/kube-prometheus-on-kubeadm/#kubeadm-pre-requisites</a></p><p>提到的信息。</p><h2 id="架构图">架构图</h2><p><img src="https://www.qikqiak.com/img/posts/prometheus-operator.png" alt="promtheus opeator"></p><p>这里的 servicemonitor 资源对象很关键</p><h2 id="监控的东西">监控的东西</h2><ul><li>cluster state via kube-state-metrics</li><li>nodes via the node_exporter</li><li>kubelets</li><li>apiserver</li><li>kube-scheduler</li><li>kube-controller-manager</li></ul><h2 id="基本步骤">基本步骤</h2><h3 id="拉取代码">拉取代码</h3><pre><code class="language-shell">git clone https://github.com/prometheus-operator/kube-prometheus.git</code></pre><h3 id="部署到k8s">部署到k8s</h3><p>ℹ️资源会部署在monitoring命名空间中</p><pre><code class="language-shell">kubectl create -f manifests/setup# 等待上述命令资源跑完kubectl create -f manifests/# 等待所有 pod 创建完毕kubectl get pod -n monitoring</code></pre><h3 id="添加ingress配置">添加ingress配置</h3><p>ℹ️需先部署完 ingress，例如</p><pre><code class="language-bash">kubectl get svc -n ingress-nginx===NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGEingress-nginx-controller             LoadBalancer   10.96.210.139   10.200.16.11   80:32489/TCP,443:30936/TCP   88mingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;         443/TCP                      88m</code></pre><p>上述 ingress-nginx-controller 已经分到了 EXTERNAL-IP：10.200.16.11</p><p>部署下面的 ingress 配置</p><pre><code class="language-yaml">kind: IngressapiVersion: networking.k8s.io/v1metadata:  name: prometheus-ingress  namespace: monitoring  annotations:    kubernetes.io/ingress.class: &quot;nginx&quot;spec:  rules:  - host: grafana.it.local    http:      paths:      - path: /        pathType: Prefix        backend:          service:            name: grafana            port:              number: 3000  - host: proms.it.local    http:      paths:      - path: /        pathType: Prefix        backend:          service:            name: prometheus-k8s            port:              number: 9090  - host: alert.it.local    http:      paths:      - path: /        pathType: Prefix        backend:          service:            name: alertmanager-main            port:              number: 9093    </code></pre><p>解析 grafana.it.local 和 proms.it.local 到 svc 对象 ingress-nginx-controller 关联的 EXTERNAL-IP.</p><p>最后通过 <a href="http://grafana.it.local">http://grafana.it.local</a> 和 <a href="http://proms.it.local">http://proms.it.local</a> 访问</p><p>其中 grafana 的默认账户密码都是 admin，效果如图：</p><p><img src="/posts/bced4977/image-20210319171647029.png" alt="image-20210319171647029"></p><p>其中 prometheus 的效果如图：</p><p><img src="/posts/bced4977/image-20210319171728505.png" alt="image-20210319171728505"></p><h3 id="添加告警">添加告警</h3><p>配置相关可以在 kube-prometheus/manifests/alertmanager-secret.yaml 中找到</p><pre><code class="language-bash">apiVersion: v1kind: Secretmetadata:  labels:    alertmanager: main    app.kubernetes.io/component: alert-router    app.kubernetes.io/name: alertmanager    app.kubernetes.io/part-of: kube-prometheus    app.kubernetes.io/version: 0.21.0  name: alertmanager-main  namespace: monitoringstringData:  alertmanager.yaml: |-    global:      resolve_timeout: 5m      http_config: &#123;&#125;      smtp_hello: localhost      smtp_require_tls: true      pagerduty_url: https://events.pagerduty.com/v2/enqueue      opsgenie_api_url: https://api.opsgenie.com/      wechat_api_url: https://qyapi.weixin.qq.com/cgi-bin/      victorops_api_url: https://alert.victorops.com/integrations/generic/20131114/alert/    route:      receiver: Default      group_by:      - namespace      routes:      - receiver: Watchdog        match:          alertname: Watchdog      - receiver: Critical        match:          severity: critical      group_wait: 30s      group_interval: 5m      repeat_interval: 12h    inhibit_rules:    - source_match:        severity: critical      target_match_re:        severity: warning|info      equal:      - namespace      - alertname    - source_match:        severity: warning      target_match_re:        severity: info      equal:      - namespace      - alertname    receivers:    - name: Default      webhook_configs:      - url: &quot;...&quot;    - name: Critical      webhook_configs:      - url: &quot;...&quot;    - name: Watchdog    templates: []type: Opaque</code></pre><p>如上命令所示，添加 receivers ，这里均采用 webhook 方式</p><p>部署新配置，并reload alertmanager</p><pre><code class="language-bash">kubectl apply -f alertmanager-secret.yaml curl -X POST http://&lt;alertmanager_addr&gt;/-/reload</code></pre><h3 id="修正问题">修正问题</h3><p>prometheus页面中可能会看到有一些错误，两个核心组件kube-controller-manager和kube-scheduler是down</p><p><img src="/posts/bced4977/image-20210319174713804.png" alt="image-20210319174713804"></p><p>其原因在于，prometheus-operator的ServiceMonitor资源对象指定的svc不存在</p><pre><code class="language-bash">[root@k8s01 my-yaml]# kubectl get servicemonitor -n monitoringNAME                      AGEalertmanager              2d19hblackbox-exporter         2d19hcoredns                   2d19hgrafana                   2d19hkube-apiserver            2d19hkube-controller-manager   2d19hkube-scheduler            2d19hkube-state-metrics        2d19hkubelet                   2d19hnode-exporter             2d19hprometheus-adapter        2d19hprometheus-k8s            2d19hprometheus-operator       2d19h</code></pre><p>以kube-scheduler为例</p><pre><code class="language-bash">[root@k8s01 my-yaml]# kubectl get servicemonitor kube-scheduler -n monitoring -o yamlapiVersion: monitoring.coreos.com/v1kind: ServiceMonitormetadata:......spec:  endpoints:  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token    interval: 30s    port: https-metrics    scheme: https    tlsConfig:      insecureSkipVerify: true  jobLabel: app.kubernetes.io/name  namespaceSelector:    matchNames:    - kube-system  selector:    matchLabels:      app.kubernetes.io/name: kube-scheduler</code></pre><p>可以看到 <code>kube-scheduler</code> 的 <code>servicemonitor</code> 指向拥有 <code>app.kubernetes.io/name: kube-scheduler</code> 和 <code>ports.name: https-metrics</code> 的 svc</p><h4 id="建立servicemonitor所需的svc">建立servicemonitor所需的svc</h4><p>查看服务pod的标签</p><pre><code class="language-bash">[root@k8s01 my-yaml]# kubectl get pod -n kube-system | grep kube-schedulerkube-scheduler-k8s01            1/1     Running   0          36mkube-scheduler-k8s02            1/1     Running   0          18mkube-scheduler-k8s03            1/1     Running   0          16m[root@k8s01 my-yaml]# kubectl get pod kube-scheduler-k8s01  -n kube-system -o yaml | grep -A 2 labels  labels:    component: kube-scheduler    tier: control-plane--        f:labels:          .: &#123;&#125;          f:component: &#123;&#125;</code></pre><p>如上可以看到，在kubeadm安装的k8s中，kube-scheduler的 labels 是 component: kube-scheduler。</p><p>最后生成svc配置</p><pre><code class="language-bash">apiVersion: v1kind: Servicemetadata:  namespace: kube-system  name: kube-scheduler-prometheus  labels:    app.kubernetes.io/name: kube-scheduler  # 关键spec:  selector:    component: kube-scheduler  # 关键  ports:  - name: https-metrics  # 关键    port: 10259  # 关键    targetPort: 10259  # 关键    protocol: TCP---apiVersion: v1kind: Servicemetadata:  namespace: kube-system  name: kube-controller-manager-prometheus  labels:    app.kubernetes.io/name: kube-controller-managerspec:  selector:    component: kube-controller-manager  ports:  - name: https-metrics    port: 10257    targetPort: 10257    protocol: TCP</code></pre><h4 id="修改服务监听地址">修改服务监听地址</h4><p>默认kubeadm安装的kube-controller-manager和kube-scheduler监听地址都是127.0.0.1，这导致无法被采集，因此需要改成0.0.0.0。</p><p>修改 static pod 配置即可。</p><pre><code class="language-bash">sed -e &quot;s/- --address=127.0.0.1/- --address=0.0.0.0/&quot; -i /etc/kubernetes/manifests/kube-controller-manager.yamlsed -e &quot;s/- --address=127.0.0.1/- --address=0.0.0.0/&quot; -i /etc/kubernetes/manifests/kube-scheduler.yaml</code></pre><p>修改完，k8s会自动重建相应的pod。</p>]]></content>
       
       
       <categories>
@@ -175,9 +175,9 @@
             
             <tag> linux </tag>
             
-            <tag> ssh </tag>
-            
             <tag> expect </tag>
+            
+            <tag> ssh </tag>
             
         </tags>
       
@@ -703,9 +703,9 @@
             
             <tag> k8s </tag>
             
-            <tag> namespace </tag>
-            
             <tag> 资源约束 </tag>
+            
+            <tag> namespace </tag>
             
         </tags>
       
@@ -747,7 +747,7 @@
     
     
     <entry>
-      <title>k8s☞10应用配置与密码与信息提供</title>
+      <title>k8s☞09应用配置与密码与信息提供</title>
       <link href="posts/4b0e4a5/"/>
       <url>posts/4b0e4a5/</url>
       
@@ -780,7 +780,7 @@
     
     
     <entry>
-      <title>k8s☞09应用配置与密码与信息提供</title>
+      <title>k8s☞10应用配置与密码与信息提供</title>
       <link href="posts/4b0e4a5/"/>
       <url>posts/4b0e4a5/</url>
       
@@ -1557,64 +1557,6 @@
     
     
     <entry>
-      <title>zabbix ☞ nginx</title>
-      <link href="posts/b35b5965/"/>
-      <url>posts/b35b5965/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞web监控</title>
-      <link href="posts/3d20f83e/"/>
-      <url>posts/3d20f83e/</url>
-      
-        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if args in line:            if &quot;??&quot; in line:                line = line.strip('\n').split(&quot;??&quot;)            elif &quot;?&quot; in line:                line = line.strip('\n').split(&quot;?&quot;)            else:                line = line.strip('\n')            try:                try:                    response = urllib2.urlopen(line[0], data=line[1], timeout=5)                    print response.code                except IndexError:                    response = urllib2.urlopen(line[0], timeout=5)                    print response.code                finally:                    response = urllib2.urlopen(line, timeout=5)                    print response.code            except urllib2.URLError,e:                if hasattr(e, 'code'):                    print e.code                elif hasattr(e, 'reason'):                    print 53            finally:                if response:                    response.close()                exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>构建一个主机项，监控 agentd</p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182457232.png" alt="image-20200616182457232"></p></li><li><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182509904.png" alt="image-20200616182509904"></p><blockquote><p>100秒以内，收集到三次不是200的数据，就报警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182538573.png" alt="image-20200616182538573"></p></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>日志☞logrotate安装</title>
       <link href="posts/421d605e/"/>
       <url>posts/421d605e/</url>
@@ -1636,6 +1578,35 @@
             <tag> 安装 </tag>
             
             <tag> logrotate </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix ☞ nginx</title>
+      <link href="posts/b35b5965/"/>
+      <url>posts/b35b5965/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
             
         </tags>
       
@@ -1673,6 +1644,35 @@
     
     
     <entry>
+      <title>zabbix☞web监控</title>
+      <link href="posts/3d20f83e/"/>
+      <url>posts/3d20f83e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if args in line:            if &quot;??&quot; in line:                line = line.strip('\n').split(&quot;??&quot;)            elif &quot;?&quot; in line:                line = line.strip('\n').split(&quot;?&quot;)            else:                line = line.strip('\n')            try:                try:                    response = urllib2.urlopen(line[0], data=line[1], timeout=5)                    print response.code                except IndexError:                    response = urllib2.urlopen(line[0], timeout=5)                    print response.code                finally:                    response = urllib2.urlopen(line, timeout=5)                    print response.code            except urllib2.URLError,e:                if hasattr(e, 'code'):                    print e.code                elif hasattr(e, 'reason'):                    print 53            finally:                if response:                    response.close()                exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>构建一个主机项，监控 agentd</p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182457232.png" alt="image-20200616182457232"></p></li><li><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182509904.png" alt="image-20200616182509904"></p><blockquote><p>100秒以内，收集到三次不是200的数据，就报警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20200616182538573.png" alt="image-20200616182538573"></p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>zabbix☞agent和proxy（yum）</title>
       <link href="posts/1587f6e8/"/>
       <url>posts/1587f6e8/</url>
@@ -1702,11 +1702,11 @@
     
     
     <entry>
-      <title>监控☞企业微信机器人</title>
-      <link href="posts/8c33f887/"/>
-      <url>posts/8c33f887/</url>
+      <title>监控 ☞ 微信预警</title>
+      <link href="posts/f9b08c30/"/>
+      <url>posts/f9b08c30/</url>
       
-        <content type="html"><![CDATA[<h4 id="shell">shell</h4><pre><code class="language-bash">wechatUrl=wechatData=curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot;markdown&quot;: &#123;&quot;content&quot;: &quot;`'&quot;$wechatData&quot;'`&quot;&#125;&#125;'</code></pre><h4 id="python">python</h4><pre><code class="language-python">import json, requestswechatData=&#123;&quot;msgtype&quot;: &quot;text&quot;,&quot;text&quot;: &#123;&quot;content&quot;: &quot;&quot;&#125;&#125;wechatData['text']['content']='广州今日天气：29度，大部分多云，降雨概率：60%'wechatData['text']['mentioned_list']=[&quot;zyh&quot;]  # all 代表群组所有人wechatData=json.dumps(wechatData)wechatUrl=requests.post(url=wechatUrl, headers=&#123;&quot;Content-Type&quot;: &quot;application/json&quot;&#125;, data=wechatData, timeout=5)</code></pre>]]></content>
+        <content type="html"><![CDATA[<pre><code class="language-bash"># conf.ini[wechat]corpid = [app]it = &lt;app_agent_id&gt;:&lt;app_secret&gt;[group]it = usera|userb</code></pre><pre><code class="language-python">#!/usr/bin/env python3&quot;&quot;&quot;@author: zyh@contact: aaa103439@hotmail.com@software: vscode@file: sendchat.py@time: 2020/02/05&quot;&quot;&quot;import sys, os, requests, pathlib, json, configparserimport loggingimport logging.handlersfrom datetime import datetimeclass PySendchat():    def __init__(self, corpid, agentid, secret, touser, content):        self.corpid=corpid        self.agentid=agentid        self.secret=secret        self.touser=touser        self.content=content        LOG_PATHDIR=os.path.dirname(os.path.abspath(__file__))        LOG_FILENAME = '&#123;0&#125;/sendchat.log'.format(LOG_PATHDIR)        self.my_logger = logging.getLogger('SendChat')        self.my_logger.setLevel(logging.INFO)        # Add the log message handler to the logger        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=102400000, backupCount=5)        # create formatter and add it to the handlers        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')        handler.setFormatter(formatter)        self.my_logger.addHandler(handler)    def gettoken(self):        self.my_logger.info('-----------------------------------------------------------------------------------------')        pwd=os.path.dirname(os.path.abspath(__file__))        tokenfile='&#123;0&#125;/wechat.&#123;1&#125;'.format(pwd,self.agentid)        if pathlib.Path(tokenfile).exists():            tokenfilectime=os.path.getctime(tokenfile)            currenttime=datetime.now().timestamp()            dtime=currenttime-tokenfilectime            self.my_logger.info('&#123;0&#125; lived &#123;1&#125;s.'.format(tokenfile, dtime))            if dtime &gt;= 7200:                try:                    os.remove(tokenfile)                    self.my_logger.info('Token file &#123;0&#125;: delete success'.format(tokenfile))                except Exception as e:                    self.my_logger.error('Token file:&#123;0&#125; delete error.Reason:&#123;1&#125;'.format(tokenfile,e))                    exit        # check token file        try:            tokensize = os.path.getsize(tokenfile)        except Exception as e:            self.my_logger.info('Token file is not exist.Reason:&#123;0&#125;'.format(e))            tokensize = 0        # get token from token file        if tokensize != 0:            with open(tokenfile, 'rb') as fd:                token = fd.read() # get token success                self.my_logger.info('Get token from token file.')            jsonObject = json.loads(token.decode(encoding='utf8'))            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token        # get token from weixin api        else:            try:                self.my_logger.info('New Token Create.')                f = requests.get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=&#123;0&#125;&amp;corpsecret=&#123;1&#125;'.format(self.corpid, self.secret))                token = f.content                self.my_logger.info('Get token from weixin api.')                jsonObject = json.loads(token.decode(encoding='utf8'))                errcode=int(jsonObject.get(&quot;errcode&quot;))                if errcode != 0:                    errmsg=jsonObject.get(&quot;errmsg&quot;)                    self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(errmsg))                    exit()            except Exception as e:                self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(e))                exit()            try:                self.my_logger.info('Write token to &#123;0&#125;.'.format(tokenfile))                with open(tokenfile, 'wb') as fd:                    fd.write(token)            except Exception as e:                self.my_logger.error('Write &#123;0&#125; error!Reason:&#123;1&#125;'.format(tokenfile,e))                exit()            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token    def sendmsg(self):        accessToken = self.gettoken()        self.my_logger.info('Token:&#123;0&#125;'.format(accessToken))        sendMapDirectroy = &#123;&#125;        sendMapDirectroy[&quot;agentid&quot;] = self.agentid        sendMapDirectroy[&quot;touser&quot;] = self.touser        sendMapDirectroy[&quot;msgtype&quot;] = &quot;text&quot;        sendMapDirectroy[&quot;safe&quot;] = &quot;0&quot;        contentDirectory = &#123;&#125;        sendMapDirectroy[&quot;text&quot;] = contentDirectory        contentDirectory[&quot;content&quot;] = self.content        bodyStr = json.dumps(sendMapDirectroy, ensure_ascii=False).encode(encoding=&quot;utf-8&quot;)        try:            f = requests.post(url=&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&quot; % accessToken,                          data=bodyStr, timeout=5)            self.my_logger.info(f.content)        except Exception as e:            self.my_logger.error('Send chat network error!Reason:&#123;0&#125;'.format(e))if __name__ == '__main__':    appname = sys.argv[1]    content = sys.argv[3]    # read conf.ini    conf = configparser.ConfigParser()    conf_path = os.path.dirname(os.path.abspath(__file__))    conf_ini = &quot;&#123;0&#125;/conf.ini&quot;.format(conf_path)    if pathlib.Path(conf_ini).exists():        conf.read(conf_ini)        corpid = conf.get(&quot;wechat&quot;, &quot;corpid&quot;)        appinfo = conf.get(&quot;app&quot;, appname)        agentid = appinfo.split(':')[0]        secret = appinfo.split(':')[1]        groupname = conf.get(&quot;group&quot;, appname)        touser = groupname.split(':')[0]        chatobj = PySendchat(corpid, agentid, secret, touser, content)    else:        print('conf.ini error')        exit()    try:        chatobj.sendmsg()    except:        chatobj.my_logger.error(&quot;Send chat failure!&quot;)</code></pre><p>eg:</p><p>python <a href="http://sendchat.py">sendchat.py</a> it ‘’ &lt;预警内容&gt;</p><blockquote><p>创建好app，并关联用户到app</p><p>执行上述命令，会将预警内容通过&lt;app_agent_id&gt; 应用发送给用户usera和userb</p></blockquote>]]></content>
       
       
       <categories>
@@ -1729,11 +1729,38 @@
     
     
     <entry>
-      <title>监控 ☞ 微信预警</title>
-      <link href="posts/f9b08c30/"/>
-      <url>posts/f9b08c30/</url>
+      <title>监控 ☞ 邮件预警</title>
+      <link href="posts/f8f9b4d0/"/>
+      <url>posts/f8f9b4d0/</url>
       
-        <content type="html"><![CDATA[<pre><code class="language-bash"># conf.ini[wechat]corpid = [app]it = &lt;app_agent_id&gt;:&lt;app_secret&gt;[group]it = usera|userb</code></pre><pre><code class="language-python">#!/usr/bin/env python3&quot;&quot;&quot;@author: zyh@contact: aaa103439@hotmail.com@software: vscode@file: sendchat.py@time: 2020/02/05&quot;&quot;&quot;import sys, os, requests, pathlib, json, configparserimport loggingimport logging.handlersfrom datetime import datetimeclass PySendchat():    def __init__(self, corpid, agentid, secret, touser, content):        self.corpid=corpid        self.agentid=agentid        self.secret=secret        self.touser=touser        self.content=content        LOG_PATHDIR=os.path.dirname(os.path.abspath(__file__))        LOG_FILENAME = '&#123;0&#125;/sendchat.log'.format(LOG_PATHDIR)        self.my_logger = logging.getLogger('SendChat')        self.my_logger.setLevel(logging.INFO)        # Add the log message handler to the logger        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=102400000, backupCount=5)        # create formatter and add it to the handlers        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')        handler.setFormatter(formatter)        self.my_logger.addHandler(handler)    def gettoken(self):        self.my_logger.info('-----------------------------------------------------------------------------------------')        pwd=os.path.dirname(os.path.abspath(__file__))        tokenfile='&#123;0&#125;/wechat.&#123;1&#125;'.format(pwd,self.agentid)        if pathlib.Path(tokenfile).exists():            tokenfilectime=os.path.getctime(tokenfile)            currenttime=datetime.now().timestamp()            dtime=currenttime-tokenfilectime            self.my_logger.info('&#123;0&#125; lived &#123;1&#125;s.'.format(tokenfile, dtime))            if dtime &gt;= 7200:                try:                    os.remove(tokenfile)                    self.my_logger.info('Token file &#123;0&#125;: delete success'.format(tokenfile))                except Exception as e:                    self.my_logger.error('Token file:&#123;0&#125; delete error.Reason:&#123;1&#125;'.format(tokenfile,e))                    exit        # check token file        try:            tokensize = os.path.getsize(tokenfile)        except Exception as e:            self.my_logger.info('Token file is not exist.Reason:&#123;0&#125;'.format(e))            tokensize = 0        # get token from token file        if tokensize != 0:            with open(tokenfile, 'rb') as fd:                token = fd.read() # get token success                self.my_logger.info('Get token from token file.')            jsonObject = json.loads(token.decode(encoding='utf8'))            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token        # get token from weixin api        else:            try:                self.my_logger.info('New Token Create.')                f = requests.get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=&#123;0&#125;&amp;corpsecret=&#123;1&#125;'.format(self.corpid, self.secret))                token = f.content                self.my_logger.info('Get token from weixin api.')                jsonObject = json.loads(token.decode(encoding='utf8'))                errcode=int(jsonObject.get(&quot;errcode&quot;))                if errcode != 0:                    errmsg=jsonObject.get(&quot;errmsg&quot;)                    self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(errmsg))                    exit()            except Exception as e:                self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(e))                exit()            try:                self.my_logger.info('Write token to &#123;0&#125;.'.format(tokenfile))                with open(tokenfile, 'wb') as fd:                    fd.write(token)            except Exception as e:                self.my_logger.error('Write &#123;0&#125; error!Reason:&#123;1&#125;'.format(tokenfile,e))                exit()            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token    def sendmsg(self):        accessToken = self.gettoken()        self.my_logger.info('Token:&#123;0&#125;'.format(accessToken))        sendMapDirectroy = &#123;&#125;        sendMapDirectroy[&quot;agentid&quot;] = self.agentid        sendMapDirectroy[&quot;touser&quot;] = self.touser        sendMapDirectroy[&quot;msgtype&quot;] = &quot;text&quot;        sendMapDirectroy[&quot;safe&quot;] = &quot;0&quot;        contentDirectory = &#123;&#125;        sendMapDirectroy[&quot;text&quot;] = contentDirectory        contentDirectory[&quot;content&quot;] = self.content        bodyStr = json.dumps(sendMapDirectroy, ensure_ascii=False).encode(encoding=&quot;utf-8&quot;)        try:            f = requests.post(url=&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&quot; % accessToken,                          data=bodyStr, timeout=5)            self.my_logger.info(f.content)        except Exception as e:            self.my_logger.error('Send chat network error!Reason:&#123;0&#125;'.format(e))if __name__ == '__main__':    appname = sys.argv[1]    content = sys.argv[3]    # read conf.ini    conf = configparser.ConfigParser()    conf_path = os.path.dirname(os.path.abspath(__file__))    conf_ini = &quot;&#123;0&#125;/conf.ini&quot;.format(conf_path)    if pathlib.Path(conf_ini).exists():        conf.read(conf_ini)        corpid = conf.get(&quot;wechat&quot;, &quot;corpid&quot;)        appinfo = conf.get(&quot;app&quot;, appname)        agentid = appinfo.split(':')[0]        secret = appinfo.split(':')[1]        groupname = conf.get(&quot;group&quot;, appname)        touser = groupname.split(':')[0]        chatobj = PySendchat(corpid, agentid, secret, touser, content)    else:        print('conf.ini error')        exit()    try:        chatobj.sendmsg()    except:        chatobj.my_logger.error(&quot;Send chat failure!&quot;)</code></pre><p>eg:</p><p>python <a href="http://sendchat.py">sendchat.py</a> it ‘’ &lt;预警内容&gt;</p><blockquote><p>创建好app，并关联用户到app</p><p>执行上述命令，会将预警内容通过&lt;app_agent_id&gt; 应用发送给用户usera和userb</p></blockquote>]]></content>
+        <content type="html"><![CDATA[<pre><code class="language-bash"># $1 收件人# $2 主题# $3 内容smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxxsendUserEmail='it@abc.com'sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码/usr/local/bin/sendEmail -f $&#123;sendUserEmail&#125; -t $1 -u &quot;$2&quot; -m &quot;$3&quot; -s $&#123;smtpServer&#125; -xu $&#123;sendUserEmail&#125; -xp $&#123;sendUserPassword&#125; -o message-charset=utf-8</code></pre><pre><code class="language-python">#!/usr/bin/python#coding:utf-8# by zyh# python sendmail.py '收件人邮箱地址'  '主题' '邮件内容' '抄送邮箱地址' '附件绝对路径'import smtplibfrom email.header import Headerfrom email.mime.text import MIMETextfrom email.mime.multipart import MIMEMultipartimport sysreload(sys)sys.setdefaultencoding('utf8')mail_host = 'smtp服务器地址'  # 例如 smtp.gmail.com:587mail_user = '发件人邮箱'      # 例如 it@gmail.commail_pass = '发件人密码'def send_mail(*args):    argsNum=len(args[0])    if argsNum == 4:        filename,to_list, subject, content=args[0]    elif argsNum == 5:        filename,to_list, subject, content, cc_list=args[0]    elif argsNum == 6:        filename,to_list, subject, content, cc_list, subfile=args[0]    me = mail_user+&quot;&lt;&quot;+mail_user+&quot;&gt;&quot;    #初始化邮件对象 msg    msg = MIMEMultipart()    msg['From'] = me    msg['to'] = to_list    emailList=to_list    # 主题    msg['Subject'] = Header(subject, 'utf-8').encode()    # 内容    msg.attach(MIMEText(content, 'plain', 'utf-8'))    # 抄送    if 'cc_list' in vars():        msg['Cc'] = cc_list        emailstring = to_list+','+cc_list        emailList=emailstring.split(&quot;,&quot;)    # 附件    if 'subfile' in vars():        att1 = MIMEText(open((&quot;%s&quot;%subfile),'rb').read(), 'base64', 'utf8')        att1[&quot;Content-Type&quot;] = 'text/plain'        att1[&quot;Content-Disposition&quot;] = 'attachment; filename='+subfile.split('/')[-1] # 这里的filename可以任意写，写什么名字，邮件中显示什么名字        msg.attach(att1)    # 发送    try:        print &quot;start sendmail&quot;        s = smtplib.SMTP(mail_host)        print &quot;connect mail server suesscc&quot;        s.starttls()        s.login(mail_user,mail_pass)        print &quot;login mail server suesscc&quot;        s.sendmail(me,emailList,msg.as_string())        s.close()        return True    except Exception,e:        print &quot;%s\t%s&quot;%(to_list,str(e))        return Falseif __name__ == &quot;__main__&quot;:    if len(sys.argv) &lt; 4:        exit()    send_mail(sys.argv)</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> 邮件 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>监控☞企业微信机器人</title>
+      <link href="posts/8c33f887/"/>
+      <url>posts/8c33f887/</url>
+      
+        <content type="html"><![CDATA[<h4 id="shell">shell</h4><pre><code class="language-bash">wechatUrl=wechatData=curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot;markdown&quot;: &#123;&quot;content&quot;: &quot;`'&quot;$wechatData&quot;'`&quot;&#125;&#125;'</code></pre><h4 id="python">python</h4><pre><code class="language-python">import json, requestswechatData=&#123;&quot;msgtype&quot;: &quot;text&quot;,&quot;text&quot;: &#123;&quot;content&quot;: &quot;&quot;&#125;&#125;wechatData['text']['content']='广州今日天气：29度，大部分多云，降雨概率：60%'wechatData['text']['mentioned_list']=[&quot;zyh&quot;]  # all 代表群组所有人wechatData=json.dumps(wechatData)wechatUrl=requests.post(url=wechatUrl, headers=&#123;&quot;Content-Type&quot;: &quot;application/json&quot;&#125;, data=wechatData, timeout=5)</code></pre>]]></content>
       
       
       <categories>
@@ -1775,33 +1802,6 @@
             <tag> 监控 </tag>
             
             <tag> 磁盘 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控 ☞ 邮件预警</title>
-      <link href="posts/f8f9b4d0/"/>
-      <url>posts/f8f9b4d0/</url>
-      
-        <content type="html"><![CDATA[<pre><code class="language-bash"># $1 收件人# $2 主题# $3 内容smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxxsendUserEmail='it@abc.com'sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码/usr/local/bin/sendEmail -f $&#123;sendUserEmail&#125; -t $1 -u &quot;$2&quot; -m &quot;$3&quot; -s $&#123;smtpServer&#125; -xu $&#123;sendUserEmail&#125; -xp $&#123;sendUserPassword&#125; -o message-charset=utf-8</code></pre><pre><code class="language-python">#!/usr/bin/python#coding:utf-8# by zyh# python sendmail.py '收件人邮箱地址'  '主题' '邮件内容' '抄送邮箱地址' '附件绝对路径'import smtplibfrom email.header import Headerfrom email.mime.text import MIMETextfrom email.mime.multipart import MIMEMultipartimport sysreload(sys)sys.setdefaultencoding('utf8')mail_host = 'smtp服务器地址'  # 例如 smtp.gmail.com:587mail_user = '发件人邮箱'      # 例如 it@gmail.commail_pass = '发件人密码'def send_mail(*args):    argsNum=len(args[0])    if argsNum == 4:        filename,to_list, subject, content=args[0]    elif argsNum == 5:        filename,to_list, subject, content, cc_list=args[0]    elif argsNum == 6:        filename,to_list, subject, content, cc_list, subfile=args[0]    me = mail_user+&quot;&lt;&quot;+mail_user+&quot;&gt;&quot;    #初始化邮件对象 msg    msg = MIMEMultipart()    msg['From'] = me    msg['to'] = to_list    emailList=to_list    # 主题    msg['Subject'] = Header(subject, 'utf-8').encode()    # 内容    msg.attach(MIMEText(content, 'plain', 'utf-8'))    # 抄送    if 'cc_list' in vars():        msg['Cc'] = cc_list        emailstring = to_list+','+cc_list        emailList=emailstring.split(&quot;,&quot;)    # 附件    if 'subfile' in vars():        att1 = MIMEText(open((&quot;%s&quot;%subfile),'rb').read(), 'base64', 'utf8')        att1[&quot;Content-Type&quot;] = 'text/plain'        att1[&quot;Content-Disposition&quot;] = 'attachment; filename='+subfile.split('/')[-1] # 这里的filename可以任意写，写什么名字，邮件中显示什么名字        msg.attach(att1)    # 发送    try:        print &quot;start sendmail&quot;        s = smtplib.SMTP(mail_host)        print &quot;connect mail server suesscc&quot;        s.starttls()        s.login(mail_user,mail_pass)        print &quot;login mail server suesscc&quot;        s.sendmail(me,emailList,msg.as_string())        s.close()        return True    except Exception,e:        print &quot;%s\t%s&quot;%(to_list,str(e))        return Falseif __name__ == &quot;__main__&quot;:    if len(sys.argv) &lt; 4:        exit()    send_mail(sys.argv)</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 邮件 </tag>
             
         </tags>
       
@@ -2401,9 +2401,9 @@
             
             <tag> 安装 </tag>
             
-            <tag> ELK </tag>
-            
             <tag> docker </tag>
+            
+            <tag> ELK </tag>
             
         </tags>
       
@@ -2497,6 +2497,35 @@
     
     
     <entry>
+      <title>docker☞01安装</title>
+      <link href="posts/b7cf7b1f/"/>
+      <url>posts/b7cf7b1f/</url>
+      
+        <content type="html"><![CDATA[<h3 id="依赖">依赖</h3><pre><code class="language-bash">yum install -y yum-utils \  device-mapper-persistent-data \  lvm2</code></pre><h3 id="仓库">仓库</h3><pre><code class="language-bash:">yum-config-manager \    --add-repo \    https://download.docker.com/linux/centos/docker-ce.repo</code></pre><p>💁如果你用的是阿里云的镜像，那么则需要手动修改repo文件地址，例如：<a href="https://download.docker.com/linux/centos/7/x86_64/stable/">https://download.docker.com/linux/centos/7/x86_64/stable/</a></p><h3 id="安装">安装</h3><pre><code class="language-bash">yum install docker-ce -y### 安装 compose ， 可选yum install python3-pip -ypip3 install docker-compose 或者 pip install docker-compose### 开机自启动systemctl enable docker</code></pre><h3 id="修改-docker-默认数据目录">修改 docker 默认数据目录</h3><pre><code class="language-bash">[[ -f /etc/docker/daemon.json ]] &amp;&amp; mv /etc/docker/daemon.json /etc/docker/daemon.json.default || &#123; mkdir -p /etc/docker/ &amp;&amp;  touch /etc/docker/daemon.json &#125;cat &gt;  /etc/docker/daemon.json &lt;&lt; EOF&#123;  &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;],  &quot;data-root&quot;: &quot;/export/docker-data-root&quot;&#125;EOF</code></pre><h3 id="启动">启动</h3><pre><code class="language-bash">systemctl start docker</code></pre><h3 id="镜像库">镜像库</h3><pre><code class="language-bash">docker hubquay.io</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> docker </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 容器 </tag>
+            
+            <tag> docker </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>k8s☞01常见术语概念</title>
       <link href="posts/aaf9b7/"/>
       <url>posts/aaf9b7/</url>
@@ -2518,35 +2547,6 @@
             <tag> 容器 </tag>
             
             <tag> k8s </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>docker☞01安装</title>
-      <link href="posts/b7cf7b1f/"/>
-      <url>posts/b7cf7b1f/</url>
-      
-        <content type="html"><![CDATA[<h3 id="依赖">依赖</h3><pre><code class="language-bash">yum install -y yum-utils \  device-mapper-persistent-data \  lvm2</code></pre><h3 id="仓库">仓库</h3><pre><code class="language-bash:">yum-config-manager \    --add-repo \    https://download.docker.com/linux/centos/docker-ce.repo</code></pre><p>💁如果你用的是阿里云的镜像，那么则需要手动修改repo文件地址，例如：<a href="https://download.docker.com/linux/centos/7/x86_64/stable/">https://download.docker.com/linux/centos/7/x86_64/stable/</a></p><h3 id="安装">安装</h3><pre><code class="language-bash">yum install docker-ce -y### 安装 compose ， 可选yum install python3-pip -ypip3 install docker-compose 或者 pip install docker-compose### 开机自启动systemctl enable docker</code></pre><h3 id="修改-docker-默认数据目录">修改 docker 默认数据目录</h3><pre><code class="language-bash">[[ -f /etc/docker/daemon.json ]] &amp;&amp; mv /etc/docker/daemon.json /etc/docker/daemon.json.default || &#123; mkdir -p /etc/docker/ &amp;&amp;  touch /etc/docker/daemon.json &#125;cat &gt;  /etc/docker/daemon.json &lt;&lt; EOF&#123;  &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;],  &quot;data-root&quot;: &quot;/export/docker-data-root&quot;&#125;EOF</code></pre><h3 id="启动">启动</h3><pre><code class="language-bash">systemctl start docker</code></pre><h3 id="镜像库">镜像库</h3><pre><code class="language-bash">docker hubquay.io</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> docker </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> docker </tag>
-            
-            <tag> 容器 </tag>
             
         </tags>
       

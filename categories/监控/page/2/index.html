@@ -1438,19 +1438,38 @@
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/1587f6e8/">
+			<a href="/posts/6c093771/">
 				<h2 class="index-title">
-					zabbix☞agent和proxy(yum)
+					zabbix☞redis
 				</h2>
 				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
+					zabbix 模板
 
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+自动发现规则
 
-agent 安装
 
+
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
 					...
 				</div>
 			</a>
@@ -1481,21 +1500,19 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					zabbix☞agent和proxy(yum)
 				</h2>
 				<div class="index-brief">
 					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+https://repo.zabbix.com/zabbix/
 
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 
-1，nginx增加配置 server_status.server
+agent 安装
 
-cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>

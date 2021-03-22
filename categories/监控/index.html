@@ -1779,18 +1779,21 @@ grafana
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					zabbix☞nginx
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
-etc
-├── zabb
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
+
+
+1，nginx增加配置 server_status.server
+
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -1821,38 +1824,18 @@ etc
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
-					zabbix☞redis
+					zabbix☞WEB监控
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
-
-
-
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+					1. 构建 zabbix_agentd 端配置
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+etc
+├── zabb
 					...
 				</div>
 			</a>

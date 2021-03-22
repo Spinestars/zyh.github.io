@@ -1494,22 +1494,24 @@
 <tr>
 <td>k8s01</td>
 <td>10.200.16.101</td>
-<td>master</td>
+<td>master keepalived(主) haproxy</td>
 </tr>
 <tr>
 <td>k8s02</td>
 <td>10.200.16.102</td>
-<td>master backup</td>
+<td>master keepalived(备) haproxy</td>
 </tr>
 <tr>
 <td>k8s03</td>
 <td>10.200.16.103</td>
-<td>master backup</td>
+<td>master</td>
 </tr>
 </tbody>
 </table>
 <p>请务必确保内网可以通过表格里的 <code>hostname</code> 解析到对应的 <code>ip</code></p>
 <p>请务必将系统的 hostname 改为上述表里的 hostname</p>
+<p>数据走向：</p>
+<p>client-&gt;keepalived(vip:8443)-&gt;haproxy(vip:8443)-&gt; masterip:6443</p>
 <h2 id="以下命令在所有节点上运行">以下命令在所有节点上运行</h2>
 <ol>
 <li>
@@ -1637,7 +1639,7 @@ systemctl enable --now kubelet
 <p>kubelet 1.18 的时候，当你使用 docker 的时候，kubeadm 会通过 kubelet 自动设置 cgroup 和 docker 一致。</p>
 </blockquote>
 <h2 id="master节点">master节点</h2>
-<h3 id="安装高可用环境（k8s01，k8s02，k8s03）">安装高可用环境（k8s01，k8s02，k8s03）</h3>
+<h3 id="安装高可用环境（k8s01，k8s02）">安装高可用环境（k8s01，k8s02）</h3>
 <ul>
 <li>安装haproxy和keepalived</li>
 </ul>
@@ -1688,11 +1690,12 @@ backend apiserver
         server k8sapivip 10.200.16.103:6443 check
 </code></pre>
 <ul>
-<li>keepalived配置A （这个配置在三个master节点不一样）</li>
+<li>keepalived 主配置，k8s01和k8s02均需要，两节点配置不一样</li>
 </ul>
 <pre><code class="language-bash">cp /etc/keepalived/keepalived.conf  /etc/keepalived/keepalived.conf.default
 vim /etc/keepalived/keepalived.conf
-===
+===============================================
+# 放在 k8s01
 global_defs &#123;
     router_id LVS_DEVEL
 &#125;
@@ -1705,10 +1708,39 @@ vrrp_script check_apiserver &#123;
 &#125;
 
 vrrp_instance VI_1 &#123;
-    state MASTER  # 改我改我：一个MASTER，两个BACKUP
+    state MASTER  # 
     interface ens192  # 物理网卡名
     virtual_router_id 51
-    priority 101  # 改我改我：MASTER 101，两个BACKUP 100
+    priority 101  #
+    authentication &#123;
+        auth_type PASS
+        auth_pass 42
+    &#125;
+    virtual_ipaddress &#123;
+        10.200.16.100
+    &#125;
+    track_script &#123;
+        check_apiserver
+    &#125;
+&#125;
+===============================================
+# 放在 k8s02
+global_defs &#123;
+    router_id LVS_DEVEL
+&#125;
+vrrp_script check_apiserver &#123;
+  script &quot;/etc/keepalived/check_apiserver.sh&quot;
+  interval 3
+  weight -2
+  fall 10
+  rise 2
+&#125;
+
+vrrp_instance VI_1 &#123;
+    state BACKUP  # 
+    interface ens192  # 物理网卡名
+    virtual_router_id 51
+    priority 100  #
     authentication &#123;
         auth_type PASS
         auth_pass 42
@@ -1722,7 +1754,7 @@ vrrp_instance VI_1 &#123;
 &#125;
 </code></pre>
 <ul>
-<li>keepalived配置B：检测脚本</li>
+<li>keepalived 检测脚本，k8s01和k8s02均需要</li>
 </ul>
 <pre><code class="language-bash">vim /etc/keepalived/check_apiserver.sh
 ===
@@ -2142,9 +2174,9 @@ rm -rf $HOME/.kube;
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/94518966/">
+              <a href="/posts/3ec72f7e/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞03pod
+                  k8s☞04pod钩子函数
               </a>
             
         </div>

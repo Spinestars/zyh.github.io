@@ -685,6 +685,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -874,6 +883,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1794,20 +1812,24 @@ apiVersion: kubeadm.k8s.io/v1beta2
 certificatesDir: /etc/kubernetes/pki
 clusterName: kubernetes
 controllerManager: &#123;&#125;
+controllerManagerExtraArgs:
+  address: 0.0.0.0  # 开放kube-controller-manager，便于之后prometheus监控
+scheduler: &#123;&#125;
+schedulerExtraArgs:
+  address: 0.0.0.0  # 开放kube-scheduller，便于之后prometheus监控
 controlPlaneEndpoint: &quot;k8sapi:8443&quot; # 新加我
 dns:
   type: CoreDNS
 etcd:
   local:
     dataDir: /var/lib/etcd
-imageRepository: k8s.gcr.io
+imageRepository: k8s.gcr.io # 如果你无法访问k8s.gcr.io，且没有提前下载阿里云镜像，你可以换成 registry.aliyuncs.com/google_containers 试试
 kind: ClusterConfiguration
 kubernetesVersion: v1.19.3 # 改我，改成你所需安装的版本
 networking:
   dnsDomain: cluster.local
   serviceSubnet: 10.96.0.0/16 # 改我，定义 svc 的网段
   podSubnet: 10.97.0.0/16 # 改我，定义 pod 的网段
-scheduler: &#123;&#125;
 --- # 新加我
 apiVersion: kubeproxy.config.k8s.io/v1alpha1 # 新加我
 kind: KubeProxyConfiguration # 新加我
@@ -2120,9 +2142,9 @@ rm -rf $HOME/.kube;
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/3ec72f7e/">
+              <a href="/posts/94518966/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞04pod钩子函数
+                  k8s☞03pod
               </a>
             
         </div>

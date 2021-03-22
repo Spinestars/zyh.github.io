@@ -683,6 +683,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -872,6 +881,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1420,6 +1438,88 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/ed4c29d5/">
+				<h2 class="index-title">
+					k8s☞11-2namespace资源约束
+				</h2>
+				<div class="index-brief">
+					前言
+https://kubernetes.io/docs/concepts/policy/limit-range/
+namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
+特点
+
+提供 pod 的默认资源约束.
+限制pod的资源约束.
+Lim
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/64fa9c84/">
+				<h2 class="index-title">
+					k8s☞11-1pod资源约束
+				</h2>
+				<div class="index-brief">
+					前言
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+资源约束在我们平时使用的时候主要是cpu和内存层面, 以及本地临时存储(emptyDir)
+k8s资源约束分为两种: request(软
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
 					k8s☞09应用配置与密码与信息提供
@@ -1669,45 +1769,6 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/94518966/">
-				<h2 class="index-title">
-					k8s☞03pod
-				</h2>
-				<div class="index-brief">
-					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
 					k8s☞04pod钩子函数
@@ -1749,65 +1810,20 @@ postStart
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/9602dad/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞02v1.18.6安装
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-本文编写的时候，官方已经到了1.18.8，但是鉴于国内环境，非官方源没找到1.18.8，所以最后用的1.18.6
-另外，文中出现的宿主机ip，请自行修改为自己的环境ip
-机器
-机器系统都是 centos7,
-三个节点，均为主节点，同时也是工作节点，并利用 keepalived + haprox
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-08-25</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/e1096625/">
-				<h2 class="index-title">
-					k8s☞记录点
-				</h2>
-				<div class="index-brief">
-					
-
-pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.
-删除pvc后, pv的状态将从bound转为Released.
-如果你想让pv从新绑定到原来的pvc上, 则需要两个步骤:
-
-先创建原来的pvc.
-删除当前pv并重新创建, 或者修改当前pv的配置,
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-25</span>
+				    <span>2020-08-26</span>
                     
                             
                                 

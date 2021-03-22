@@ -685,6 +685,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -874,6 +883,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1638,6 +1656,9 @@ scrape_configs:
     dns_sd_configs: # 通过 dns srv 记录自动发现
     - names: [&quot;_prometheus._tcp.zjk.pj&quot;]
 </code></pre>
+<h5 id="原始标签和目标标签">原始标签和目标标签</h5>
+<p>可以在下图位置【Status】-【Service Discovery】中看到详情</p>
+<p><img src="/posts/65820315/image-20210316182617074.png" alt="image-20210316182617074"></p>
 <h5 id="自动发现">自动发现</h5>
 <p>dns srv 自动发现，需要一个内部的dns服务器，例如阿里云的云私有解析等。</p>
 <p>如何添加 srv 记录，例如让proms发现节点服务 all.it.zjk.pj:9100 和 all.it.zjk.pj:10052</p>

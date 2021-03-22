@@ -685,6 +685,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -874,6 +883,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1457,15 +1475,16 @@
 <p>oracle jdk 现在是商业产品了, 所以线上最好还是用 openjdk.</p>
 <h2 id="安装">安装</h2>
 <p><a target="_blank" rel="noopener" href="https://adoptopenjdk.net/installation.html#linux-pkg">https://adoptopenjdk.net/installation.html#linux-pkg</a></p>
-<p>rhel之类的，在添加了repo源之后，可以用 <code>yum list adoptopenjdk*</code>来查看源包含的版本</p>
-<p>然后通过<code>yum install adoptopenjdk-11-openj9.x86_64</code>安装即可</p>
+<p>rhel之类的，搜索【RPM installation on Centos, RHEL, or Fedora】位置，在添加了repo源之后，可以用 <code>yum list adoptopenjdk*</code>来查看源包含的版本</p>
+<p>包命名示例：adoptopenjdk-11-openj9.x86_64，这里 openj9 指的是 jvm 版本 ，还有 hotspot 版本的 jvm</p>
 <hr>
-<p>ubuntu之类的，在添加了源之后，可以用<code>apt-show-versions -a adoptopenjdk* </code>来查看源包含的版本</p>
-<h2 id="配置">配置</h2>
-<pre><code class="language-bash">export JAVA_HOME=/usr/local/jdk
-export PATH=$JAVA_HOME/bin:$PATH
-export MANPATH=$JAVA_HOME/man
-export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/jre/lib/rt.jar
+<p>ubuntu之类的，搜索【Deb installation on Debian or Ubuntu】位置，在添加了源之后，可以用<code>apt-show-versions -a adoptopenjdk* </code>来查看源包含的版本</p>
+<h2 id="二进制安装">二进制安装</h2>
+<p><a target="_blank" rel="noopener" href="https://adoptopenjdk.net/installation.html?variant=openjdk11&amp;jvmVariant=hotspot#x64_linux-jdk">https://adoptopenjdk.net/installation.html?variant=openjdk11&amp;jvmVariant=hotspot#x64_linux-jdk</a></p>
+<h2 id="二进制配置">二进制配置</h2>
+<pre><code class="language-bash">tar xzf OpenJDK11U-jdk_x64_linux_hotspot_11.0.10_9.tar.gz
+export PATH=$PWD/jdk-11.0.10+9/bin:$PATH
+java -version
 </code></pre>
 
 </div>

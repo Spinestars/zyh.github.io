@@ -683,6 +683,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -872,6 +881,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1420,6 +1438,93 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/438aa722/">
+				<h2 class="index-title">
+					aws☞rds-mysql参数
+				</h2>
+				<div class="index-brief">
+					# 下列是非默认值
+character_set_client: utf8
+character_set_connection: utf8
+character_set_database: utf8
+character_set_filesystem: utf8
+character_set_results:
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2e304ad6/">
+				<h2 class="index-title">
+					aws☞国内外之间迁移-AMI
+				</h2>
+				<div class="index-brief">
+					
+
+aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。
+
+
+命令步骤如下：
+#源机器上：
+dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M
+
+#aws EC服务器上：
+dd if=/文件A of=/dev/盘B bs=1M ofl
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/ddc4c969/">
 				<h2 class="index-title">
 					aws☞利用cf服务初始化aws环境
@@ -1732,92 +1837,6 @@ func: 获取数据库中没有设置ttl的 key
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/28361833/">
-				<h2 class="index-title">
-					redis☞调整内核参数
-				</h2>
-				<div class="index-brief">
-					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-02-02</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/7cac5d21/">
-				<h2 class="index-title">
-					aws☞s3跨账户访问
-				</h2>
-				<div class="index-brief">
-					
-规则如下：
-
-存储桶策略,授权其它账户的某个 iam 资源访问此存储桶
-arn:aws:iam::&lt;aws_account_id&gt;:&lt;type&gt;/&lt;name&gt;
-
-
-示例配置如下：
-
-&#123;
-    &quot;Version&quot;: &quot;20
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-02-10</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/">公有云</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/aws/">aws</a>
 										
                                     </span>
                                 

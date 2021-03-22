@@ -683,6 +683,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -872,6 +881,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1420,6 +1438,88 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/bced4977/">
+				<h2 class="index-title">
+					prometheus☞03k8s内置部署
+				</h2>
+				<div class="index-brief">
+					部署文档
+https://prometheus-operator.dev/docs/prologue/quick-start/
+如果采用的是kubeadm安装的k8s，或许会用到
+https://prometheus-operator.dev/docs/kube-prometheus-on-kube
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/prometheus/">prometheus</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9a7bc037/">
+				<h2 class="index-title">
+					k8s☞showdoc部署
+				</h2>
+				<div class="index-brief">
+					ℹ️ 配置引用的存储是 nfs
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: showdoc-ingress
+  namespace: it
+  annotations:
+    kubernetes.io/ingr
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/88eb7b6/">
 				<h2 class="index-title">
 					windows☞win10迁移数据
@@ -1755,93 +1855,6 @@ jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/公有云/aliyun/">aliyun</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/5290b79d/">
-				<h2 class="index-title">
-					网络☞S5700配置攻击朔源
-				</h2>
-				<div class="index-brief">
-					目的
-判断网络攻击来源
-设置管理员ip为白名单
-acl 3666
-rule 1 permit ip source 10.200.15.1 0.0.0.0
-
-根据IP判断
-cpu-defend policy 1
-auto-defend enable
-auto-defend attack-packet 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-11-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/">其它</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/网络/">网络</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/e4f7ce4c/">
-				<h2 class="index-title">
-					linux☞ubuntu20-04纯命令行网卡配置
-				</h2>
-				<div class="index-brief">
-					前言
-netplan 用于屏蔽各种网络管理器，它可以让你用一份配置，就帮你把网络给配置好，而无需你考虑网络控制器如何使用。
-20.04 已经默认安装了 netplan.
-记录当前网卡标识名
-ip addr show 
-# ===
-1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt;
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-11-16</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
 										
                                     </span>
                                 

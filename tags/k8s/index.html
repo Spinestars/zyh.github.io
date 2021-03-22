@@ -683,6 +683,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -872,6 +881,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1420,6 +1438,88 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/bced4977/">
+				<h2 class="index-title">
+					prometheus☞03k8s内置部署
+				</h2>
+				<div class="index-brief">
+					部署文档
+https://prometheus-operator.dev/docs/prologue/quick-start/
+如果采用的是kubeadm安装的k8s，或许会用到
+https://prometheus-operator.dev/docs/kube-prometheus-on-kube
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/prometheus/">prometheus</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9a7bc037/">
+				<h2 class="index-title">
+					k8s☞showdoc部署
+				</h2>
+				<div class="index-brief">
+					ℹ️ 配置引用的存储是 nfs
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: showdoc-ingress
+  namespace: it
+  annotations:
+    kubernetes.io/ingr
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/3b5cd3e1/">
 				<h2 class="index-title">
 					jenkins☞动态agent
@@ -1723,88 +1823,6 @@ pod模板中的 R
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ed4c29d5/">
-				<h2 class="index-title">
-					k8s☞11-2namespace资源约束
-				</h2>
-				<div class="index-brief">
-					前言
-https://kubernetes.io/docs/concepts/policy/limit-range/
-namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
-特点
-
-提供 pod 的默认资源约束.
-限制pod的资源约束.
-Lim
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-19</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/64fa9c84/">
-				<h2 class="index-title">
-					k8s☞11-1pod资源约束
-				</h2>
-				<div class="index-brief">
-					前言
-https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-资源约束在我们平时使用的时候主要是cpu和内存层面, 以及本地临时存储(emptyDir)
-k8s资源约束分为两种: request(软
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-19</span>
                     
                             
                                 

@@ -683,6 +683,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -872,6 +881,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1420,6 +1438,74 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/662e9d4d/">
+				<h2 class="index-title">
+					hexo☞图片显示404错误的解决办法
+				</h2>
+				<div class="index-brief">
+					前言
+写作工具：typora
+部署端：github
+部署包：
+# 你可以通过hexo的根目录下的package.json来确认版本
+&quot;hexo&quot;: &quot;^4.0.0&quot;,
+&quot;hexo-asset-image&quot;: &quot;^1.0.0&quo
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/445cf088/">
+				<h2 class="index-title">
+					nginx☞日志切割
+				</h2>
+				<div class="index-brief">
+					前言
+本脚本用于将 nginx 日志进行时间周期切割，并 lzo 压缩，最终上传到 s3。
+脚本分为三个函数，切割函数，压缩上传函数，删除函数，需要执行哪个，就填写相对应变量。
+详情可以看脚本注释。
+
+请务必执行前，确认安装了 lzop 和 jq 命令 ，且机器是 aws EC2
+
+脚本在此
+#!/
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/nginx/">nginx</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
 					zabbix☞WEB监控
@@ -1432,6 +1518,109 @@
 [root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 etc
 ├── zabb
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/421d605e/">
+				<h2 class="index-title">
+					日志☞logrotate安装
+				</h2>
+				<div class="index-brief">
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
+
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/6c093771/">
+				<h2 class="index-title">
+					zabbix☞redis
+				</h2>
+				<div class="index-brief">
+					zabbix 模板
+
+自动发现规则
+
+
+
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
 					...
 				</div>
 			</a>
@@ -1550,68 +1739,6 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
-				<h2 class="index-title">
-					zabbix☞redis
-				</h2>
-				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
-
-
-
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/65ab632a/">
 				<h2 class="index-title">
 					redis☞安装
@@ -1643,47 +1770,6 @@ r
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/421d605e/">
-				<h2 class="index-title">
-					日志☞logrotate安装
-				</h2>
-				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
-
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
 										
                                     </span>
                                 
@@ -1740,70 +1826,6 @@ it = usera|userb
 #!/usr/bin/env python3
 
 &quot;&quot;&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1fac36d/">
-				<h2 class="index-title">
-					监控☞远程磁盘检测
-				</h2>
-				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
-				<h2 class="index-title">
-					监控☞邮件预警
-				</h2>
-				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
 					...
 				</div>
 			</a>

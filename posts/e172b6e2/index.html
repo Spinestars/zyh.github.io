@@ -685,6 +685,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -874,6 +883,15 @@
 								<li class="file active">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1506,6 +1524,7 @@ prometheus-token-s82mq
 <h2 id="安装k8s指标采集服务">安装k8s指标采集服务</h2>
 <h3 id="从kube-state-metrics获取指标">从<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics">kube-state-metrics</a>获取指标</h3>
 <p>部署方式：<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard">点我</a></p>
+<p>指标文档：<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics/tree/master/docs">https://github.com/kubernetes/kube-state-metrics/tree/master/docs</a></p>
 <pre><code class="language-bash">➜  standard git:(master) ✗ ls -l
 total 20
 -rw-r--r-- 1 zyh zyh  381 Mar 12 12:07 cluster-role-binding.yaml
@@ -1524,8 +1543,9 @@ total 20
 <h2 id="Prometheus基于k8s的自动发现">Prometheus基于k8s的自动发现</h2>
 <p><a target="_blank" rel="noopener" href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config</a></p>
 <h3 id="从apiservers获取cadvisor和kube-state-metrics的指标采集地址">从apiservers获取cadvisor和kube-state-metrics的指标采集地址</h3>
-<pre><code class="language-yaml">  - job_name: 'k8s-cadvisor'
-    metrics_path: /metrics/cadvisor
+<pre><code class="language-yaml">  - job_name: 'k8s-cadvisor' # 抓容器, cadvisor被整合在kubelet中
+    scheme: https
+    metrics_path: /metrics
     tls_config:
       ca_file: /etc/prometheus/conf/prometheus.crt
       insecure_skip_verify: true
@@ -1538,36 +1558,30 @@ total 20
         insecure_skip_verify: true
       bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
     relabel_configs:
-    - source_labels: [__address__]
-      regex: '(.*):10250'
-      replacement: '$&#123;1&#125;:10255'
-      target_label: __address__
-      action: replace
-    - action: labelmap
+    - action: labelmap # 标签映射：抓取regex正则匹配的标签名，复制为replacement，期间标签值不变（replacement为$1时可以不写）
       regex: __meta_kubernetes_node_label_(.+)
-
-    metric_relabel_configs: # 以下采集指标规则，均为grafana模板所需
+      replacement: $1
+    metric_relabel_configs:
     - source_labels: [instance]
       separator: ;
       regex: (.+)
       target_label: node
       replacement: $1
       action: replace
-
-    - source_labels: [pod_name]
+    - source_labels: [pod_name] # 兼容老集群，老集群曾用标签 pod_name
       separator: ;
       regex: (.+)
       target_label: pod
       replacement: $1
       action: replace
-    - source_labels: [container_name]
+    - source_labels: [container_name] # 兼容老集群，老集群曾用标签 container_name
       separator: ;
       regex: (.+)
       target_label: container
       replacement: $1
       action: replace
 
-  - job_name: &quot;kube-state-metrics&quot;
+  - job_name: &quot;kube-state-metrics&quot; # 抓工作负载资源
     scheme: http
     tls_config:
       ca_file: /etc/prometheus/conf/prometheus.crt
@@ -1593,10 +1607,24 @@ total 20
     - source_labels: [__meta_kubernetes_service_name]
       action: replace
       target_label: k8s_sname
-    metric_relabel_configs: # 将kube-state-metrics采集的指标排除kube_job，在我的测试环境中，太多无意义job，因此排除了
-    - source_labels: [__name__]
-      regex: &quot;^kube_job_.*&quot;
-      action: drop
+      
+  - job_name: 'kubernetes-apiservers'
+    scheme: https
+    tls_config:
+      ca_file: /etc/prometheus/conf/prometheus.crt
+      insecure_skip_verify: true
+    bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
+    kubernetes_sd_configs:
+    - role: endpoints
+      api_server: &quot;https://10.3.176.130:6443&quot;
+      tls_config:
+        ca_file: /etc/prometheus/conf/prometheus.crt
+        insecure_skip_verify: true
+      bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: default;kubernetes;https
 </code></pre>
 <h2 id="添加grafana模板">添加grafana模板</h2>
 <p><a target="_blank" rel="noopener" href="https://grafana.com/grafana/dashboards/13105">https://grafana.com/grafana/dashboards/13105</a></p>
@@ -1605,6 +1633,63 @@ total 20
 <h3 id="调整模板">调整模板</h3>
 <p>如果你发现模板中，【微服务网络带宽】没有数据，则需要看下此板块SQL里的标签过滤是否有误。</p>
 <p>在我的环境里，模板中过滤的 name=‘^k8s_.*’ 不存在。因此删除SQL里的这个过滤即可。</p>
+<h2 id="添加预警">添加预警</h2>
+<p>需要明确，我们需要监控什么</p>
+<ol>
+<li>k8s本身各组件状态</li>
+<li>调度了多少个replicas？现在可用的有几个？</li>
+<li>Pod是否启动成功</li>
+<li>Pod重启了多少次？</li>
+</ol>
+<pre><code class="language-yaml">groups:
+- name: kubernetes
+  rules:
+  - alert: kube-state-metrics down
+    expr: (up&#123;job=&quot;kube-state-metrics&quot;&#125; or up&#123;job=&quot;kubernetes-apiservers&quot;&#125;)  == 1  #0不正常，1正常
+    for: 5m  #持续时间 ，表示持续5分钟获取不到信息，则触发报警
+    labels:
+      severity: error
+      cluster: k8s
+    annotations:
+      summary: &quot;Job: &#123;&#123; $labels.job &#125;&#125; down&quot;
+      description: &quot;Instance:&#123;&#123; $labels.instance &#125;&#125;, Job &#123;&#123; $labels.job &#125;&#125; stop &quot;
+  - alert: JobFailed
+    expr: kube_job_status_failed == 1
+    for: 5m
+    labels:
+      severity: error
+      cluster: k8s
+    annotations:
+      summary: 'Job: &#123;&#123; $labels.job &#125;&#125; failed'
+      description: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Job: &#123;&#123; $labels.job &#125;&#125; run failed.'
+  - alert: PodDown
+    expr: kube_pod_container_status_running != 1
+    for: 2s
+    labels:
+      severity: warning
+      cluster: k8s
+    annotations:
+      summary: 'Container: &#123;&#123; $labels.container &#125;&#125; down'
+      description: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Pod: &#123;&#123; $labels.pod &#125;&#125; is not running'
+  - alert: PodReady
+    expr: kube_pod_container_status_ready != 1
+    for: 5m   #Ready持续5分钟，说明启动有问题
+    labels:
+      severity: warning
+      cluster: k8s
+    annotations:
+      summary: 'Container: &#123;&#123; $labels.container &#125;&#125; ready'
+      description: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Pod: &#123;&#123; $labels.pod &#125;&#125; always ready for 5m'
+  - alert: PodRestart
+    expr: changes(kube_pod_container_status_restarts_total[30m])&gt;0 #最近30分钟pod重启次数
+    for: 2s
+    labels:
+      severity: warning
+      cluster: k8s
+    annotations:
+      summary: 'Container: &#123;&#123; $labels.container &#125;&#125; restart'
+      description: 'namespace: &#123;&#123; $labels.namespace &#125;&#125;, pod: &#123;&#123; $labels.pod &#125;&#125; restart &#123;&#123; $value &#125;&#125; times'
+</code></pre>
 
 </div>
 

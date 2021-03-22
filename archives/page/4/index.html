@@ -683,6 +683,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/9a7bc037/">
+										k8s☞showdoc部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
 										k8s☞记录点
 									</a>
@@ -872,6 +881,15 @@
 								<li class="file">
 									<a href="/posts/e172b6e2/">
 										prometheus☞02外置prometheus监控k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+										prometheus☞03k8s内置部署
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1420,6 +1438,87 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/e6ae9474/">
+				<h2 class="index-title">
+					mysql☞常用命令
+				</h2>
+				<div class="index-brief">
+					查询库表占用空间
+SELECT
+    table_schema AS '数据库',
+    table_name AS '表名',
+    table_rows AS '记录数',
+    TRUNCATE (data_length / 1024 / 1024 / 1024, 3) AS '数据容
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/mysql/">mysql</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9aa66899/">
+				<h2 class="index-title">
+					k8s☞05pod探测器
+				</h2>
+				<div class="index-brief">
+					探测器
+
+https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+
+探测器有三种：启动探测器startupProbe、存活探测器livenessPr
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/4ebbd3a8/">
 				<h2 class="index-title">
 					zabbix☞预警
@@ -1556,15 +1655,17 @@ mysqltonew()&#123;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/94518966/">
+			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞03pod
+					k8s☞04pod钩子函数
 				</h2>
 				<div class="index-brief">
 					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
+我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
+k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
+postStart
+
+它将在容器创建后立即运行，但不保证在 ENT
 					...
 				</div>
 			</a>
@@ -1595,17 +1696,15 @@ https://kubernete
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
-
-它将在容器创建后立即运行，但不保证在 ENT
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
@@ -1757,88 +1856,6 @@ grafana
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/prometheus/">prometheus</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ed865d2f/">
-				<h2 class="index-title">
-					zabbix☞server安装注意事项
-				</h2>
-				<div class="index-brief">
-					
-
-数据库编码一定要安装官方来命令来设置，例如zabbix5编码是 utf8和utf8_bin
-
-
-最后web控制台安装界面，要确保zabbix-server可以访问设置的 hostname 的 10051 端口。如果hostname写的域名，那么要确保zabbix-server可以通过 hosts
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-07-23</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3e0f2183/">
-				<h2 class="index-title">
-					jenkins☞从容器中访问宿主机docker命令
-				</h2>
-				<div class="index-brief">
-					前言
-我的jenkins是运行在docker中，但是jenkins官方的镜像里却没有docker命令。
-以至于无法在流水线中打包docker镜像。
-方法
-首先，需要将docker命令、docker.sock文件以及相关依赖文件映射到容器内。
-其次，以root用户访问容器，在容器中添加docker组，
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-06-09</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/jenkins/">jenkins</a>
 										
                                     </span>
                                 

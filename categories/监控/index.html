@@ -1779,21 +1779,24 @@ grafana
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/f9b08c30/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					监控☞微信预警
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+					# conf.ini
+[wechat]
+corpid = 
 
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
 
-1，nginx增加配置 server_status.server
+[group]
+it = usera|userb
 
-cat &gt; /usr/local/nginx/
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -1805,16 +1808,6 @@ cat &gt; /usr/local/nginx/
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -1824,38 +1817,15 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/8c33f887/">
 				<h2 class="index-title">
-					zabbix☞redis
+					监控☞企业微信机器人
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
-
-
-
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+					shell
+wechatUrl=
+wechatData=
+curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
 					...
 				</div>
 			</a>
@@ -1867,16 +1837,6 @@ redis_info[&#123;#IP&#12
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

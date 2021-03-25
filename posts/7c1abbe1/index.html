@@ -1461,7 +1461,7 @@
 </div>
 
 <div id="article-content">
-	<h4 id="前言">前言</h4>
+	<h2 id="前言">前言</h2>
 <p>openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需要一个linux系统的主机。<br>
 至于土豪公司，可以无视。<br>
 文档包含安装脚本，创建用户脚本，删除用户脚本。使用的时候，安装脚本和创建用户脚本，需要自行修改一些变量。</p>
@@ -1469,19 +1469,69 @@
 <p>需要注意的是，发现移动网络连接其它运营商网络的时候，不稳定。<br>
 比如我这边，移动网络连接电信网络（openvpn所在网络），就容易丢包。</p>
 </blockquote>
-<h4 id="安装脚本">安装脚本</h4>
+<h2 id="安装">安装</h2>
 <pre><code class="language-bash:">yum install docker
 docker pull kylemanna/openvpn
 OVPN_DATA=&quot;/root/ovpn-data&quot;
-IP=&quot;机器外网ip或者nat后的内网ip&quot;  # 自行修改
+IP=&quot;服务器主网卡ip&quot;  # 自行修改
+PORT=  # 容器映射的宿主机端口
 mkdir $&#123;OVPN_DATA&#125;
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u tcp://$&#123;IP&#125;
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME &gt; $&#123;OVPN_DATA&#125;/CLIENTNAME.ovpn
-docker run --name openvpn -v $&#123;OVPN_DATA&#125;:/etc/openvpn -d -p 1194:1194 --privileged kylemanna/openvpn
+docker run --name openvpn -v $&#123;OVPN_DATA&#125;:/etc/openvpn -d -p $&#123;PORT&#125;:1194 --privileged kylemanna/openvpn
 </code></pre>
-<h4 id="创建用户脚本">创建用户脚本</h4>
+<h2 id="容器生成的服务器主配置">容器生成的服务器主配置</h2>
+<p>/root/ovpn-data/openvpn.conf</p>
+<p>下面是一个改后的示例配置</p>
+<pre><code class="language-bash">server 192.168.255.0 255.255.255.0
+verb 3
+key /etc/openvpn/pki/private/xxx.key
+ca /etc/openvpn/pki/ca.crt
+cert /etc/openvpn/pki/issued/xxx.crt
+dh /etc/openvpn/pki/dh.pem
+tls-auth /etc/openvpn/pki/ta.key
+key-direction 0
+keepalive 10 60
+persist-key
+persist-tun
+
+proto tcp
+# Rely on Docker to do port mapping, internally always 1194
+port 1194
+dev tun0
+status /tmp/openvpn-status.log
+
+user nobody
+group nogroup
+comp-lzo no
+
+### Route Configurations Below
+route 192.168.254.0 255.255.255.0
+
+### Push Configurations Below
+push &quot;block-outside-dns&quot;
+push &quot;comp-lzo no&quot;
+### 关闭DNS推送，客户端走本地DNS
+#push &quot;dhcp-option DNS 223.5.5.5&quot;
+#push &quot;dhcp-option DNS 114.114.114.114&quot;
+### 添加客户端需要走openvpn的网络路由，例如访问openvpn所在内网的某个网段，10.100.0.0/16
+push &quot;route 10.100.0.0 255.255.0.0&quot;
+</code></pre>
+<h3 id="服务端dns推送与客户端全局路由的关系">服务端dns推送与客户端全局路由的关系</h3>
+<p>如果客户端删除了全局路由 redirect-gateway def1，则服务端要么关闭 dns 推送；要么开启 dns 推送的同时，开启 dns 的相关路由。</p>
+<p>如果客户端开启了全局路由 redirect-gateway def1，则服务端最好开启 dns 推送，但无需开启 dns 路由。</p>
+<p>服务端配置示例如下：开启 dns 推送和 dns 路由</p>
+<pre><code class="language-bash">push &quot;dhcp-option DNS 223.5.5.5&quot;
+push &quot;dhcp-option DNS 114.114.114.114&quot;
+push &quot;route 223.5.5.5 255.255.255.255&quot;
+push &quot;route 114.114.114.114 255.255.255.255&quot;
+</code></pre>
+<p>客户端配置示例如下：关闭全局路由</p>
+<pre><code class="language-bash"># redirect-gateway def1
+</code></pre>
+<h2 id="创建用户脚本">创建用户脚本</h2>
 <pre><code class="language-bash:">#!/bin/bash
 # 如果是nat后的内网ip，则需要修改配置文件里的ip为外网ip
 # bash xxx.sh &lt;用户名&gt;
@@ -1489,21 +1539,26 @@ docker run --name openvpn -v $&#123;OVPN_DATA&#125;:/etc/openvpn -d -p 1194:1194
 CLIENTNAME=$1
 #read -p '输入用户名（字母组成）:' CLIENTNAME
 OVPN_DATA=&quot;/root/ovpn-data&quot;
+PORT=  # 容器映射的宿主机端口
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full $&#123;CLIENTNAME&#125; nopass
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient $CLIENTNAME &gt; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
+sed -i &quot;s/1194/$&#123;PORT&#125;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i '1a comp-lzo' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i '2a tun-mtu 1500' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i '3a auth-nocache' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
-sed -i &quot;s/$&#123;本机ip&#125;/$&#123;外网ip&#125;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn  # 若为nat环境，自行修改，若不是nat环境，注释掉本行
+sed -i &quot;s/&lt;服务器内网IP&gt;/&lt;客户端连接的外网IP&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn  # 若为nat环境，自行替换两个ip，若不是nat环境，注释掉本行
+read -p '是否关闭全局路由，（y）关闭全局路由，仅当客户端匹配下发路由时才走openvpn.[确保服务端没有开启DNS推送，若开启则添加对应的DNS路由]；（n）开启全局路由，客户端所有流量均走openvpn.[确保服务端开启了DNS推送]：' yn
+[[ $yn == 'y' ]] &amp;&amp; sed -i '/redirect-gateway def1/d' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 mkdir -pv $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
 mv /root/ovpn-data/pki/private/$&#123;CLIENTNAME&#125;.key $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
 mv /root/ovpn-data/pki/issued/$&#123;CLIENTNAME&#125;.crt $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
 mv $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
 cd $&#123;OVPN_DATA&#125;/users/
 tar zcf $&#123;CLIENTNAME&#125;.tar.gz $&#123;CLIENTNAME&#125;
-sz $&#123;CLIENTNAME&#125;.tar.gz
+echo &quot;`pwd`/$&#123;CLIENTNAME&#125;.tar.gz&quot;
+#sz $&#123;CLIENTNAME&#125;.tar.gz
 </code></pre>
-<h4 id="删除用户脚本">删除用户脚本</h4>
+<h2 id="删除用户脚本">删除用户脚本</h2>
 <pre><code class="language-bash:">#!/bin/bash
 # bash xxx.sh &lt;用户名&gt;
 [[ -z $1 ]] &amp;&amp; exit

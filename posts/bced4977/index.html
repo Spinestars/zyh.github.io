@@ -1625,6 +1625,19 @@ type: Opaque
 <pre><code class="language-bash">kubectl apply -f alertmanager-secret.yaml 
 curl -X POST http://&lt;alertmanager_addr&gt;/-/reload
 </code></pre>
+<h3 id="修改默认的prometheus规则">修改默认的prometheus规则</h3>
+<p>默认的规则位于 prometheusrule 资源对象中</p>
+<pre><code class="language-bash">kubectl get prometheusrule -n monitoring
+NAME                              AGE
+alertmanager-main-rules           6d22h
+kube-prometheus-rules             6d22h
+kube-state-metrics-rules          6d22h
+kubernetes-monitoring-rules       6d22h
+node-exporter-rules               6d22h
+prometheus-k8s-prometheus-rules   6d22h
+prometheus-operator-rules         6d22h
+</code></pre>
+<p>通过 kubectl edit 修改即可</p>
 <h3 id="修正问题">修正问题</h3>
 <p>prometheus页面中可能会看到有一些错误，两个核心组件kube-controller-manager和kube-scheduler是down</p>
 <p><img src="/posts/bced4977/image-20210319174713804.png" alt="image-20210319174713804"></p>

@@ -1472,6 +1472,7 @@
 
 <div id="article-content">
 	<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2>
+<p>选择一个主机用于发起监控</p>
 <pre><code class="language-bash"># 目录结构
 [root@ip-10-230-10-105 zabbix]# pwd
 /etc/zabbix
@@ -1493,7 +1494,6 @@ shell
 </code></pre>
 <pre><code class="language-bash"># zabbix_agentd 配置 http_status.conf
 UserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1
-
 UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery
 </code></pre>
 <pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt
@@ -1501,8 +1501,8 @@ UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_stat
 # get 原样写入
 # post 模仿get多加一个?
 https://abc.com??&lt;post_kv&gt;
-
 https://abc.com?&lt;get_kv&gt;
+https://abc.com
 
 </code></pre>
 <pre><code class="language-python">#!/usr/bin/env python
@@ -1510,39 +1510,44 @@ https://abc.com?&lt;get_kv&gt;
 # python2.7
 # 自动发现脚本 + 数据采集脚本 http_status.py
 # 请将我添加 o+x 权限
+# ConfigParser 模块是需要安装的
 import urllib2, sys, json, ConfigParser, os 
 
 a1 = sys.argv[1]
 def web_site_code(args):
     response = None
     WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))
-    for line in open(WEB_TXT):
-        if args in line:
-            if &quot;??&quot; in line:
-                line = line.strip('\n').split(&quot;??&quot;)
-            elif &quot;?&quot; in line:
-                line = line.strip('\n').split(&quot;?&quot;)
-            else:
-                line = line.strip('\n')
-            try:
+    with open(WEB_TXT, 'ro') as f:
+        for line in f.readlines():
+            line = line.strip()
+            if args in line:
+                if &quot;??&quot; in line:
+                    line = line.split(&quot;??&quot;)
+                elif &quot;?&quot; in line:
+                    line = line.split(&quot;?&quot;)
+                else:
+                    pass
                 try:
-                    response = urllib2.urlopen(line[0], data=line[1], timeout=5)
-                    print response.code
-                except IndexError:
-                    response = urllib2.urlopen(line[0], timeout=5)
-                    print response.code
+                    try:
+                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)
+                        print response.code
+                    except IndexError:
+                        response = urllib2.urlopen(line[0], timeout=5)
+                        print response.code
+                    finally:
+                        response = urllib2.urlopen(line, timeout=5)
+                        print response.code
+                except urllib2.URLError,e:
+                    if hasattr(e, 'code'):
+                        print e.code
+                    elif hasattr(e, 'reason'):
+                        print 500
+                    else:
+                        print 500
                 finally:
-                    response = urllib2.urlopen(line, timeout=5)
-                    print response.code
-            except urllib2.URLError,e:
-                if hasattr(e, 'code'):
-                    print e.code
-                elif hasattr(e, 'reason'):
-                    print 53
-            finally:
-                if response:
-                    response.close()
-                exit()
+                    if response:
+                        response.close()
+                    exit()
 
 def web_site_discovery():
     Dict = &#123;&quot;data&quot;:[]&#125;
@@ -1572,22 +1577,21 @@ elif a1 == 'web_site_discovery':
 <h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2>
 <ul>
 <li>
-<p>构建一个主机项，监控 agentd</p>
+<p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p>
+<p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p>
 </li>
 <li>
 <p>在自动发现规则里，构建监控项原型，内容如图：</p>
-<p><img src="/posts/3d20f83e/image-20200616182457232.png" alt="image-20200616182457232"></p>
-</li>
-<li>
+<p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p>
 <p>在自动发现规则里，构建触发器原型，内容如图：</p>
-<p><img src="/posts/3d20f83e/image-20200616182509904.png" alt="image-20200616182509904"></p>
+<p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p>
 <blockquote>
-<p>100秒以内，收集到三次不是200的数据，就报警</p>
+<p>100秒以内，状态为200的次数少于3次告警</p>
 </blockquote>
 </li>
 <li>
 <p>在自动发现规则里，构建图形原型，内容如图：</p>
-<p><img src="/posts/3d20f83e/image-20200616182538573.png" alt="image-20200616182538573"></p>
+<p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p>
 </li>
 </ul>
 
@@ -1597,16 +1601,16 @@ elif a1 == 'web_site_discovery':
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/1587f6e8/">
+              <a href="/posts/445cf088/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  zabbix☞agent和proxy(yum)
+                  nginx☞日志切割
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/1fac36d/">
-                监控☞远程磁盘检测
+              <a href="/posts/b35b5965/">
+                zabbix☞nginx
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

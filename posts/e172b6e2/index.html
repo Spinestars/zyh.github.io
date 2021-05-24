@@ -1645,7 +1645,7 @@ total 20
 - name: kubernetes
   rules:
   - alert: kube-state-metrics down
-    expr: (up&#123;job=&quot;kube-state-metrics&quot;&#125; or up&#123;job=&quot;kubernetes-apiservers&quot;&#125;)  == 1  #0不正常，1正常
+    expr: (up&#123;job=&quot;kube-state-metrics&quot;&#125; or up&#123;job=&quot;kubernetes-apiservers&quot;&#125;) != 1  #0不正常，1正常
     for: 5m  #持续时间 ，表示持续5分钟获取不到信息，则触发报警
     labels:
       severity: error

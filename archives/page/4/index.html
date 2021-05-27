@@ -465,6 +465,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/6f53a6b8/">
+										网络☞链路聚合
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/1ddb9d4e/">
 										问题记录
 									</a>
@@ -1438,6 +1447,51 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/18e4fa73/">
+				<h2 class="index-title">
+					k8s☞06无状态服务deployment-pod更新
+				</h2>
+				<div class="index-brief">
+					前言
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/e6ae9474/">
 				<h2 class="index-title">
 					mysql☞常用命令
@@ -1655,15 +1709,17 @@ mysqltonew()&#123;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/94518966/">
+			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞03pod
+					k8s☞04pod钩子函数
 				</h2>
 				<div class="index-brief">
 					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
+我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
+k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
+postStart
+
+它将在容器创建后立即运行，但不保证在 ENT
 					...
 				</div>
 			</a>
@@ -1694,17 +1750,15 @@ https://kubernete
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
-
-它将在容器创建后立即运行，但不保证在 ENT
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
@@ -1810,52 +1864,6 @@ pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/65820315/">
-				<h2 class="index-title">
-					prometheus☞01搭建
-				</h2>
-				<div class="index-brief">
-					前言
-prometheus 监控的构建，相比 zabbix 来说，还是要麻烦一些。
-当然，如果你完全熟悉之后，配置文件化也更容易被其他系统所修改。
-监控端组件
-搞之前，先创建一个网络
-docker network create promsnet
-grafana
-
-数据展示，部署在 proms 端
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-07-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/prometheus/">prometheus</a>
 										
                                     </span>
                                 

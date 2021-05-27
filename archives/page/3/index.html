@@ -465,6 +465,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/6f53a6b8/">
+										网络☞链路聚合
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/1ddb9d4e/">
 										问题记录
 									</a>
@@ -1438,6 +1447,51 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/ae41ae33/">
+				<h2 class="index-title">
+					监控☞monit
+				</h2>
+				<div class="index-brief">
+					安装
+yum install monit -y
+
+主配置
+# vim /etc/monitrc
+set daemon  10 # 调整周期
+
+⭐️官方配置文档: https://mmonit.com/monit/documentation/monit.html
+程序保活配置
+默认存放位置: /etc
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-27</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/monit/">monit</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/7627a41d/">
 				<h2 class="index-title">
 					k8s☞13高级版负载均衡ingress
@@ -1649,7 +1703,7 @@ k8s资源约束分为两种: request(软
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1692,7 +1746,7 @@ kubernetes 提供了一种卷类型 projected volum
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					k8s☞09应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1748,51 +1802,6 @@ k8sIP
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-16</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/18e4fa73/">
-				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
-				</h2>
-				<div class="index-brief">
-					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-14</span>
                     
                             
                                 

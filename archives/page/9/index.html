@@ -465,6 +465,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/6f53a6b8/">
+										网络☞链路聚合
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/1ddb9d4e/">
 										问题记录
 									</a>
@@ -1438,6 +1447,50 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/b73a61bf/">
+				<h2 class="index-title">
+					fpm☞安装-包管理方式
+				</h2>
+				<div class="index-brief">
+					前言
+介绍如何通过yum或者apt-get安装php和php-fpm
+适合php7.2
+centos
+
+安装源 https://webtatic.com/
+
+yum install epel-release
+rpm -Uvh https://mirror.webtatic.com/yum/el7/w
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-03-22</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/fpm/">fpm</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/d3e413b7/">
 				<h2 class="index-title">
 					ansible☞基础信息
@@ -1732,50 +1785,6 @@ s3官方授权示例：https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/dev/exa
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
-				<h2 class="index-title">
-					docker☞01安装
-				</h2>
-				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-
-仓库
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
 					k8s☞01常见术语概念
@@ -1824,25 +1833,31 @@ kube-apiserver 是 master 节点服务，
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b824edd8/">
+			<a href="/posts/b7cf7b1f/">
 				<h2 class="index-title">
-					mysql☞安装
+					docker☞01安装
 				</h2>
 				<div class="index-brief">
-					https://hub.docker.com/_/mysql?tab=description
-mkdir -p /export/docker-data-mysql/&#123;config,logs,mysql,mysql-files&#125;
-docker run --name mysql8 \
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2019-02-10</span>
+				    <span>2019-03-20</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
+                                        <a href="/categories/容器/">容器</a>
 										
 											>
 										
@@ -1852,7 +1867,7 @@ docker run --name mysql8 \
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/mysql/">mysql</a>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 

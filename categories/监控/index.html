@@ -465,6 +465,15 @@
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/6f53a6b8/">
+										网络☞链路聚合
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/1ddb9d4e/">
 										问题记录
 									</a>
@@ -1779,17 +1788,24 @@ grafana
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/f9b08c30/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					监控☞微信预警
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					# conf.ini
+[wechat]
+corpid = 
+
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+
+[group]
+it = usera|userb
+
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -1801,16 +1817,6 @@ grafana
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -1820,21 +1826,18 @@ grafana
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/1fac36d/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					监控☞远程磁盘检测
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
-
-
-1，nginx增加配置 server_status.server
-
-cat &gt; /usr/local/nginx/
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
 					...
 				</div>
 			</a>
@@ -1846,16 +1849,6 @@ cat &gt; /usr/local/nginx/
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

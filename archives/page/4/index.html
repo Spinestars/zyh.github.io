@@ -358,6 +358,15 @@
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/6df9bb76/">
+										aliyun☞cli安装和基本调用
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b5d7d6ee/">
 										aliyun☞oss
 									</a>
@@ -1398,6 +1407,26 @@
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										css
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/fa5680b3/">
+										css☞背景图居中拉伸平铺
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1445,6 +1474,84 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/d3b80b5f/">
+				<h2 class="index-title">
+					k8s☞08负载均衡service
+				</h2>
+				<div class="index-brief">
+					前言
+在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公网暴漏内网这些后端程序.
+k8s设计了一个service对象来实现这一目的.
+k8sIP
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-16</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f6e328b5/">
+				<h2 class="index-title">
+					k8s☞07无状态服务deployment-pod扩缩
+				</h2>
+				<div class="index-brief">
+					前言
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/18e4fa73/">
@@ -1764,90 +1871,6 @@ https://kubernete
 			</a>
                 <div class="article-meta">
 				    <span>2020-08-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/9602dad/">
-				<h2 class="index-title">
-					k8s☞02v1.18.6安装
-				</h2>
-				<div class="index-brief">
-					前言
-本文编写的时候，官方已经到了1.18.8，但是鉴于国内环境，非官方源没找到1.18.8，所以最后用的1.18.6
-另外，文中出现的宿主机ip，请自行修改为自己的环境ip
-机器
-机器系统都是 centos7,
-三个节点，均为主节点，同时也是工作节点，并利用 keepalived + haprox
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-25</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/e1096625/">
-				<h2 class="index-title">
-					k8s☞记录点
-				</h2>
-				<div class="index-brief">
-					
-
-pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.
-删除pvc后, pv的状态将从bound转为Released.
-如果你想让pv从新绑定到原来的pvc上, 则需要两个步骤:
-
-先创建原来的pvc.
-删除当前pv并重新创建, 或者修改当前pv的配置,
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-25</span>
                     
                             
                                 

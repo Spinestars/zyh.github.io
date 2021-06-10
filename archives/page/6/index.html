@@ -358,6 +358,15 @@
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/6df9bb76/">
+										aliyun☞cli安装和基本调用
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b5d7d6ee/">
 										aliyun☞oss
 									</a>
@@ -1398,6 +1407,26 @@
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										css
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/fa5680b3/">
+										css☞背景图居中拉伸平铺
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1445,6 +1474,84 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/6ce01f58/">
+				<h2 class="index-title">
+					ansible☞playbook-include
+				</h2>
+				<div class="index-brief">
+					引入额外任务
+tasks:
+  - include: add.yml
+
+绑定 kv 对，从而改变额外任务里的变量
+tasks:
+  - include: add.yml
+    var1=hello
+    var2=world
+
+绑定 tags 标记
+
+可以通过tags执行相应的额外任务
+
+tas
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-18</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f5c218d/">
+				<h2 class="index-title">
+					hexo☞本地搜索
+				</h2>
+				<div class="index-brief">
+					前言
+安装完 hexo-generator-search 后，发现搜索结果始终是所有文章.
+如果你用的也是 Melody 主题，那么可以参考如下信息，来确认。
+效果图
+
+软件包
+
+截至：2020.05.18，软件包如下
+
+  &quot;dependencies&quot;: &#123;
+    
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-18</span>
+                    
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/6209085/">
@@ -1599,24 +1706,60 @@ r
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f9b08c30/">
+			<a href="/posts/421d605e/">
 				<h2 class="index-title">
-					监控☞微信预警
+					日志☞logrotate安装
 				</h2>
 				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
 
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1587f6e8/">
+				<h2 class="index-title">
+					zabbix☞agent和proxy(yum)
+				</h2>
+				<div class="index-brief">
+					
+https://repo.zabbix.com/zabbix/
 
-[group]
-it = usera|userb
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 
-#!/usr/bin/env python3
+agent 安装
 
-&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -1629,66 +1772,15 @@ it = usera|userb
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
 										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1fac36d/">
-				<h2 class="index-title">
-					监控☞远程磁盘检测
-				</h2>
-				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+											>
 										
                                     </span>
                                 
                             
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/8c33f887/">
-				<h2 class="index-title">
-					监控☞企业微信机器人
-				</h2>
-				<div class="index-brief">
-					shell
-wechatUrl=
-wechatData=
-curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -1754,49 +1846,6 @@ curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;
 1，nginx增加配置 server_status.server
 
 cat &gt; /usr/local/nginx/
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1587f6e8/">
-				<h2 class="index-title">
-					zabbix☞agent和proxy(yum)
-				</h2>
-				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
-
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
-
-agent 安装
-
 					...
 				</div>
 			</a>

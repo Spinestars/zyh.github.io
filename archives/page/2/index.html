@@ -358,6 +358,15 @@
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/6df9bb76/">
+										aliyun☞cli安装和基本调用
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b5d7d6ee/">
 										aliyun☞oss
 									</a>
@@ -1398,6 +1407,26 @@
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										css
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/fa5680b3/">
+										css☞背景图居中拉伸平铺
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1445,6 +1474,85 @@
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/b43013ef/">
+				<h2 class="index-title">
+					rabbitmq☞安装
+				</h2>
+				<div class="index-brief">
+					安装rabbitmq server
+docker方式
+# https://hub.docker.com/_/rabbitmq, 然后搜索 management 版本 [docker pull rabbitmq:management]
+mkdir /export/docker-data-rabbitm
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-02</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/中间件/">中间件</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/中间件/rabbitmq/">rabbitmq</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3b5cd3e1/">
+				<h2 class="index-title">
+					jenkins☞动态agent
+				</h2>
+				<div class="index-brief">
+					流程
+jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent -&gt; jenkins-master
+凭证信息
+通过 kube config 里的加密信息获取凭据所需的证书
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-01-16</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/jenkins/">jenkins</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/b5d7d6ee/">
@@ -1751,83 +1859,6 @@ https://kubernetes.io/docs/tasks/administer-cluster/kubea
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1080c6b6/">
-				<h2 class="index-title">
-					k8s☞09存储资源
-				</h2>
-				<div class="index-brief">
-					前言
-在使用云服务的时候,我们创建磁盘,需要在存储服务中提交一个请求,里面包含了磁盘类型,磁盘大小.之后,我们再把这个申请的磁盘挂载到所需的计算资源上即可.
-而在k8s中. 当使用存储的时候，我们会涉及到以下主要概念
-构建存储的概念：
-
-
-volume # 这个概念指的是提供的存储服务，例如云商的云
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-30</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/894f9595/">
-				<h2 class="index-title">
-					vsftpd☞安装
-				</h2>
-				<div class="index-brief">
-					配置文件
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: nas-it-local-dep
-  namespace: it
-  labels:
-    app: nas-it-local
-spec:
-  serviceName: nas
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-29</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/">其它</a>
 										
                                     </span>
                                 

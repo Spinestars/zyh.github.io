@@ -1864,17 +1864,17 @@ r
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/421d605e/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					日志☞logrotate安装
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
+
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
 					...
 				</div>
 			</a>
@@ -1885,7 +1885,7 @@ r
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/日志/">日志</a>
 										
 											>
 										
@@ -1895,7 +1895,7 @@ r
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/日志/其它/">其它</a>
 										
                                     </span>
                                 
@@ -1905,21 +1905,19 @@ r
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					zabbix☞agent和proxy(yum)
 				</h2>
 				<div class="index-brief">
 					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+https://repo.zabbix.com/zabbix/
 
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 
-1，nginx增加配置 server_status.server
+agent 安装
 
-cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>

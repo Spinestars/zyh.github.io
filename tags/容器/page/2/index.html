@@ -1552,7 +1552,7 @@ var _hmt = _hmt || [];
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					k8s☞09应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1920,24 +1920,20 @@ pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/aaf9b7/">
+			<a href="/posts/b7cf7b1f/">
 				<h2 class="index-title">
-					k8s☞01常见术语概念
+					docker☞01安装
 				</h2>
 				<div class="index-brief">
-					物理
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
 
-
-master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
-
-
-node 是 k8s 的工作节点，也就是实际跑容器的节点。
-
-
-服务
-master 节点服务
-
-kube-apiserver 是 master 节点服务， 
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
 					...
 				</div>
 			</a>
@@ -1958,7 +1954,7 @@ kube-apiserver 是 master 节点服务，
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 

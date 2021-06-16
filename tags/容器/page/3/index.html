@@ -71,8 +71,6 @@
 
 	
 	
-		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-	
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body>
@@ -1541,20 +1539,24 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
+			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
-					docker☞01安装
+					k8s☞01常见术语概念
 				</h2>
 				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
+					物理
 
-仓库
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux
+
+master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
+
+
+node 是 k8s 的工作节点，也就是实际跑容器的节点。
+
+
+服务
+master 节点服务
+
+kube-apiserver 是 master 节点服务， 
 					...
 				</div>
 			</a>
@@ -1575,7 +1577,7 @@ yum-config-manager \
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -1598,17 +1600,6 @@ yum-config-manager \
 	©2016-<span id="footerYear"></span> 
 	<a href="/">zyh</a> 
 	
-	
-		|
-		<span id="busuanzi_container_site_pv">
-			pv
-			<span id="busuanzi_value_site_pv"></span>
-		</span>
-		|
-		<span id="busuanzi_container_site_uv"> 
-			uv
-			<span id="busuanzi_value_site_uv"></span>
-		</span>
 	
 	<br>
 	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>

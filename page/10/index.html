@@ -71,33 +71,44 @@
 
 	
 	
+		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body>
-	<header id="header">
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<header id="header">
     <a id="title" href="/" class="logo">zyh</a>
 
 	<ul id="menu">
 		<li class="menu-item">
 			<a href="/about" class="menu-item-link">ABOUT</a>
 		</li>
-<!--
+	
+
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
+				UidGenerator
+			</a>
+		</li>
 		<li class="menu-item">
 			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
 			</a>
 		</li>
--->
 	</ul>
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
 </header>
 
 	
@@ -1633,6 +1644,50 @@ s3官方授权示例：https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/dev/exa
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/b7cf7b1f/">
+				<h2 class="index-title">
+					docker☞01安装
+				</h2>
+				<div class="index-brief">
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/docker/">docker</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
 					k8s☞01常见术语概念
@@ -1672,50 +1727,6 @@ kube-apiserver 是 master 节点服务，
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
-				<h2 class="index-title">
-					docker☞01安装
-				</h2>
-				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-
-仓库
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 
@@ -1929,17 +1940,16 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/a38d0013/">
+			<a href="/posts/78ceb386/">
 				<h2 class="index-title">
-					gitlab☞大版本迁移
+					nginx☞泛域名_变量截取
 				</h2>
 				<div class="index-brief">
-					前言
-
-现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。
-
-正文
-
+					server &#123;
+    listen       80;
+    listen       [::]:80;
+    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
+    root /export/webapps/apple.
 					...
 				</div>
 			</a>
@@ -1950,7 +1960,7 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其他/">其他</a>
+                                        <a href="/categories/web/">web</a>
 										
 											>
 										
@@ -1960,7 +1970,7 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其他/git/">git</a>
+                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 
@@ -1983,6 +1993,17 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
 	©2016-<span id="footerYear"></span> 
 	<a href="/">zyh</a> 
 	
+	
+		|
+		<span id="busuanzi_container_site_pv">
+			pv
+			<span id="busuanzi_value_site_pv"></span>
+		</span>
+		|
+		<span id="busuanzi_container_site_uv"> 
+			uv
+			<span id="busuanzi_value_site_uv"></span>
+		</span>
 	
 	<br>
 	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>

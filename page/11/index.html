@@ -71,33 +71,44 @@
 
 	
 	
+		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body>
-	<header id="header">
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<header id="header">
     <a id="title" href="/" class="logo">zyh</a>
 
 	<ul id="menu">
 		<li class="menu-item">
 			<a href="/about" class="menu-item-link">ABOUT</a>
 		</li>
-<!--
+	
+
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
+				UidGenerator
+			</a>
+		</li>
 		<li class="menu-item">
 			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
 			</a>
 		</li>
--->
 	</ul>
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
 </header>
 
 	
@@ -1539,16 +1550,17 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/78ceb386/">
+			<a href="/posts/a38d0013/">
 				<h2 class="index-title">
-					nginx☞泛域名_变量截取
+					gitlab☞大版本迁移
 				</h2>
 				<div class="index-brief">
-					server &#123;
-    listen       80;
-    listen       [::]:80;
-    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
-    root /export/webapps/apple.
+					前言
+
+现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。
+
+正文
+
 					...
 				</div>
 			</a>
@@ -1559,7 +1571,7 @@ var _hmt = _hmt || [];
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
+                                        <a href="/categories/其他/">其他</a>
 										
 											>
 										
@@ -1569,7 +1581,7 @@ var _hmt = _hmt || [];
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
+                                        <a href="/categories/其他/git/">git</a>
 										
                                     </span>
                                 
@@ -1822,17 +1834,14 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞获取没有设置ttl的key
+					redis☞调整内核参数
 				</h2>
 				<div class="index-brief">
 					前言
-redis 内存占用爆炸. 所以网上找了一个
-# encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&
+之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
+后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
+经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
+我是问题
 					...
 				</div>
 			</a>
@@ -1865,14 +1874,17 @@ func: 获取数据库中没有设置ttl的 key
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞调整内核参数
+					redis☞获取没有设置ttl的key
 				</h2>
 				<div class="index-brief">
 					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
+redis 内存占用爆炸. 所以网上找了一个
+# encoding: utf-8
+&quot;&quot;&quot;
+author: yangyi@youzan.com
+time: 2018/4/26 下午4:34
+func: 获取数据库中没有设置ttl的 key
+&quot;&quot;&
 					...
 				</div>
 			</a>
@@ -1962,6 +1974,17 @@ arn:aws:iam::&lt;aws_account_id&gt;:&lt;type&gt;/&lt;name&gt;
 	©2016-<span id="footerYear"></span> 
 	<a href="/">zyh</a> 
 	
+	
+		|
+		<span id="busuanzi_container_site_pv">
+			pv
+			<span id="busuanzi_value_site_pv"></span>
+		</span>
+		|
+		<span id="busuanzi_container_site_uv"> 
+			uv
+			<span id="busuanzi_value_site_uv"></span>
+		</span>
 	
 	<br>
 	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>

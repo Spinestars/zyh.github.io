@@ -73,33 +73,44 @@
 
 	
 	
+		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body>
-	<header id="header">
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<header id="header">
     <a id="title" href="/" class="logo">zyh</a>
 
 	<ul id="menu">
 		<li class="menu-item">
 			<a href="/about" class="menu-item-link">ABOUT</a>
 		</li>
-<!--
+	
+
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
+				UidGenerator
+			</a>
+		</li>
 		<li class="menu-item">
 			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
 			</a>
 		</li>
--->
 	</ul>
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
 </header>
 
 	
@@ -1544,31 +1555,52 @@ var _hmt = _hmt || [];
 </h1>
 <div class="article-meta">
 	
+		<span>
+			阅读量:<span id="/posts/c4126d5a/" class="leancloud_visitors" data-flag-title="ansible☞playbook-错误捕获"></span>
+		</span>
+	
 	<span>zyh</span>
 	<span>2020-05-04 17:17:44</span>
-    
 		<div id="article-categories">
-            
-                
-                    <span>
-                        <i class="fa fa-folder" aria-hidden="true"></i>
-                        <a href="/categories/自动化/">自动化</a>
-						
-							>
-						
-                    </span>
-                
-            
-                
-                    <span>
-                        <i class="fa fa-folder" aria-hidden="true"></i>
-                        <a href="/categories/自动化/ansible/">ansible</a>
-						
-                    </span>
-                
-            
-		</div>
     
+		<span>Categories：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/自动化/">自动化</a>
+                        </i>
+                      
+                        >
+                      
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/自动化/ansible/">ansible</a>
+                        </i>
+                      
+                    </span>
+                
+            
+    
+
+    
+		<span>Tags：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/ansible/">ansible</a>
+                        </i>
+                    </span>
+                
+            
+    
+		</div>
+
 </div>
 
 <div id="article-content">
@@ -1636,6 +1668,38 @@ var _hmt = _hmt || [];
 		})
 	
 	
+    // 显示次数
+		function showTime(Counter) {
+			var query = new AV.Query("Counter");
+			if($(".leancloud_visitors").length > 0){
+				var url = $(".leancloud_visitors").attr('id').trim();
+				// where field
+				query.equalTo("words", url);
+				// count
+				query.count().then(function (number) {
+					// There are number instances of MyClass where words equals url.
+					$(document.getElementById(url)).text(number?  number : '--');
+				}, function (error) {
+					// error is an instance of AVError.
+				});
+			}
+		}
+		// 追加pv
+		function addCount(Counter) {
+			var url = $(".leancloud_visitors").length > 0 ? $(".leancloud_visitors").attr('id').trim() : 'wujun234.github.io';
+			var Counter = AV.Object.extend("Counter");
+			var query = new Counter;
+			query.save({
+				words: url
+			}).then(function (object) {
+			})
+		}
+		$(function () {
+			var Counter = AV.Object.extend("Counter");
+			addCount(Counter);
+			showTime(Counter);
+		});
+	
 </script>
 	</div>
 	<div id="footer">
@@ -1643,6 +1707,17 @@ var _hmt = _hmt || [];
 	©2016-<span id="footerYear"></span> 
 	<a href="/">zyh</a> 
 	
+	
+		|
+		<span id="busuanzi_container_site_pv">
+			pv
+			<span id="busuanzi_value_site_pv"></span>
+		</span>
+		|
+		<span id="busuanzi_container_site_uv"> 
+			uv
+			<span id="busuanzi_value_site_uv"></span>
+		</span>
 	
 	<br>
 	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>

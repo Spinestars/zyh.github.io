@@ -71,33 +71,44 @@
 
 	
 	
+		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 <body>
-	<header id="header">
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<header id="header">
     <a id="title" href="/" class="logo">zyh</a>
 
 	<ul id="menu">
 		<li class="menu-item">
 			<a href="/about" class="menu-item-link">ABOUT</a>
 		</li>
-<!--
+	
+
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
+				UidGenerator
+			</a>
+		</li>
 		<li class="menu-item">
 			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
 			</a>
 		</li>
--->
 	</ul>
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
 </header>
 
 	
@@ -1795,7 +1806,7 @@ k8s资源约束分为两种: request(软
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1838,7 +1849,7 @@ kubernetes 提供了一种卷类型 projected volum
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					k8s☞09应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1919,14 +1930,21 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
@@ -1970,6 +1988,17 @@ k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以�
 	©2016-<span id="footerYear"></span> 
 	<a href="/">zyh</a> 
 	
+	
+		|
+		<span id="busuanzi_container_site_pv">
+			pv
+			<span id="busuanzi_value_site_pv"></span>
+		</span>
+		|
+		<span id="busuanzi_container_site_uv"> 
+			uv
+			<span id="busuanzi_value_site_uv"></span>
+		</span>
 	
 	<br>
 	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>

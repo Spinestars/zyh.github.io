@@ -93,6 +93,15 @@
 		</li>
 -->
 	</ul>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </header>
 
 	
@@ -407,6 +416,44 @@
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										git
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/a38d0013/">
+										gitlab☞大版本迁移
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f38f454/">
+										gitlab☞安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5edc3545/">
+										gitlab☞批量修改用户密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
 							</ul>
 			
 							<ul>
@@ -910,6 +957,24 @@
 								<li class="file">
 									<a href="/posts/bced4977/">
 										prometheus☞03k8s内置部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/978d0c1d/">
+										prometheus☞04redis监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞05mysql监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1509,18 +1574,18 @@
 </div>
 
 <div id="article-content">
-	<h3 id="依赖">依赖</h3>
+	<h2 id="依赖">依赖</h2>
 <pre><code class="language-bash">yum install -y yum-utils \
   device-mapper-persistent-data \
   lvm2
 </code></pre>
-<h3 id="仓库">仓库</h3>
+<h2 id="仓库">仓库</h2>
 <pre><code class="language-bash:">yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
 </code></pre>
 <p>💁如果你用的是阿里云的镜像，那么则需要手动修改repo文件地址，例如：<a target="_blank" rel="noopener" href="https://download.docker.com/linux/centos/7/x86_64/stable/">https://download.docker.com/linux/centos/7/x86_64/stable/</a></p>
-<h3 id="安装">安装</h3>
+<h2 id="安装">安装</h2>
 <pre><code class="language-bash">yum install docker-ce -y
 ### 安装 compose ， 可选
 	yum install python3-pip -y
@@ -1528,7 +1593,14 @@
 ### 开机自启动
 systemctl enable docker
 </code></pre>
-<h3 id="修改-docker-默认数据目录">修改 docker 默认数据目录</h3>
+<h3 id="安装-runlike-命令">安装 runlike 命令</h3>
+<p>runlike命令可以输出docker启动的时候的指令</p>
+<pre><code class="language-bash">pip install runlike
+runlike &lt;container_id&gt; # 输出run指令
+
+不过需要注意的是，这个命令并不完美，比如输出不了mount参数，因为你还需要通过docker inspect &lt;container_id&gt;来查看mount指令
+</code></pre>
+<h2 id="修改-docker-默认数据目录">修改 docker 默认数据目录</h2>
 <pre><code class="language-bash">[[ -f /etc/docker/daemon.json ]] &amp;&amp; mv /etc/docker/daemon.json /etc/docker/daemon.json.default || &#123;
  mkdir -p /etc/docker/ &amp;&amp;  touch /etc/docker/daemon.json
  &#125;
@@ -1539,10 +1611,10 @@ cat &gt;  /etc/docker/daemon.json &lt;&lt; EOF
 &#125;
 EOF
 </code></pre>
-<h3 id="启动">启动</h3>
+<h2 id="启动">启动</h2>
 <pre><code class="language-bash">systemctl start docker
 </code></pre>
-<h3 id="镜像库">镜像库</h3>
+<h2 id="镜像库">镜像库</h2>
 <pre><code class="language-bash">docker hub
 quay.io
 </code></pre>
@@ -1553,16 +1625,16 @@ quay.io
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/2c5a64ff/">
+              <a href="/posts/aaf9b7/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  aws☞s3初始化创建
+                  k8s☞01常见术语概念
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/aaf9b7/">
-                k8s☞01常见术语概念
+              <a href="/posts/b824edd8/">
+                mysql☞安装
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

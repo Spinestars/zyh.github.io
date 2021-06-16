@@ -93,6 +93,15 @@
 		</li>
 -->
 	</ul>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </header>
 
 	
@@ -407,6 +416,44 @@
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										git
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/a38d0013/">
+										gitlab☞大版本迁移
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f38f454/">
+										gitlab☞安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5edc3545/">
+										gitlab☞批量修改用户密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
 							</ul>
 			
 							<ul>
@@ -910,6 +957,24 @@
 								<li class="file">
 									<a href="/posts/bced4977/">
 										prometheus☞03k8s内置部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/978d0c1d/">
+										prometheus☞04redis监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞05mysql监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1515,20 +1580,36 @@
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/jenkinsci/docker/blob/master/README.md">https://github.com/jenkinsci/docker/blob/master/README.md</a></p>
 </blockquote>
-<pre><code class="language-bash">jenkinsDomain=
+<pre><code class="language-bash">jenkinsTag=
+jenkinsDns=
+jenkinsDomain=
 gitlabDomain=
 gitlabWanIP=
-jenkinsDns=
 docker volume create jenkins_home
-docker run --name jenkins --hostname $&#123;jenkinsDomain&#125; --add-host $&#123;gitlabDomain&#125;:$&#123;gitlabWanIP&#125; --restart always -d -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker -v /usr/lib64/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7 -p 8080:8080 -p 50000:50000 --dns $&#123;jenkinsDns&#125; jenkins/jenkins:lts
+docker run --name jenkins --hostname $&#123;jenkinsDomain&#125; --add-host $&#123;gitlabDomain&#125;:$&#123;gitlabWanIP&#125; --restart always --mount 'type=volume,src=jenkins_home,dst=/var/jenkins_home' --mount 'type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock' --mount 'type=bind,src=/usr/bin/docker,dst=/usr/bin/docker' --mount 'type=bind,src=/usr/lib64/libltdl.so.7,dst=/usr/lib/x86_64-linux-gnu/libltdl.so.7' -p 8080:8080 -p 50000:50000 --dns $&#123;jenkinsDns&#125; -d jenkins/jenkins:$&#123;jenkinsTag&#125;
 </code></pre>
-<pre><code class="language-bash">docker exec -it -u root jenkins /bin/bash
+<pre><code class="language-bash"># 让 jenkins 用户可以调用 docker 命令，以及安装 ansible
+cat /etc/group | grep docker
+
+docker exec -it -u root jenkins /bin/bash
+cd /var/jenkins_home/
+[[ -d src ]] || mkdir src
+cd src
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+mkdir ~/.pip/
+cat &gt; ~/.pip/pip.conf &lt;&lt; EOF
+[global]
+index-url = https://mirrors.aliyun.com/pypi/simple/
+[install]
+trusted-host=mirrors.aliyun.com
+EOF
 python get-pip.py
 pip install awscli
 pip install ansible
 groupadd -g &lt;docker-group-id&gt; docker
 usermod -aG docker jenkins
+exit
+
 docker stop jenkins &amp;&amp; docker start jenkins
 </code></pre>
 </li>

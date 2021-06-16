@@ -91,6 +91,15 @@
 		</li>
 -->
 	</ul>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </header>
 
 	
@@ -405,6 +414,44 @@
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										git
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/a38d0013/">
+										gitlab☞大版本迁移
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f38f454/">
+										gitlab☞安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5edc3545/">
+										gitlab☞批量修改用户密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
 							</ul>
 			
 							<ul>
@@ -908,6 +955,24 @@
 								<li class="file">
 									<a href="/posts/bced4977/">
 										prometheus☞03k8s内置部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/978d0c1d/">
+										prometheus☞04redis监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞05mysql监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1476,31 +1541,33 @@
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
+			<a href="/posts/a7611bc1/">
 				<h2 class="index-title">
-					docker☞01安装
+					linux☞软raid创建
 				</h2>
 				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
+					linux ☞ 软 raid 创建
 
-仓库
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux
+创建
+
+# 磁盘分区
+fdisk /dev/sda
+fdisk /dev/sdb
+# 构建raid0
+# --level raid级别
+# --raid-devices 盘数
+# --chunk 条带深度，决定了数据分割的标准单位大小，数值越小，则数据越分散，性
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2019-03-20</span>
+				    <span>2019-07-01</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
+                                        <a href="/categories/系统/">系统</a>
 										
 											>
 										
@@ -1510,7 +1577,55 @@ yum-config-manager \
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
+                                        <a href="/categories/系统/linux/">linux</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2c5a64ff/">
+				<h2 class="index-title">
+					aws☞s3初始化创建
+				</h2>
+				<div class="index-brief">
+					前言
+脚本的目的：
+
+创建S3
+添加生命周期
+创建iam规则
+
+
+s3官方授权示例：https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/dev/example-policies-s3.html
+
+主体脚本
+#!/bin/bash
+# http://do
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-05-23</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
 										
                                     </span>
                                 
@@ -1559,6 +1674,50 @@ kube-apiserver 是 master 节点服务，
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/b7cf7b1f/">
+				<h2 class="index-title">
+					docker☞01安装
+				</h2>
+				<div class="index-brief">
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+仓库
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 
@@ -1732,16 +1891,57 @@ dd if=/文件A of=/dev/盘B bs=1M ofl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/78ceb386/">
+			<a href="/posts/5edc3545/">
 				<h2 class="index-title">
-					nginx☞泛域名_变量截取
+					gitlab☞批量修改用户密码
 				</h2>
 				<div class="index-brief">
-					server &#123;
-    listen       80;
-    listen       [::]:80;
-    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
-    root /export/webapps/apple.
+					export OldToken=
+export OldDomain=
+
+# 导出 用户ID 用户名 用户状态 用户邮箱
+curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldD
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-07</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其他/">其他</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其他/git/">git</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/a38d0013/">
+				<h2 class="index-title">
+					gitlab☞大版本迁移
+				</h2>
+				<div class="index-brief">
+					前言
+
+现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。
+
+正文
+
 					...
 				</div>
 			</a>
@@ -1752,7 +1952,7 @@ dd if=/文件A of=/dev/盘B bs=1M ofl
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
+                                        <a href="/categories/其他/">其他</a>
 										
 											>
 										
@@ -1762,129 +1962,7 @@ dd if=/文件A of=/dev/盘B bs=1M ofl
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3321a2dc/">
-				<h2 class="index-title">
-					fpm☞安装-编译方式
-				</h2>
-				<div class="index-brief">
-					前言
-用于编译安装php7.1
-目录结构
-根目录：/usr/local/php
-日志目录：/usr/local/php/var/log -&gt; /export/logs/php
-脚本在此
-#!/bin/bash
-# 脚本, 适用于 php 7.1
-basedir=/usr/local/src
-c
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-08-21</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/fpm/">fpm</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/d4de86f1/">
-				<h2 class="index-title">
-					gitlab☞安装和备份
-				</h2>
-				<div class="index-brief">
-					
-https://docs.gitlab.com/omnibus/docker/
-
-安装
-# 确保 /export 存在
-# create
-domainName=
-docker run --detach   --hostname $&#123;domainName&#125;   --publish
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-07-24</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/">其它</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/2e07203a/">
-				<h2 class="index-title">
-					aws☞EC2-GPU实例安装显卡驱动
-				</h2>
-				<div class="index-brief">
-					
-以下命令均在 ubuntu 用户中执行
-
-安装 awscli 到 ubuntu 用户下
-sudo apt-get update -y
-sudo apt-get install python3-pip -y
-pip3 install awscli --upgrade --user
-
-更新系统内核和g
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-05-23</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/">公有云</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/aws/">aws</a>
+                                        <a href="/categories/其他/git/">git</a>
 										
                                     </span>
                                 
@@ -1896,7 +1974,7 @@ pip3 install awscli --upgrade --user
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/archives/page/9/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/8/">8</a><a class="page-number" href="/archives/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/archives/page/11/">11</a><a class="extend next" rel="next" href="/archives/page/11/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/archives/page/9/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/8/">8</a><a class="page-number" href="/archives/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/archives/page/11/">11</a><a class="page-number" href="/archives/page/12/">12</a><a class="extend next" rel="next" href="/archives/page/11/">&gt;</a>
 		
 	</div>
 </div>

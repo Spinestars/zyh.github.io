@@ -91,6 +91,15 @@
 		</li>
 -->
 	</ul>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 </header>
 
 	
@@ -405,6 +414,44 @@
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										git
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/a38d0013/">
+										gitlab☞大版本迁移
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f38f454/">
+										gitlab☞安装及备份
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5edc3545/">
+										gitlab☞批量修改用户密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
 							</ul>
 			
 							<ul>
@@ -908,6 +955,24 @@
 								<li class="file">
 									<a href="/posts/bced4977/">
 										prometheus☞03k8s内置部署
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/978d0c1d/">
+										prometheus☞04redis监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞05mysql监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1476,6 +1541,86 @@
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/55da993d/">
+				<h2 class="index-title">
+					k8s☞15证书管理
+				</h2>
+				<div class="index-brief">
+					前言
+k8s默认的CA证书有效期是10年。默认签发的服务证书有效期是1年。
+k8s支持自动轮换证书。
+k8s支持轮换时候的证书有效期。不过最长是10年。（我这边设置为100年，没效果）
+https://kubernetes.io/docs/tasks/administer-cluster/kubea
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-16</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/a5ed67a6/">
+				<h2 class="index-title">
+					k8s☞14认证授权
+				</h2>
+				<div class="index-brief">
+					这里是一个认证的一个基本流程：
+
+即： kubectl =&gt; 用户认证 =&gt; 用户授权 =&gt; 入口控制 -&gt; 资源对象
+用户认证：检查递交信息包含的证书，用户名
+用户授权：给用户授权权限策略，授权方式有多种：ABAC mode, RBAC Mode, and Webhook 
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-15</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1080c6b6/">
 				<h2 class="index-title">
 					k8s☞09存储资源
@@ -1806,96 +1951,10 @@ k8s资源约束分为两种: request(软
                 </div>
 		</div>	
 	
-		<div class="index-li">
-			<a href="/posts/4b0e4a5/">
-				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
-				</h2>
-				<div class="index-brief">
-					前言
-kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
-所以步骤一般是这样的。
-
-创建secret 和 configmap 对象
-
-以文件方式提供
-kubernetes 提供了一种卷类型 projected volum
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4b0e4a5/">
-				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
-				</h2>
-				<div class="index-brief">
-					前言
-kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
-所以步骤一般是这样的。
-
-创建secret 和 configmap 对象
-
-以文件方式提供
-kubernetes 提供了一种卷类型 projected volum
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/archives/page/2/">&lt;</a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/11/">11</a><a class="extend next" rel="next" href="/archives/page/4/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/archives/page/2/">&lt;</a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/12/">12</a><a class="extend next" rel="next" href="/archives/page/4/">&gt;</a>
 		
 	</div>
 </div>

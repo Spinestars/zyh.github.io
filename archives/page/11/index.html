@@ -1539,17 +1539,16 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/a38d0013/">
+			<a href="/posts/78ceb386/">
 				<h2 class="index-title">
-					gitlab☞大版本迁移
+					nginx☞泛域名_变量截取
 				</h2>
 				<div class="index-brief">
-					前言
-
-现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。
-
-正文
-
+					server &#123;
+    listen       80;
+    listen       [::]:80;
+    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
+    root /export/webapps/apple.
 					...
 				</div>
 			</a>
@@ -1560,7 +1559,7 @@ var _hmt = _hmt || [];
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其他/">其他</a>
+                                        <a href="/categories/web/">web</a>
 										
 											>
 										
@@ -1570,7 +1569,7 @@ var _hmt = _hmt || [];
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其他/git/">git</a>
+                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 
@@ -1823,14 +1822,17 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞调整内核参数
+					redis☞获取没有设置ttl的key
 				</h2>
 				<div class="index-brief">
 					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
+redis 内存占用爆炸. 所以网上找了一个
+# encoding: utf-8
+&quot;&quot;&quot;
+author: yangyi@youzan.com
+time: 2018/4/26 下午4:34
+func: 获取数据库中没有设置ttl的 key
+&quot;&quot;&
 					...
 				</div>
 			</a>
@@ -1863,17 +1865,14 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞获取没有设置ttl的key
+					redis☞调整内核参数
 				</h2>
 				<div class="index-brief">
 					前言
-redis 内存占用爆炸. 所以网上找了一个
-# encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&
+之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
+后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
+经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
+我是问题
 					...
 				</div>
 			</a>

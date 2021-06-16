@@ -1539,18 +1539,18 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
+			<a href="/posts/1fac36d/">
 				<h2 class="index-title">
-					监控☞邮件预警
+					监控☞远程磁盘检测
 				</h2>
 				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
 					...
 				</div>
 			</a>
@@ -1600,18 +1600,18 @@ curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/f8f9b4d0/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					监控☞邮件预警
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					# $1 收件人
+# $2 主题
+# $3 内容
+smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
+sendUserEmail='it@abc.com'
+sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
+/usr/
 					...
 				</div>
 			</a>

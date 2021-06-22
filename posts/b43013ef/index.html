@@ -419,15 +419,6 @@ var _hmt = _hmt || [];
 									</a>
 									
 							<ul>
-								<li class="file">
-									<a href="/posts/d4de86f1/">
-										gitlab☞安装和备份
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
@@ -759,6 +750,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/932d1f08/">
+										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/9a7bc037/">
 										k8s☞showdoc部署
 									</a>
@@ -984,6 +984,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/6178b477/">
 										prometheus☞05mysql监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞06rabbitmq监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1624,7 +1633,7 @@ docker run --name $&#123;container_name&#125; \
 --hostname $&#123;container_name&#125; \
 --network $&#123;network&#125; \
 --restart always \
--p 5672:5672 -p 15672:15672 \
+-p 5672:5672 -p 15672:15672 -p 15692:15692 \
 --cpus=1 \
 --memory=1G --memory-swap=1G \
 --ulimit nofile=204800 \
@@ -1634,7 +1643,13 @@ docker run --name $&#123;container_name&#125; \
 -e RABBITMQ_DEFAULT_PASS=mq@$&#123;pwd&#125; \
 -d rabbitmq:3.8.13-management
 </code></pre>
-<h3 id="rpm方式">rpm方式</h3>
+<h3 id="Prometheus-监控">Prometheus 监控</h3>
+<p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p>
+<p>若 prometheus 采集器插件没有启动，可以进容器里通过 rabbitmq-plugins enable rabbitmq_prometheus 启动</p>
+<p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p>
+<p>prometheus的告警规则，可以访问 <a target="_blank" rel="noopener" href="https://awesome-prometheus-alerts.grep.to/rules#rabbitmq">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a> 获取</p>
+<p>grafana的模板，可以访问 <a target="_blank" rel="noopener" href="https://grafana.com/grafana/dashboards/10991">RabbitMQ-Overview dashboard for Grafana | Grafana Labs</a></p>
+<h3 id="rpm方式-过时">rpm方式(过时)</h3>
 <pre><code># 安装 erlang 的 rabbitmq 兼容版方式 (卸载命令 yum erase erlang-*)
 yum install -y https://github.com/rabbitmq/erlang-rpm/releases/download/v22.0.7/erlang-22.0.7-1.el6.x86_64.rpm
 
@@ -1696,12 +1711,11 @@ rabbitmqctl list_users;
 <h3 id="状态">状态</h3>
 <pre><code class="language-bash">rabbitmqctl status
 rabbitmqctl list_queues -p &lt;vhost_name&gt;
-
 </code></pre>
 <h3 id="队列">队列</h3>
 <pre><code class="language-bash">rabbitmqctl list_queues --vhost &lt;&gt;
 </code></pre>
-<h2 id="php使用">php使用</h2>
+<h2 id="php-语言使用">php 语言使用</h2>
 <pre><code class="language-bash">wget https://github.com/alanxz/rabbitmq-c/releases/download/v0.7.1/rabbitmq-c-0.7.1.tar.gz;
 tar xf rabbitmq-c-0.7.1.tar.gz;
 cd rabbitmq-c-0.7.1;

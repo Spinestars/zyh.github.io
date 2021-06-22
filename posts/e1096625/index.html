@@ -419,15 +419,6 @@ var _hmt = _hmt || [];
 									</a>
 									
 							<ul>
-								<li class="file">
-									<a href="/posts/d4de86f1/">
-										gitlab☞安装和备份
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
@@ -759,6 +750,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/932d1f08/">
+										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/9a7bc037/">
 										k8s☞showdoc部署
 									</a>
@@ -984,6 +984,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/6178b477/">
 										prometheus☞05mysql监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞06rabbitmq监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1644,6 +1653,12 @@ fuse: if you are sure this is safe, use the ‘nonempty’ mount option”</p>
 <p>Guaranteed：任何容器的cpu请求值和限制值必须一样。内存同样如此</p>
 <p>Burstable：最少有一个容器的cpu请求值和限制值必须一样。内存同样如此</p>
 <p>BestEffort： 没有任何限制</p>
+</li>
+<li>
+<p>kubelet无法启动，报错：<code>kubelet.service holdoff time over</code></p>
+<p>确认节点swap是否关闭</p>
+<p>临时关闭<code>swapoff -a</code></p>
+<p>永久关闭<code>注释/etc/fstab文件里的swap挂载行</code></p>
 </li>
 </ol>
 

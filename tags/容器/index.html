@@ -417,15 +417,6 @@ var _hmt = _hmt || [];
 									</a>
 									
 							<ul>
-								<li class="file">
-									<a href="/posts/d4de86f1/">
-										gitlab☞安装和备份
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
@@ -757,6 +748,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/932d1f08/">
+										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/9a7bc037/">
 										k8s☞showdoc部署
 									</a>
@@ -982,6 +982,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/6178b477/">
 										prometheus☞05mysql监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞06rabbitmq监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1550,6 +1559,51 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/932d1f08/">
+				<h2 class="index-title">
+					k8s☞17node污染和pod容忍
+				</h2>
+				<div class="index-brief">
+					前言
+污点和容忍度 | Kubernetes
+Kubectl Reference Docs (kubernetes.io)
+规则
+pod设定的容忍规则，如果匹配到了绑定在node上的污点规则，则可以被调度到污点节点上，否则不能被调度
+
+容忍规则和污点规则都可以添加多个
+
+node污点命令
+# 查看节
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-06-17</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/7538d100/">
 				<h2 class="index-title">
 					k8s☞16kubeadm集群升级
@@ -1894,49 +1948,6 @@ k8s资源约束分为两种: request(软
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-19</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4b0e4a5/">
-				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
-				</h2>
-				<div class="index-brief">
-					前言
-kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
-所以步骤一般是这样的。
-
-创建secret 和 configmap 对象
-
-以文件方式提供
-kubernetes 提供了一种卷类型 projected volum
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-17</span>
                     
                             
                                 

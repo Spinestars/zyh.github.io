@@ -419,15 +419,6 @@ var _hmt = _hmt || [];
 									</a>
 									
 							<ul>
-								<li class="file">
-									<a href="/posts/d4de86f1/">
-										gitlab☞安装和备份
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
@@ -759,6 +750,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/932d1f08/">
+										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/9a7bc037/">
 										k8s☞showdoc部署
 									</a>
@@ -984,6 +984,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/6178b477/">
 										prometheus☞05mysql监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞06rabbitmq监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -2509,7 +2518,20 @@ echo &quot;$label $count_estab_connections&quot;  | curl --data-binary @- http:/
 <blockquote>
 <p>宿主数据采集端，部署在被监控主机的9100端口</p>
 </blockquote>
-<pre><code class="language-bash"># 命令针对的是 cento7 
+<pre><code class="language-bash"># docker 不太建议
+docker run -d \
+  --name=node-exporter \
+  --restart=always \
+  --net=&quot;host&quot; \
+  --pid=&quot;host&quot; \
+  -v &quot;/:/host:ro,rslave&quot; \
+  quay.io/prometheus/node-exporter:latest \
+  --path.rootfs=/host
+
+# yum包 https://copr.fedorainfracloud.org/coprs/ibotty/prometheus-exporters/
+curl -Lo /etc/yum.repos.d/_copr_ibotty-prometheus-exporters.repo https://copr.fedorainfracloud.org/coprs/ibotty/prometheus-exporters/repo/epel-7/ibotty-prometheus-exporters-epel-7.repo &amp;&amp; yum install node_exporter -y
+
+# 源码包
 cd /usr/local/
 wget https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
 mkdir node_exporter
@@ -2528,7 +2550,8 @@ ExecStart=$&#123;baseDir&#125;/node_exporter
 [Install]
 WantedBy=multi-user.target
 EOF
-#---
+
+# 启动
 systemctl daemon-reload
 systemctl start node_exporter
 systemctl status node_exporter

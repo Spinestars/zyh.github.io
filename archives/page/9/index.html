@@ -417,15 +417,6 @@ var _hmt = _hmt || [];
 									</a>
 									
 							<ul>
-								<li class="file">
-									<a href="/posts/d4de86f1/">
-										gitlab☞安装和备份
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
@@ -757,6 +748,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/932d1f08/">
+										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/9a7bc037/">
 										k8s☞showdoc部署
 									</a>
@@ -982,6 +982,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/6178b477/">
 										prometheus☞05mysql监控
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+										prometheus☞06rabbitmq监控
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1550,6 +1559,93 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/3d9b9ec1/">
+				<h2 class="index-title">
+					ansible☞常用模块-软件包管理
+				</h2>
+				<div class="index-brief">
+					apt_repository
+
+ubuntu 下：
+repo 指定库地址，例如 nginx 地址 ppa:nginx/stable
+state 值为 absent 时为删除
+
+ansible localhost -m apt_repository -a &quot;repo=ppa:nginx/st
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-04-26</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1e274151/">
+				<h2 class="index-title">
+					ansible☞常用模块-命令调用
+				</h2>
+				<div class="index-brief">
+					shell
+
+远程执行一个命令
+部分参数解析：
+chdir 远程工作目录
+executable 远程执行shell，需要绝对路径
+
+ansible localhost -m shell -a &quot;chdir=/ ls&quot;
+
+localhost | CHANGED | rc=0 &gt
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-04-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/4235ddf4/">
 				<h2 class="index-title">
 					ansible☞常用模块-文本文件操作
@@ -1876,88 +1972,6 @@ sed -i '1i server 10.200.16.101 pr
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3475106c/">
-				<h2 class="index-title">
-					日志☞ELK简单部署-容器方式
-				</h2>
-				<div class="index-brief">
-					前言
-
-各组件总下载页: https://www.elastic.co/cn/downloads/
-容器下载页: https://www.docker.elastic.co
-
-
-Elasticsearch 搜索分析 https://www.elastic.co/cn/downloads/elasti
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-12-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/ELK/">ELK</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/18de0eed/">
-				<h2 class="index-title">
-					nginx☞基本认证
-				</h2>
-				<div class="index-brief">
-					# 安装 htpasswd 工具
-yum install httpd-tools -y
-# 生成密码文件
-htpasswd -bc /usr/local/nginx/conf/.passwd usera pwd # 创建用户usera, 并写入 .passwd
-htpasswd -b /usr/lo
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-09-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 

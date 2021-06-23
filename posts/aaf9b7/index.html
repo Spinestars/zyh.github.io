@@ -1621,24 +1621,28 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="物理">物理</h2>
+	<h1>前言</h1>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/overview/components/">Kubernetes 组件 | Kubernetes</a></p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/reference/glossary/?all=true">词汇表 | Kubernetes</a></p>
+<h2 id="结构图">结构图</h2>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg" alt="Kubernetes 组件"></p>
 <ol>
 <li>
-<p>master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。</p>
+<p>Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。</p>
 </li>
 <li>
-<p>node 是 k8s 的工作节点，也就是实际跑容器的节点。</p>
+<p>Node 是 k8s 的工作节点，也就是实际主要跑容器的节点。</p>
 </li>
 </ol>
 <h2 id="服务">服务</h2>
-<p>master 节点服务</p>
+<p>Control Plane 节点组件服务</p>
 <ol>
-<li>kube-apiserver 是 master 节点服务， 是k8s 的 api 服务，是集群入口，提供 http rset 服务。</li>
-<li>kube-controller-manager 是 master 节点服务，维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化管理中心。</li>
+<li>kube-apiserver  是k8s 的 api 服务，是集群入口，提供 http rset 服务。</li>
+<li>kube-controller-manager 维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化管理中心。</li>
 <li>kube-scheduler 是负责 pod 的调度, 即如何将 pod 分发到 node</li>
 <li>etcd 注册中心，保存集群状态。</li>
 </ol>
-<p>node 节点服务</p>
+<p>Node 节点组件服务</p>
 <ol>
 <li>
 <p>kubelet 是节点代理程序，部署在 node 上。它是k8s master和k8s node之间的纽带。处理 pod 创建/启动/监控/重启/销毁等工作。</p>

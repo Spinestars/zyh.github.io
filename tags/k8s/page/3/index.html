@@ -1559,17 +1559,15 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
-
-它将在容器创建后立即运行，但不保证在 ENT
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
@@ -1606,11 +1604,13 @@ postStart
 				</h2>
 				<div class="index-brief">
 					前言
-本文编写的时候，官方已经到了1.18.8，但是鉴于国内环境，非官方源没找到1.18.8，所以最后用的1.18.6
-另外，文中出现的宿主机ip，请自行修改为自己的环境ip
-机器
-机器系统都是 centos7,
-三个节点，均为主节点，同时也是工作节点，并利用 keepalived + haprox
+使用 kubeadm 引导集群 | Kubernetes
+结构
+高可用拓扑选项 | Kubernetes
+我们选堆叠结构
+
+不过因为我环境里没有 LB 组件，因此选用 haproxy 来代替，又因为要为 haproxy 做高可用，因此为 haproxy 再外套一层 keepalived。
+如果
 					...
 				</div>
 			</a>
@@ -1689,19 +1689,17 @@ pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然
 					k8s☞01常见术语概念
 				</h2>
 				<div class="index-brief">
-					物理
+					前言
+Kubernetes 组件 | Kubernetes
+词汇表 | Kubernetes
+结构图
 
 
-master 是 k8s 的主节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
+
+Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
 
 
-node 是 k8s 的工作节点，也就是实际跑容器的节点。
-
-
-服务
-master 节点服务
-
-kube-apiserver 是 master 节点服务， 
+Node 是 k8s 的工作节
 					...
 				</div>
 			</a>

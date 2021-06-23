@@ -1637,49 +1637,99 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/">https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/</a></p>
-<h1>升级核心节点</h1>
-<h2 id="列出当前kubeadm版本列表">列出当前kubeadm版本列表</h2>
-<pre><code class="language-bash">yum list --showduplicates kubeadm --disableexcludes=kubernetes
+	<h1>前言</h1>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/">https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/</a></p>
+<p>分为两部分，升级核心节点和升级工作节点</p>
+<h1>升级控制平面节点 Control Plane</h1>
+<p>控制平面核心组件包含：</p>
+<ul>
+<li>kube-apiserver</li>
+<li>etcd</li>
+<li>kube-scheduler</li>
+<li>kube-controller-manager</li>
+<li>cloud-controller-manager</li>
+</ul>
+<h2 id="列出想升级的kube版本">列出想升级的kube版本</h2>
+<p>这里以1.20版本为例</p>
+<p>在核心节点上执行</p>
+<pre><code class="language-bash">master_verions=1.20
+yum list --showduplicates kubeadm --disableexcludes=kubernetes | grep $&#123;master_verions&#125;
+===
+kubeadm.x86_64                       1.20.8-0                        @kubernetes
+kubeadm.x86_64                       1.20.0-0                        kubernetes
+kubeadm.x86_64                       1.20.1-0                        kubernetes
+kubeadm.x86_64                       1.20.2-0                        kubernetes
+kubeadm.x86_64                       1.20.4-0                        kubernetes
+kubeadm.x86_64                       1.20.5-0                        kubernetes
+kubeadm.x86_64                       1.20.6-0                        kubernetes
+kubeadm.x86_64                       1.20.7-0                        kubernetes
+kubeadm.x86_64                       1.20.8-0                        kubernetes
 </code></pre>
 <p>–disableexcludes=kubernetes 只允许kubernetes库</p>
 <h2 id="所有核心节点：提前下载好升级所需的镜像">所有核心节点：提前下载好升级所需的镜像</h2>
-<p>这里假设从 1.18.6 =》 1.19.3</p>
-<pre><code class="language-bash">kubeadm config images list --kubernetes-version=1.19.3
-===
-k8s.gcr.io/kube-apiserver:v1.19.3
-k8s.gcr.io/kube-controller-manager:v1.19.3
-k8s.gcr.io/kube-scheduler:v1.19.3
-k8s.gcr.io/kube-proxy:v1.19.3
-k8s.gcr.io/pause:3.2
-k8s.gcr.io/etcd:3.4.3-0
-k8s.gcr.io/coredns:1.6.7
+<blockquote>
+<p>所有核心节点执行</p>
+</blockquote>
+<pre><code class="language-bash"># 选择主版本号对应的最新稳定版本
+full_version=1.20.8
 </code></pre>
-<pre><code class="language-bash">#!/bin/bash
+<h3 id="列出版本所需的包">列出版本所需的包</h3>
+<pre><code class="language-bash">kubeadm config images list --kubernetes-version=$&#123;full_version&#125;
+===
+k8s.gcr.io/kube-apiserver:v1.20.8
+k8s.gcr.io/kube-controller-manager:v1.20.8
+k8s.gcr.io/kube-scheduler:v1.20.8
+k8s.gcr.io/kube-proxy:v1.20.8
+k8s.gcr.io/pause:3.2
+k8s.gcr.io/etcd:3.4.13-0
+k8s.gcr.io/coredns:1.7.0
+</code></pre>
+<h3 id="构建包拉取脚本">构建包拉取脚本</h3>
+<p>根据上面的输出版本，修改下面脚本中 <code>pause</code> <code>etcd</code> <code>coredns</code> 的版本号</p>
+<pre><code class="language-bash">cat&gt;images-pull.sh&lt;&lt;EOF
+#!/bin/bash
 # kubeadm config images list
 images=(
-kube-apiserver:v1.19.3
-kube-controller-manager:v1.19.3
-kube-scheduler:v1.19.3
-kube-proxy:v1.19.3
+kube-apiserver:v$&#123;full_version&#125;
+kube-controller-manager:v$&#123;full_version&#125;
+kube-scheduler:v$&#123;full_version&#125;
+kube-proxy:v$&#123;full_version&#125;
 pause:3.2
-etcd:3.4.3-0
-coredns:1.6.7
+etcd:3.4.13-0
+coredns:1.7.0
 )
-for imageName in $&#123;images[@]&#125;;
+for imageName in \$&#123;images[@]&#125;;
 do
-    docker pull registry.aliyuncs.com/google_containers/$&#123;imageName&#125;
-    docker tag registry.aliyuncs.com/google_containers/$&#123;imageName&#125; k8s.gcr.io/$&#123;imageName&#125;
-    docker rmi registry.aliyuncs.com/google_containers/$&#123;imageName&#125;
+    docker pull registry.aliyuncs.com/google_containers/\$&#123;imageName&#125;
+    docker tag registry.aliyuncs.com/google_containers/\$&#123;imageName&#125; k8s.gcr.io/\$&#123;imageName&#125;
+    docker rmi registry.aliyuncs.com/google_containers/\$&#123;imageName&#125;
 done
+EOF
 </code></pre>
-<h2 id="主核心节点：安装目标版本的kubeadm">主核心节点：安装目标版本的kubeadm</h2>
-<pre><code class="language-bash">yum install -y kubeadm-1.19.3-0 --disableexcludes=kubernetes
+<pre><code class="language-bash">bash images-pull.sh
 </code></pre>
-<p>升级计划是以kubeadm的版本为基准的，如果你kubeadm的版本是1.18，那么之后kubeadm列出的升级信息就是升级到1.18的最新稳定版</p>
-<h2 id="主核心节点：停止调度">主核心节点：停止调度</h2>
-<p>这里以k8s01节点为例</p>
+<blockquote>
+<p>如果某些包无法下载，则需自行去 dockerhub 上找，并在下载完毕后，添加 k8s 自己的 tags，例如 coredns<br>
+docker pull coredns/coredns:1.6.7<br>
+docker tag coredns/coredns:1.6.7 <a target="_blank" rel="noopener" href="http://k8s.gcr.io/coredns:1.6.7">k8s.gcr.io/coredns:1.6.7</a><br>
+docker rmi coredns/coredns:1.6.7</p>
+</blockquote>
+<h2 id="第一个核心节点：安装目标版本的kubeadm">第一个核心节点：安装目标版本的kubeadm</h2>
+<p>升级计划是以kubeadm的版本为基准的，例如你当前安装的 kubeadm 的版本是 x，那么之后通过 kubeadm 命令列出的升级计划就是升级到 x 的最新稳定版。</p>
+<p>因此，我们需要将 kubeadm 升级到目标版本</p>
+<pre><code class="language-bash">yum install -y kubeadm-$&#123;full_version&#125; --disableexcludes=kubernetes
+</code></pre>
+<h2 id="第一个核心节点：停止调度">第一个核心节点：停止调度</h2>
+<p>假设核心节点有三个，分别是k8s01，k8s02，k8s03，选其一k8s01进行升级</p>
+<h3 id="驱逐升级的节点">驱逐升级的节点</h3>
+<p>在k8s01执行，将其驱逐</p>
 <pre><code class="language-bash:">kubectl drain k8s01 --ignore-daemonsets
+===
+node/k8s01 already cordoned
+WARNING: ignoring DaemonSet-managed Pods: default/lxcfs-jcclq, kube-system/kube-flannel-ds-9nfkf, kube-system/kube-proxy-xrxb4, metallb-system/speaker-gz4wp
+evicting pod kube-system/coredns-6f5c7bbdfb-q7lbn
+pod/coredns-6f5c7bbdfb-q7lbn evicted
+node/k8s01 evicted
 </code></pre>
 <p>–ignore-daemonsets 忽略 daemonsets，因为 daemonsets 会在驱逐节点上重建 pod 从而导致驱逐失败。</p>
 <pre><code class="language-bash">kubectl get node
@@ -1687,66 +1737,67 @@ done
 NAME    STATUS                     ROLES    AGE   VERSION
 k8s01   Ready,SchedulingDisabled   master   40h   v1.18.6
 </code></pre>
-<h2 id="主核心节点：列出升级计划">主核心节点：列出升级计划</h2>
+<h2 id="第一个核心节点：列出升级计划">第一个核心节点：列出升级计划</h2>
 <p>在k8s01列出升级计划</p>
 <pre><code class="language-bash">kubeadm upgrade plan
 </code></pre>
-<p>会输出三部分内容，第一步是当前集群信息</p>
+<p>会输出三部分内容，第一步是当前集群信息 v1.19.12 和当前kubeadm版本对应的最新稳定版 v1.20.8</p>
 <pre><code>[upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
-[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
 [preflight] Running pre-flight checks.
 [upgrade] Running cluster health checks
 [upgrade] Fetching available versions to upgrade to
-[upgrade/versions] Cluster version: v1.18.6
-[upgrade/versions] kubeadm version: v1.19.3
-[upgrade/versions] Latest stable version: v1.19.3
-[upgrade/versions] Latest stable version: v1.19.3
-[upgrade/versions] Latest version in the v1.18 series: v1.18.10
-[upgrade/versions] Latest version in the v1.18 series: v1.18.10
+[upgrade/versions] Cluster version: v1.19.3
+[upgrade/versions] kubeadm version: v1.20.8
+I0623 14:13:26.566059   21021 version.go:254] remote version is much newer: v1.21.2; falling back to: stable-1.20
+[upgrade/versions] Latest stable version: v1.20.8
+[upgrade/versions] Latest stable version: v1.20.8
+[upgrade/versions] Latest version in the v1.19 series: v1.19.12
+[upgrade/versions] Latest version in the v1.19 series: v1.19.12
 </code></pre>
 <p>第二部分是升级信息，升级信息又分为两部分。</p>
 <ul>
-<li>升级到当前版本的最新稳定</li>
+<li>升级到当前版本 v1.19.3 的最新稳定版本 v1.19.12</li>
 </ul>
 <pre><code>Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       AVAILABLE
-kubelet     3 x v1.18.6   v1.18.10
+kubelet     3 x v1.19.3   v1.19.12
 
-Upgrade to the latest version in the v1.18 series:
+Upgrade to the latest version in the v1.19 series:
 
-COMPONENT                 CURRENT   AVAILABLE
-kube-apiserver            v1.18.6   v1.18.10
-kube-controller-manager   v1.18.6   v1.18.10
-kube-scheduler            v1.18.6   v1.18.10
-kube-proxy                v1.18.6   v1.18.10
-CoreDNS                   1.6.7     1.7.0
-etcd                      3.4.3-0   3.4.3-0
+COMPONENT                 CURRENT    AVAILABLE
+kube-apiserver            v1.19.3    v1.19.12
+kube-controller-manager   v1.19.3    v1.19.12
+kube-scheduler            v1.19.3    v1.19.12
+kube-proxy                v1.19.3    v1.19.12
+CoreDNS                   1.7.0      1.7.0
+etcd                      3.4.13-0   3.4.13-0
 
 You can now apply the upgrade by executing the following command:
 
-        kubeadm upgrade apply v1.18.10
+        kubeadm upgrade apply v1.19.12
 </code></pre>
 <ul>
-<li>升级到最新版本</li>
+<li>升级到当前 kubeadm v1.20.8 版本对应的 kubernetes 的最新稳定版本 v1.20.8</li>
 </ul>
 <pre><code>Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       AVAILABLE
-kubelet     3 x v1.18.6   v1.19.3
+kubelet     3 x v1.19.3   v1.20.8
 
 Upgrade to the latest stable version:
 
-COMPONENT                 CURRENT   AVAILABLE
-kube-apiserver            v1.18.6   v1.19.3
-kube-controller-manager   v1.18.6   v1.19.3
-kube-scheduler            v1.18.6   v1.19.3
-kube-proxy                v1.18.6   v1.19.3
-CoreDNS                   1.6.7     1.7.0
-etcd                      3.4.3-0   3.4.13-0
+COMPONENT                 CURRENT    AVAILABLE
+kube-apiserver            v1.19.3    v1.20.8
+kube-controller-manager   v1.19.3    v1.20.8
+kube-scheduler            v1.19.3    v1.20.8
+kube-proxy                v1.19.3    v1.20.8
+CoreDNS                   1.7.0      1.7.0
+etcd                      3.4.13-0   3.4.13-0
 
 You can now apply the upgrade by executing the following command:
 
-        kubeadm upgrade apply v1.19.3
+        kubeadm upgrade apply v1.20.8
 </code></pre>
 <p>第三部分是手动更新部分</p>
 <pre><code class="language-:">The table below shows the current state of component configs as understood by this version of kubeadm.
@@ -1762,37 +1813,107 @@ kubelet.config.k8s.io     v1beta1           v1beta1             no
 <pre><code class="language-bash">kubeadm upgrade apply --config &lt;配置文件&gt;
 </code></pre>
 <p>另外，kubeadm upgrade 总是会刷新证书。</p>
-<h2 id="主核心节点：升级">主核心节点：升级</h2>
-<pre><code class="language-bash">kubeadm upgrade apply v1.19.3
+<h2 id="第一个核心节点：升级">第一个核心节点：升级</h2>
+<pre><code class="language-bash">kubeadm upgrade apply v1.20.8
+=== 期间会有一次确认
+[upgrade/version] You have chosen to change the cluster version to &quot;v1.20.8&quot;
+[upgrade/versions] Cluster version: v1.19.3
+[upgrade/versions] kubeadm version: v1.20.8
+[upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
+
+=== 静态pod升级，并备份的信息
+[upgrade/staticpods] Moved new manifest to &quot;/etc/kubernetes/manifests/etcd.yaml&quot; and backed up old manifest to &quot;/etc/kubernetes/tmp/kubeadm-backup-manifests-2021-06-23-14-21-18/etcd.yaml&quot;
+[apiclient] Found 3 Pods for label selector component=etcd
+[upgrade/staticpods] Component &quot;etcd&quot; upgraded successfully!
+
+[upgrade/staticpods] Moved new manifest to &quot;/etc/kubernetes/manifests/kube-apiserver.yaml&quot; and backed up old manifest to &quot;/etc/kubernetes/tmp/kubeadm-backup-manifests-2021-06-23-14-21-18/kube-apiserver.yaml&quot;
+[upgrade/staticpods] Component &quot;kube-apiserver&quot; upgraded successfully!
+
+[upgrade/staticpods] Moved new manifest to &quot;/etc/kubernetes/manifests/kube-controller-manager.yaml&quot; and backed up old manifest to &quot;/etc/kubernetes/tmp/kubeadm-backup-manifests-2021-06-23-14-21-18/kube-controller-manager.yaml&quot;
+[upgrade/staticpods] Component &quot;kube-controller-manager&quot; upgraded successfully!
+
+[upgrade/staticpods] Moved new manifest to &quot;/etc/kubernetes/manifests/kube-scheduler.yaml&quot; and backed up old manifest to &quot;/etc/kubernetes/tmp/kubeadm-backup-manifests-2021-06-23-14-21-18/kube-scheduler.yaml&quot;
+[upgrade/staticpods] Component &quot;kube-scheduler&quot; upgraded successfully!
+
+===
+[upgrade/postupgrade] Applying label node-role.kubernetes.io/control-plane='' to Nodes with label node-role.kubernetes.io/master='' (deprecated)
+[upload-config] Storing the configuration used in ConfigMap &quot;kubeadm-config&quot; in the &quot;kube-system&quot; Namespace
+[kubelet] Creating a ConfigMap &quot;kubelet-config-1.20&quot; in namespace kube-system with the configuration for the kubelets in the cluster
+[kubelet-start] Writing kubelet configuration to file &quot;/var/lib/kubelet/config.yaml&quot;
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[addons] Applied essential addon: CoreDNS
+[endpoint] WARNING: port specified in controlPlaneEndpoint overrides bindPort in the controlplane address
+[addons] Applied essential addon: kube-proxy
+
+=== 提醒升级成功
+[upgrade/successful] SUCCESS! Your cluster was upgraded to &quot;v1.20.8&quot;. Enjoy!
+
+=== 提醒若没有升级 kubelets 则需要继续升级
+[upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
 </code></pre>
-<h2 id="主核心节点：升级网络插件">主核心节点：升级网络插件</h2>
+<h2 id="第一个核心节点：升级网络插件">第一个核心节点：升级网络插件</h2>
 <p>这里我用的是 flannel. 所以我只是简单的重新执行一边</p>
 <pre><code class="language-bash">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-# 修改里面的 &quot;Network&quot;: &quot;10.244.0.0/16&quot;, 变更为你自己的 pod 网段，即kubeadm初始化阶段的 --pod-network-cidr
-kubectl apply -f  kube-flannel.yml
 </code></pre>
-<h2 id="主核心节点：解锁使其可以调度">主核心节点：解锁使其可以调度</h2>
+<blockquote>
+<p>修改里面的 “Network”: “10.244.0.0/16”, 变更为你自己的 pod 网段，即 cm对象 kubeadm-config 里的 podSubnet 或者 kubeadm 初始化安装参数 pod-network-cidr</p>
+</blockquote>
+<pre><code class="language-bash">kubectl describe cm kubeadm-config -n kube-system
+===
+ClusterConfiguration:
+----
+apiServer:
+  extraArgs:
+    authorization-mode: Node,RBAC
+  timeoutForControlPlane: 4m0s
+apiVersion: kubeadm.k8s.io/v1beta2
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controlPlaneEndpoint: k8sapi:8443
+controllerManager: &#123;&#125;
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+imageRepository: k8s.gcr.io
+kind: ClusterConfiguration
+kubernetesVersion: v1.20.8
+networking:
+  dnsDomain: cluster.local
+  podSubnet: 10.97.0.0/16
+  serviceSubnet: 10.96.0.0/16
+scheduler: &#123;&#125;
+</code></pre>
+<pre><code class="language-bash">kubectl apply -f  kube-flannel.yml
+</code></pre>
+<h2 id="第一个核心节点：解锁使其可以调度">第一个核心节点：解锁使其可以调度</h2>
 <pre><code class="language-bash">kubectl uncordon k8s01
 kubectl get node
 ===
-NAME    STATUS   ROLES    AGE   VERSION
-k8s01   Ready    master   46h   v1.18.6
-k8s02   Ready    master   45h   v1.18.6
-k8s03   Ready    master   45h   v1.18.6
+NAME    STATUS   ROLES                  AGE    VERSION
+k8s01   Ready    control-plane,master   246d   v1.19.3
+k8s02   Ready    control-plane,master   246d   v1.19.3
+k8s03   Ready    control-plane,master   120d   v1.19.3
 </code></pre>
 <p>确保k8s01处于Ready状态，这里暂时版本还是旧版本，因为你服务没有重启</p>
-<h2 id="次要核心节点：升级">次要核心节点：升级</h2>
-<pre><code class="language-bash">appVersion=1.19.3-0
-nodeHostname=
-yum install -y kubeadm-$&#123;appVersion&#125; --disableexcludes=kubernetes
+<h2 id="剩余核心节点：依次升级">剩余核心节点：依次升级</h2>
+<p>分别在 k8s02 和 k8s03 上执行升级命令</p>
+<blockquote>
+<p>需要依次执行，不可并发执行</p>
+</blockquote>
+<pre><code class="language-bash">nodeHostname=
+yum install -y kubeadm-$&#123;full_version&#125; --disableexcludes=kubernetes
 kubectl drain $&#123;nodeHostname&#125; --ignore-daemonsets
 kubeadm upgrade node
 kubectl uncordon $&#123;nodeHostname&#125;
 </code></pre>
-<p>你只需执行上述命令，无需执行其它命令</p>
+<p>你只需执行上述命令，无需执行其它命令，除非升级出了问题。。。</p>
 <h2 id="所有核心节点：升级-kubelet-和-kubectl">所有核心节点：升级 kubelet 和 kubectl</h2>
-<pre><code class="language-bash">appVersion=1.19.3-0
-yum install -y kubelet-$&#123;appVersion&#125; kubectl-$&#123;appVersion&#125; --disableexcludes=kubernetes
+<pre><code class="language-bash">yum install -y kubelet-$&#123;full_version&#125; kubectl-$&#123;full_version&#125; --disableexcludes=kubernetes
 </code></pre>
 <p>重启两个组件</p>
 <pre><code class="language-bash">systemctl daemon-reload
@@ -1804,9 +1925,49 @@ systemctl restart kubelet
 sed -i '/- --port=0/d' /etc/kubernetes/manifests/kube-controller-manager.yaml
 </code></pre>
 <p>🌟不一定需要执行，具体以实际环境为准</p>
-<h1>升级工作节点</h1>
+<h2 id="检查升级结果">检查升级结果</h2>
+<pre><code class="language-bash">kubectl get node
+===
+NAME    STATUS   ROLES                  AGE    VERSION
+k8s01   Ready    control-plane,master   246d   v1.20.8
+k8s02   Ready    control-plane,master   246d   v1.20.8
+k8s03   Ready    control-plane,master   120d   v1.20.8
+</code></pre>
+<pre><code class="language-bash">kubectl get cs
+===
+Warning: v1 ComponentStatus is deprecated in v1.19+
+NAME                 STATUS    MESSAGE             ERROR
+scheduler            Healthy   ok
+controller-manager   Healthy   ok
+etcd-0               Healthy   &#123;&quot;health&quot;:&quot;true&quot;&#125;
+</code></pre>
+<pre><code class="language-bash">kubectl get pod -n kube-system
+===
+NAME                            READY   STATUS    RESTARTS   AGE
+coredns-74ff55c5b-2rc7x         1/1     Running   0          40m
+coredns-74ff55c5b-tndb5         1/1     Running   0          4m56s
+etcd-k8s01                      1/1     Running   0          40m
+etcd-k8s02                      1/1     Running   0          10m
+etcd-k8s03                      1/1     Running   0          4m35s
+kube-apiserver-k8s01            1/1     Running   0          40m
+kube-apiserver-k8s02            1/1     Running   0          10m
+kube-apiserver-k8s03            1/1     Running   0          4m26s
+kube-controller-manager-k8s01   1/1     Running   0          100s
+kube-controller-manager-k8s02   1/1     Running   0          101s
+kube-controller-manager-k8s03   1/1     Running   0          98s
+kube-flannel-ds-42hng           1/1     Running   0          12m
+kube-flannel-ds-b42qj           1/1     Running   0          13m
+kube-flannel-ds-ss8w5           1/1     Running   0          11m
+kube-proxy-2xxpn                1/1     Running   0          40m
+kube-proxy-pg7j7                1/1     Running   0          40m
+kube-proxy-txh2t                1/1     Running   0          39m
+kube-scheduler-k8s01            1/1     Running   0          103s
+kube-scheduler-k8s02            1/1     Running   0          98s
+kube-scheduler-k8s03            1/1     Running   0          98s
+</code></pre>
+<h1>升级工作节点 node</h1>
 <p>我这里测试环境，核心节点和工作节点是重叠的，所以无需再升级工作节点。</p>
-<pre><code class="language-bash">appVersion=1.19.3-0
+<pre><code class="language-bash">full_version=1.20.8
 nodeName=
 # 升级kubeadm
 yum install -y kubeadm-$&#123;appVersion&#125; --disableexcludes=kubernetes
@@ -1822,9 +1983,12 @@ systemctl restart kubelet
 # 解锁node
 kubectl uncordon $&#123;nodeName&#125;
 </code></pre>
-<h1>主核心节点升级失败，且自动回滚失败</h1>
-<h2 id="主核心节点：尝试强制升级">主核心节点：尝试强制升级</h2>
-<pre><code class="language-bash">appVersion=1.19.3-0
+<h1>升级失败</h1>
+<blockquote>
+<p>控制平面节点升级失败，且自动回滚也失败了的话，尝试下面的操作</p>
+</blockquote>
+<h2 id="控制平面节点：尝试强制升级">控制平面节点：尝试强制升级</h2>
+<pre><code class="language-bash">full_version=
 kubeadm upgrade apply --force $&#123;appVersion&#125;
 </code></pre>
 <h2 id="无论如何都失败，手动恢复">无论如何都失败，手动恢复</h2>

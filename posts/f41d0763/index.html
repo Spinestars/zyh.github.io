@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		web ☞ 系统基本优化 | 
+		linux☞系统内核优化 | 
 	 
 	zyh
 	</title>
@@ -235,15 +235,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7c44c2e8/">
 										web☞服务器承载能力计算
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file active">
-									<a href="/posts/f41d0763/">
-										web☞系统基本优化
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1223,6 +1214,15 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
+								<li class="file active">
+									<a href="/posts/f41d0763/">
+										linux☞系统内核优化
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
 								<li class="file">
 									<a href="/posts/a7611bc1/">
 										linux☞软raid创建
@@ -1569,12 +1569,12 @@ var _hmt = _hmt || [];
 	<div id="content">
 		<h1 id="article-title">
 
-	web☞系统基本优化
+	linux☞系统内核优化
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/f41d0763/" class="leancloud_visitors" data-flag-title="web ☞ 系统基本优化"></span>
+			阅读量:<span id="/posts/f41d0763/" class="leancloud_visitors" data-flag-title="linux☞系统内核优化"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -1586,7 +1586,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-folder" aria-hidden="true">
-                        <a href="/categories/web/">web</a>
+                        <a href="/categories/系统/">系统</a>
                         </i>
                       
                     </span>
@@ -1611,7 +1611,8 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<pre><code class="language-bash"># 内核参数
+	<h2 id="内核优化">内核优化</h2>
+<pre><code class="language-bash"># 内核参数
 # 系统级别上限， 即整个系统所有进程单位时间可打开的文件描述符数量
 fs.file-max = 6553500
 # 三次握手请求频次
@@ -1631,7 +1632,7 @@ net.ipv4.tcp_fin_timeout = 5
 
 # 系统处理不属于任何进程的TCP链接
 net.ipv4.tcp_orphan_retries = 3
-net.ipv4.tcp_max_orphans = 35000
+net.ipv4.tcp_max_orphans = 327680
 
 # 在每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目。
 net.core.netdev_max_backlog = 10240
@@ -1671,13 +1672,14 @@ net.netfilter.nf_conntrack_tcp_timeout_established = 150
 * soft nproc 10240
 * hard nproc 10240
 </code></pre>
+<h2 id="开启-iptables-后">开启 iptables 后</h2>
+<h3 id="查看当前链路表数量命令">查看当前链路表数量命令</h3>
 <blockquote>
-<h5 id="开启iptables后-查看当前链路表数量命令">开启iptables后, 查看当前链路表数量命令</h5>
 <p>$ sysctl net.netfilter.nf_conntrack_count</p>
 <p>net.netfilter.nf_conntrack_count = 601032</p>
-<h5 id="查看连接数最高的10个IP：可以查封某个ip-或者判断是谁导致的">查看连接数最高的10个IP：可以查封某个ip, 或者判断是谁导致的</h5>
-<p>$ awk -F’=’ ‘{c[$2]++}END{for ( i in c) print i,c[i]}’ /proc/net/nf_conntrack | head -10</p>
 </blockquote>
+<h3 id="查看连接数最高的10个IP：可以查封某个ip-或者判断是谁导致的">查看连接数最高的10个IP：可以查封某个ip, 或者判断是谁导致的</h3>
+<p>$ awk -F’=’ ‘{c[$2]++}END{for ( i in c) print i,c[i]}’ /proc/net/nf_conntrack | head -10</p>
 
 </div>
 

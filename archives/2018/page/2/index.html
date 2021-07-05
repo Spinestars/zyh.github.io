@@ -238,15 +238,6 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
-							<ul>
-								<li class="file">
-									<a href="/posts/f41d0763/">
-										web☞系统基本优化
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
 								</li>
 								
 							</ul>
@@ -1222,6 +1213,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/f41d0763/">
+										linux☞系统内核优化
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/a7611bc1/">
 										linux☞软raid创建
 									</a>
@@ -1602,17 +1602,14 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞获取没有设置ttl的key
+					redis☞调整内核参数
 				</h2>
 				<div class="index-brief">
 					前言
-redis 内存占用爆炸. 所以网上找了一个
-# encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&
+之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
+后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
+经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
+我是问题
 					...
 				</div>
 			</a>
@@ -1645,14 +1642,17 @@ func: 获取数据库中没有设置ttl的 key
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞调整内核参数
+					redis☞获取没有设置ttl的key
 				</h2>
 				<div class="index-brief">
 					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
+redis 内存占用爆炸. 所以网上找了一个
+# encoding: utf-8
+&quot;&quot;&quot;
+author: yangyi@youzan.com
+time: 2018/4/26 下午4:34
+func: 获取数据库中没有设置ttl的 key
+&quot;&quot;&
 					...
 				</div>
 			</a>

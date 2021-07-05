@@ -238,15 +238,6 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
-							<ul>
-								<li class="file">
-									<a href="/posts/f41d0763/">
-										web☞系统基本优化
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
 								</li>
 								
 							</ul>
@@ -1222,6 +1213,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/f41d0763/">
+										linux☞系统内核优化
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/a7611bc1/">
 										linux☞软raid创建
 									</a>
@@ -1609,49 +1609,6 @@ var _hmt = _hmt || [];
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1587f6e8/">
-				<h2 class="index-title">
-					zabbix☞agent和proxy(yum)
-				</h2>
-				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
-
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
-
-agent 安装
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/6c093771/">
 				<h2 class="index-title">
 					zabbix☞redis
@@ -1725,6 +1682,49 @@ redis_info[&#123;#IP&#12
 [root@ip-10-230-10-105 zabbix]# pwd
 /etc/zabbix
 [root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1587f6e8/">
+				<h2 class="index-title">
+					zabbix☞agent和proxy(yum)
+				</h2>
+				<div class="index-brief">
+					
+https://repo.zabbix.com/zabbix/
+
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+
+agent 安装
+
 					...
 				</div>
 			</a>
@@ -1867,18 +1867,18 @@ it = usera|userb
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
+			<a href="/posts/1fac36d/">
 				<h2 class="index-title">
-					监控☞邮件预警
+					监控☞远程磁盘检测
 				</h2>
 				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
 					...
 				</div>
 			</a>
@@ -1899,18 +1899,18 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/f8f9b4d0/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					监控☞邮件预警
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					# $1 收件人
+# $2 主题
+# $3 内容
+smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
+sendUserEmail='it@abc.com'
+sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
+/usr/
 					...
 				</div>
 			</a>

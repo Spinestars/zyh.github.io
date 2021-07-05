@@ -452,6 +452,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0c6f6c3/">
+										git☞常用命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1677,12 +1686,11 @@ aliyun oss cp abc oss://test/ --recursive -e $&#123;Endpoint&#125;
 ##上传目录 abc 下的 .lzo 结尾的文件到 oss://test/ 下.
 ##严禁在源目录里执行 --recursive 参数.
 ##即禁止执行 aliyun oss cp . oss://test/ --recursive 
-aliyun oss cp abc/ oss://test/ --include='*.lzo' --recursive -e $&#123;Endpoint&#125; --update --checkpoint-dir=/tmp/ossutil_checkpoint --output-dir=/tmp/ossutil_output
+aliyun oss cp abc/ oss://test/ --include='*.lzo' --update --recursive -e $&#123;Endpoint&#125; --checkpoint-dir=/tmp/ossutil_checkpoint --output-dir=/tmp/ossutil_output
 
 ##同步目录 sync 指令变更
-##同步目录 abc 下的文件到 oss://test/ 下，如有重复，则忽略
-## 需要注意的是，-u 并不能实现将目的端存在而源端不存在的目标端文件删除，阿里方面目前还没有计划 https://github.com/aliyun/aliyun-cli/issues/321
-aliyun oss cp abc oss://test/ --recursive -u -e $&#123;Endpoint&#125;
+##同步目录 abc 下的文件到 oss://test/ 下，如有重复，则忽略;同时删除目标目录下本地没有的文件
+aliyun oss sync abc/ oss://test/ --update --delete --force -e $&#123;Endpoint&#125; --checkpoint-dir=/tmp/ossutil_checkpoint --output-dir=/tmp/ossutil_output
 </code></pre>
 
 </div>
@@ -1693,7 +1701,7 @@ aliyun oss cp abc oss://test/ --recursive -u -e $&#123;Endpoint&#125;
             
               <a href="/posts/6178b477/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  prometheus☞05mysql监控
+                  prometheus☞06rabbitmq监控
               </a>
             
         </div>

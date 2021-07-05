@@ -450,6 +450,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0c6f6c3/">
+										git☞常用命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1765,10 +1774,12 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 				</h2>
 				<div class="index-brief">
 					docker 安装
+Docker Hub
 redisName=redis
-docker volume create $&#123;redisName&#125;
-touch /export/docker-data-root/volumes/$&#123;redisName&#125;/_data/redis.conf
-r
+versionTag=6
+dataPath=/export/docker-data-redis
+mkdir -p $&#123;dataPath&#125;
+redis.conf 请参考官方默认配置文档，默认配置文档地址： h
 					...
 				</div>
 			</a>

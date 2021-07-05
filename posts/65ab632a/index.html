@@ -452,6 +452,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0c6f6c3/">
+										git☞常用命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1622,11 +1631,14 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h4 id="docker-安装">docker 安装</h4>
+<p><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/_/redis">Docker Hub</a></p>
 <pre><code class="language-bash">redisName=redis
-docker volume create $&#123;redisName&#125;
-touch /export/docker-data-root/volumes/$&#123;redisName&#125;/_data/redis.conf
+versionTag=6
+dataPath=/export/docker-data-redis
+mkdir -p $&#123;dataPath&#125;
 redis.conf 请参考官方默认配置文档，默认配置文档地址： https://redis.io/topics/config
-docker run --name  $&#123;redisName&#125; -v  $&#123;redisName&#125;:/data -p 6379:6379 --restart always -d redis redis-server /data/redis.conf 
+wget -P $&#123;dataPath&#125; https://raw.githubusercontent.com/redis/redis/$&#123;versionTag&#125;.0/redis.conf
+docker run --name  $&#123;redisName&#125;_$&#123;versionTag&#125; --mount &quot;type=bind, src=$&#123;dataPath&#125;, dst=/data&quot; -p 6379:6379 --restart always -d redis:$&#123;versionTag&#125; redis-server /data/redis.conf
 </code></pre>
 <h4 id="编译安装">编译安装</h4>
 <pre><code class="language-shell">#!/bin/bash
@@ -2111,16 +2123,16 @@ if changed pid then alert
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/445cf088/">
+              <a href="/posts/8c33f887/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  nginx☞日志切割
+                  监控☞企业微信机器人
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/8c33f887/">
-                监控☞企业微信机器人
+              <a href="/posts/f9b08c30/">
+                监控☞微信预警
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

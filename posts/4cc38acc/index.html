@@ -452,6 +452,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0c6f6c3/">
+										git☞常用命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1614,18 +1623,27 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="adb-for-mysql">adb for mysql</h2>
-<h4 id="adb-访问-oss-文件不存在">adb 访问 oss 文件不存在</h4>
+<h3 id="adb-访问-oss-文件不存在">adb 访问 oss 文件不存在</h3>
 <p>adb 是分布式集群，调用oss的时候，源ip并不是adb实例地址所解析的vpc ip。因此ram的权限不能添加源ip限制。</p>
 <h2 id="emr">emr</h2>
-<h4 id="hive-元数据使用外部rds的时候，构建表出错">hive 元数据使用外部rds的时候，构建表出错</h4>
+<h3 id="hive-元数据使用外部rds的时候，构建表出错">hive 元数据使用外部rds的时候，构建表出错</h3>
 <p>如果编码是utf8，变更为latin1</p>
-<h4 id="hive删除表卡住，hive日志看不出异常">hive删除表卡住，hive日志看不出异常</h4>
+<h3 id="hive删除表卡住，hive日志看不出异常">hive删除表卡住，hive日志看不出异常</h3>
 <p>使用mysql8.0的时候出现，最终换成官方建议的5.7后，正常</p>
-<h4 id="最新版emr采用role授权方式的时候，ecs-节点权限异常">最新版emr采用role授权方式的时候，ecs 节点权限异常</h4>
+<h3 id="最新版emr采用role授权方式的时候，ecs-节点权限异常">最新版emr采用role授权方式的时候，ecs 节点权限异常</h3>
 <p>role的规则必须是官方默认规则，任何缩小权限范围的规则都会异常。暂不知原因。</p>
 <blockquote>
 <p>说实话，官方默认的规则权限好大</p>
 </blockquote>
+<h3 id="HUE-服务不太正常">HUE 服务不太正常</h3>
+<p>确认zookeeper是否安装</p>
+<h2 id="CDN">CDN</h2>
+<h3 id="非简单跨域-OPTIONS-无法通过">非简单跨域 OPTIONS 无法通过</h3>
+<p>产生OPTIONS的原因是客户端请求存在自定义header，因此跨域的配置需要允许额外的自定义header</p>
+<pre><code class="language-bash">Access-Control-Allow-Origin=&lt;允许的域&gt;
+Access-Control-Allow-Methods=GET,POST,PUT,OPTIONS
+Access-Control-Allow-Headers=&lt;允许的自定义header&gt;
+</code></pre>
 
 </div>
 

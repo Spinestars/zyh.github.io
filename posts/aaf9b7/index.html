@@ -452,6 +452,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0c6f6c3/">
+										git☞常用命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1629,6 +1638,9 @@ var _hmt = _hmt || [];
 <ol>
 <li>
 <p>Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。</p>
+<blockquote>
+<p>control plane 和 master 是同义</p>
+</blockquote>
 </li>
 <li>
 <p>Node 是 k8s 的工作节点，也就是实际主要跑容器的节点。</p>
@@ -1649,7 +1661,7 @@ var _hmt = _hmt || [];
 <p>开启 register-node = true 的情况下 会自动向 apiserver 服务注册自己。</p>
 </li>
 <li>
-<p>kube-proxy 是实现node节点上各资源的通信</p>
+<p>kube-proxy 是节点的网络代理，是 service 资源对象的一部分功能实现，解决节点上各资源的通信</p>
 </li>
 </ol>
 <h2 id="资源">资源</h2>
@@ -1693,7 +1705,7 @@ var _hmt = _hmt || [];
 </li>
 <li>
 <p>Ingress</p>
-<p>映射一个端口到宿主ip，提供服务的外部访问</p>
+<p>管理集群服务外部访问的API对象，典型的访问方式是 HTTP</p>
 </li>
 </ol>
 <h2 id="服务组件流程图">服务组件流程图</h2>
@@ -1729,16 +1741,16 @@ var _hmt = _hmt || [];
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/b7cf7b1f/">
+              <a href="/posts/2c5a64ff/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  docker☞01安装
+                  aws☞s3初始化创建
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/b824edd8/">
-                mysql☞安装
+              <a href="/posts/b7cf7b1f/">
+                docker☞01安装
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

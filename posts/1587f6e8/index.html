@@ -452,6 +452,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0c6f6c3/">
+										git☞常用命令
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1632,15 +1641,19 @@ var _hmt = _hmt || [];
 systemctl enable zabbix-agent
 </code></pre>
 <h2 id="agent主动模式配置文件">agent主动模式配置文件</h2>
-<pre><code># 主机名前缀
+<h3 id="变量">变量</h3>
+<pre><code class="language-bash"># 主机名前缀
 name_prefix=
 # 自动发现用的元数据
 host_meta_data=''
 # server或者proxy地址
 server_proxy_addr=
-local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`
-mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;
-cat &gt; /etc/zabbix/zabbix_agentd.conf &lt;&lt; EOF
+# 本机ip
+## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`
+local_ip=
+</code></pre>
+<pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;
+cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOF
 Hostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;
 StartAgents=0
 ServerActive=$&#123;server_proxy_addr&#125;
@@ -1663,6 +1676,9 @@ vi  /etc/zabbix/zabbix_agentd.conf
 
 systemctl start zabbix-agent
 </code></pre>
+<blockquote>
+<p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p>
+</blockquote>
 <h2 id="proxy-安装命令">proxy 安装命令</h2>
 <pre><code class="language-bash:">yum install zabbix-proxy-mysql -y
 # 解压数据库文件, 并自行导入
@@ -1700,16 +1716,16 @@ vi /etc/zabbix/zabbix_proxy.conf
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/8c33f887/">
+              <a href="/posts/445cf088/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  监控☞企业微信机器人
+                  nginx☞日志切割
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/f9b08c30/">
-                监控☞微信预警
+              <a href="/posts/6c093771/">
+                zabbix☞redis
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

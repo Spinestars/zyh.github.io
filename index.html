@@ -218,6 +218,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/445cf088/">
+										nginx☞问题集
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1492,6 +1501,37 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+										vcsa☞存储设备有vmfs分区，但数据存储丢失
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										语言
 									</a>
 									
@@ -1566,6 +1606,47 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/eab024cf/">
+				<h2 class="index-title">
+					vcsa☞存储设备有vmfs分区，但数据存储丢失
+				</h2>
+				<div class="index-brief">
+					前言
+一个esxi老是断连，根据日志判断是主板硬盘接口有点问题，所以将硬盘换到了另一个主机。结果主机启动起来之后，vcsa里可以看到存储设备，就是数据存储不可访问，删除之后，再扫描也找不到。
+过程
+开启esxi的ssh服务，进入之后，发现分区啥的都还在，看起来是没有挂载成功。
+检查分区
+发现序号8就
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-07-06</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/虚拟化/">虚拟化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/虚拟化/vmware/">vmware</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/f0c6f6c3/">
@@ -1659,14 +1740,15 @@ node污点命令
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/978d0c1d/">
+			<a href="/posts/6178b477/">
 				<h2 class="index-title">
-					prometheus☞04redis监控
+					prometheus☞05mysql监控
 				</h2>
 				<div class="index-brief">
 					前言
 Awesome Prometheus alerts | Collection of alerting rules (grep.to)
-oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis 
+prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)
+prom/
 					...
 				</div>
 			</a>
@@ -1697,15 +1779,14 @@ oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6178b477/">
+			<a href="/posts/978d0c1d/">
 				<h2 class="index-title">
-					prometheus☞05mysql监控
+					prometheus☞04redis监控
 				</h2>
 				<div class="index-brief">
 					前言
 Awesome Prometheus alerts | Collection of alerting rules (grep.to)
-prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)
-prom/
+oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis 
 					...
 				</div>
 			</a>
@@ -1930,49 +2011,6 @@ https://prometheus-operator.dev/docs/kube-prometheus-on-kube
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/prometheus/">prometheus</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/9a7bc037/">
-				<h2 class="index-title">
-					k8s☞showdoc部署
-				</h2>
-				<div class="index-brief">
-					ℹ️ 配置引用的存储是 nfs
-kind: Ingress
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: showdoc-ingress
-  namespace: it
-  annotations:
-    kubernetes.io/ingr
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-03-19</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 

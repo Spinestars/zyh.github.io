@@ -218,6 +218,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/445cf088/">
+										nginx☞问题集
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1492,6 +1501,37 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+										vcsa☞存储设备有vmfs分区，但数据存储丢失
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										语言
 									</a>
 									
@@ -1566,6 +1606,47 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/3e0f2183/">
+				<h2 class="index-title">
+					jenkins☞从容器中访问宿主机docker命令
+				</h2>
+				<div class="index-brief">
+					前言
+我的jenkins是运行在docker中，但是jenkins官方的镜像里却没有docker命令。
+以至于无法在流水线中打包docker镜像。
+方法
+首先，需要将docker命令、docker.sock文件以及相关依赖文件映射到容器内。
+其次，以root用户访问容器，在容器中添加docker组，
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-06-09</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/jenkins/">jenkins</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/5db0cd07/">
@@ -1917,50 +1998,6 @@ tengine: 2.1.2 # 这是一个很古老的版本…
                 <div class="article-meta">
 				    <span>2020-05-14</span>
                     
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/445cf088/">
-				<h2 class="index-title">
-					nginx☞日志切割
-				</h2>
-				<div class="index-brief">
-					前言
-本脚本用于将 nginx 日志进行时间周期切割，并 lzo 压缩，最终上传到 s3。
-脚本分为三个函数，切割函数，压缩上传函数，删除函数，需要执行哪个，就填写相对应变量。
-详情可以看脚本注释。
-
-请务必执行前，确认安装了 lzop 和 jq 命令 ，且机器是 aws EC2
-
-脚本在此
-#!/
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
-										
-                                    </span>
-                                
                             
                     
                 </div>

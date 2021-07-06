@@ -203,7 +203,7 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file active">
+								<li class="file">
 									<a href="/posts/445cf088/">
 										nginx☞日志切割
 									</a>
@@ -215,6 +215,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/78ceb386/">
 										nginx☞泛域名_变量截取
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/445cf088/">
+										nginx☞问题集
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1494,6 +1503,37 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+										vcsa☞存储设备有vmfs分区，但数据存储丢失
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										语言
 									</a>
 									
@@ -1569,7 +1609,7 @@ var _hmt = _hmt || [];
 	<div id="content">
 		<h1 id="article-title">
 
-	nginx☞日志切割
+	nginx☞问题集
 </h1>
 <div class="article-meta">
 	
@@ -1578,7 +1618,7 @@ var _hmt = _hmt || [];
 		</span>
 	
 	<span>zyh</span>
-	<span>2020-05-14 09:34:44</span>
+	<span>2018-04-14 09:34:44</span>
 		<div id="article-categories">
     
 		<span>Categories：</span>
@@ -1616,120 +1656,49 @@ var _hmt = _hmt || [];
                     </span>
                 
             
-                
-                    <span>
-                        <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/log/">log</a>
-                        </i>
-                    </span>
-                
-            
     
 		</div>
 
 </div>
 
 <div id="article-content">
-	<h4 id="前言">前言</h4>
-<p>本脚本用于将 nginx 日志进行时间周期切割，并 lzo 压缩，最终上传到 s3。<br>
-脚本分为三个函数，切割函数，压缩上传函数，删除函数，需要执行哪个，就填写相对应变量。<br>
-详情可以看脚本注释。</p>
-<blockquote>
-<p>请务必执行前，确认安装了 lzop 和 jq 命令 ，且机器是 aws EC2</p>
-</blockquote>
-<h4 id="脚本在此">脚本在此</h4>
-<pre><code class="language-bash">#!/bin/bash
-# by zyh
-# time: 2019-12-13
-# warning: 使用之前 yum install -y lzop jq
-
-# crontab (执行时间周期需要和切割时间周期一致) 重要!!!!!!!
-# */10 * * * * root bash /export/shell/nginxlog2s3/start.sh &gt; /export/shell/nginxlog2s3/start.log 2&gt;&amp;1
-
-# 标识日志名前缀
-localtag=`curl -sq http://169.254.169.254/latest/dynamic/instance-identity/document/ | jq -r .&quot;accountId&quot;,.&quot;availabilityZone&quot;,.&quot;privateIp&quot; | sed 'N;N;s@\n@_@g'`
-
-# ----------------------------------人为变量填写开始区域----------------------------------
-# 切割时间周期，定位切割后日期的初始写入时间（仅适用于连续切割，且不适用于第一次切割）
-todaytime=$(date -d &quot;-10 mins&quot; +%Y%m%d)
-todayhour=$(date -d &quot;-10 mins&quot; +%H)
-todaytimestr=$(date  -d &quot;-10 mins&quot; +%s)
-
-# 企业微信机器人
-wx_api=''
-
-# nginx 日志目录 logs 所在路径, 备份日志目录是 logs/logsbak
-# 例如日志目录是 /usr/local/nginx/logs，则填写 /usr/loca/nginx, 则切割后本地备份路径是 /usr/local/nginx/logs/logsbak
-nginx_base=
-
-# 日志位于S3的根路径，例如 s3://xxx/logs/xxxdays/nginx
-S3Base=&quot;&quot;
-
-# MvLogList=&quot;a.log b.log c.log&quot;  需要切割的日志，这是必须的
-MvLogList=&quot;&quot;
-
-# LzopS3LogList=&quot;a.log b.log c.log&quot; 需要压缩并上传S3的日志，如果你需要执行此步骤
-# S3目录格式：$&#123;S3Base&#125;/$&#123;日志名&#125;/$&#123;todaytime&#125;/$&#123;todayhour&#125;/ 
-LzopS3LogList=&quot;&quot;
-
-# DeleteLocalLog=&quot;a.log b.log c.log&quot; 需要本地设置保留时间的日志，如果你需要执行此步
-DeleteLocalLog=&quot;&quot;
-
-# 本地保存时间
-deletetime=$(date -d &quot;72 hours ago&quot; +%s)
-
-# ----------------------------------人为变量填写结束区域----------------------------------
-
-# 日志原始路径
-nginx_logs=&quot;$&#123;nginx_base&#125;/logs&quot;
-# 日志位于本地的切割后备份路径
-backup_logs=&quot;$&#123;nginx_logs&#125;/logsbak&quot;
-[[ -d $&#123;backup_logs&#125; ]] || mkdir -p $&#123;backup_logs&#125;
-# nginx pid 文件路径
-nginx_pid=&quot;$&#123;nginx_logs&#125;/nginx.pid&quot;
-[[ -f $&#123;nginx_pid&#125; ]] || &#123;
-  echo &quot;$&#123;nginx_pid&#125; is not exist!!!!&quot; &amp;&amp; exit
-&#125;
-
-mvlog()&#123;
-  [[ -z $1 ]] &amp;&amp; continue
-  NginxLogName=$1
-  [[ -d $&#123;backup_logs&#125;/$&#123;NginxLogName&#125; ]] || mkdir -p $&#123;backup_logs&#125;/$&#123;NginxLogName&#125;
-  mv $&#123;nginx_logs&#125;/$&#123;NginxLogName&#125; $&#123;backup_logs&#125;/$&#123;NginxLogName&#125;/$&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;todaytime&#125;$&#123;todayhour&#125;_$&#123;todaytimestr&#125; &amp;&amp; echo &quot;MV: $&#123;nginx_logs&#125;/$&#123;NginxLogName&#125; to $&#123;backup_logs&#125;/$&#123;NginxLogName&#125;/$&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;todaytime&#125;$&#123;todayhour&#125;_$&#123;todaytimestr&#125;&quot;
-&#125;
-lzops3log()&#123;
-  [[ -z $1 ]] &amp;&amp; continue
-  NginxLogName=$1
-  S3Path=$2
-  cd $&#123;backup_logs&#125;/$&#123;NginxLogName&#125;
-  lzop $&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;todaytime&#125;$&#123;todayhour&#125;_$&#123;todaytimestr&#125; &amp;&amp; aws s3 cp $&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;todaytime&#125;$&#123;todayhour&#125;_$&#123;todaytimestr&#125;.lzo $&#123;S3Path&#125;/$&#123;todaytime&#125;/$&#123;todayhour&#125;/ --quiet &amp;&amp; rm -rf $&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;todaytime&#125;$&#123;todayhour&#125;_$&#123;todaytimestr&#125;.lzo &amp;&amp; echo &quot;UPLOAD: $&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;todaytime&#125;$&#123;todayhour&#125;_$&#123;todaytimestr&#125;.lzo to $&#123;S3Path&#125;/$&#123;todaytime&#125;/$&#123;todayhour&#125;/&quot; || curl &quot;$wx_api&quot; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot;markdown&quot;: &#123;&quot;content&quot;: &quot;# `'&quot;$&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;todaytime&#125;$&#123;todayhour&#125;_$&#123;todaytimestr&#125;.lzo&quot;'` 日志上传失败!!!!!!&quot;&#125;&#125;'
-&#125;
-deletelocallog()&#123;
-  [[ -z $1 ]] &amp;&amp; continue
-  NginxLogName=$1
-  cd $&#123;backup_logs&#125;/$&#123;NginxLogName&#125;
-  for logname in `ls`;do
-    if [[ $&#123;deletetime&#125; -ge $&#123;logname##*_&#125; ]];then
-      rm -rf $&#123;logname&#125; &amp;&amp; echo &quot;DELETE: $&#123;backup_logs&#125;/$&#123;NginxLogName&#125;/$&#123;localtag&#125;_$&#123;NginxLogName&#125;_$&#123;deletetime&#125;&quot;
-    fi
-  done
-&#125;
-
-#MV
-for i in $&#123;MvLogList&#125;;do
-  mvlog $&#123;i&#125;
-done
-#nginx log reload
-kill -USR1 `cat $&#123;nginx_pid&#125;`
-#lzop and to s3
-for i in $&#123;LzopS3LogList&#125;;do
-  lzops3log $&#123;i&#125; $&#123;S3Base&#125;/$&#123;i&#125;
-done
-#Delete
-for i in $&#123;DeleteLocalLog&#125;;do
-  deletelocallog $&#123;i&#125;
-done
+	<h2 id="upstream-prematurely-closed-connection-while-reading-response-header-from-upstream">upstream prematurely closed connection while reading response header from upstream</h2>
+<p>汉译：当从上游读取响应头时，上游提前关闭连接</p>
+<p>经确认，此错误一般是开启长链接后，长链接超时关闭时，恰好有数据发生</p>
+<p>因此，解决方案有两个：</p>
+<ol>
+<li>nginx 将长链接的超时设置为 0 ，即关闭长链接</li>
+</ol>
+<pre><code class="language-bash">keepalive_timeout 0; # 此值默认为0，默认位于nginx主配置
 </code></pre>
+<ol start="2">
+<li>关闭 nginx 长链接超时主动关闭的功能</li>
+</ol>
+<pre><code class="language-bash">proxy_http_version 1.1; # 支持长链接
+proxy_set_header Connection &quot;&quot;; # nginx不会主动关闭长连接，此值默认是 close
+</code></pre>
+<blockquote>
+<p>nginx 添加自定义 header 后，就会覆盖掉相应的默认值</p>
+<p><a target="_blank" rel="noopener" href="http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_set_header">Module ngx_http_proxy_module (nginx.org)</a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Syntax:</th>
+<th><code>proxy_set_header field value;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Default:</td>
+<td><code>proxy_set_header Host $proxy_host; proxy_set_header Connection close;</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Context:</td>
+<td><code>http</code>, <code>server</code>, <code>location</code></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 
 </div>
 
@@ -1737,16 +1706,16 @@ done
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/662e9d4d/">
+              <a href="/posts/d1d65c30/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  hexo☞图片显示404错误的解决办法
+                  fpm☞静态配置
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/6c093771/">
-                zabbix☞redis
+              <a href="/posts/7c1abbe1/">
+                
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

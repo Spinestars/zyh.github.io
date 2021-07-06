@@ -218,6 +218,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/445cf088/">
+										nginx☞问题集
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1492,6 +1501,37 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+										vcsa☞存储设备有vmfs分区，但数据存储丢失
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										语言
 									</a>
 									
@@ -1566,6 +1606,48 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/e4f7ce4c/">
+				<h2 class="index-title">
+					linux☞ubuntu20-04纯命令行网卡配置
+				</h2>
+				<div class="index-brief">
+					前言
+netplan 用于屏蔽各种网络管理器，它可以让你用一份配置，就帮你把网络给配置好，而无需你考虑网络控制器如何使用。
+20.04 已经默认安装了 netplan.
+记录当前网卡标识名
+ip addr show 
+# ===
+1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt;
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-11-16</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/">系统</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/linux/">linux</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/ab1247fb/">
@@ -1888,52 +1970,6 @@ ingress 可以提供负载均衡/SSL管理/虚拟命名主机/path路由. 它的
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-22</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4bf29cf0/">
-				<h2 class="index-title">
-					k8s☞12-2有状态服务StatefulSet
-				</h2>
-				<div class="index-brief">
-					前言
-当我们构建一个有状态的应用的时候, 例如 mysql / ftp / 包含session的管理界面等. 我们可能会有下列预期:
-
-稳定的、唯一的网络标识符。
-稳定的、持久的存储。
-有序的、优雅的部署和缩放。
-有序的、自动的滚动更新。
-
-StatefulSet 就是干这个的.
-一个例子
-apiV
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-21</span>
                     
                             
                                 

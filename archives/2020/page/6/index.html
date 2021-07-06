@@ -218,6 +218,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/445cf088/">
+										nginx☞问题集
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1492,6 +1501,37 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+										vcsa☞存储设备有vmfs分区，但数据存储丢失
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										语言
 									</a>
 									
@@ -1600,17 +1640,24 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/421d605e/">
+			<a href="/posts/f9b08c30/">
 				<h2 class="index-title">
-					日志☞logrotate安装
+					监控☞微信预警
 				</h2>
 				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
+					# conf.ini
+[wechat]
+corpid = 
 
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+
+[group]
+it = usera|userb
+
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -1621,17 +1668,7 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
+                                        <a href="/categories/监控/">监控</a>
 										
                                     </span>
                                 
@@ -1641,18 +1678,18 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/65ab632a/">
+			<a href="/posts/1fac36d/">
 				<h2 class="index-title">
-					redis☞安装
+					监控☞远程磁盘检测
 				</h2>
 				<div class="index-brief">
-					docker 安装
-Docker Hub
-redisName=redis
-versionTag=6
-dataPath=/export/docker-data-redis
-mkdir -p $&#123;dataPath&#125;
-redis.conf 请参考官方默认配置文档，默认配置文档地址： h
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
 					...
 				</div>
 			</a>
@@ -1663,17 +1700,7 @@ redis.conf 请参考官方默认配置文档，默认配置文档地址： h
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
+                                        <a href="/categories/监控/">监控</a>
 										
                                     </span>
                                 

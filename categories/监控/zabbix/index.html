@@ -218,6 +218,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/445cf088/">
+										nginx☞问题集
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1492,6 +1501,37 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+										vcsa☞存储设备有vmfs分区，但数据存储丢失
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										语言
 									</a>
 									
@@ -1699,38 +1739,17 @@ docker run --name mysql57 \
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
-					zabbix☞redis
+					zabbix☞WEB监控
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
-
-
-
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 					...
 				</div>
 			</a>
@@ -1761,17 +1780,21 @@ redis_info[&#123;#IP&#12
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					zabbix☞nginx
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
+
+
+1，nginx增加配置 server_status.server
+
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -1845,21 +1868,38 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/6c093771/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					zabbix☞redis
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+					zabbix 模板
+
+自动发现规则
 
 
-1，nginx增加配置 server_status.server
 
-cat &gt; /usr/local/nginx/
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
 					...
 				</div>
 			</a>

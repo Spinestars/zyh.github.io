@@ -218,6 +218,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/445cf088/">
+										nginx☞问题集
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1492,6 +1501,37 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+										vcsa☞存储设备有vmfs分区，但数据存储丢失
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										语言
 									</a>
 									
@@ -1823,7 +1863,7 @@ k8s资源约束分为两种: request(软
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1866,7 +1906,7 @@ kubernetes 提供了一种卷类型 projected volum
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					k8s☞09应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1947,14 +1987,21 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>

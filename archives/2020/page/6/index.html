@@ -581,6 +581,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										harbor
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9573a87d/">
+										harbor☞安装
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										k8s
 									</a>
 									
@@ -759,6 +779,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
 										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c15432fa/">
+										k8s☞kubectl多集群管理
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1166,6 +1195,15 @@ var _hmt = _hmt || [];
 										linux
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/13364d65/">
+										linux☞centos7重置root密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/a3dfc0e8/">
@@ -1678,18 +1716,17 @@ it = usera|userb
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/421d605e/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					日志☞logrotate安装
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
+
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
 					...
 				</div>
 			</a>
@@ -1700,7 +1737,59 @@ i
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/65ab632a/">
+				<h2 class="index-title">
+					redis☞安装
+				</h2>
+				<div class="index-brief">
+					docker 安装
+Docker Hub
+redisName=redis
+versionTag=6
+dataPath=/export/docker-data-redis
+mkdir -p $&#123;dataPath&#125;
+redis.conf 请参考官方默认配置文档，默认配置文档地址： h
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 
@@ -1921,53 +2010,6 @@ tags的参数
   gather_facts: no
   tasks:
     - block:
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/29683589/">
-				<h2 class="index-title">
-					ansible☞playbook-条件判断
-				</h2>
-				<div class="index-brief">
-					关键词
-
-when
-
-运算符
-
-==  !=  &gt;  &lt;  &gt;=  &lt;=
-and or not
-( ) 组合，例如 ( a and b ) or c
-
-
-ansible 某个 task 报错，会导致任务终止，而ignore_errors: true 可以忽略某个任务的条件不满
 					...
 				</div>
 			</a>

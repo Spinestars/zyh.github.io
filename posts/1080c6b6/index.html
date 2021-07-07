@@ -583,6 +583,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										harbor
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9573a87d/">
+										harbor☞安装
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										k8s
 									</a>
 									
@@ -761,6 +781,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
 										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c15432fa/">
+										k8s☞kubectl多集群管理
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1168,6 +1197,15 @@ var _hmt = _hmt || [];
 										linux
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/13364d65/">
+										linux☞centos7重置root密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/a3dfc0e8/">
@@ -1651,7 +1689,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -1659,7 +1697,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -1796,7 +1834,6 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-  - 容器
           - k8s01
 </code></pre>
 <h3 id="动态PV">动态PV</h3>
@@ -1804,12 +1841,24 @@ spec:
 <p>动态PV的构建需要一个新的资源对象StroageClass插件。插件在设计的时候，都会根据volume类型拥有自己的一些特定参数。例如云服务的云盘一般都可以设置请求的磁盘类型。你可以在这里找到各种支持的volume类型以及它们的属性字段：<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p>
 <p>不过，有些volume类型的供应商已经有对应的内置插件，有些则没有。</p>
 <p>这里以网络存储nfs为例. nfs 属于外置供应商，因此没有内置插件。所以需要先构建<strong>nfs-client</strong>插件。</p>
-<pre><code class="language-yaml">helm install nfs-client stable/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.16.250 --set nfs.path=/mnt/data001/nfs-k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true
+<p><a target="_blank" rel="noopener" href="https://artifacthub.io/packages/helm/ckotzbauer/nfs-client-provisioner">nfs-client-provisioner 1.0.2 · helm/ckotzbauer (artifacthub.io)</a></p>
+<blockquote>
+<p>如果你宿主机没有安装 nfs 扩展包，那么 nfs-client 插件将无法运行</p>
+<p>yum install nfs-utils -y</p>
+<p>其次，从 k8s 1.20版本开始，api-server 服务默认关闭了selfLink，因此需要开启额外的启动参数</p>
+<p>编辑 /etc/kubernetes/manifests/kube-apiserver.yaml 添加 <code>- --feature-gates=RemoveSelfLink=false</code></p>
+</blockquote>
+<pre><code class="language-yaml">## helm repo add ckotzbauer https://ckotzbauer.github.io/helm-charts
+## helm repo update
+## helm install nfs-client ckotzbauer/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=true
+helm repo add apphub https://apphub.aliyuncs.com
+helm repo update
+helm install nfs-client apphub/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=true
 </code></pre>
 <blockquote>
 <p>nfs.server是nfs服务器地址</p>
 <p>nfs.path是nfs共享目录</p>
-<p>parameters.archiveOnDelete 当回收策略在被执行的时候（<a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a>），pv删除的同时申请的存储资源是否要归档。flase就是不归档直接删除。这里归档的意思就是将申请的存储资源的物理路径前加一个archived前缀，即：archived-${NS_NAME}-${PVC_NAME}-${PV_NAME}。</p>
+<p>parameters.archiveOnDelete 当回收策略在被执行的时候（<a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a>），pv删除的同时申请的存储资源是否要归档。false就是不归档直接删除。这里归档的意思就是将申请的存储资源的物理路径前加一个archived前缀，即：<code>archived-$&#123;NS_NAME&#125;-$&#123;PVC_NAME&#125;-$&#123;PV_NAME&#125;</code></p>
 <p>storageClass.allowVolumeExpansion 开启卷扩展。这个选项可以让你动态的调整 pvc 请求的对象大小。</p>
 </blockquote>
 <p>关于nfs-client的各种配置参数,可以查看文档https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration</p>
@@ -1836,7 +1885,7 @@ metadata:
   selfLink: /apis/storage.k8s.io/v1/storageclasses/nfs-client
   uid: 3d695640-0cba-4660-9c92-53d870649b2c
 parameters:
-  archiveOnDelete: &quot;flase&quot;
+  archiveOnDelete: &quot;false&quot;
 provisioner: cluster.local/nfs-client-nfs-client-provisioner
 reclaimPolicy: Delete
 volumeBindingMode: Immediate

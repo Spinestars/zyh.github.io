@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>harbor☞安装</title>
+      <link href="posts/9573a87d/"/>
+      <url>posts/9573a87d/</url>
+      
+        <content type="html"><![CDATA[<h2 id="硬件和依赖软件">硬件和依赖软件</h2><p><a href="https://goharbor.io/docs/2.3.0/install-config/installation-prereqs/">Harbor docs | Harbor Installation Prerequisites (goharbor.io)</a></p><h3 id="硬件依赖">硬件依赖</h3><table><thead><tr><th style="text-align:left">Resource</th><th style="text-align:left">Minimum</th><th style="text-align:left">Recommended</th></tr></thead><tbody><tr><td style="text-align:left">CPU</td><td style="text-align:left">2 CPU</td><td style="text-align:left">4 CPU</td></tr><tr><td style="text-align:left">Mem</td><td style="text-align:left">4 GB</td><td style="text-align:left">8 GB</td></tr><tr><td style="text-align:left">Disk</td><td style="text-align:left">40 GB</td><td style="text-align:left">160 GB</td></tr></tbody></table><h3 id="软件依赖">软件依赖</h3><table><thead><tr><th style="text-align:left">Software</th><th style="text-align:left">Version</th><th style="text-align:left">Description</th></tr></thead><tbody><tr><td style="text-align:left">Docker engine</td><td style="text-align:left">Version 17.06.0-ce+ or higher</td><td style="text-align:left">For installation instructions, see <a href="https://docs.docker.com/engine/installation/">Docker Engine documentation</a></td></tr><tr><td style="text-align:left">Docker Compose</td><td style="text-align:left">Version 1.18.0 or higher</td><td style="text-align:left">For installation instructions, see <a href="https://docs.docker.com/compose/install/">Docker Compose documentation</a></td></tr><tr><td style="text-align:left">Openssl</td><td style="text-align:left">Latest is preferred</td><td style="text-align:left">Used to generate certificate and keys for Harbor</td></tr></tbody></table><blockquote><p><a href="https://github.com/Spinestars/shell/blob/main/install/centos7_init.sh">shell/centos7_init.sh at main · Spinestars/shell (github.com)</a></p></blockquote><h3 id="网络依赖">网络依赖</h3><table><thead><tr><th style="text-align:left">Port</th><th style="text-align:left">Protocol</th><th style="text-align:left">Description</th></tr></thead><tbody><tr><td style="text-align:left">443</td><td style="text-align:left">HTTPS</td><td style="text-align:left">Harbor portal and core API accept HTTPS requests on this port. You can change this port in the configuration file.</td></tr><tr><td style="text-align:left">4443</td><td style="text-align:left">HTTPS</td><td style="text-align:left">Connections to the Docker Content Trust service for Harbor. Only required if Notary is enabled. You can change this port in the configuration file.</td></tr><tr><td style="text-align:left">80</td><td style="text-align:left">HTTP</td><td style="text-align:left">Harbor portal and core API accept HTTP requests on this port. You can change this port in the configuration file.</td></tr></tbody></table><h2 id="下载-配置">下载/配置</h2><ul><li>下载在线安装包并解压</li></ul><p><a href="https://github.com/goharbor/harbor/releases">https://github.com/goharbor/harbor/releases</a></p><ul><li>修改解压后的配置文件</li></ul><pre><code class="language-bash">cp harbor.yml.tmpl harbor.ymlmkdir -p /export/docker-data-harbor/log</code></pre><p>主要的修改如下</p><blockquote><p>这里的配置并非 harbor 各组件直接调用的配置，而是 harbor 安装脚本所需的配置，安装脚本会根据这个配置，动态的生成之后 harbor 所需各项软件配置和数据</p></blockquote><pre><code class="language-yaml"># The IP address or hostname to access admin UI and registry service.# DO NOT use localhost or 127.0.0.1, because Harbor needs to be accessed by external clients.# &lt;域名&gt;hostname: &lt;域名&gt;# http related confighttp:  # port for http, default is 80. If https enabled, this port will redirect to https port  port: 10080# https related confighttps:  # https port for harbor, default is 443  port: 10443  # The path of cert and key files for nginx &lt;宿主机路径,不能是软链接&gt;  certificate:   private_key:   ...harbor_admin_password: &lt;管理员密码&gt;# Harbor DB configurationdatabase:  # The password for the root user of Harbor DB. Change this before any production use.  password: &lt;数据库密码&gt;  # The maximum number of connections in the idle connection pool. If it &lt;=0, no idle connections are retained.  max_idle_conns: 100  # The maximum number of open connections to the database. If it &lt;= 0, then there is no limit on the number of open connections.  # Note: the default number of connections is 1024 for postgres of harbor.  max_open_conns: 900# The default data volume, default: /data  &lt;宿主机路径，所有软件的数据目录的根目录&gt;data_volume: /export/docker-data-harbor...# Log configurationslog:  # options are debug, info, warning, error, fatal  level: info  # configs for logs in local storage  local:    # Log files are rotated log_rotate_count times before being removed. If count is 0, old versions are removed rather than rotated.    rotate_count: 50    # Log files are rotated only if they grow bigger than log_rotate_size bytes. If size is followed by k, the size is assumed to be in kilobytes.    # If the M is used, the size is in megabytes, and if G is used, the size is in gigabytes. So size 100, size 100k, size 100M and size 100G    # are all valid.    rotate_size: 200M    # The directory on your host that store log,     location: /export/docker-data-harbor/log</code></pre><h3 id="https的配置">https的配置</h3><p>证书配置分为两部分，一个是nginx的，一个是docker的</p><pre><code class="language-bash">cp yourdomain.com.cert /etc/docker/certs.d/yourdomain.com/  # 如果你更换了默认端口，则复制到 /etc/docker/certs.d/yourdomain.com:port/cp yourdomain.com.key /etc/docker/certs.d/yourdomain.com/cp ca.crt /etc/docker/certs.d/yourdomain.com/</code></pre><h2 id="安装">安装</h2><h3 id="预安装，并启动">预安装，并启动</h3><p>生成 docker-compose 配置，并创建相关数据目录，以及容器所需的依赖数据</p><pre><code>./prepare &amp;&amp; docker-compose up -d</code></pre><h3 id="直接安装，并启动">直接安装，并启动</h3><pre><code>./install.sh</code></pre><h2 id="其它">其它</h2><h3 id="证书更换">证书更换</h3><p>nginx需要需要更换 &lt;path_to_data_volume&gt;/secret/cert/ 下的文件</p><p>docker需要更换 /etc/docker/certs.d/yourdomain.com/ 下的文件</p><p>最后，重启容器服务</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> harbor </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> harbor </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>vcsa☞存储设备有vmfs分区，但数据存储丢失</title>
       <link href="posts/eab024cf/"/>
       <url>posts/eab024cf/</url>
@@ -76,38 +103,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>prometheus☞04mysql监控</title>
-      <link href="posts/6178b477/"/>
-      <url>posts/6178b477/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#mysql">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://github.com/prometheus/mysqld_exporter">prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)</a></p><p><a href="https://registry.hub.docker.com/r/prom/mysqld-exporter/">prom/mysqld-exporter (docker.com)</a></p><h2 id="安装">安装</h2><h3 id="添加mysql账户">添加mysql账户</h3><pre><code class="language-bash">CREATE USER 'exporter'@'&lt;局域网授信IP&gt;' IDENTIFIED BY 'exporter@123';GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'exporter'@'&lt;局域网授信IP&gt;';GRANT SELECT ON performance_schema.* TO 'exporter'@'&lt;局域网授信IP&gt;';</code></pre><pre><code class="language-bash">docker run -d --net promsnet --name mysqld-exporter -p 9104:9104 --link=my_mysql_container:&lt;被监控的mysql容器名&gt;  \  -e DATA_SOURCE_NAME=&quot;exporter:exporter@123@(&lt;被监控的mysql容器名 or 被监控的mysql实例地址&gt;:3306)/&quot; prom/mysqld-exporter</code></pre><blockquote><p>–link 可选，关联被监控的容器数据库</p></blockquote><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'mysql-001'    static_configs:      - targets: ['mysqld-exporter:9104'] # mysqld-exporter 采集器地址        labels:          instance: &lt;mysql_server_path&gt;:3306 # 变更采集后的标签instance为mysql实例地址</code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:    - alert: MysqlDown      expr: mysql_up == 0      for: 0m      labels:        severity: critical      annotations:        summary: MySQL down (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL instance is down on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlTooManyConnections(&gt;80%)      expr: avg by (instance) (rate(mysql_global_status_threads_connected[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 80      for: 2m      labels:        severity: warning      annotations:        summary: MySQL too many connections (&gt; 80%) (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 80% of MySQL connections are in use on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlRestarted      expr: mysql_global_status_uptime &lt; 60      for: 0m      labels:        severity: info      annotations:        summary: MySQL restarted (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL has just been restarted, less than one minute ago on &#123;&#123; $labels.instance &#125;&#125;.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlHighThreadsRunning      expr: avg by (instance) (rate(mysql_global_status_threads_running[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 60      for: 2m      labels:        severity: warning      annotations:        summary: MySQL high threads running (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 60% of MySQL connections are in running state on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/7362">https://grafana.com/grafana/dashboards/7362</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> prometheus </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> mysql </tag>
-            
-            <tag> prometheus </tag>
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -134,9 +132,9 @@
       
         <tags>
             
-            <tag> redis </tag>
-            
             <tag> prometheus </tag>
+            
+            <tag> redis </tag>
             
         </tags>
       
@@ -166,6 +164,35 @@
             <tag> rabbitmq </tag>
             
             <tag> prometheus </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>prometheus☞04mysql监控</title>
+      <link href="posts/6178b477/"/>
+      <url>posts/6178b477/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#mysql">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://github.com/prometheus/mysqld_exporter">prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)</a></p><p><a href="https://registry.hub.docker.com/r/prom/mysqld-exporter/">prom/mysqld-exporter (docker.com)</a></p><h2 id="安装">安装</h2><h3 id="添加mysql账户">添加mysql账户</h3><pre><code class="language-bash">CREATE USER 'exporter'@'&lt;局域网授信IP&gt;' IDENTIFIED BY 'exporter@123';GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'exporter'@'&lt;局域网授信IP&gt;';GRANT SELECT ON performance_schema.* TO 'exporter'@'&lt;局域网授信IP&gt;';</code></pre><pre><code class="language-bash">docker run -d --net promsnet --name mysqld-exporter -p 9104:9104 --link=my_mysql_container:&lt;被监控的mysql容器名&gt;  \  -e DATA_SOURCE_NAME=&quot;exporter:exporter@123@(&lt;被监控的mysql容器名 or 被监控的mysql实例地址&gt;:3306)/&quot; prom/mysqld-exporter</code></pre><blockquote><p>–link 可选，关联被监控的容器数据库</p></blockquote><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'mysql-001'    static_configs:      - targets: ['mysqld-exporter:9104'] # mysqld-exporter 采集器地址        labels:          instance: &lt;mysql_server_path&gt;:3306 # 变更采集后的标签instance为mysql实例地址</code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:    - alert: MysqlDown      expr: mysql_up == 0      for: 0m      labels:        severity: critical      annotations:        summary: MySQL down (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL instance is down on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlTooManyConnections(&gt;80%)      expr: avg by (instance) (rate(mysql_global_status_threads_connected[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 80      for: 2m      labels:        severity: warning      annotations:        summary: MySQL too many connections (&gt; 80%) (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 80% of MySQL connections are in use on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlRestarted      expr: mysql_global_status_uptime &lt; 60      for: 0m      labels:        severity: info      annotations:        summary: MySQL restarted (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL has just been restarted, less than one minute ago on &#123;&#123; $labels.instance &#125;&#125;.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlHighThreadsRunning      expr: avg by (instance) (rate(mysql_global_status_threads_running[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 60      for: 2m      labels:        severity: warning      annotations:        summary: MySQL high threads running (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 60% of MySQL connections are in running state on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/7362">https://grafana.com/grafana/dashboards/7362</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> prometheus </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> prometheus </tag>
+            
+            <tag> mysql </tag>
             
         </tags>
       
@@ -275,9 +302,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> prometheus </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -366,9 +393,9 @@
       
         <tags>
             
-            <tag> 监控 </tag>
-            
             <tag> prometheus </tag>
+            
+            <tag> 监控 </tag>
             
         </tags>
       
@@ -629,9 +656,9 @@
       
         <tags>
             
-            <tag> mysql </tag>
-            
             <tag> 监控 </tag>
+            
+            <tag> mysql </tag>
             
         </tags>
       
@@ -679,9 +706,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> kubeadm </tag>
             
@@ -712,9 +739,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> 证书 </tag>
             
@@ -743,9 +770,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> authorization </tag>
             
@@ -760,7 +787,7 @@
       <link href="posts/1080c6b6/"/>
       <url>posts/1080c6b6/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>在使用云服务的时候,我们创建磁盘,需要在存储服务中提交一个请求,里面包含了磁盘类型,磁盘大小.之后,我们再把这个申请的磁盘挂载到所需的计算资源上即可.</p><p>而在k8s中. 当使用存储的时候，我们会涉及到以下主要概念</p><p>构建存储的概念：</p><ul><li><p>volume # 这个概念指的是提供的存储服务，例如云商的云盘（aws-ebs，阿里云-云盘），也可以是nfs/cephfs。</p></li><li><p>pv 或者 storageclass # 这个概念你可以认为是云服务商的存储服务的接口（例如web控制台操作界面）。当然，你需要自己提供接口所需要的存储信息，否则，k8s就不知道应该如何使用 volume。</p></li><li><p>pvc # 这个概念你可以认为是你向云服务商存储接口提交的创建请求。通过 pvc，你就可以拿到一块可用的存储盘了。</p></li></ul><p>使用存储的概念：</p><ul><li>podtemplate.spec.volumes  # 这个概念你可以认为是云服务商中你将磁盘绑定到计算资源</li><li>podtemplate.spec.containers.volumeMounts  # 这个概念你可以认为是你登陆到云服务商中的计算资源中,并使用mount命令进行实际挂载.</li></ul><p>你可能会发现，从一个正常逻辑来说，一个volume如果要在计算资源中使用，它是需要格式化一个文件系统的，但是我上面的概念是直接就挂载成了一个目录。这是因为k8s已经在你通过pv资源帮你创建好了文件系统。当然你也可以通过将pv的模式改为块设备，不过这样一来，程序就需要确认是否可以识别块设备了。我想一般的应用程序是用不上这个类型的。<a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode</a></p><h2 id="pv">pv</h2><p>pod 与 pv 与 pvc 之间是强依赖关系。在资源对象被调用的过程中，任何一个删除操作都不会立即执行，而是在生命周期结束之后才会执行。</p><p>分为静态和动态</p><p>静态pv: 需要先创建一定数量的pv, 才能通过pvc申请成功.</p><p>动态pv: 需要先构建供应商.主流的云商存储基本都有供应商, 区别在于是内置了,还是需要自行外部创建.然后再通过pvc去申请.</p><p>内置供应商列表: <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p><p>外置供应商部署: <a href="https://github.com/kubernetes-retired/external-storage">https://github.com/kubernetes-retired/external-storage</a></p><h3 id="静态PV">静态PV</h3><p>静态PV, 用户无法自行通过pvc去申请, 因为存储管理员需要先创建好匹配容量的pv才可以.就如同你想构建一个云服务器，但需要先创建好一个云盘。</p><p>一个pv的例子, 这里以 nfs 为例:</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumemetadata:  name:  nas-it-local-pv  # 定义 pv 名字, 会被 pvc 引用  namespace: itspec:  claimRef:    name: nas-it-local-pvc    namespace: it  capacity:    storage: 100Gi  # 定义大小  accessModes:  - ReadWriteMany   # 定义访问模式  persistentVolumeReclaimPolicy: Retain   # 定义pvc删除后的策略  nfs:    path: /mnt/data001/nfs-k8s   # 定义 nfs 共享路径    server: 10.200.16.250        # 定义 nfs 服务器地址</code></pre><ul><li><p>accessModes 决定了pod可以如何使用pv. 它有三种模式:</p><ol><li><p><strong>ReadWriteOnce</strong>(单pod读写)</p></li><li><p><strong>ReadOnlyMany</strong>(多pod只读)</p></li><li><p><strong>ReadWriteMany</strong>(多pod读写)</p><p>这里是官方列举的各种存储类型支持的模式: <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes</a></p></li></ol></li><li><p>persistentVolumeReclaimPolicy 有三种模式:</p><ol><li><p><strong>Retain</strong>(只删pvc)</p></li><li><p><strong>Delete</strong>(同时删除pv和pvc)</p></li><li><p><strong>Recycle</strong>(同时删除pv和pvc,并清空pv存储的资源).</p><p>详情见 <a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a></p></li></ol></li></ul><h3 id="静态PV对应的PVC">静态PV对应的PVC</h3><pre><code class="language-yaml">kind: PersistentVolumeClaimapiVersion: v1metadata:  name: nas-it-local-pvc  namespace: itspec:  accessModes:    - ReadWriteMany  resources:    requests:      storage: 100Gi  volumeName: nas-it-local-pv</code></pre><h3 id="可能会用到的卷类型：本地">可能会用到的卷类型：本地</h3><p>本地卷是一种静态卷，因为它强依赖具体的node，所以POD无需进行节点亲和性绑定。</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumemetadata:  name: k8s01-pv-localspec:  capacity:    storage: 100Gi  volumeMode: Filesystem  accessModes:  - ReadWriteOnce  persistentVolumeReclaimPolicy: Delete  storageClassName: local-storage  local:    path: /mnt/disks/ssd1  nodeAffinity:    required:      nodeSelectorTerms:      - matchExpressions:        - key: kubernetes.io/hostname          operator: In          values:  - 容器          - k8s01</code></pre><h3 id="动态PV">动态PV</h3><p>动态PV, 用户可以自行通过PVC向StroageClass申请资源. 就如同你在构建阿里云的ECS的时候，只需要告知使用多大的磁盘，云服务器创建的时候会自动申请。</p><p>动态PV的构建需要一个新的资源对象StroageClass插件。插件在设计的时候，都会根据volume类型拥有自己的一些特定参数。例如云服务的云盘一般都可以设置请求的磁盘类型。你可以在这里找到各种支持的volume类型以及它们的属性字段：<a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p><p>不过，有些volume类型的供应商已经有对应的内置插件，有些则没有。</p><p>这里以网络存储nfs为例. nfs 属于外置供应商，因此没有内置插件。所以需要先构建<strong>nfs-client</strong>插件。</p><pre><code class="language-yaml">helm install nfs-client stable/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.16.250 --set nfs.path=/mnt/data001/nfs-k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true</code></pre><blockquote><p>nfs.server是nfs服务器地址</p><p>nfs.path是nfs共享目录</p><p>parameters.archiveOnDelete 当回收策略在被执行的时候（<a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a>），pv删除的同时申请的存储资源是否要归档。flase就是不归档直接删除。这里归档的意思就是将申请的存储资源的物理路径前加一个archived前缀，即：archived-${NS_NAME}-${PVC_NAME}-${PV_NAME}。</p><p>storageClass.allowVolumeExpansion 开启卷扩展。这个选项可以让你动态的调整 pvc 请求的对象大小。</p></blockquote><p>关于nfs-client的各种配置参数,可以查看文档https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration</p><p>nfs-client会自动帮你创建一个 StroageClass。</p><pre><code class="language-yaml">kubectl get StorageClass/nfs-client -o yamlallowVolumeExpansion: trueapiVersion: storage.k8s.io/v1kind: StorageClassmetadata:  annotations:    meta.helm.sh/release-name: nfs-client    meta.helm.sh/release-namespace: default  labels:    app: nfs-client-provisioner    app.kubernetes.io/managed-by: Helm    chart: nfs-client-provisioner-1.2.9    heritage: Helm    release: nfs-client  managedFields:  - apiVersion: storage.k8s.io/v1  ......  name: nfs-client  resourceVersion: &quot;9314040&quot;  selfLink: /apis/storage.k8s.io/v1/storageclasses/nfs-client  uid: 3d695640-0cba-4660-9c92-53d870649b2cparameters:  archiveOnDelete: &quot;flase&quot;provisioner: cluster.local/nfs-client-nfs-client-provisionerreclaimPolicy: DeletevolumeBindingMode: Immediate</code></pre><p>你可以通过添加 <code>metadata.annotations.storageclass.kubernetes.io/is-default-class: true</code> 来将此存储类设置为集群默认存储类。这样，当pvc中没有显式的指定存储类的时候，将会用默认存储类。</p><p>在此例子中，你无法添加，不过你可以在创建之前通过 storageClass.defaultClass 选项设置。因为上述例子是通过helm创建的，创建完后存储类配置不可被修改。</p><h3 id="动态PV对应的PVC">动态PV对应的PVC</h3><pre><code class="language-yaml">kind: PersistentVolumeClaimapiVersion: v1metadata:  name: nas-it-local-pvcspec:  storageClassName: nfs-client  accessModes:    - ReadWriteMany  resources:    requests:      storage: 100Gi</code></pre><p>在这里,我们通过 <code>spec.storageClassName</code>字段来调用名字叫 nfs-client 存储类。</p><h3 id="PV回收策略-persistentVolumeReclaimPolicy">PV回收策略 persistentVolumeReclaimPolicy</h3><p><strong>Retain</strong> 只删除 PVC, PV保留, PV不能被用于其它Pod. 如果想复用存储资源,则需重新构建PV和PVC。假设以aws角度来看，就是EC2删了，web控制台还能看到EBS。</p><ul><li>在静态PV下,PV的名字是固定的,因此删除PVC之后,可以采用原有的PV配置重建PV继而分配到原有的资源.</li><li>在动态PV下,PV的名字是动态生成的, 因此删除PVC之后, 当PVC重新申请资源的时候, PV默认将会分配到一个新的资源路径.</li></ul><p>⭐️对于Retain策略，如果你想精准的将新pvc绑定到某个残留的pv，则可以参照[保留一个静态PV, 并告知pvc强制请求pv](#保留一个静态PV, 并告知pvc强制请求pv)</p><p><strong>Delete</strong> 同时删除PV和PVC. 存储资源是否删除取决于每一个StorageClass中parameters的定义。</p><ul><li>当StorageClass是nfs-client时，开启 <code>parameters.archiveOnDelete=true</code> ，就可以定义不删除而是将其归档。假设以aws角度来看，就是web控制台里的EC2和EBS都没了，但是aws在后台还偷偷的帮你将EBS的里的数据归档保存了。</li><li>当StorageClass是微软/aws/阿里云的云盘的时候，一般默认是删除云盘。从而避免产生大量闲置云盘。</li></ul><p><strong>Recycle</strong> 删除创建的所有对象和存储资源.</p><ul><li>当前只有nfs和hostPath支持.</li></ul><h3 id="存储资源物理层面回收">存储资源物理层面回收</h3><p>k8s官方建议不要使用回收策略 <strong>Recycle</strong>, 因为它无法反悔。k8s建议管理员自己去删除. 例如通过一个pod去删除.pod例子如下:</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: pv-recycler  namespace: defaultspec:  restartPolicy: Never  volumes:  - name: vol    hostPath:      path: /any/path/it/will/be/replaced   # 这里应该填写需要删除的内容根路径. 根路径应该是node本地可以访问的物理资源地址.  containers:  - name: pv-recycler    image: &quot;k8s.gcr.io/busybox&quot;    command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;test -e /scrub &amp;&amp; rm -rf /scrub/..?* /scrub/.[!.]* /scrub/*  &amp;&amp; test -z \&quot;$(ls -A /scrub)\&quot; || exit 1&quot;]    volumeMounts:    - name: vol      mountPath: /scrub</code></pre><p>上述例子会构建一个 pod，pod会将本地的 /any/path/it/will/be/replaced 路径里的内容都删除掉。</p><h3 id="如何保留一个静态PV-并告知pvc强制请求pv">如何保留一个静态PV, 并告知pvc强制请求pv</h3><p>默认情况下，pvc找静态pv是自动的，例如会自动找大小匹配的pv。这可能有时候不符合我们的需求。例如我们想给一个数据库构建一个固定强依赖的pv。</p><p>此时需要在构建pv的时候，添加 <code>spec.claimRef</code>。例如：</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumemetadata:  name: foo-pvspec:  claimRef:    name: foo-pvc    namespace: foo</code></pre><p>这个例子是将 foo-pv 强制保留给 foo-pvc. 也就是说其它 pvc 无法使用 foo-pv。</p><p>之后，我们在 pvc 中添加 <code>spec: volumeName</code> 。例如：</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumeClaimmetadata:  name: foo-pvc  namespace: foospec:  volumeName: foo-pv</code></pre><h3 id="在线扩缩（仅支持动态pv）">在线扩缩（仅支持动态pv）</h3><p>要实现在线调整大小，需要满足下列条件：</p><ol><li><p>feature-gates的<code>ExpandInUsePersistentVolumes</code>被开启。它在1.15版本以后默认开启。</p></li><li><p>StorageClass的<code>allowVolumeExpansion</code>被开启。这意味着必须是动态pv。</p></li><li><p>文件系统是XFS, Ext3, or Ext4。这个需要StorageClass的支持。一般来说volume属于块设备类型的资源才支持，比如aws的ebs。</p><blockquote><p>你可以在这里确认StorageClass是否支持fstype属性。<a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#parameters">https://kubernetes.io/docs/concepts/storage/storage-classes/#parameters</a></p></blockquote></li></ol><p>满足上述条件后，你就可以通过 pvc 修改存储大小了。即时 pvc 正在被使用。</p><h3 id="局限性">局限性</h3><p>当一个 pod 同时申请多个 volume 的时候，可能会出现 volume-A 申请成功，volume-B 因物理容量不够申请失败的问题，此时 pod 将卡住。这种情况下，需要手动介入去清理。</p><h3 id="手动介入">手动介入</h3><p>需要我们手动的时候，都是资源申请失败或者不小心删除了PVC之类的。而不管是什么，我们第一目的是数据不丢。</p><p>因此，我们在清理故障对象资源的时候，应该遵循下列步骤：</p><ol><li>将pv的回收策略<code>persistentVolumeReclaimPolicy</code>定义为<code>Retain</code></li><li>删除pvc，这个时候 pv 对象将会保留，但是 pv 状态会变成 Released，这个状态下 pv 无法再被使用</li><li>删除pv对象字段<code>spec.claimRef</code>，从而将pv与pvc解绑，从而使 pv 状态变为 Available</li><li>重建pvc，并将pvc对象字段<code>volumeName</code>设置为pv的名字</li><li>恢复pv的回收策略。</li></ol><h2 id="PVC如何与POD结合使用">PVC如何与POD结合使用</h2><p>这里以上述例子中的 nfs 卷类型为例。</p><pre><code class="language-yaml">apiVersion: apps/v1kind: StatefulSetmetadata:  name: nas-it-local-dep  namespace: it  labels:    app: nas-it-localspec:  serviceName: nas-it-local-vsftpd  revisionHistoryLimit: 10  replicas: 1  selector:    matchLabels:      app: nas-it-local  template:    metadata:      labels:        app: nas-it-local    spec:      hostNetwork: true      affinity:        nodeAffinity:          requiredDuringSchedulingIgnoredDuringExecution:            nodeSelectorTerms:            - matchExpressions:              - key: kubernetes.io/hostname                operator: In                values:  - 容器                - k8s01      containers:      - name: vsftp        image: fauria/vsftpd        ports:        - containerPort: 20        - containerPort: 21        env:        - name: LOG_STDOUT          value: STDOUT        resources:          requests:            memory: &quot;128Mi&quot;            cpu: &quot;125m&quot;          limits:            memory: &quot;512Mi&quot;            cpu: &quot;250m&quot;        volumeMounts:        - name: nas-it-local-vol          subPath: nas.it.local/data          mountPath: /home/vsftpd        - name: nas-it-local-vc          subPath: vsftpd.conf          mountPath: /etc/vsftpd/vsftpd.conf          readOnly: true        - name: nas-it-local-vc          subPath: virtual_users.txt          mountPath: /etc/vsftpd/virtual_users.txt          readOnly: true        - name: nas-it-local-vc          subPath: admin          mountPath: /etc/vsftpd/virtual/admin          readOnly: true        - name: nas-it-local-vc          subPath: yuangong          mountPath: /etc/vsftpd/virtual/yuangong          readOnly: true      volumes:      - name: nas-it-local-vol        persistentVolumeClaim:          claimName: nas-it-local-pvc      - name: nas-it-local-vc        configMap:          name: nas-it-local-cm</code></pre><ol><li><p>创建 <code>volumes：nas-it-local-vol</code>，并绑定 <code>PVC：nas-it-local-pvc</code></p><pre><code class="language-yaml">      volumes:      - name: nas-it-local-vol        persistentVolumeClaim:          claimName: nas-it-local-pvc</code></pre></li><li><p>创建 <code>volumeMounts</code>挂载 <code>volumes：nas-it-local-vol</code></p><p>这里将 nfs 共享目录中<code>nas.it.local/data</code>里的数据挂载到容器里的 <code>/home/vsftpd</code>路径</p><pre><code class="language-yaml">        volumeMounts:        - name: nas-it-local-vol          subPath: nas.it.local/data          mountPath: /home/vsftpd</code></pre><p>⭐️subPath不存在的时候，nfs 共享目录会自动创建。</p></li></ol><hr><h2 id="持久卷与临时卷">持久卷与临时卷</h2><p>以上方式都是持久卷方式，k8s还有一种临时卷，用来进行非必须的数据存储。例如缓存/会话一类的。临时卷数据将随着POD生命周期的终止而终止。</p><p>k8s支持的临时卷主要是这两种：</p><ul><li><p>emptyDir</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: test-pdspec:  containers:  - image: k8s.gcr.io/test-webserver    name: test-container    volumeMounts:    - mountPath: /cache      name: cache-volume  volumes:  - name: cache-volume    emptyDir: &#123;&#125;</code></pre><p>emptyDir还支持构建一个内存层缓存，也就是 tmpfs。你可以通过<code>emptyDir.medium: &quot;Memory&quot;</code>来开启。</p></li><li><p>generic ephemeral volumes 这一种是更加灵活的emptyDir，可以是网络存储，如果插件支持，则各种持久卷的特性它都有可能支持。当前1.18不支持，从1.19开始支持，1.19也是alpha，默认不开启。</p><p>具体使用看https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#generic-ephemeral-volumes</p></li></ul>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>在使用云服务的时候,我们创建磁盘,需要在存储服务中提交一个请求,里面包含了磁盘类型,磁盘大小.之后,我们再把这个申请的磁盘挂载到所需的计算资源上即可.</p><p>而在k8s中. 当使用存储的时候，我们会涉及到以下主要概念</p><p>构建存储的概念：</p><ul><li><p>volume # 这个概念指的是提供的存储服务，例如云商的云盘（aws-ebs，阿里云-云盘），也可以是nfs/cephfs。</p></li><li><p>pv 或者 storageclass # 这个概念你可以认为是云服务商的存储服务的接口（例如web控制台操作界面）。当然，你需要自己提供接口所需要的存储信息，否则，k8s就不知道应该如何使用 volume。</p></li><li><p>pvc # 这个概念你可以认为是你向云服务商存储接口提交的创建请求。通过 pvc，你就可以拿到一块可用的存储盘了。</p></li></ul><p>使用存储的概念：</p><ul><li>podtemplate.spec.volumes  # 这个概念你可以认为是云服务商中你将磁盘绑定到计算资源</li><li>podtemplate.spec.containers.volumeMounts  # 这个概念你可以认为是你登陆到云服务商中的计算资源中,并使用mount命令进行实际挂载.</li></ul><p>你可能会发现，从一个正常逻辑来说，一个volume如果要在计算资源中使用，它是需要格式化一个文件系统的，但是我上面的概念是直接就挂载成了一个目录。这是因为k8s已经在你通过pv资源帮你创建好了文件系统。当然你也可以通过将pv的模式改为块设备，不过这样一来，程序就需要确认是否可以识别块设备了。我想一般的应用程序是用不上这个类型的。<a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode</a></p><h2 id="pv">pv</h2><p>pod 与 pv 与 pvc 之间是强依赖关系。在资源对象被调用的过程中，任何一个删除操作都不会立即执行，而是在生命周期结束之后才会执行。</p><p>分为静态和动态</p><p>静态pv: 需要先创建一定数量的pv, 才能通过pvc申请成功.</p><p>动态pv: 需要先构建供应商.主流的云商存储基本都有供应商, 区别在于是内置了,还是需要自行外部创建.然后再通过pvc去申请.</p><p>内置供应商列表: <a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p><p>外置供应商部署: <a href="https://github.com/kubernetes-retired/external-storage">https://github.com/kubernetes-retired/external-storage</a></p><h3 id="静态PV">静态PV</h3><p>静态PV, 用户无法自行通过pvc去申请, 因为存储管理员需要先创建好匹配容量的pv才可以.就如同你想构建一个云服务器，但需要先创建好一个云盘。</p><p>一个pv的例子, 这里以 nfs 为例:</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumemetadata:  name:  nas-it-local-pv  # 定义 pv 名字, 会被 pvc 引用  namespace: itspec:  claimRef:    name: nas-it-local-pvc    namespace: it  capacity:    storage: 100Gi  # 定义大小  accessModes:  - ReadWriteMany   # 定义访问模式  persistentVolumeReclaimPolicy: Retain   # 定义pvc删除后的策略  nfs:    path: /mnt/data001/nfs-k8s   # 定义 nfs 共享路径    server: 10.200.16.250        # 定义 nfs 服务器地址</code></pre><ul><li><p>accessModes 决定了pod可以如何使用pv. 它有三种模式:</p><ol><li><p><strong>ReadWriteOnce</strong>(单pod读写)</p></li><li><p><strong>ReadOnlyMany</strong>(多pod只读)</p></li><li><p><strong>ReadWriteMany</strong>(多pod读写)</p><p>这里是官方列举的各种存储类型支持的模式: <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes</a></p></li></ol></li><li><p>persistentVolumeReclaimPolicy 有三种模式:</p><ol><li><p><strong>Retain</strong>(只删pvc)</p></li><li><p><strong>Delete</strong>(同时删除pv和pvc)</p></li><li><p><strong>Recycle</strong>(同时删除pv和pvc,并清空pv存储的资源).</p><p>详情见 <a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a></p></li></ol></li></ul><h3 id="静态PV对应的PVC">静态PV对应的PVC</h3><pre><code class="language-yaml">kind: PersistentVolumeClaimapiVersion: v1metadata:  name: nas-it-local-pvc  namespace: itspec:  accessModes:    - ReadWriteMany  resources:    requests:      storage: 100Gi  volumeName: nas-it-local-pv</code></pre><h3 id="可能会用到的卷类型：本地">可能会用到的卷类型：本地</h3><p>本地卷是一种静态卷，因为它强依赖具体的node，所以POD无需进行节点亲和性绑定。</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumemetadata:  name: k8s01-pv-localspec:  capacity:    storage: 100Gi  volumeMode: Filesystem  accessModes:  - ReadWriteOnce  persistentVolumeReclaimPolicy: Delete  storageClassName: local-storage  local:    path: /mnt/disks/ssd1  nodeAffinity:    required:      nodeSelectorTerms:      - matchExpressions:        - key: kubernetes.io/hostname          operator: In          values:          - k8s01</code></pre><h3 id="动态PV">动态PV</h3><p>动态PV, 用户可以自行通过PVC向StroageClass申请资源. 就如同你在构建阿里云的ECS的时候，只需要告知使用多大的磁盘，云服务器创建的时候会自动申请。</p><p>动态PV的构建需要一个新的资源对象StroageClass插件。插件在设计的时候，都会根据volume类型拥有自己的一些特定参数。例如云服务的云盘一般都可以设置请求的磁盘类型。你可以在这里找到各种支持的volume类型以及它们的属性字段：<a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p><p>不过，有些volume类型的供应商已经有对应的内置插件，有些则没有。</p><p>这里以网络存储nfs为例. nfs 属于外置供应商，因此没有内置插件。所以需要先构建<strong>nfs-client</strong>插件。</p><p><a href="https://artifacthub.io/packages/helm/ckotzbauer/nfs-client-provisioner">nfs-client-provisioner 1.0.2 · helm/ckotzbauer (artifacthub.io)</a></p><blockquote><p>如果你宿主机没有安装 nfs 扩展包，那么 nfs-client 插件将无法运行</p><p>yum install nfs-utils -y</p><p>其次，从 k8s 1.20版本开始，api-server 服务默认关闭了selfLink，因此需要开启额外的启动参数</p><p>编辑 /etc/kubernetes/manifests/kube-apiserver.yaml 添加 <code>- --feature-gates=RemoveSelfLink=false</code></p></blockquote><pre><code class="language-yaml">## helm repo add ckotzbauer https://ckotzbauer.github.io/helm-charts## helm repo update## helm install nfs-client ckotzbauer/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=truehelm repo add apphub https://apphub.aliyuncs.comhelm repo updatehelm install nfs-client apphub/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=true</code></pre><blockquote><p>nfs.server是nfs服务器地址</p><p>nfs.path是nfs共享目录</p><p>parameters.archiveOnDelete 当回收策略在被执行的时候（<a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a>），pv删除的同时申请的存储资源是否要归档。false就是不归档直接删除。这里归档的意思就是将申请的存储资源的物理路径前加一个archived前缀，即：<code>archived-$&#123;NS_NAME&#125;-$&#123;PVC_NAME&#125;-$&#123;PV_NAME&#125;</code></p><p>storageClass.allowVolumeExpansion 开启卷扩展。这个选项可以让你动态的调整 pvc 请求的对象大小。</p></blockquote><p>关于nfs-client的各种配置参数,可以查看文档https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration</p><p>nfs-client会自动帮你创建一个 StroageClass。</p><pre><code class="language-yaml">kubectl get StorageClass/nfs-client -o yamlallowVolumeExpansion: trueapiVersion: storage.k8s.io/v1kind: StorageClassmetadata:  annotations:    meta.helm.sh/release-name: nfs-client    meta.helm.sh/release-namespace: default  labels:    app: nfs-client-provisioner    app.kubernetes.io/managed-by: Helm    chart: nfs-client-provisioner-1.2.9    heritage: Helm    release: nfs-client  managedFields:  - apiVersion: storage.k8s.io/v1  ......  name: nfs-client  resourceVersion: &quot;9314040&quot;  selfLink: /apis/storage.k8s.io/v1/storageclasses/nfs-client  uid: 3d695640-0cba-4660-9c92-53d870649b2cparameters:  archiveOnDelete: &quot;false&quot;provisioner: cluster.local/nfs-client-nfs-client-provisionerreclaimPolicy: DeletevolumeBindingMode: Immediate</code></pre><p>你可以通过添加 <code>metadata.annotations.storageclass.kubernetes.io/is-default-class: true</code> 来将此存储类设置为集群默认存储类。这样，当pvc中没有显式的指定存储类的时候，将会用默认存储类。</p><p>在此例子中，你无法添加，不过你可以在创建之前通过 storageClass.defaultClass 选项设置。因为上述例子是通过helm创建的，创建完后存储类配置不可被修改。</p><h3 id="动态PV对应的PVC">动态PV对应的PVC</h3><pre><code class="language-yaml">kind: PersistentVolumeClaimapiVersion: v1metadata:  name: nas-it-local-pvcspec:  storageClassName: nfs-client  accessModes:    - ReadWriteMany  resources:    requests:      storage: 100Gi</code></pre><p>在这里,我们通过 <code>spec.storageClassName</code>字段来调用名字叫 nfs-client 存储类。</p><h3 id="PV回收策略-persistentVolumeReclaimPolicy">PV回收策略 persistentVolumeReclaimPolicy</h3><p><strong>Retain</strong> 只删除 PVC, PV保留, PV不能被用于其它Pod. 如果想复用存储资源,则需重新构建PV和PVC。假设以aws角度来看，就是EC2删了，web控制台还能看到EBS。</p><ul><li>在静态PV下,PV的名字是固定的,因此删除PVC之后,可以采用原有的PV配置重建PV继而分配到原有的资源.</li><li>在动态PV下,PV的名字是动态生成的, 因此删除PVC之后, 当PVC重新申请资源的时候, PV默认将会分配到一个新的资源路径.</li></ul><p>⭐️对于Retain策略，如果你想精准的将新pvc绑定到某个残留的pv，则可以参照[保留一个静态PV, 并告知pvc强制请求pv](#保留一个静态PV, 并告知pvc强制请求pv)</p><p><strong>Delete</strong> 同时删除PV和PVC. 存储资源是否删除取决于每一个StorageClass中parameters的定义。</p><ul><li>当StorageClass是nfs-client时，开启 <code>parameters.archiveOnDelete=true</code> ，就可以定义不删除而是将其归档。假设以aws角度来看，就是web控制台里的EC2和EBS都没了，但是aws在后台还偷偷的帮你将EBS的里的数据归档保存了。</li><li>当StorageClass是微软/aws/阿里云的云盘的时候，一般默认是删除云盘。从而避免产生大量闲置云盘。</li></ul><p><strong>Recycle</strong> 删除创建的所有对象和存储资源.</p><ul><li>当前只有nfs和hostPath支持.</li></ul><h3 id="存储资源物理层面回收">存储资源物理层面回收</h3><p>k8s官方建议不要使用回收策略 <strong>Recycle</strong>, 因为它无法反悔。k8s建议管理员自己去删除. 例如通过一个pod去删除.pod例子如下:</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: pv-recycler  namespace: defaultspec:  restartPolicy: Never  volumes:  - name: vol    hostPath:      path: /any/path/it/will/be/replaced   # 这里应该填写需要删除的内容根路径. 根路径应该是node本地可以访问的物理资源地址.  containers:  - name: pv-recycler    image: &quot;k8s.gcr.io/busybox&quot;    command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;test -e /scrub &amp;&amp; rm -rf /scrub/..?* /scrub/.[!.]* /scrub/*  &amp;&amp; test -z \&quot;$(ls -A /scrub)\&quot; || exit 1&quot;]    volumeMounts:    - name: vol      mountPath: /scrub</code></pre><p>上述例子会构建一个 pod，pod会将本地的 /any/path/it/will/be/replaced 路径里的内容都删除掉。</p><h3 id="如何保留一个静态PV-并告知pvc强制请求pv">如何保留一个静态PV, 并告知pvc强制请求pv</h3><p>默认情况下，pvc找静态pv是自动的，例如会自动找大小匹配的pv。这可能有时候不符合我们的需求。例如我们想给一个数据库构建一个固定强依赖的pv。</p><p>此时需要在构建pv的时候，添加 <code>spec.claimRef</code>。例如：</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumemetadata:  name: foo-pvspec:  claimRef:    name: foo-pvc    namespace: foo</code></pre><p>这个例子是将 foo-pv 强制保留给 foo-pvc. 也就是说其它 pvc 无法使用 foo-pv。</p><p>之后，我们在 pvc 中添加 <code>spec: volumeName</code> 。例如：</p><pre><code class="language-yaml">apiVersion: v1kind: PersistentVolumeClaimmetadata:  name: foo-pvc  namespace: foospec:  volumeName: foo-pv</code></pre><h3 id="在线扩缩（仅支持动态pv）">在线扩缩（仅支持动态pv）</h3><p>要实现在线调整大小，需要满足下列条件：</p><ol><li><p>feature-gates的<code>ExpandInUsePersistentVolumes</code>被开启。它在1.15版本以后默认开启。</p></li><li><p>StorageClass的<code>allowVolumeExpansion</code>被开启。这意味着必须是动态pv。</p></li><li><p>文件系统是XFS, Ext3, or Ext4。这个需要StorageClass的支持。一般来说volume属于块设备类型的资源才支持，比如aws的ebs。</p><blockquote><p>你可以在这里确认StorageClass是否支持fstype属性。<a href="https://kubernetes.io/docs/concepts/storage/storage-classes/#parameters">https://kubernetes.io/docs/concepts/storage/storage-classes/#parameters</a></p></blockquote></li></ol><p>满足上述条件后，你就可以通过 pvc 修改存储大小了。即时 pvc 正在被使用。</p><h3 id="局限性">局限性</h3><p>当一个 pod 同时申请多个 volume 的时候，可能会出现 volume-A 申请成功，volume-B 因物理容量不够申请失败的问题，此时 pod 将卡住。这种情况下，需要手动介入去清理。</p><h3 id="手动介入">手动介入</h3><p>需要我们手动的时候，都是资源申请失败或者不小心删除了PVC之类的。而不管是什么，我们第一目的是数据不丢。</p><p>因此，我们在清理故障对象资源的时候，应该遵循下列步骤：</p><ol><li>将pv的回收策略<code>persistentVolumeReclaimPolicy</code>定义为<code>Retain</code></li><li>删除pvc，这个时候 pv 对象将会保留，但是 pv 状态会变成 Released，这个状态下 pv 无法再被使用</li><li>删除pv对象字段<code>spec.claimRef</code>，从而将pv与pvc解绑，从而使 pv 状态变为 Available</li><li>重建pvc，并将pvc对象字段<code>volumeName</code>设置为pv的名字</li><li>恢复pv的回收策略。</li></ol><h2 id="PVC如何与POD结合使用">PVC如何与POD结合使用</h2><p>这里以上述例子中的 nfs 卷类型为例。</p><pre><code class="language-yaml">apiVersion: apps/v1kind: StatefulSetmetadata:  name: nas-it-local-dep  namespace: it  labels:    app: nas-it-localspec:  serviceName: nas-it-local-vsftpd  revisionHistoryLimit: 10  replicas: 1  selector:    matchLabels:      app: nas-it-local  template:    metadata:      labels:        app: nas-it-local    spec:      hostNetwork: true      affinity:        nodeAffinity:          requiredDuringSchedulingIgnoredDuringExecution:            nodeSelectorTerms:            - matchExpressions:              - key: kubernetes.io/hostname                operator: In                values:  - 容器                - k8s01      containers:      - name: vsftp        image: fauria/vsftpd        ports:        - containerPort: 20        - containerPort: 21        env:        - name: LOG_STDOUT          value: STDOUT        resources:          requests:            memory: &quot;128Mi&quot;            cpu: &quot;125m&quot;          limits:            memory: &quot;512Mi&quot;            cpu: &quot;250m&quot;        volumeMounts:        - name: nas-it-local-vol          subPath: nas.it.local/data          mountPath: /home/vsftpd        - name: nas-it-local-vc          subPath: vsftpd.conf          mountPath: /etc/vsftpd/vsftpd.conf          readOnly: true        - name: nas-it-local-vc          subPath: virtual_users.txt          mountPath: /etc/vsftpd/virtual_users.txt          readOnly: true        - name: nas-it-local-vc          subPath: admin          mountPath: /etc/vsftpd/virtual/admin          readOnly: true        - name: nas-it-local-vc          subPath: yuangong          mountPath: /etc/vsftpd/virtual/yuangong          readOnly: true      volumes:      - name: nas-it-local-vol        persistentVolumeClaim:          claimName: nas-it-local-pvc      - name: nas-it-local-vc        configMap:          name: nas-it-local-cm</code></pre><ol><li><p>创建 <code>volumes：nas-it-local-vol</code>，并绑定 <code>PVC：nas-it-local-pvc</code></p><pre><code class="language-yaml">      volumes:      - name: nas-it-local-vol        persistentVolumeClaim:          claimName: nas-it-local-pvc</code></pre></li><li><p>创建 <code>volumeMounts</code>挂载 <code>volumes：nas-it-local-vol</code></p><p>这里将 nfs 共享目录中<code>nas.it.local/data</code>里的数据挂载到容器里的 <code>/home/vsftpd</code>路径</p><pre><code class="language-yaml">        volumeMounts:        - name: nas-it-local-vol          subPath: nas.it.local/data          mountPath: /home/vsftpd</code></pre><p>⭐️subPath不存在的时候，nfs 共享目录会自动创建。</p></li></ol><hr><h2 id="持久卷与临时卷">持久卷与临时卷</h2><p>以上方式都是持久卷方式，k8s还有一种临时卷，用来进行非必须的数据存储。例如缓存/会话一类的。临时卷数据将随着POD生命周期的终止而终止。</p><p>k8s支持的临时卷主要是这两种：</p><ul><li><p>emptyDir</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: test-pdspec:  containers:  - image: k8s.gcr.io/test-webserver    name: test-container    volumeMounts:    - mountPath: /cache      name: cache-volume  volumes:  - name: cache-volume    emptyDir: &#123;&#125;</code></pre><p>emptyDir还支持构建一个内存层缓存，也就是 tmpfs。你可以通过<code>emptyDir.medium: &quot;Memory&quot;</code>来开启。</p></li><li><p>generic ephemeral volumes 这一种是更加灵活的emptyDir，可以是网络存储，如果插件支持，则各种持久卷的特性它都有可能支持。当前1.18不支持，从1.19开始支持，1.19也是alpha，默认不开启。</p><p>具体使用看https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#generic-ephemeral-volumes</p></li></ul>]]></content>
       
       
       <categories>
@@ -774,9 +801,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> storage </tag>
             
@@ -859,9 +886,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ingress </tag>
             
@@ -890,9 +917,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> StatefulSet </tag>
             
@@ -921,9 +948,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> DaemonSet </tag>
             
@@ -952,9 +979,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> 资源约束 </tag>
             
@@ -985,46 +1012,13 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
             <tag> 资源约束 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞10应用配置与密码与信息提供</title>
-      <link href="posts/4b0e4a5/"/>
-      <url>posts/4b0e4a5/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。</p><p>所以步骤一般是这样的。</p><ol><li>创建secret 和 configmap 对象</li></ol><h2 id="以文件方式提供">以文件方式提供</h2><p>kubernetes 提供了一种卷类型 projected volume。</p><p>写法：</p><pre><code class="language-yaml:">        volumeMounts:        - name: all-in-one          mountPath: /etc/allinfo          readonly: true  volumes:  - name: all-in-one    projected:      sources:      - secret:          name: user      - secret:          name: pass      - configmap:          name: content      - downwardAPI:          items:            - path: &quot;labels&quot;              fieldRef:                fieldPath: metadata.labels            - path: &quot;annotations&quot;              fieldRef:                fieldPath: metadata.annotations</code></pre><blockquote><p>user, pass, content, labels, annotations 将会以文件形式存在于容器挂载点 /etc/allinfo 内。</p></blockquote><p>创建 secret: user 和 secret: pass</p><pre><code class="language-bash">echo -n &quot;admin&quot; &gt; ./username.txtkubectl create secret generic user --from-file=./username.txtecho -n &quot;1f2d1e2e67df&quot; &gt; ./username.txtkubectl create secret generic pass --from-file=./password.txt</code></pre><p>创建 configmap: content</p><pre><code class="language-bash">echo -n &quot;userinfo&quot; &gt; ./content.txtkubectl create configmap content --from-file=./content.txt</code></pre><p>downwardAPI 内容直接写入</p><h2 id="配置ConfigMap">配置ConfigMap</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/configmap/">https://kubernetes.io/docs/concepts/configuration/configmap/</a></p><p>ConfigMap 常用在两种情况中. 第一种是提供环境变量.第二种是提供配置文件</p><p>一个简单配置例子如下</p><pre><code class="language-yaml">kind: ConfigMapapiVersion: v1metadata:  name: cm-demo  namespace: defaultdata:  data.1: hello  data.2: world  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>上述例子中, 包含的内容有</p><p>环境变量方式:</p><pre><code class="language-yaml">  data.1: hello  data.2: world</code></pre><p>配置文件方式:</p><pre><code class="language-yaml">  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>nginx.config 是文件名, 管道符 | 下面是文件内容.</p><p>需要注意的是, 内容依然要遵循 yaml 的缩进规则</p><p>使用方式如下:</p><pre><code class="language-yaml">    spec:      containers:      - name: nginx        image: nginx        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $&#123;DATA.1&#125; $&#123;DATA.2&#125;&quot;]        ports:        - containerPort: 80        env:        - name: DATA1          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.1        - name: DATA2          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.2        volumeMounts:        - name: cm-demo-vc          subPath: nginx.conf          mountPath: /etc/nginx/nginx.conf      volumes:      - name: cm-demo-vc        configMap:          name: cm-demo</code></pre><p>配置文件数据卷方式:</p><ul><li>通过在 spec.volumes 中定义一个关联声明(cm.demo-vc). 它一端被 spec.containers.volumeMounts 调用, 另一端关联 configMap. 然后通过 spec.containers.volumeMounts 绑定 configMap 后, 就可以使用 subPath 调用配置文件, 并使用 mountPath 挂载到容器里的具体路径上.</li><li>这种方式下,configMap更新后,pod内挂载的也会同时更新.</li></ul><p>环境变量方式:</p><ul><li>通过在 spec.containers.env 中定义. 例子中, DATA1 是环境变量的键, DATA1的值通过valueFrom定义.最终,你可以在容器中使用环境变量DATA1和DATA2</li></ul><h2 id="密码Secret">密码Secret</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/secret/">https://kubernetes.io/docs/concepts/configuration/secret/</a></p><p>secret对象里的值需要写入加密后的.</p><p>secret对象也可以被当作文件挂载或环境变量注入</p><p>一个简单例子:</p><p>我们定义一个用户密码对,分别时username和password</p><p>secret对象要求值必须进行base64编码加密(当type为Opaque的时候).</p><pre><code class="language-bash">[root@k8s00 test-yaml]# echo -n &quot;admin&quot; | base64YWRtaW4=[root@k8s00 test-yaml]# echo -n &quot;admin321&quot; | base64YWRtaW4zMjE=</code></pre><pre><code class="language-yaml"># 创建 secret 对象 mysecretapiVersion: v1kind: Secretmetadata:  name: mysecret  namespace: defaulttype: Opaquedata:  username: YWRtaW4=  password: MWYyZDFlMmU2N2Rm---apiVersion: v1kind: Podmetadata:  name: mypodspec:  containers:  - name: mypod    image: busybox    command:    - sleep    - &quot;3600&quot;    env:      - name: SECRET_USERNAME        valueFrom:          secretKeyRef:            name: mysecret            key: username      - name: SECRET_PASSWORD        valueFrom:          secretKeyRef:            name: mysecret            key: password    volumeMounts:    - name: foo      mountPath: &quot;/etc/foo&quot;      readOnly: true  volumes:  - name: foo    secret:      secretName: mysecret</code></pre><p>在通过上述配置创建好资源后,我们进入pod,进行测试.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl exec -it mypod -- /bin/sh===可以看到两个加密信息生成了两个软连接,并指向了隐藏文件/ # ls -l /etc/foototal 0lrwxrwxrwx    1 root     root            15 Sep 17 07:18 password -&gt; ..data/passwordlrwxrwxrwx    1 root     root            15 Sep 17 07:18 username -&gt; ..data/username===环境变量/ # echo $&#123;SECRET_USERNAME&#125;admin===文件方式/ # cat /etc/foo/usernameadmin/ # </code></pre><h2 id="限制">限制</h2><ul><li>机密资源限制在同一命名空间</li><li>数据大小不能超过1MB</li><li>当pod引用不存在的机密时,pod无法启动</li></ul><h2 id="其它">其它</h2><ol><li><p>不可变的机密(k8s v1.19以上)</p><pre><code class="language-yaml">secret.immutable: true</code></pre><p>这种方式用来构建永久不可变的密码,且构建后无法更改,且构建后使用它的pod也无法卸载掉它.</p><p>因此,一旦构建后想更改,则它和它关联的pod都要删除重建.</p><p>优点:</p><ul><li>避免错误的更新</li><li>显著提高集群性能</li></ul></li><li><p>命令方式创建</p><p>kubectl create configmap/secret <name> xxx</name></p><p>这里xxx可以用两种方式:</p><ul><li>–from-literal=<key>=<value> 指定kv</value></key></li><li>–from-file=&lt;文件/目录&gt; 当为目录的时候,会递归将目录里的文件都写入对象中</li></ul></li><li><p>隐藏的密码信息文件</p><p>你可以将 secret.data.<key> 写成 secret.data.&lt;.key&gt; 来隐藏它.</key></p></li></ol><h2 id="信息提供Downward-API">信息提供Downward API</h2><p><a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/</a></p><p>一个比较合适的解决方案是采用Downward API传递信息到容器. 然后程序根据信息来设置.</p><p>一个简单的例子: 将资源限制数据挂载到容器/etc/podinfo</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: kubernetes-downwardapi-volume-example-2spec:  containers:    - name: client-container      image: k8s.gcr.io/busybox:1.24      command: [&quot;sh&quot;, &quot;-c&quot;]      args:      - while true; do          echo -en '\n';          if [[ -e /etc/podinfo/cpu_limit ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_limit; fi;          if [[ -e /etc/podinfo/cpu_request ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_request; fi;          if [[ -e /etc/podinfo/mem_limit ]]; then            echo -en '\n'; cat /etc/podinfo/mem_limit; fi;          if [[ -e /etc/podinfo/mem_request ]]; then            echo -en '\n'; cat /etc/podinfo/mem_request; fi;          sleep 5;        done;      resources:        requests:          memory: &quot;32Mi&quot;          cpu: &quot;125m&quot;        limits:          memory: &quot;64Mi&quot;          cpu: &quot;250m&quot;      volumeMounts:        - name: podinfo          mountPath: /etc/podinfo  volumes:    - name: podinfo      downwardAPI:        items:          - path: &quot;cpu_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.cpu              divisor: 1m          - path: &quot;cpu_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.cpu              divisor: 1m          - path: &quot;mem_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.memory              divisor: 1Mi          - path: &quot;mem_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.memory              divisor: 1Mi</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
-            
-            <tag> k8s </tag>
-            
-            <tag> ConfigMap </tag>
-            
-            <tag> Secret </tag>
             
         </tags>
       
@@ -1051,9 +1045,42 @@
       
         <tags>
             
+            <tag> k8s </tag>
+            
             <tag> 容器 </tag>
             
+            <tag> ConfigMap </tag>
+            
+            <tag> Secret </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞10应用配置与密码与信息提供</title>
+      <link href="posts/4b0e4a5/"/>
+      <url>posts/4b0e4a5/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。</p><p>所以步骤一般是这样的。</p><ol><li>创建secret 和 configmap 对象</li></ol><h2 id="以文件方式提供">以文件方式提供</h2><p>kubernetes 提供了一种卷类型 projected volume。</p><p>写法：</p><pre><code class="language-yaml:">        volumeMounts:        - name: all-in-one          mountPath: /etc/allinfo          readonly: true  volumes:  - name: all-in-one    projected:      sources:      - secret:          name: user      - secret:          name: pass      - configmap:          name: content      - downwardAPI:          items:            - path: &quot;labels&quot;              fieldRef:                fieldPath: metadata.labels            - path: &quot;annotations&quot;              fieldRef:                fieldPath: metadata.annotations</code></pre><blockquote><p>user, pass, content, labels, annotations 将会以文件形式存在于容器挂载点 /etc/allinfo 内。</p></blockquote><p>创建 secret: user 和 secret: pass</p><pre><code class="language-bash">echo -n &quot;admin&quot; &gt; ./username.txtkubectl create secret generic user --from-file=./username.txtecho -n &quot;1f2d1e2e67df&quot; &gt; ./username.txtkubectl create secret generic pass --from-file=./password.txt</code></pre><p>创建 configmap: content</p><pre><code class="language-bash">echo -n &quot;userinfo&quot; &gt; ./content.txtkubectl create configmap content --from-file=./content.txt</code></pre><p>downwardAPI 内容直接写入</p><h2 id="配置ConfigMap">配置ConfigMap</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/configmap/">https://kubernetes.io/docs/concepts/configuration/configmap/</a></p><p>ConfigMap 常用在两种情况中. 第一种是提供环境变量.第二种是提供配置文件</p><p>一个简单配置例子如下</p><pre><code class="language-yaml">kind: ConfigMapapiVersion: v1metadata:  name: cm-demo  namespace: defaultdata:  data.1: hello  data.2: world  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>上述例子中, 包含的内容有</p><p>环境变量方式:</p><pre><code class="language-yaml">  data.1: hello  data.2: world</code></pre><p>配置文件方式:</p><pre><code class="language-yaml">  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>nginx.config 是文件名, 管道符 | 下面是文件内容.</p><p>需要注意的是, 内容依然要遵循 yaml 的缩进规则</p><p>使用方式如下:</p><pre><code class="language-yaml">    spec:      containers:      - name: nginx        image: nginx        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $&#123;DATA.1&#125; $&#123;DATA.2&#125;&quot;]        ports:        - containerPort: 80        env:        - name: DATA1          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.1        - name: DATA2          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.2        volumeMounts:        - name: cm-demo-vc          subPath: nginx.conf          mountPath: /etc/nginx/nginx.conf      volumes:      - name: cm-demo-vc        configMap:          name: cm-demo</code></pre><p>配置文件数据卷方式:</p><ul><li>通过在 spec.volumes 中定义一个关联声明(cm.demo-vc). 它一端被 spec.containers.volumeMounts 调用, 另一端关联 configMap. 然后通过 spec.containers.volumeMounts 绑定 configMap 后, 就可以使用 subPath 调用配置文件, 并使用 mountPath 挂载到容器里的具体路径上.</li><li>这种方式下,configMap更新后,pod内挂载的也会同时更新.</li></ul><p>环境变量方式:</p><ul><li>通过在 spec.containers.env 中定义. 例子中, DATA1 是环境变量的键, DATA1的值通过valueFrom定义.最终,你可以在容器中使用环境变量DATA1和DATA2</li></ul><h2 id="密码Secret">密码Secret</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/secret/">https://kubernetes.io/docs/concepts/configuration/secret/</a></p><p>secret对象里的值需要写入加密后的.</p><p>secret对象也可以被当作文件挂载或环境变量注入</p><p>一个简单例子:</p><p>我们定义一个用户密码对,分别时username和password</p><p>secret对象要求值必须进行base64编码加密(当type为Opaque的时候).</p><pre><code class="language-bash">[root@k8s00 test-yaml]# echo -n &quot;admin&quot; | base64YWRtaW4=[root@k8s00 test-yaml]# echo -n &quot;admin321&quot; | base64YWRtaW4zMjE=</code></pre><pre><code class="language-yaml"># 创建 secret 对象 mysecretapiVersion: v1kind: Secretmetadata:  name: mysecret  namespace: defaulttype: Opaquedata:  username: YWRtaW4=  password: MWYyZDFlMmU2N2Rm---apiVersion: v1kind: Podmetadata:  name: mypodspec:  containers:  - name: mypod    image: busybox    command:    - sleep    - &quot;3600&quot;    env:      - name: SECRET_USERNAME        valueFrom:          secretKeyRef:            name: mysecret            key: username      - name: SECRET_PASSWORD        valueFrom:          secretKeyRef:            name: mysecret            key: password    volumeMounts:    - name: foo      mountPath: &quot;/etc/foo&quot;      readOnly: true  volumes:  - name: foo    secret:      secretName: mysecret</code></pre><p>在通过上述配置创建好资源后,我们进入pod,进行测试.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl exec -it mypod -- /bin/sh===可以看到两个加密信息生成了两个软连接,并指向了隐藏文件/ # ls -l /etc/foototal 0lrwxrwxrwx    1 root     root            15 Sep 17 07:18 password -&gt; ..data/passwordlrwxrwxrwx    1 root     root            15 Sep 17 07:18 username -&gt; ..data/username===环境变量/ # echo $&#123;SECRET_USERNAME&#125;admin===文件方式/ # cat /etc/foo/usernameadmin/ # </code></pre><h2 id="限制">限制</h2><ul><li>机密资源限制在同一命名空间</li><li>数据大小不能超过1MB</li><li>当pod引用不存在的机密时,pod无法启动</li></ul><h2 id="其它">其它</h2><ol><li><p>不可变的机密(k8s v1.19以上)</p><pre><code class="language-yaml">secret.immutable: true</code></pre><p>这种方式用来构建永久不可变的密码,且构建后无法更改,且构建后使用它的pod也无法卸载掉它.</p><p>因此,一旦构建后想更改,则它和它关联的pod都要删除重建.</p><p>优点:</p><ul><li>避免错误的更新</li><li>显著提高集群性能</li></ul></li><li><p>命令方式创建</p><p>kubectl create configmap/secret <name> xxx</name></p><p>这里xxx可以用两种方式:</p><ul><li>–from-literal=<key>=<value> 指定kv</value></key></li><li>–from-file=&lt;文件/目录&gt; 当为目录的时候,会递归将目录里的文件都写入对象中</li></ul></li><li><p>隐藏的密码信息文件</p><p>你可以将 secret.data.<key> 写成 secret.data.&lt;.key&gt; 来隐藏它.</key></p></li></ol><h2 id="信息提供Downward-API">信息提供Downward API</h2><p><a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/</a></p><p>一个比较合适的解决方案是采用Downward API传递信息到容器. 然后程序根据信息来设置.</p><p>一个简单的例子: 将资源限制数据挂载到容器/etc/podinfo</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: kubernetes-downwardapi-volume-example-2spec:  containers:    - name: client-container      image: k8s.gcr.io/busybox:1.24      command: [&quot;sh&quot;, &quot;-c&quot;]      args:      - while true; do          echo -en '\n';          if [[ -e /etc/podinfo/cpu_limit ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_limit; fi;          if [[ -e /etc/podinfo/cpu_request ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_request; fi;          if [[ -e /etc/podinfo/mem_limit ]]; then            echo -en '\n'; cat /etc/podinfo/mem_limit; fi;          if [[ -e /etc/podinfo/mem_request ]]; then            echo -en '\n'; cat /etc/podinfo/mem_request; fi;          sleep 5;        done;      resources:        requests:          memory: &quot;32Mi&quot;          cpu: &quot;125m&quot;        limits:          memory: &quot;64Mi&quot;          cpu: &quot;250m&quot;      volumeMounts:        - name: podinfo          mountPath: /etc/podinfo  volumes:    - name: podinfo      downwardAPI:        items:          - path: &quot;cpu_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.cpu              divisor: 1m          - path: &quot;cpu_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.cpu              divisor: 1m          - path: &quot;mem_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.memory              divisor: 1Mi          - path: &quot;mem_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.memory              divisor: 1Mi</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ConfigMap </tag>
             
@@ -1084,9 +1111,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> service </tag>
             
@@ -1115,9 +1142,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> deployment </tag>
             
@@ -1146,9 +1173,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> deployment </tag>
             
@@ -1204,9 +1231,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -1266,9 +1293,9 @@
             
             <tag> 安装 </tag>
             
-            <tag> docker </tag>
-            
             <tag> zabbix </tag>
+            
+            <tag> docker </tag>
             
         </tags>
       
@@ -1324,9 +1351,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -1355,11 +1382,40 @@
       
         <tags>
             
+            <tag> k8s </tag>
+            
             <tag> 容器 </tag>
+            
+            <tag> pod </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞kubectl多集群管理</title>
+      <link href="posts/c15432fa/"/>
+      <url>posts/c15432fa/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://github.com/sunny0826/kubecm">sunny0826/kubecm: Easier management of kubeconfig. (github.com)</a></p><h2 id="下载、安装">下载、安装</h2><pre><code class="language-bash">wget -O kubecm_release.tgz https://github.com/sunny0826/kubecm/releases/download/v0.15.3/kubecm_0.15.3_Linux_x86_64.tar.gztar xf kubecm_release.tgz &amp;&amp; rm -rf kubecm_release.tgzmv kubecm /usr/local/bin/</code></pre><h2 id="基本使用">基本使用</h2><blockquote><p><a href="https://kubecm.cloud/#/en-us/cli/kubecm_add">add (kubecm.cloud)</a></p></blockquote><p>添加配置</p><pre><code class="language-bash">kubecm add -f qa.yaml # 合并 qa.yaml 到 ~/.kube/config==选择 true ，就会将名字叫 qa 的配置追加到 ~/.kube/config</code></pre><p>切换配置</p><pre><code class="language-bash">kubecm switch qa</code></pre><p>删除配置</p><pre><code class="language-bash">kubecm delete qa</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
             
             <tag> k8s </tag>
             
-            <tag> pod </tag>
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -1386,9 +1442,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -1415,9 +1471,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -1471,9 +1527,9 @@
       
         <tags>
             
-            <tag> zabbix </tag>
-            
             <tag> 监控 </tag>
+            
+            <tag> zabbix </tag>
             
         </tags>
       
@@ -1781,27 +1837,27 @@
     
     
     <entry>
-      <title>redis☞安装</title>
-      <link href="posts/65ab632a/"/>
-      <url>posts/65ab632a/</url>
+      <title>zabbix ☞ nginx</title>
+      <link href="posts/b35b5965/"/>
+      <url>posts/b35b5965/</url>
       
-        <content type="html"><![CDATA[<h4 id="docker-安装">docker 安装</h4><p><a href="https://registry.hub.docker.com/_/redis">Docker Hub</a></p><pre><code class="language-bash">redisName=redisversionTag=6dataPath=/export/docker-data-redismkdir -p $&#123;dataPath&#125;redis.conf 请参考官方默认配置文档，默认配置文档地址： https://redis.io/topics/configwget -P $&#123;dataPath&#125; https://raw.githubusercontent.com/redis/redis/$&#123;versionTag&#125;.0/redis.confdocker run --name  $&#123;redisName&#125;_$&#123;versionTag&#125; --mount &quot;type=bind, src=$&#123;dataPath&#125;, dst=/data&quot; -p 6379:6379 --restart always -d redis:$&#123;versionTag&#125; redis-server /data/redis.conf</code></pre><h4 id="编译安装">编译安装</h4><pre><code class="language-shell">#!/bin/bash# by zyh# 2018-06-21# DownUrl: redis源码包# RedisBaseDir： redis安装路径# RedisPort: redis端口# RedisMaxMem：redis内存限制# ZabbixBase: zabbix 根路径# 安装完毕后，会输出# 1. redis信息# 2. zabbix需要额外手动添加的命令， 并在zabbix_server_web里，给机器关联上 &lt;Template Redis Auto Discovert Active mode&gt; 模板# 3. monit需要额外手动添加的配置BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`DownUrl=http://download.redis.io/releases/redis-stable.tar.gzRedisMaxMem=1gRedisPort=6379RedisBaseDir=/export/redis_$&#123;RedisPort&#125;ZabbixBase=/etc/zabbixif [[ $&#123;ZabbixBase&#125; == '/usr/local/zabbix' ]];then    ZabbixShell=$&#123;ZabbixBase&#125;/shell    ZabbixEtc=$&#123;ZabbixBase&#125;/etc/zabbix_agentd.conf.d/redis.confelse    ZabbixShell=/etc/zabbix/shell    ZabbixEtc=/etc/zabbix/zabbix_agentd.d/redis.conffiRedisBaseName=$&#123;RedisBaseDir##*/&#125;export TOP_PID=$$trap 'exit 1' TERMexit_script()&#123;    kill -s TERM $TOP_PID&#125;yum install gcc-c++ -y[[ -d $&#123;RedisBaseDir&#125; ]] &amp;&amp; echo &quot;$&#123;RedisBaseDir&#125;已存在&quot; &amp;&amp; exit_scriptss -tnalp | grep redis | awk '&#123;print $4&#125;' | awk -F':' '&#123;print $2&#125;' | while read line;do    [[ $line -eq $&#123;RedisPort&#125; ]] &amp;&amp; echo &quot;$&#123;RedisPort&#125;已被占用&quot; &amp;&amp; exit_scriptdonecd $&#123;BaseDir&#125; &amp;&amp; mkdir rediswget $&#123;DownUrl&#125; -O redis.tar.gztar xf redis.tar.gz --strip-components 1 -C rediscd redismake PREFIX=$&#123;RedisBaseDir&#125; installmkdir $&#123;RedisBaseDir&#125;/&#123;etc,data,logs&#125;cat&gt;$&#123;RedisBaseDir&#125;/etc/redis.conf &lt;&lt;EOFbind 0.0.0.0protected-mode yesport $&#123;RedisPort&#125;tcp-backlog 511timeout 0tcp-keepalive 300daemonize yessupervised nopidfile $&#123;RedisBaseDir&#125;/redis.pidloglevel warninglogfile &quot;$&#123;RedisBaseDir&#125;/logs/redis.log&quot;databases 16always-show-logo yessave 900 1save 300 10save 60 10000stop-writes-on-bgsave-error yesrdbcompression yesrdbchecksum yesdbfilename redis_$&#123;RedisPort&#125;.rdbdir $&#123;RedisBaseDir&#125;/data/slave-serve-stale-data yesslave-read-only yesrepl-diskless-sync norepl-diskless-sync-delay 5repl-disable-tcp-nodelay noslave-priority 100rename-command FLUSHDB GOD_FLUSHDBrename-command FLUSHALL GOD_FLUSHALLrename-command CONFIG GOD_CONFIGrename-command KEYS GOD_KEYSmaxmemory $&#123;RedisMaxMem&#125;maxmemory-policy allkeys-lrulazyfree-lazy-eviction nolazyfree-lazy-expire nolazyfree-lazy-server-del noslave-lazy-flush noappendonly noappendfilename &quot;appendonly.aof&quot;appendfsync everysecno-appendfsync-on-rewrite noauto-aof-rewrite-percentage 100auto-aof-rewrite-min-size 64mbaof-load-truncated yesaof-use-rdb-preamble nolua-time-limit 5000slowlog-log-slower-than 10000slowlog-max-len 128latency-monitor-threshold 0notify-keyspace-events &quot;&quot;hash-max-ziplist-entries 512hash-max-ziplist-value 64list-max-ziplist-size -2list-compress-depth 0set-max-intset-entries 512zset-max-ziplist-entries 128zset-max-ziplist-value 64hll-sparse-max-bytes 3000activerehashing yesclient-output-buffer-limit normal 0 0 0client-output-buffer-limit slave 256mb 64mb 60client-output-buffer-limit pubsub 32mb 8mb 60hz 10aof-rewrite-incremental-fsync yesEOFcat&gt;$&#123;RedisBaseDir&#125;/redis.sh &lt;&lt; EOF#!/bin/bash# Simple Redis init.d script conceived to work on Linux systems# as it does use of the /proc filesystem.BASEDIR=$&#123;RedisBaseDir&#125;REDISPORT=$&#123;RedisPort&#125;EXEC=\$BASEDIR/bin/redis-serverCLIEXEC=\$BASEDIR/bin/redis-cliPIDFILE=\$BASEDIR/redis.pidCONF=&quot;\$BASEDIR/etc/redis.conf&quot;case &quot;\$1&quot; in    start)        [[ -f \$PIDFILE ]] &amp;&amp; kill -0 \`cat \$PIDFILE\` 2&gt;&gt;\$BASEDIR/crash.log &amp;&amp; echo &quot;\$PIDFILE exists, process is already running or crashed&quot; || &#123;                echo &quot;Starting Redis server...&quot;                \$EXEC \$CONF        &#125;        ;;    stop)        if [ ! -f \$PIDFILE ]        then                echo &quot;\$PIDFILE does not exist, process is not running&quot;        else                PID=\$(cat \$PIDFILE)                echo &quot;Stopping ...&quot;                \$CLIEXEC -p \$REDISPORT shutdown                while [ -x /proc/\$&#123;PID&#125; ]                do                    echo &quot;Waiting for Redis to shutdown ...&quot;                    sleep 1                done                echo &quot;Redis stopped&quot;        fi        ;;    *)        echo &quot;Please use start or stop as first argument&quot;        ;;esacEOFchmod u+x $&#123;RedisBaseDir&#125;/redis.sh#修改内核参数grep -q net.core.somaxconn /etc/sysctl.conf || echo &quot;net.core.somaxconn = 511&quot; &gt;&gt; /etc/sysctl.confgrep -q vm.overcommit_memory /etc/sysctl.conf || &#123;    echo &quot;vm.overcommit_memory = 1&quot; &gt;&gt; /etc/sysctl.conf &amp;&amp; sysctl -p&#125;grep -q '/sys/kernel/mm/transparent_hugepage/enabled' /etc/rc.local || &#123;    echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled    echo 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' &gt;&gt; /etc/rc.local&#125;#修改zabbix监控cat&gt;$&#123;ZabbixEtc&#125;&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFmkdir $&#123;ZabbixShell&#125;cat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashREDISPATH=&quot;/export/redis/bin/redis-cli&quot;HOST=$1PORT=$2REDIS_INFO=&quot;$REDISPATH -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$REDISPATH -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i '2s#/export/redis#'&quot;$&#123;RedisBaseDir&#125;&quot;'#' $&#123;ZabbixShell&#125;/redis_info.shecho '--------------------------------------------------我是 redis 信息-----------------------------------------------------------'echo 'redis相关信息如下：'echo &quot;根路径：$&#123;RedisBaseDir&#125;启动脚本：$&#123;RedisBaseDir&#125;/redis.sh&quot;echo '--------------------------------------------------我是 zabbix 监控信息----------------------------------------------------------'echo '请先安装 zabbix.'echo 'zabbix监控因使用了ss命令，故而需要开启sudo相关信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '---------------------------------------------------我是 monit 监控信息----------------------------------------------------------'echo '请先安装 monit.'echo 'monit配置文件如下:'echo &quot;check process $&#123;RedisBaseName&#125; with pidfile $&#123;RedisBaseDir&#125;/redis.pid  start program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh start\&quot;  stop program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh stop\&quot;if changed pid then alert&quot;</code></pre>]]></content>
+        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
       
       
       <categories>
           
-          <category> 数据库 </category>
+          <category> 监控 </category>
           
-          <category> redis </category>
+          <category> zabbix </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 安装 </tag>
+            <tag> 监控 </tag>
             
-            <tag> redis </tag>
+            <tag> zabbix </tag>
             
         </tags>
       
@@ -1828,96 +1884,9 @@
       
         <tags>
             
-            <tag> zabbix </tag>
-            
             <tag> 监控 </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix ☞ nginx</title>
-      <link href="posts/b35b5965/"/>
-      <url>posts/b35b5965/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
             <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>日志☞logrotate安装</title>
-      <link href="posts/421d605e/"/>
-      <url>posts/421d605e/</url>
-      
-        <content type="html"><![CDATA[<h4 id="前言">前言</h4><p>logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转</p><h4 id="logrotate-版本更新">logrotate 版本更新</h4><blockquote><p>确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本<a href="D:%5Czyh.cool%5Csource_posts%5C%E6%97%A5%E5%BF%97%5C%E5%85%B6%E5%AE%83%5C%E6%97%A5%E5%BF%97%E2%98%9Elogrotate%E5%AE%89%E8%A3%85%5Clogrotate">logrotate</a></p><p>或者也可以直接去 github 上拉取https://github.com/logrotate/logrotate</p></blockquote><h4 id="添加-logrotate-配置">添加 logrotate 配置</h4><pre><code class="language-bash"># 添加所需切割的日志配置cat &gt; /etc/logrotate.d/nginx &lt;&lt; 'EOF'/usr/local/nginx/logs/access.log &#123;  # 定义日志位置 hourly    # 按照小时切割 rotate 2  # 最多保留两份切割日志 missingok nocompress sharedscripts postrotate  /bin/kill -USR1 `cat /usr/local/nginx/logs/nginx.pid 2&gt;/dev/null` 2&gt;/dev/null || true endscript&#125;EOF</code></pre><h4 id="添加-crontab-配置">添加 crontab 配置</h4><pre><code class="language-bash"># 添加logrotate执行脚本cp /etc/cron.daily/logrotate /etc/cron.hourly/</code></pre><h4 id="重载-crond-服务">重载 crond 服务</h4><pre><code class="language-bash">systemctl reload crond</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 日志 </category>
-          
-          <category> 其它 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 安装 </tag>
-            
-            <tag> logrotate </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞agent和proxy（yum）</title>
-      <link href="posts/1587f6e8/"/>
-      <url>posts/1587f6e8/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
             
         </tags>
       
@@ -1947,6 +1916,62 @@
             <tag> redis </tag>
             
             <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞agent和proxy（yum）</title>
+      <link href="posts/1587f6e8/"/>
+      <url>posts/1587f6e8/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>监控 ☞ 远程磁盘检测</title>
+      <link href="posts/1fac36d/"/>
+      <url>posts/1fac36d/</url>
+      
+        <content type="html"><![CDATA[<pre><code class="language-bash">#!/bin/bash # 文件名：disklog.sh # 用途：监视远程系统的磁盘使用情况 BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $BaseDirlogfile=&quot;disk.log&quot; if [[ -n $1 ]];then     logfile=$1 fishellexecuser=`whoami`if [[ $shellexecuser == root ]];then    rm -rf /root/.ssh/known_hostselse    rm -rf /home/$shellexecuser/.ssh/known_hostsfiprintf &quot;%-8s %-14s %-9s %-8s %-6s %-6s %-6s %s\r\n&quot; &quot;Date&quot; &quot;IP ADDRESS&quot; &quot;Device&quot; &quot;Capacity&quot; &quot;Used&quot; &quot;Free&quot; &quot;Percent&quot; &quot;Status&quot; &gt; $logfile ##################### 手动填写区# 提供远程主机IP地址列表 1.1.1.1 2.2.2.2 3.3.3.3IP_LIST=# 监控阈值(百分比) 只填写数字 1 到 100DiskPct=# 执行用户UserName=''# 执行用户所需私钥, 此文件需要与脚本同级目录PemName=''# 企业微信bot机器人地址wx_api=''##################### 手动填写区for ip in $IP_LIST;do     ssh -i $PemName -o StrictHostKeyChecking=no $&#123;UserName&#125;@$ip 'df -H' | grep ^/dev/ &gt; /tmp/$$.df     while read line;do         cur_date=`date  &quot;+%F_%R&quot;`        printf &quot;%-8s %-14s &quot; $cur_date $ip         echo $line | awk '&#123; printf(&quot;%-9s %-8s %-6s %-6s %-8s&quot;, $1,$2,$3,$4,$5); &#125;'         pusg=$(echo $line | egrep -o &quot;[0-9]+%&quot;)         pusg=$&#123;pusg/\%/&#125;;         if [ $pusg -lt $DiskPct ];then             echo OK        else             echo ALERT         fi     done &lt; /tmp/$$.df     rm -rf /tmp/$$.dfdone &gt;&gt; $&#123;logfile&#125;sed -n '1p' $&#123;logfile&#125; &gt; alert.logawk '$NF == &quot;ALERT&quot;&#123;print $0&#125;' $&#123;logfile&#125; &gt;&gt; alert.log#sed -i '1i &quot;磁盘阈值：'&quot;$DiskPct&quot;'&quot;' alert.logcontent=`cat alert.log`grep -q 'ALERT' alert.log &amp;&amp; &#123;curl &quot;$wx_api&quot;  -H 'Content-Type: application/json'  \-d '   &#123;        &quot;msgtype&quot;: &quot;text&quot;,        &quot;text&quot;: &#123;            &quot;content&quot;: &quot;'&quot;$content&quot;'&quot;        &#125;   &#125;'&#125;</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> 磁盘 </tag>
             
         </tags>
       
@@ -2036,25 +2061,56 @@
     
     
     <entry>
-      <title>监控 ☞ 远程磁盘检测</title>
-      <link href="posts/1fac36d/"/>
-      <url>posts/1fac36d/</url>
+      <title>日志☞logrotate安装</title>
+      <link href="posts/421d605e/"/>
+      <url>posts/421d605e/</url>
       
-        <content type="html"><![CDATA[<pre><code class="language-bash">#!/bin/bash # 文件名：disklog.sh # 用途：监视远程系统的磁盘使用情况 BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $BaseDirlogfile=&quot;disk.log&quot; if [[ -n $1 ]];then     logfile=$1 fishellexecuser=`whoami`if [[ $shellexecuser == root ]];then    rm -rf /root/.ssh/known_hostselse    rm -rf /home/$shellexecuser/.ssh/known_hostsfiprintf &quot;%-8s %-14s %-9s %-8s %-6s %-6s %-6s %s\r\n&quot; &quot;Date&quot; &quot;IP ADDRESS&quot; &quot;Device&quot; &quot;Capacity&quot; &quot;Used&quot; &quot;Free&quot; &quot;Percent&quot; &quot;Status&quot; &gt; $logfile ##################### 手动填写区# 提供远程主机IP地址列表 1.1.1.1 2.2.2.2 3.3.3.3IP_LIST=# 监控阈值(百分比) 只填写数字 1 到 100DiskPct=# 执行用户UserName=''# 执行用户所需私钥, 此文件需要与脚本同级目录PemName=''# 企业微信bot机器人地址wx_api=''##################### 手动填写区for ip in $IP_LIST;do     ssh -i $PemName -o StrictHostKeyChecking=no $&#123;UserName&#125;@$ip 'df -H' | grep ^/dev/ &gt; /tmp/$$.df     while read line;do         cur_date=`date  &quot;+%F_%R&quot;`        printf &quot;%-8s %-14s &quot; $cur_date $ip         echo $line | awk '&#123; printf(&quot;%-9s %-8s %-6s %-6s %-8s&quot;, $1,$2,$3,$4,$5); &#125;'         pusg=$(echo $line | egrep -o &quot;[0-9]+%&quot;)         pusg=$&#123;pusg/\%/&#125;;         if [ $pusg -lt $DiskPct ];then             echo OK        else             echo ALERT         fi     done &lt; /tmp/$$.df     rm -rf /tmp/$$.dfdone &gt;&gt; $&#123;logfile&#125;sed -n '1p' $&#123;logfile&#125; &gt; alert.logawk '$NF == &quot;ALERT&quot;&#123;print $0&#125;' $&#123;logfile&#125; &gt;&gt; alert.log#sed -i '1i &quot;磁盘阈值：'&quot;$DiskPct&quot;'&quot;' alert.logcontent=`cat alert.log`grep -q 'ALERT' alert.log &amp;&amp; &#123;curl &quot;$wx_api&quot;  -H 'Content-Type: application/json'  \-d '   &#123;        &quot;msgtype&quot;: &quot;text&quot;,        &quot;text&quot;: &#123;            &quot;content&quot;: &quot;'&quot;$content&quot;'&quot;        &#125;   &#125;'&#125;</code></pre>]]></content>
+        <content type="html"><![CDATA[<h4 id="前言">前言</h4><p>logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转</p><h4 id="logrotate-版本更新">logrotate 版本更新</h4><blockquote><p>确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本<a href="D:%5Czyh.cool%5Csource_posts%5C%E6%97%A5%E5%BF%97%5C%E5%85%B6%E5%AE%83%5C%E6%97%A5%E5%BF%97%E2%98%9Elogrotate%E5%AE%89%E8%A3%85%5Clogrotate">logrotate</a></p><p>或者也可以直接去 github 上拉取https://github.com/logrotate/logrotate</p></blockquote><h4 id="添加-logrotate-配置">添加 logrotate 配置</h4><pre><code class="language-bash"># 添加所需切割的日志配置cat &gt; /etc/logrotate.d/nginx &lt;&lt; 'EOF'/usr/local/nginx/logs/access.log &#123;  # 定义日志位置 hourly    # 按照小时切割 rotate 2  # 最多保留两份切割日志 missingok nocompress sharedscripts postrotate  /bin/kill -USR1 `cat /usr/local/nginx/logs/nginx.pid 2&gt;/dev/null` 2&gt;/dev/null || true endscript&#125;EOF</code></pre><h4 id="添加-crontab-配置">添加 crontab 配置</h4><pre><code class="language-bash"># 添加logrotate执行脚本cp /etc/cron.daily/logrotate /etc/cron.hourly/</code></pre><h4 id="重载-crond-服务">重载 crond 服务</h4><pre><code class="language-bash">systemctl reload crond</code></pre>]]></content>
       
       
       <categories>
           
-          <category> 监控 </category>
+          <category> 日志 </category>
+          
+          <category> 其它 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 监控 </tag>
+            <tag> 安装 </tag>
             
-            <tag> 磁盘 </tag>
+            <tag> logrotate </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>redis☞安装</title>
+      <link href="posts/65ab632a/"/>
+      <url>posts/65ab632a/</url>
+      
+        <content type="html"><![CDATA[<h4 id="docker-安装">docker 安装</h4><p><a href="https://registry.hub.docker.com/_/redis">Docker Hub</a></p><pre><code class="language-bash">redisName=redisversionTag=6dataPath=/export/docker-data-redismkdir -p $&#123;dataPath&#125;redis.conf 请参考官方默认配置文档，默认配置文档地址： https://redis.io/topics/configwget -P $&#123;dataPath&#125; https://raw.githubusercontent.com/redis/redis/$&#123;versionTag&#125;.0/redis.confdocker run --name  $&#123;redisName&#125;_$&#123;versionTag&#125; --mount &quot;type=bind, src=$&#123;dataPath&#125;, dst=/data&quot; -p 6379:6379 --restart always -d redis:$&#123;versionTag&#125; redis-server /data/redis.conf</code></pre><h4 id="编译安装">编译安装</h4><pre><code class="language-shell">#!/bin/bash# by zyh# 2018-06-21# DownUrl: redis源码包# RedisBaseDir： redis安装路径# RedisPort: redis端口# RedisMaxMem：redis内存限制# ZabbixBase: zabbix 根路径# 安装完毕后，会输出# 1. redis信息# 2. zabbix需要额外手动添加的命令， 并在zabbix_server_web里，给机器关联上 &lt;Template Redis Auto Discovert Active mode&gt; 模板# 3. monit需要额外手动添加的配置BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`DownUrl=http://download.redis.io/releases/redis-stable.tar.gzRedisMaxMem=1gRedisPort=6379RedisBaseDir=/export/redis_$&#123;RedisPort&#125;ZabbixBase=/etc/zabbixif [[ $&#123;ZabbixBase&#125; == '/usr/local/zabbix' ]];then    ZabbixShell=$&#123;ZabbixBase&#125;/shell    ZabbixEtc=$&#123;ZabbixBase&#125;/etc/zabbix_agentd.conf.d/redis.confelse    ZabbixShell=/etc/zabbix/shell    ZabbixEtc=/etc/zabbix/zabbix_agentd.d/redis.conffiRedisBaseName=$&#123;RedisBaseDir##*/&#125;export TOP_PID=$$trap 'exit 1' TERMexit_script()&#123;    kill -s TERM $TOP_PID&#125;yum install gcc-c++ -y[[ -d $&#123;RedisBaseDir&#125; ]] &amp;&amp; echo &quot;$&#123;RedisBaseDir&#125;已存在&quot; &amp;&amp; exit_scriptss -tnalp | grep redis | awk '&#123;print $4&#125;' | awk -F':' '&#123;print $2&#125;' | while read line;do    [[ $line -eq $&#123;RedisPort&#125; ]] &amp;&amp; echo &quot;$&#123;RedisPort&#125;已被占用&quot; &amp;&amp; exit_scriptdonecd $&#123;BaseDir&#125; &amp;&amp; mkdir rediswget $&#123;DownUrl&#125; -O redis.tar.gztar xf redis.tar.gz --strip-components 1 -C rediscd redismake PREFIX=$&#123;RedisBaseDir&#125; installmkdir $&#123;RedisBaseDir&#125;/&#123;etc,data,logs&#125;cat&gt;$&#123;RedisBaseDir&#125;/etc/redis.conf &lt;&lt;EOFbind 0.0.0.0protected-mode yesport $&#123;RedisPort&#125;tcp-backlog 511timeout 0tcp-keepalive 300daemonize yessupervised nopidfile $&#123;RedisBaseDir&#125;/redis.pidloglevel warninglogfile &quot;$&#123;RedisBaseDir&#125;/logs/redis.log&quot;databases 16always-show-logo yessave 900 1save 300 10save 60 10000stop-writes-on-bgsave-error yesrdbcompression yesrdbchecksum yesdbfilename redis_$&#123;RedisPort&#125;.rdbdir $&#123;RedisBaseDir&#125;/data/slave-serve-stale-data yesslave-read-only yesrepl-diskless-sync norepl-diskless-sync-delay 5repl-disable-tcp-nodelay noslave-priority 100rename-command FLUSHDB GOD_FLUSHDBrename-command FLUSHALL GOD_FLUSHALLrename-command CONFIG GOD_CONFIGrename-command KEYS GOD_KEYSmaxmemory $&#123;RedisMaxMem&#125;maxmemory-policy allkeys-lrulazyfree-lazy-eviction nolazyfree-lazy-expire nolazyfree-lazy-server-del noslave-lazy-flush noappendonly noappendfilename &quot;appendonly.aof&quot;appendfsync everysecno-appendfsync-on-rewrite noauto-aof-rewrite-percentage 100auto-aof-rewrite-min-size 64mbaof-load-truncated yesaof-use-rdb-preamble nolua-time-limit 5000slowlog-log-slower-than 10000slowlog-max-len 128latency-monitor-threshold 0notify-keyspace-events &quot;&quot;hash-max-ziplist-entries 512hash-max-ziplist-value 64list-max-ziplist-size -2list-compress-depth 0set-max-intset-entries 512zset-max-ziplist-entries 128zset-max-ziplist-value 64hll-sparse-max-bytes 3000activerehashing yesclient-output-buffer-limit normal 0 0 0client-output-buffer-limit slave 256mb 64mb 60client-output-buffer-limit pubsub 32mb 8mb 60hz 10aof-rewrite-incremental-fsync yesEOFcat&gt;$&#123;RedisBaseDir&#125;/redis.sh &lt;&lt; EOF#!/bin/bash# Simple Redis init.d script conceived to work on Linux systems# as it does use of the /proc filesystem.BASEDIR=$&#123;RedisBaseDir&#125;REDISPORT=$&#123;RedisPort&#125;EXEC=\$BASEDIR/bin/redis-serverCLIEXEC=\$BASEDIR/bin/redis-cliPIDFILE=\$BASEDIR/redis.pidCONF=&quot;\$BASEDIR/etc/redis.conf&quot;case &quot;\$1&quot; in    start)        [[ -f \$PIDFILE ]] &amp;&amp; kill -0 \`cat \$PIDFILE\` 2&gt;&gt;\$BASEDIR/crash.log &amp;&amp; echo &quot;\$PIDFILE exists, process is already running or crashed&quot; || &#123;                echo &quot;Starting Redis server...&quot;                \$EXEC \$CONF        &#125;        ;;    stop)        if [ ! -f \$PIDFILE ]        then                echo &quot;\$PIDFILE does not exist, process is not running&quot;        else                PID=\$(cat \$PIDFILE)                echo &quot;Stopping ...&quot;                \$CLIEXEC -p \$REDISPORT shutdown                while [ -x /proc/\$&#123;PID&#125; ]                do                    echo &quot;Waiting for Redis to shutdown ...&quot;                    sleep 1                done                echo &quot;Redis stopped&quot;        fi        ;;    *)        echo &quot;Please use start or stop as first argument&quot;        ;;esacEOFchmod u+x $&#123;RedisBaseDir&#125;/redis.sh#修改内核参数grep -q net.core.somaxconn /etc/sysctl.conf || echo &quot;net.core.somaxconn = 511&quot; &gt;&gt; /etc/sysctl.confgrep -q vm.overcommit_memory /etc/sysctl.conf || &#123;    echo &quot;vm.overcommit_memory = 1&quot; &gt;&gt; /etc/sysctl.conf &amp;&amp; sysctl -p&#125;grep -q '/sys/kernel/mm/transparent_hugepage/enabled' /etc/rc.local || &#123;    echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled    echo 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' &gt;&gt; /etc/rc.local&#125;#修改zabbix监控cat&gt;$&#123;ZabbixEtc&#125;&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFmkdir $&#123;ZabbixShell&#125;cat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashREDISPATH=&quot;/export/redis/bin/redis-cli&quot;HOST=$1PORT=$2REDIS_INFO=&quot;$REDISPATH -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$REDISPATH -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i '2s#/export/redis#'&quot;$&#123;RedisBaseDir&#125;&quot;'#' $&#123;ZabbixShell&#125;/redis_info.shecho '--------------------------------------------------我是 redis 信息-----------------------------------------------------------'echo 'redis相关信息如下：'echo &quot;根路径：$&#123;RedisBaseDir&#125;启动脚本：$&#123;RedisBaseDir&#125;/redis.sh&quot;echo '--------------------------------------------------我是 zabbix 监控信息----------------------------------------------------------'echo '请先安装 zabbix.'echo 'zabbix监控因使用了ss命令，故而需要开启sudo相关信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '---------------------------------------------------我是 monit 监控信息----------------------------------------------------------'echo '请先安装 monit.'echo 'monit配置文件如下:'echo &quot;check process $&#123;RedisBaseName&#125; with pidfile $&#123;RedisBaseDir&#125;/redis.pid  start program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh start\&quot;  stop program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh stop\&quot;if changed pid then alert&quot;</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 数据库 </category>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 安装 </tag>
+            
+            <tag> redis </tag>
             
         </tags>
       
@@ -2754,7 +2810,7 @@
       <link href="posts/b7cf7b1f/"/>
       <url>posts/b7cf7b1f/</url>
       
-        <content type="html"><![CDATA[<h2 id="依赖">依赖</h2><pre><code class="language-bash">yum install -y yum-utils \  device-mapper-persistent-data \  lvm2</code></pre><h2 id="仓库">仓库</h2><pre><code class="language-bash:">yum-config-manager \    --add-repo \    https://download.docker.com/linux/centos/docker-ce.repo</code></pre><p>💁如果你用的是阿里云的镜像，那么则需要手动修改repo文件地址，例如：<a href="https://download.docker.com/linux/centos/7/x86_64/stable/">https://download.docker.com/linux/centos/7/x86_64/stable/</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">yum install docker-ce -y### 安装 compose ， 可选yum install python3-pip -ypip3 install docker-compose 或者 pip install docker-compose### 开机自启动systemctl enable docker</code></pre><h3 id="安装-runlike-命令">安装 runlike 命令</h3><p>runlike命令可以输出docker启动的时候的指令</p><pre><code class="language-bash">pip install runlikerunlike &lt;container_id&gt; # 输出run指令不过需要注意的是，这个命令并不完美，比如输出不了mount参数，因为你还需要通过docker inspect &lt;container_id&gt;来查看mount指令</code></pre><h2 id="修改-docker-默认数据目录">修改 docker 默认数据目录</h2><pre><code class="language-bash">[[ -f /etc/docker/daemon.json ]] &amp;&amp; mv /etc/docker/daemon.json /etc/docker/daemon.json.default || &#123; mkdir -p /etc/docker/ &amp;&amp;  touch /etc/docker/daemon.json &#125;cat &gt;  /etc/docker/daemon.json &lt;&lt; EOF&#123;  &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;],  &quot;data-root&quot;: &quot;/export/docker-data-root&quot;&#125;EOF</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">systemctl start docker</code></pre><h2 id="镜像库">镜像库</h2><pre><code class="language-bash">docker hubquay.io</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="依赖">依赖</h2><pre><code class="language-bash">yum install -y yum-utils \  device-mapper-persistent-data \  lvm2</code></pre><h2 id="仓库">仓库</h2><pre><code class="language-bash:">yum-config-manager \    --add-repo \    https://download.docker.com/linux/centos/docker-ce.repo</code></pre><p>💁如果你用的是阿里云的镜像，那么则需要手动修改repo文件地址，例如：<a href="https://download.docker.com/linux/centos/7/x86_64/stable/">https://download.docker.com/linux/centos/7/x86_64/stable/</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">yum install docker-ce -y### 安装 compose ， 可选yum install python3-pip -ypip3 install --upgrade pip &amp;&amp; pip3 install docker-composepip3 install docker-compose### 开机自启动systemctl enable docker</code></pre><h3 id="安装-runlike-命令">安装 runlike 命令</h3><p>runlike命令可以输出docker启动的时候的指令</p><pre><code class="language-bash">pip3 install runlikerunlike &lt;container_id&gt; # 输出run指令不过需要注意的是，这个命令并不完美，比如输出不了mount参数，因为你还需要通过docker inspect &lt;container_id&gt;来查看mount指令</code></pre><h2 id="修改-docker-默认数据目录">修改 docker 默认数据目录</h2><pre><code class="language-bash">[[ -f /etc/docker/daemon.json ]] &amp;&amp; mv /etc/docker/daemon.json /etc/docker/daemon.json.default || &#123; mkdir -p /etc/docker/ &amp;&amp;  touch /etc/docker/daemon.json &#125;cat &gt;  /etc/docker/daemon.json &lt;&lt; EOF&#123;  &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;],  &quot;data-root&quot;: &quot;/export/docker-data-root&quot;&#125;EOF</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">systemctl start docker</code></pre><h2 id="镜像库">镜像库</h2><pre><code class="language-bash">docker hubquay.io</code></pre>]]></content>
       
       
       <categories>
@@ -2768,9 +2824,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> docker </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2797,9 +2853,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -3032,7 +3088,7 @@
       <link href="posts/3f38f454/"/>
       <url>posts/3f38f454/</url>
       
-        <content type="html"><![CDATA[<blockquote><p><a href="https://docs.gitlab.com/omnibus/docker/">https://docs.gitlab.com/omnibus/docker/</a></p><p><a href="https://hub.docker.com/r/gitlab/gitlab-ce">https://hub.docker.com/r/gitlab/gitlab-ce</a></p><p><a href="https://docs.gitlab.com/14.0/ee/update/index.html#community-to-enterprise-edition">Upgrading GitLab | GitLab</a></p></blockquote><h2 id="安装">安装</h2><pre><code class="language-bash"># 确保 /export 存在mkdir -p /export/docker-data-gitlab/&#123;config, logs, data&#125;gitlabtag=# createdomainName=docker pull gitlab/gitlab-ce:$&#123;gitlabtag&#125;docker run --detach   --hostname $&#123;domainName&#125;   --publish 443:443 --publish 80:80 --publish 2222:22   --name gitlab   --restart always   --volume /export/docker-data-gitlab/config:/etc/gitlab   --volume /export/docker-data-gitlab/logs:/var/log/gitlab   --volume /export/docker-data-gitlab/data:/var/opt/gitlab   gitlab/gitlab-ce:$&#123;gitlabtag&#125;# startdocker start gitlab# stopdocker stop gitlab</code></pre><h2 id="基本配置">基本配置</h2><pre><code class="language-bash"># configure# https://docs.gitlab.com/omnibus/settings/README.htmlcp /export/docker-data-gitlab/config/gitlab.rb /export/docker-data-gitlab/config/gitlab.rb.bak</code></pre><pre><code class="language-bash">## /export/docker-data-gitlab/config/gitlab.rb# 决定各个位置 url 链接内容external_url 'http://$&#123;domainName&#125;'# 决定各个位置 ssh 链接内容gitlab_rails['gitlab_shell_ssh_port'] = 2222gitlab_rails['gitlab_email_enabled'] = truegitlab_rails['gitlab_email_from'] = 'ew@xxx.com'gitlab_rails['gitlab_email_display_name'] = 'GitLab Admin'gitlab_rails['gitlab_email_reply_to'] = 'ew@xxx.com'gitlab_rails['gitlab_email_subject_suffix'] = 'GitLab'gitlab_rails['smtp_enable'] = truegitlab_rails['smtp_address'] = &quot;smtp.gmail.com&quot;gitlab_rails['smtp_port'] = 587gitlab_rails['smtp_user_name'] = &quot;ew@xxx.com&quot;gitlab_rails['smtp_password'] = &quot;&quot;gitlab_rails['smtp_domain'] = &quot;smtp.gmail.com&quot;gitlab_rails['smtp_authentication'] = &quot;login&quot;gitlab_rails['smtp_enable_starttls_auto'] = truegitlab_rails['smtp_tls'] = falsegitlab_rails['smtp_openssl_verify_mode'] = 'peer'</code></pre><h2 id="备份配置">备份配置</h2><p>备份到AWS-S3，role 授权</p><pre><code class="language-bash">## /export/docker-data-gitlab/config/gitlab.rbgitlab_rails['backup_upload_connection'] = &#123;  'provider' =&gt; 'AWS',  'region' =&gt; '&lt;region-id&gt;',  #'aws_access_key_id' =&gt; 'AKIAKIAKI',  #'aws_secret_access_key' =&gt; 'secret123'  # If using an IAM Profile, don't configure aws_access_key_id &amp; aws_secret_access_key  'use_iam_profile' =&gt; true&#125;# 备份到S3上的根路径 bucket/Path gitlab_rails['backup_upload_remote_directory'] = '&lt;桶名&gt;/backup/gitlab'</code></pre><pre><code class="language-json"># s3策略&#123;    &quot;Version&quot;: &quot;2012-10-17&quot;,    &quot;Statement&quot;: [        &#123;            &quot;Sid&quot;: &quot;VisualEditor0&quot;,            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: [                &quot;s3:PutObject&quot;,                &quot;s3:GetObject&quot;,                &quot;s3:ListBucket&quot;            ],            &quot;Resource&quot;: [                &quot;arn:aws:s3:::&lt;桶名&gt;&quot;,                &quot;arn:aws:s3:::&lt;桶名&gt;/backup/gitlab/*&quot;            ]        &#125;,        &#123;            &quot;Sid&quot;: &quot;VisualEditor1&quot;,            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: &quot;s3:ListAllMyBuckets&quot;,            &quot;Resource&quot;: &quot;*&quot;        &#125;    ]&#125;</code></pre><p>备份到阿里云-OSS，AK授权，暂不支持 role 授权</p><pre><code class="language-bash">## /export/docker-data-gitlab/config/gitlab.rbgitlab_rails['backup_upload_connection'] = &#123;'provider' =&gt; 'aliyun','aliyun_accesskey_id' =&gt; 'AK123','aliyun_accesskey_secret' =&gt; 'secret123','aliyun_oss_bucket' =&gt; '&lt;桶名&gt;','aliyun_region_id' =&gt; '&lt;region-id&gt;','aliyun_oss_endpoint' =&gt; 'http://oss-&lt;region-id&gt;-internal.aliyuncs.com'&#125;gitlab_rails['backup_upload_remote_directory'] = 'backup/gitlab'</code></pre><p>⚠️</p><blockquote><h3 id="需要注意的是，截止-fog-aliyun-0-3-19-版本，aliyun-oss-endpoint-指定内网地址的时候，依然走的是公网的-endpoint，会消耗公网流量">需要注意的是，截止 fog-aliyun: 0.3.19 版本，aliyun_oss_endpoint 指定内网地址的时候，依然走的是公网的 endpoint，会消耗公网流量</h3><p><a href="https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L122">https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L122</a><br><a href="https://rubygems.org/gems/fog-aliyun">https://rubygems.org/gems/fog-aliyun</a></p></blockquote><pre><code class="language-json">&#123;    &quot;Version&quot;: &quot;1&quot;,    &quot;Statement&quot;: [        &#123;            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: [                &quot;oss:*&quot;            ],            &quot;Resource&quot;: [                &quot;acs:oss:*:*:&lt;桶名&gt;/backup/gitlab/*&quot;            ]        &#125;,        &#123;            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: [                &quot;oss:Get*&quot;,                &quot;oss:List*&quot;            ],            &quot;Resource&quot;: &quot;*&quot;        &#125;    ]&#125;</code></pre><h2 id="备份计划，触发备份">备份计划，触发备份</h2><ol><li>阿里云 （role授权）</li></ol><pre><code class="language-bash"># 配置 role 到服务器上cat &gt; /etc/profile.d/ecs_role.sh &lt;&lt; EOFRegion=`curl -sq http://100.100.100.200/latest/meta-data/region-id`ramRoleName=`curl -sq http://100.100.100.200/latest/meta-data/ram/security-credentials/`aliyun configure set --profile ecsRamRoleProfile  --mode EcsRamRole --ram-role-name $&#123;ramRoleName&#125; --region $&#123;Region&#125;EOF</code></pre><p>添加脚本到crontab</p><pre><code class="language-bash">#!/bin/bashsource /etc/profile.d/ecs_role.shRegion=`curl -sq http://100.100.100.200/latest/meta-data/region-id`Endpoint=&quot;http://oss-$&#123;Region&#125;-internal.aliyuncs.com&quot;basedir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $basedirTime=`date +%Y%m%d`docker exec -t gitlab gitlab-backup createtar zcf $&#123;Time&#125;.config.tar.gz /export/docker-data-gitlab/configaliyun oss cp $&#123;Time&#125;.config.tar.gz oss://桶名/backup/gitlab/ -e $&#123;Endpoint&#125; --force</code></pre><ol start="2"><li><p>aws (role授权)</p><p>添加脚本到crontab</p></li></ol><pre><code class="language-bash">#!/bin/bashbasedir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $basedirTime=`date +%Y%m%d`docker exec -t gitlab gitlab-backup createtar zcf $&#123;Time&#125;.config.tar.gz /export/docker-data-gitlab/configaws s3 cp $&#123;Time&#125;.config.tar.gz s3://桶名/backup/gitlab/</code></pre><h2 id="重载配置服务">重载配置服务</h2><p>docker exec -it gitlab gitlab-ctl reconfigure</p><h2 id="升级">升级</h2><blockquote><p>大版本升级可能失败，特别是数据库也升级的情况下</p></blockquote><pre><code class="language-bash">docker stop gitlabdocker rm gitlabgitlabtag=domainName=docker pull gitlab/gitlab-ce:$&#123;gitlabtag&#125;docker run --detach --hostname $&#123;domainName&#125;  --publish 443:443 --publish 80:80 --publish 2222:22   --name gitlab   --restart always   --volume /export/docker-data-gitlab/config:/etc/gitlab   --volume /export/docker-data-gitlab/logs:/var/log/gitlab   --volume /export/docker-data-gitlab/data:/var/opt/gitlab   gitlab/gitlab-ce:$&#123;gitlabtag&#125;</code></pre><h2 id="Oauth">Oauth</h2><p><a href="https://docs.gitlab.com/ee/administration/auth/README.html">GitLab authentication and authorization | GitLab</a></p><h2 id="大问题">大问题</h2><p>暂无</p>]]></content>
+        <content type="html"><![CDATA[<blockquote><p><a href="https://docs.gitlab.com/omnibus/docker/">https://docs.gitlab.com/omnibus/docker/</a></p><p><a href="https://hub.docker.com/r/gitlab/gitlab-ce">https://hub.docker.com/r/gitlab/gitlab-ce</a></p><p><a href="https://docs.gitlab.com/14.0/ee/update/index.html#community-to-enterprise-edition">Upgrading GitLab | GitLab</a></p></blockquote><h2 id="安装">安装</h2><pre><code class="language-bash"># 确保 /export 存在mkdir -p /export/docker-data-gitlab/&#123;config, logs, data&#125;gitlabtag=# createdomainName=docker pull gitlab/gitlab-ce:$&#123;gitlabtag&#125;docker run --detach   --hostname $&#123;domainName&#125;   --publish 443:443 --publish 80:80 --publish 2222:22   --name gitlab   --restart always   --volume /export/docker-data-gitlab/config:/etc/gitlab   --volume /export/docker-data-gitlab/logs:/var/log/gitlab   --volume /export/docker-data-gitlab/data:/var/opt/gitlab   gitlab/gitlab-ce:$&#123;gitlabtag&#125;# startdocker start gitlab# stopdocker stop gitlab</code></pre><h2 id="基本配置">基本配置</h2><pre><code class="language-bash"># configure# https://docs.gitlab.com/omnibus/settings/README.htmlcp /export/docker-data-gitlab/config/gitlab.rb /export/docker-data-gitlab/config/gitlab.rb.bak</code></pre><pre><code class="language-bash">## /export/docker-data-gitlab/config/gitlab.rb# 决定各个位置 url 链接内容external_url 'http://$&#123;domainName&#125;'# 决定各个位置 ssh 链接内容gitlab_rails['gitlab_shell_ssh_port'] = 2222gitlab_rails['gitlab_email_enabled'] = truegitlab_rails['gitlab_email_from'] = 'ew@xxx.com'gitlab_rails['gitlab_email_display_name'] = 'GitLab Admin'gitlab_rails['gitlab_email_reply_to'] = 'ew@xxx.com'gitlab_rails['gitlab_email_subject_suffix'] = 'GitLab'gitlab_rails['smtp_enable'] = truegitlab_rails['smtp_address'] = &quot;smtp.gmail.com&quot;gitlab_rails['smtp_port'] = 587gitlab_rails['smtp_user_name'] = &quot;ew@xxx.com&quot;gitlab_rails['smtp_password'] = &quot;&quot;gitlab_rails['smtp_domain'] = &quot;smtp.gmail.com&quot;gitlab_rails['smtp_authentication'] = &quot;login&quot;gitlab_rails['smtp_enable_starttls_auto'] = truegitlab_rails['smtp_tls'] = falsegitlab_rails['smtp_openssl_verify_mode'] = 'peer'</code></pre><h2 id="备份配置">备份配置</h2><p>备份到AWS-S3，role 授权</p><pre><code class="language-bash">## /export/docker-data-gitlab/config/gitlab.rbgitlab_rails['backup_upload_connection'] = &#123;  'provider' =&gt; 'AWS',  'region' =&gt; '&lt;region-id&gt;',  #'aws_access_key_id' =&gt; 'AKIAKIAKI',  #'aws_secret_access_key' =&gt; 'secret123'  # If using an IAM Profile, don't configure aws_access_key_id &amp; aws_secret_access_key  'use_iam_profile' =&gt; true&#125;# 备份到S3上的根路径 bucket/Path gitlab_rails['backup_upload_remote_directory'] = '&lt;桶名&gt;/backup/gitlab'</code></pre><pre><code class="language-json"># s3策略&#123;    &quot;Version&quot;: &quot;2012-10-17&quot;,    &quot;Statement&quot;: [        &#123;            &quot;Sid&quot;: &quot;VisualEditor0&quot;,            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: [                &quot;s3:PutObject&quot;,                &quot;s3:GetObject&quot;,                &quot;s3:ListBucket&quot;            ],            &quot;Resource&quot;: [                &quot;arn:aws:s3:::&lt;桶名&gt;&quot;,                &quot;arn:aws:s3:::&lt;桶名&gt;/backup/gitlab/*&quot;            ]        &#125;,        &#123;            &quot;Sid&quot;: &quot;VisualEditor1&quot;,            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: &quot;s3:ListAllMyBuckets&quot;,            &quot;Resource&quot;: &quot;*&quot;        &#125;    ]&#125;</code></pre><p>备份到阿里云-OSS，AK授权，暂不支持 role 授权</p><pre><code class="language-bash">## /export/docker-data-gitlab/config/gitlab.rbgitlab_rails['backup_upload_connection'] = &#123;'provider' =&gt; 'aliyun','aliyun_accesskey_id' =&gt; 'AK123','aliyun_accesskey_secret' =&gt; 'secret123','aliyun_oss_bucket' =&gt; '&lt;桶名&gt;','aliyun_region_id' =&gt; '&lt;region-id&gt;','aliyun_oss_endpoint' =&gt; 'http://oss-&lt;region-id&gt;-internal.aliyuncs.com'&#125;gitlab_rails['backup_upload_remote_directory'] = 'backup/gitlab'</code></pre><p>⚠️</p><blockquote><h3 id="需要注意的是，截止-fog-aliyun-0-3-19-版本，aliyun-oss-endpoint-指定内网地址的时候，依然走的是公网的-endpoint，会消耗公网流量">需要注意的是，截止 fog-aliyun: 0.3.19 版本，aliyun_oss_endpoint 指定内网地址的时候，依然走的是公网的 endpoint，会消耗公网流量</h3><p><a href="https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L122">https://gitlab.com/gitlab-org/gitlab/-/blob/da46c9655962df7d49caef0e2b9f6bbe88462a02/Gemfile#L122</a><br><a href="https://rubygems.org/gems/fog-aliyun">https://rubygems.org/gems/fog-aliyun</a></p></blockquote><pre><code class="language-json">&#123;    &quot;Version&quot;: &quot;1&quot;,    &quot;Statement&quot;: [        &#123;            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: [                &quot;oss:*&quot;            ],            &quot;Resource&quot;: [                &quot;acs:oss:*:*:&lt;桶名&gt;/backup/gitlab/*&quot;            ]        &#125;,        &#123;            &quot;Effect&quot;: &quot;Allow&quot;,            &quot;Action&quot;: [                &quot;oss:Get*&quot;,                &quot;oss:List*&quot;            ],            &quot;Resource&quot;: &quot;*&quot;        &#125;    ]&#125;</code></pre><h2 id="备份计划，触发备份">备份计划，触发备份</h2><ol><li>阿里云 （role授权）</li></ol><pre><code class="language-bash"># 配置 role 到服务器上cat &gt; /etc/profile.d/ecs_role.sh &lt;&lt; EOFRegion=`curl -sq http://100.100.100.200/latest/meta-data/region-id`ramRoleName=`curl -sq http://100.100.100.200/latest/meta-data/ram/security-credentials/`aliyun configure set --profile ecsRamRoleProfile  --mode EcsRamRole --ram-role-name $&#123;ramRoleName&#125; --region $&#123;Region&#125;EOF</code></pre><p>添加脚本到crontab</p><pre><code class="language-bash">#!/bin/bashsource /etc/profile.d/ecs_role.shRegion=`curl -sq http://100.100.100.200/latest/meta-data/region-id`Endpoint=&quot;http://oss-$&#123;Region&#125;-internal.aliyuncs.com&quot;basedir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $basedirTime=`date +%Y%m%d`docker exec -t gitlab gitlab-backup createtar zcf $&#123;Time&#125;.config.tar.gz /export/docker-data-gitlab/configaliyun oss cp $&#123;Time&#125;.config.tar.gz oss://桶名/backup/gitlab/ -e $&#123;Endpoint&#125; --force</code></pre><ol start="2"><li><p>aws (role授权)</p><p>添加脚本到crontab</p></li></ol><pre><code class="language-bash">#!/bin/bashbasedir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $basedirTime=`date +%Y%m%d`docker exec -t gitlab gitlab-backup createtar zcf $&#123;Time&#125;.config.tar.gz /export/docker-data-gitlab/configaws s3 cp $&#123;Time&#125;.config.tar.gz s3://桶名/backup/gitlab/</code></pre><h2 id="重载配置服务">重载配置服务</h2><p>docker exec -it gitlab gitlab-ctl reconfigure</p><h2 id="升级">升级</h2><blockquote><p>大版本升级可能失败，特别是数据库也升级的情况下</p></blockquote><pre><code class="language-bash">docker stop gitlabdocker rm gitlabgitlabtag=domainName=docker pull gitlab/gitlab-ce:$&#123;gitlabtag&#125;docker run --detach --hostname $&#123;domainName&#125;  --publish 443:443 --publish 80:80 --publish 2222:22   --name gitlab   --restart always   --volume /export/docker-data-gitlab/config:/etc/gitlab   --volume /export/docker-data-gitlab/logs:/var/log/gitlab   --volume /export/docker-data-gitlab/data:/var/opt/gitlab   gitlab/gitlab-ce:$&#123;gitlabtag&#125;</code></pre><h2 id="Oauth">Oauth</h2><p><a href="https://docs.gitlab.com/ee/administration/auth/README.html">GitLab authentication and authorization | GitLab</a></p><h2 id="大问题">大问题</h2><p>暂无</p><h2 id="其它">其它</h2><p>若没有直接采用oss作为存储路径，即本地压缩后，再用脚本上传</p><pre><code class="language-bash">#!/bin/bashbasedir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`# 确定gitlab备份文件地址mv /path/to/backup/*backup.tar $&#123;basedir&#125;/ls $&#123;basedir&#125;/*.tar | awk -F '/|_' '&#123;print $4&#125;' | while read line;do        Old7day=`date -d &quot;-7 days&quot; &quot;+%s&quot;`        if [ $line -lt $Old7day ];then              rm -rf $&#123;basedir&#125;/$&#123;line&#125;*.tar &amp;&amp; echo &quot;Delete old7day file $&#123;basedir&#125;/$&#123;line&#125;*.tar&quot;        fidonecd ~ &amp;&amp; source $&#123;basedir&#125;/role.confRegion=`curl -sq http://100.100.100.200/latest/meta-data/region-id`Endpoint=&quot;http://oss-$&#123;Region&#125;-internal.aliyuncs.com&quot;BucketName=&lt;存储桶&gt;echo &quot;Start: `date &quot;+%Y%m%d %H%M%S&quot;` --&gt; oss://$&#123;BucketName&#125;/backup/&quot;aliyun oss sync $&#123;basedir&#125;/ oss://$&#123;BucketName&#125;/backup/ --exclude='*.log' --update --delete --force -e $&#123;Endpoint&#125; --checkpoint-dir=/tmp/ossutil_checkpoint --output-dir=/tmp/ossutil_outputecho &quot;End: `date &quot;+%Y%m%d %H%M%S&quot;` --&gt; oss://$&#123;BucketName&#125;/backup/&quot;</code></pre>]]></content>
       
       
       <categories>
@@ -3271,6 +3327,31 @@
         <tags>
             
             <tag> rds </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>linux☞centos7重置root密码</title>
+      <link href="posts/13364d65/"/>
+      <url>posts/13364d65/</url>
+      
+        <content type="html"><![CDATA[<ol><li>开机按ECS，进入启动项</li></ol><p><img src="/posts/13364d65/image-20210706143953672.png" alt="image-20210706143953672"></p><ol start="2"><li><p>按e，编辑第一条</p></li><li><p>将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh</p></li></ol><p><img src="/posts/13364d65/image-20210706144107672.png" alt="image-20210706144107672"></p><ol start="4"><li>按 ctrl+x，进入系统，并执行 <code>passwd</code> 命令进行修改</li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 系统 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> linux </tag>
             
         </tags>
       

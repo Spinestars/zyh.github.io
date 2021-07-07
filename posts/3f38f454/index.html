@@ -583,6 +583,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										harbor
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9573a87d/">
+										harbor☞安装
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										k8s
 									</a>
 									
@@ -761,6 +781,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
 										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c15432fa/">
+										k8s☞kubectl多集群管理
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1168,6 +1197,15 @@ var _hmt = _hmt || [];
 										linux
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/13364d65/">
+										linux☞centos7重置root密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/a3dfc0e8/">
@@ -1849,6 +1887,30 @@ docker run --detach --hostname $&#123;domainName&#125;  --publish 443:443 --publ
 <p><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/administration/auth/README.html">GitLab authentication and authorization | GitLab</a></p>
 <h2 id="大问题">大问题</h2>
 <p>暂无</p>
+<h2 id="其它">其它</h2>
+<p>若没有直接采用oss作为存储路径，即本地压缩后，再用脚本上传</p>
+<pre><code class="language-bash">#!/bin/bash
+basedir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+
+# 确定gitlab备份文件地址
+mv /path/to/backup/*backup.tar $&#123;basedir&#125;/
+
+ls $&#123;basedir&#125;/*.tar | awk -F '/|_' '&#123;print $4&#125;' | while read line;do
+        Old7day=`date -d &quot;-7 days&quot; &quot;+%s&quot;`
+        if [ $line -lt $Old7day ];then
+              rm -rf $&#123;basedir&#125;/$&#123;line&#125;*.tar &amp;&amp; echo &quot;Delete old7day file $&#123;basedir&#125;/$&#123;line&#125;*.tar&quot;
+        fi
+done
+cd ~ &amp;&amp; source $&#123;basedir&#125;/role.conf
+
+Region=`curl -sq http://100.100.100.200/latest/meta-data/region-id`
+Endpoint=&quot;http://oss-$&#123;Region&#125;-internal.aliyuncs.com&quot;
+BucketName=&lt;存储桶&gt;
+
+echo &quot;Start: `date &quot;+%Y%m%d %H%M%S&quot;` --&gt; oss://$&#123;BucketName&#125;/backup/&quot;
+aliyun oss sync $&#123;basedir&#125;/ oss://$&#123;BucketName&#125;/backup/ --exclude='*.log' --update --delete --force -e $&#123;Endpoint&#125; --checkpoint-dir=/tmp/ossutil_checkpoint --output-dir=/tmp/ossutil_output
+echo &quot;End: `date &quot;+%Y%m%d %H%M%S&quot;` --&gt; oss://$&#123;BucketName&#125;/backup/&quot;
+</code></pre>
 
 </div>
 

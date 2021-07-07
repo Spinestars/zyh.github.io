@@ -583,6 +583,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										harbor
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9573a87d/">
+										harbor☞安装
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										k8s
 									</a>
 									
@@ -761,6 +781,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
 										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c15432fa/">
+										k8s☞kubectl多集群管理
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1168,6 +1197,15 @@ var _hmt = _hmt || [];
 										linux
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/13364d65/">
+										linux☞centos7重置root密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/a3dfc0e8/">
@@ -1651,7 +1689,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/docker/">docker</a>
                         </i>
                     </span>
                 
@@ -1659,7 +1697,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/docker/">docker</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -1684,14 +1722,15 @@ var _hmt = _hmt || [];
 <h2 id="安装">安装</h2>
 <pre><code class="language-bash">yum install docker-ce -y
 ### 安装 compose ， 可选
-	yum install python3-pip -y
-	pip3 install docker-compose 或者 pip install docker-compose
+yum install python3-pip -y
+pip3 install --upgrade pip &amp;&amp; pip3 install docker-compose
+pip3 install docker-compose
 ### 开机自启动
 systemctl enable docker
 </code></pre>
 <h3 id="安装-runlike-命令">安装 runlike 命令</h3>
 <p>runlike命令可以输出docker启动的时候的指令</p>
-<pre><code class="language-bash">pip install runlike
+<pre><code class="language-bash">pip3 install runlike
 runlike &lt;container_id&gt; # 输出run指令
 
 不过需要注意的是，这个命令并不完美，比如输出不了mount参数，因为你还需要通过docker inspect &lt;container_id&gt;来查看mount指令

@@ -581,6 +581,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										harbor
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9573a87d/">
+										harbor☞安装
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										k8s
 									</a>
 									
@@ -759,6 +779,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
 										k8s☞17node污染和pod容忍
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c15432fa/">
+										k8s☞kubectl多集群管理
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1166,6 +1195,15 @@ var _hmt = _hmt || [];
 										linux
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/13364d65/">
+										linux☞centos7重置root密码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/a3dfc0e8/">
@@ -1608,6 +1646,34 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/f5c218d/">
+				<h2 class="index-title">
+					hexo☞本地搜索
+				</h2>
+				<div class="index-brief">
+					前言
+安装完 hexo-generator-search 后，发现搜索结果始终是所有文章.
+如果你用的也是 Melody 主题，那么可以参考如下信息，来确认。
+效果图
+
+软件包
+
+截至：2020.05.18，软件包如下
+
+  &quot;dependencies&quot;: &#123;
+    
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-18</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/6209085/">
 				<h2 class="index-title">
 					nginx☞安装
@@ -1720,89 +1786,6 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/65ab632a/">
-				<h2 class="index-title">
-					redis☞安装
-				</h2>
-				<div class="index-brief">
-					docker 安装
-Docker Hub
-redisName=redis
-versionTag=6
-dataPath=/export/docker-data-redis
-mkdir -p $&#123;dataPath&#125;
-redis.conf 请参考官方默认配置文档，默认配置文档地址： h
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3d20f83e/">
-				<h2 class="index-title">
-					zabbix☞WEB监控
-				</h2>
-				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
 					zabbix☞nginx
@@ -1848,60 +1831,17 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/421d605e/">
+			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
-					日志☞logrotate安装
+					zabbix☞WEB监控
 				</h2>
 				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
-
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1587f6e8/">
-				<h2 class="index-title">
-					zabbix☞agent和proxy(yum)
-				</h2>
-				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
-
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
-
-agent 安装
-
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 					...
 				</div>
 			</a>
@@ -1985,6 +1925,81 @@ redis_info[&#123;#IP&#12
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1587f6e8/">
+				<h2 class="index-title">
+					zabbix☞agent和proxy(yum)
+				</h2>
+				<div class="index-brief">
+					
+https://repo.zabbix.com/zabbix/
+
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+
+agent 安装
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1fac36d/">
+				<h2 class="index-title">
+					监控☞远程磁盘检测
+				</h2>
+				<div class="index-brief">
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
 										
                                     </span>
                                 

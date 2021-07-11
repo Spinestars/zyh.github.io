@@ -573,6 +573,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -616,7 +625,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1786,21 +1795,18 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/65ab632a/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					redis☞安装
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
-
-
-1，nginx增加配置 server_status.server
-
-cat &gt; /usr/local/nginx/
+					docker 安装
+Docker Hub
+redisName=redis
+versionTag=6
+dataPath=/export/docker-data-redis
+mkdir -p $&#123;dataPath&#125;
+redis.conf 请参考官方默认配置文档，默认配置文档地址： h
 					...
 				</div>
 			</a>
@@ -1811,7 +1817,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/数据库/">数据库</a>
 										
 											>
 										
@@ -1821,7 +1827,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 
@@ -1831,17 +1837,17 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/421d605e/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					日志☞logrotate安装
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
+
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
 					...
 				</div>
 			</a>
@@ -1852,7 +1858,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/日志/">日志</a>
 										
 											>
 										
@@ -1862,7 +1868,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/日志/其它/">其它</a>
 										
                                     </span>
                                 
@@ -1872,38 +1878,15 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/8c33f887/">
 				<h2 class="index-title">
-					zabbix☞redis
+					监控☞企业微信机器人
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
-
-
-
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+					shell
+wechatUrl=
+wechatData=
+curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
 					...
 				</div>
 			</a>
@@ -1915,16 +1898,6 @@ redis_info[&#123;#IP&#12
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -1977,18 +1950,24 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/f9b08c30/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					监控☞微信预警
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					# conf.ini
+[wechat]
+corpid = 
+
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+
+[group]
+it = usera|userb
+
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -2009,15 +1988,18 @@ i
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8c33f887/">
+			<a href="/posts/f8f9b4d0/">
 				<h2 class="index-title">
-					监控☞企业微信机器人
+					监控☞邮件预警
 				</h2>
 				<div class="index-brief">
-					shell
-wechatUrl=
-wechatData=
-curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
+					# $1 收件人
+# $2 主题
+# $3 内容
+smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
+sendUserEmail='it@abc.com'
+sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
+/usr/
 					...
 				</div>
 			</a>

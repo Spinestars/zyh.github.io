@@ -575,6 +575,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -618,7 +627,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1689,7 +1698,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/docker/">docker</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -1697,7 +1706,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/docker/">docker</a>
                         </i>
                     </span>
                 
@@ -1714,11 +1723,13 @@ var _hmt = _hmt || [];
   lvm2
 </code></pre>
 <h2 id="仓库">仓库</h2>
+<blockquote>
+<p>官方 repo: <a target="_blank" rel="noopener" href="https://download.docker.com/linux/centos/docker-ce.repo">https://download.docker.com/linux/centos/docker-ce.repo</a></p>
+</blockquote>
 <pre><code class="language-bash:">yum-config-manager \
     --add-repo \
-    https://download.docker.com/linux/centos/docker-ce.repo
+    http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 </code></pre>
-<p>💁如果你用的是阿里云的镜像，那么则需要手动修改repo文件地址，例如：<a target="_blank" rel="noopener" href="https://download.docker.com/linux/centos/7/x86_64/stable/">https://download.docker.com/linux/centos/7/x86_64/stable/</a></p>
 <h2 id="安装">安装</h2>
 <pre><code class="language-bash">yum install docker-ce -y
 ### 安装 compose ， 可选
@@ -1760,16 +1771,16 @@ quay.io
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/2c5a64ff/">
+              <a href="/posts/aaf9b7/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  aws☞s3初始化创建
+                  k8s☞01常见术语概念
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/aaf9b7/">
-                k8s☞01常见术语概念
+              <a href="/posts/b824edd8/">
+                mysql☞安装
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

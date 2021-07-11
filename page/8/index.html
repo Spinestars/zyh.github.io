@@ -573,6 +573,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -616,7 +625,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1646,24 +1655,18 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/f9b08c30/">
+			<a href="/posts/1fac36d/">
 				<h2 class="index-title">
-					监控☞微信预警
+					监控☞远程磁盘检测
 				</h2>
 				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
-
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
-
-[group]
-it = usera|userb
-
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
 					...
 				</div>
 			</a>
@@ -1684,17 +1687,21 @@ it = usera|userb
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/421d605e/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					日志☞logrotate安装
+					zabbix☞nginx
 				</h2>
 				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
 
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
+
+1，nginx增加配置 server_status.server
+
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -1705,7 +1712,7 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
+                                        <a href="/categories/监控/">监控</a>
 										
 											>
 										
@@ -1715,7 +1722,7 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -1725,18 +1732,17 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/65ab632a/">
+			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
-					redis☞安装
+					zabbix☞WEB监控
 				</h2>
 				<div class="index-brief">
-					docker 安装
-Docker Hub
-redisName=redis
-versionTag=6
-dataPath=/export/docker-data-redis
-mkdir -p $&#123;dataPath&#125;
-redis.conf 请参考官方默认配置文档，默认配置文档地址： h
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 					...
 				</div>
 			</a>
@@ -1747,7 +1753,7 @@ redis.conf 请参考官方默认配置文档，默认配置文档地址： h
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
+                                        <a href="/categories/监控/">监控</a>
 										
 											>
 										
@@ -1757,7 +1763,69 @@ redis.conf 请参考官方默认配置文档，默认配置文档地址： h
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/6c093771/">
+				<h2 class="index-title">
+					zabbix☞redis
+				</h2>
+				<div class="index-brief">
+					zabbix 模板
+
+自动发现规则
+
+
+
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -1978,53 +2046,6 @@ tags的参数
   gather_facts: no
   tasks:
     - block:
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/29683589/">
-				<h2 class="index-title">
-					ansible☞playbook-条件判断
-				</h2>
-				<div class="index-brief">
-					关键词
-
-when
-
-运算符
-
-==  !=  &gt;  &lt;  &gt;=  &lt;=
-and or not
-( ) 组合，例如 ( a and b ) or c
-
-
-ansible 某个 task 报错，会导致任务终止，而ignore_errors: true 可以忽略某个任务的条件不满
 					...
 				</div>
 			</a>

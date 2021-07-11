@@ -575,6 +575,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -618,7 +627,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1689,7 +1698,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -1697,7 +1706,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -1708,19 +1717,15 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<ol>
-<li>
-<p>pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.</p>
+	<h3 id="1-pv和pvc的绑定关系是终生的-也就是说你删除了当前pvc-pv依然不能被其它pvc所绑定">1. pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.</h3>
 <p>删除pvc后, pv的状态将从bound转为Released.</p>
 <p>如果你想让pv从新绑定到原来的pvc上, 则需要两个步骤:</p>
 <ol>
 <li>先创建原来的pvc.</li>
 <li>删除当前pv并重新创建, 或者修改当前pv的配置, 删除spec.claimRef信息.</li>
 </ol>
-</li>
-<li>
-<p>pod无法正常启动，报错：“mounting \“/var/lib/lxcfs/proc/loadavg\”<br>
-to rootfs \&quot;/export/docker-data-root/overlay2/710d09a6715d88a01b417ba1a669dab69b67c3d57e576c1ae6d79aa03e1b294a/merged”</p>
+<h3 id="2-pod无法正常启动，报错：“mounting-“-var-lib-lxcfs-proc-loadavg-”">2. pod无法正常启动，报错：“mounting \“/var/lib/lxcfs/proc/loadavg\”</h3>
+<p>to rootfs \&quot;/export/docker-data-root/overlay2/710d09a6715d88a01b417ba1a669dab69b67c3d57e576c1ae6d79aa03e1b294a/merged”</p>
 <p>根据信息可知问题点应该是 lxcfs 问题。</p>
 <p>查看故障pod所在节点的 lxcfs pod 日志，得到信息</p>
 <p>“fuse: mountpoint is not empty<br>
@@ -1728,26 +1733,22 @@ fuse: if you are sure this is safe, use the ‘nonempty’ mount option”</p>
 <p>因此删除节点 lxcfs 目录，并重建 lxcfs pod</p>
 <pre><code class="language-bash">rm -rf  /var/lib/lxcfs/ &amp;&amp; kubectl delete pod/lxcfs-hthgq
 </code></pre>
-</li>
-<li>
-<p>变更pv回收策略</p>
+<h3 id="3-变更pv回收策略">3. 变更pv回收策略</h3>
 <pre><code class="language-bash">kubectl patch pv &lt;your-pv-name&gt; -p '&#123;&quot;spec&quot;:&#123;&quot;persistentVolumeReclaimPolicy&quot;:&quot;Retain&quot;&#125;&#125;'
 </code></pre>
-</li>
-<li>
-<p>kubernetes qos</p>
+<h3 id="4-kubernetes-qos">4. kubernetes qos</h3>
 <p>kubernetes 有三种策略，分别是Guaranteed和Burstable和BestEffort</p>
 <p>Guaranteed：任何容器的cpu请求值和限制值必须一样。内存同样如此</p>
 <p>Burstable：最少有一个容器的cpu请求值和限制值必须一样。内存同样如此</p>
 <p>BestEffort： 没有任何限制</p>
-</li>
-<li>
-<p>kubelet无法启动，报错：<code>kubelet.service holdoff time over</code></p>
+<h3 id="5-kubelet无法启动，报错：kubelet-service-holdoff-time-over">5. kubelet无法启动，报错：<code>kubelet.service holdoff time over</code></h3>
 <p>确认节点swap是否关闭</p>
 <p>临时关闭<code>swapoff -a</code></p>
 <p>永久关闭<code>注释/etc/fstab文件里的swap挂载行</code></p>
-</li>
-</ol>
+<h3 id="6-拉取私有镜像">6. 拉取私有镜像</h3>
+<pre><code class="language-shell">kubectl create secret docker-registry &lt;secret_name&gt; --docker-server=&lt;FQDN:your-registry-server&gt; --docker-username=&lt;your-name&gt; --docker-password=&lt;your-pword&gt; --docker-email=&lt;your-email&gt;
+</code></pre>
+<p>deployment 对象中调用：<code>deployment.spec.template.spec.imagePullSecrets: [&lt;secret_name&gt;]</code></p>
 
 </div>
 
@@ -1757,7 +1758,7 @@ fuse: if you are sure this is safe, use the ‘nonempty’ mount option”</p>
             
               <a href="/posts/9602dad/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞02v1.18.6安装
+                  k8s☞02安装
               </a>
             
         </div>

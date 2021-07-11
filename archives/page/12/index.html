@@ -573,6 +573,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -616,7 +625,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1646,6 +1655,50 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/2e07203a/">
+				<h2 class="index-title">
+					aws☞EC2-GPU实例安装显卡驱动
+				</h2>
+				<div class="index-brief">
+					
+以下命令均在 ubuntu 用户中执行
+
+安装 awscli 到 ubuntu 用户下
+sudo apt-get update -y
+sudo apt-get install python3-pip -y
+pip3 install awscli --upgrade --user
+
+更新系统内核和g
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-05-23</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/">公有云</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/公有云/aws/">aws</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/d1d65c30/">
 				<h2 class="index-title">
 					fpm☞静态配置
@@ -1764,14 +1817,17 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞调整内核参数
+					redis☞获取没有设置ttl的key
 				</h2>
 				<div class="index-brief">
 					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
+redis 内存占用爆炸. 所以网上找了一个
+# encoding: utf-8
+&quot;&quot;&quot;
+author: yangyi@youzan.com
+time: 2018/4/26 下午4:34
+func: 获取数据库中没有设置ttl的 key
+&quot;&quot;&
 					...
 				</div>
 			</a>
@@ -1804,17 +1860,14 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 		<div class="index-li">
 			<a href="/posts/28361833/">
 				<h2 class="index-title">
-					redis☞获取没有设置ttl的key
+					redis☞调整内核参数
 				</h2>
 				<div class="index-brief">
 					前言
-redis 内存占用爆炸. 所以网上找了一个
-# encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&
+之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
+后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
+经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
+我是问题
 					...
 				</div>
 			</a>
@@ -1933,48 +1986,6 @@ long_query_time：要防止在慢速查询日志中记录快速运行的查询�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/13364d65/">
-				<h2 class="index-title">
-					linux☞centos7重置root密码
-				</h2>
-				<div class="index-brief">
-					
-开机按ECS，进入启动项
-
-
-
-
-按e，编辑第一条
-
-
-将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh
-
-
-
-
-按 ctrl+x，进入系统，并执行 passwd 命令进行修改
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-01-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/f41d0763/">
 				<h2 class="index-title">
 					linux☞系统内核优化
@@ -2008,38 +2019,39 @@ net.ipv4.tcp_retr
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/241ce96c/">
+			<a href="/posts/13364d65/">
 				<h2 class="index-title">
-					shell☞if判定
+					linux☞centos7重置root密码
 				</h2>
 				<div class="index-brief">
-					-a FILE：存在则为真；否则则为假；
--e FILE: 存在则为真；否则则为假；
--f FILE: 存在并且为普通文件，则为真；否则为假；
--d DIR: 存在并且为目录，则为真；否则为假；
--L/-h FILE: 存在并且为符号链接文件，则为真；否则为假；
--b: 存在并且为块设备，则为真；否
+					
+开机按ECS，进入启动项
+
+
+
+
+按e，编辑第一条
+
+
+将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh
+
+
+
+
+按 ctrl+x，进入系统，并执行 passwd 命令进行修改
+
+
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2016-10-02</span>
+				    <span>2017-01-20</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/shell/">shell</a>
+                                        <a href="/categories/系统/">系统</a>
 										
                                     </span>
                                 

@@ -573,6 +573,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -616,7 +625,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1648,7 +1657,7 @@ var _hmt = _hmt || [];
 		<div class="index-li">
 			<a href="/posts/9602dad/">
 				<h2 class="index-title">
-					k8s☞02v1.18.6安装
+					k8s☞02安装
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1694,14 +1703,12 @@ var _hmt = _hmt || [];
 					k8s☞记录点
 				</h2>
 				<div class="index-brief">
-					
-
-pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.
+					1. pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.
 删除pvc后, pv的状态将从bound转为Released.
 如果你想让pv从新绑定到原来的pvc上, 则需要两个步骤:
 
 先创建原来的pvc.
-删除当前pv并重新创建, 或者修改当前pv的配置,
+删除当前pv并重新创建, 或者修改当前pv的配置
 					...
 				</div>
 			</a>

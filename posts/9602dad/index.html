@@ -575,6 +575,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -618,7 +627,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file active">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1647,7 +1656,7 @@ var _hmt = _hmt || [];
 	<div id="content">
 		<h1 id="article-title">
 
-	k8s☞02v1.18.6安装
+	k8s☞02安装
 </h1>
 <div class="article-meta">
 	
@@ -1689,7 +1698,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -1697,7 +1706,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -1755,18 +1764,14 @@ var _hmt = _hmt || [];
 <p>数据走向：</p>
 <p>client-&gt;keepalived(vip:8443)-&gt;haproxy(vip:8443)-&gt; all:6443</p>
 <h2 id="所有节点">所有节点</h2>
-<ol>
-<li>
-<p>时间同步</p>
+<h3 id="时间同步">时间同步</h3>
 <pre><code class="language-bash">yum install chrony -y
 sed -i  '1a server cn.pool.ntp.org prefer iburst' /etc/chrony.conf
 systemctl restart chronyd
 systemctl enable chronyd
 chronyc activity
 </code></pre>
-</li>
-<li>
-<p>系统配置</p>
+<h3 id="系统配置">系统配置</h3>
 <pre><code class="language-bash"># 加载模块
 modprobe overlay
 modprobe br_netfilter
@@ -1808,25 +1813,34 @@ EOF
 chmod +x /etc/sysconfig/modules/ipvs.modules
 /etc/sysconfig/modules/ipvs.modules
 </code></pre>
-</li>
-<li>
-<p>安装容器</p>
-<p>选用 docker</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/setup/production-environment/container-runtimes/#docker">https://kubernetes.io/zh/docs/setup/production-environment/container-runtimes/#docker</a></p>
-</blockquote>
+<h3 id="安装容器">安装容器</h3>
 <pre><code class="language-bash">yum install -y yum-utils \
   device-mapper-persistent-data \
   lvm2
 yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
-yum list docker-ce --showduplicates | sort -r
-# 安装兼容k8s的docker版本
-yum install -y \
-  containerd.io-1.2.13 \
-  docker-ce-19.03.11 \
-  docker-ce-cli-19.03.11
+</code></pre>
+<h4 id="选择版本">选择版本</h4>
+<p>一定要选择所安装的 k8s 版本兼容的最新容器版本</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/setup/production-environment/container-runtimes/#docker">https://kubernetes.io/zh/docs/setup/production-environment/container-runtimes/#docker</a></p>
+</blockquote>
+<pre><code class="language-bash">yum list docker-ce --showduplicates | sort -r
+===
+docker-ce.x86_64            3:20.10.7-3.el7                    docker-ce-stable
+docker-ce.x86_64            3:20.10.6-3.el7                    docker-ce-stable
+docker-ce.x86_64            3:20.10.5-3.el7                    docker-ce-stable
+docker-ce.x86_64            3:20.10.4-3.el7                    docker-ce-stable
+docker-ce.x86_64            3:20.10.3-3.el7                    docker-ce-stable
+docker-ce.x86_64            3:20.10.2-3.el7                    docker-ce-stable
+docker-ce.x86_64            3:20.10.1-3.el7                    docker-ce-stable
+#################### 选择好所要安装的版本 ####################
+docker_version=20.10.7  # 例如选择20.10.7
+</code></pre>
+<h4 id="安装并启动">安装并启动</h4>
+<pre><code class="language-bash"># 安装兼容k8s的docker版本
+yum install -y docker-ce-$&#123;docker_version&#125; docker-ce-cli-$&#123;docker_version&#125;
 #sed -i '/ExecStart=/a ExecStartPort=/usr/sbin/iptables -P FORWARD ACCEPT' /usr/lib/systemd/system/docker.service;
 mkdir -p /etc/docker;
 cat &gt; /etc/docker/daemon.json &lt;&lt;EOF
@@ -1843,24 +1857,19 @@ cat &gt; /etc/docker/daemon.json &lt;&lt;EOF
   ]
 &#125;
 EOF
-mkdir -p /etc/systemd/system/docker.service.d
 systemctl daemon-reload
 systemctl restart docker
 systemctl enable docker
 </code></pre>
-</li>
-<li>
-<p>安装 kubelet kubeadm kubectl</p>
+<h3 id="安装-kubelet-kubeadm-kubectl">安装 kubelet kubeadm kubectl</h3>
 <blockquote>
 <p>阿里巴巴镜像点：</p>
 <p><a target="_blank" rel="noopener" href="https://developer.aliyun.com/mirror/kubernetes">https://developer.aliyun.com/mirror/kubernetes</a></p>
-</blockquote>
-</li>
-</ol>
-<blockquote>
 <p>google 官方安装文档 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/">https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/</a></p>
 </blockquote>
-<pre><code class="language-bash">cat &lt;&lt;EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+<p>设置软件源：</p>
+<pre><code class="language-bash"># google 官方源
+cat &lt;&lt;EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
@@ -1870,21 +1879,33 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
 EOF
-# 确定 kube* 版本
+
+# 腾讯源
+cat &lt;&lt;EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.cloud.tencent.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+exclude=kubelet kubeadm kubectl
+EOF
+</code></pre>
+<pre><code class="language-bash"># 确定 kube* 版本
 yum list kube* --showduplicates --disableexcludes=kubernetes
 # 选择要安装的版本
-Version=
+full_verions=1.20.8-0
 # 安装 kube 管理组件和 kubelet
-yum install -y kubelet-$&#123;Version&#125; kubeadm-$&#123;Version&#125; kubectl-$&#123;Version&#125; --disableexcludes=kubernetes
+yum install -y kubelet-$&#123;full_verions&#125; kubeadm-$&#123;full_verions&#125; kubectl-$&#123;full_verions&#125; --disableexcludes=kubernetes
 systemctl enable --now kubelet
 </code></pre>
+<h2 id="高可用组件节点">高可用组件节点</h2>
+<h3 id="安装负载均衡组件-haproxy-和-高可用组件-keepalived">安装负载均衡组件 haproxy 和 高可用组件 keepalived</h3>
 <blockquote>
-<p>kubelet 1.18 的时候，当你使用 docker 的时候，kubeadm 会通过 kubelet 自动设置 cgroup 和 docker 一致。</p>
+<p>k8s01，k8s02 执行</p>
 </blockquote>
-<h2 id="控制平面节点">控制平面节点</h2>
-<h3 id="安装用于-apiserver-组件的高可用和负载均衡环境（k8s01，k8s02）">安装用于 apiserver 组件的高可用和负载均衡环境（k8s01，k8s02）</h3>
 <ul>
-<li>安装负载均衡组件 haproxy 和 高可用组件 keepalived</li>
+<li>安装</li>
 </ul>
 <pre><code class="language-bash">yum install haproxy keepalived -y
 </code></pre>
@@ -1892,8 +1913,7 @@ systemctl enable --now kubelet
 <li>haproxy配置</li>
 </ul>
 <pre><code class="language-bash">cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.default
-vim /etc/haproxy/haproxy.cfg
-===
+cat&gt;/etc/haproxy/haproxy.cfg&lt;&lt;EOF
 global
     log /dev/log local0
     log /dev/log local1 notice
@@ -1931,14 +1951,17 @@ backend apiserver
         server k8sapivip 10.200.16.101:6443 check
         server k8sapivip 10.200.16.102:6443 check
         server k8sapivip 10.200.16.103:6443 check
+EOF
 </code></pre>
 <ul>
-<li>keepalived 主配置，k8s01和k8s02均需要，两节点配置不一样</li>
+<li>keepalived 主配置</li>
 </ul>
+<blockquote>
+<p>两节点配置不一样</p>
+</blockquote>
 <pre><code class="language-bash">cp /etc/keepalived/keepalived.conf  /etc/keepalived/keepalived.conf.default
-vim /etc/keepalived/keepalived.conf
-===============================================
-# 放在 k8s01
+############## 放在 k8s01 ################
+cat&gt;/etc/keepalived/keepalived.conf&lt;&lt;EOF
 global_defs &#123;
     router_id LVS_DEVEL
 &#125;
@@ -1966,8 +1989,9 @@ vrrp_instance VI_1 &#123;
         check_apiserver
     &#125;
 &#125;
-===============================================
-# 放在 k8s02
+EOF
+############## 放在 k8s02 ################
+cat&gt;/etc/keepalived/keepalived.conf&lt;&lt;EOF
 global_defs &#123;
     router_id LVS_DEVEL
 &#125;
@@ -1995,12 +2019,15 @@ vrrp_instance VI_1 &#123;
         check_apiserver
     &#125;
 &#125;
+EOF
 </code></pre>
 <ul>
-<li>keepalived 检测脚本，k8s01和k8s02均需要</li>
+<li>keepalived 检测脚本</li>
 </ul>
-<pre><code class="language-bash">vim /etc/keepalived/check_apiserver.sh
-===
+<blockquote>
+<p>k8s01和k8s02均需要</p>
+</blockquote>
+<pre><code class="language-bash">cat&gt;/etc/keepalived/check_apiserver.sh&lt;&lt;'EOF'
 #!/bin/sh
 
 errorExit() &#123;
@@ -2014,6 +2041,7 @@ curl --silent --max-time 2 --insecure https://localhost:$&#123;APISERVER_DEST_PO
 if ip addr | grep -q $&#123;APISERVER_VIP&#125;; then
     curl --silent --max-time 2 --insecure https://$&#123;APISERVER_VIP&#125;:$&#123;APISERVER_DEST_PORT&#125;/ -o /dev/null || errorExit &quot;Error GET https://$&#123;APISERVER_VIP&#125;:$&#123;APISERVER_DEST_PORT&#125;/&quot;
 fi
+EOF
 
 chmod a+x /etc/keepalived/check_apiserver.sh
 </code></pre>
@@ -2023,12 +2051,15 @@ chmod a+x /etc/keepalived/check_apiserver.sh
 <pre><code class="language-bash">systemctl start keepalived haproxy
 systemctl enable keepalived haproxy
 </code></pre>
-<h3 id="拉取容器镜像（k8s01，k8s02，k8s03）">拉取容器镜像（k8s01，k8s02，k8s03）</h3>
+<h2 id="控制平面节点">控制平面节点</h2>
+<h3 id="拉取容器镜像">拉取容器镜像</h3>
+<blockquote>
+<p>k8s01，k8s02，k8s03 执行</p>
+</blockquote>
 <blockquote>
 <p>鉴于网络问题，所以国内一般无法直接运行初始化命令，因此最好先自行安装好包</p>
 </blockquote>
 <pre><code class="language-bash"># 查看对应版本 k8s 所需包
-master_verions=1.20
 yum list --showduplicates kubeadm --disableexcludes=kubernetes | grep $&#123;master_verions&#125;
 ===
 kubeadm.x86_64                       1.20.8-0                        @kubernetes
@@ -2061,9 +2092,9 @@ kube-apiserver:v$&#123;full_version&#125;
 kube-controller-manager:v$&#123;full_version&#125;
 kube-scheduler:v$&#123;full_version&#125;
 kube-proxy:v$&#123;full_version&#125;
-pause:3.2
-etcd:3.4.13-0
-coredns:1.7.0
+pause:3.2     # 修改我
+etcd:3.4.13-0 # 修改我
+coredns:1.7.0 # 修改我
 )
 for imageName in \$&#123;images[@]&#125;;
 do
@@ -2075,15 +2106,9 @@ EOF
 </code></pre>
 <pre><code class="language-bash">bash images-pull.sh
 </code></pre>
-<blockquote>
-<p>如果某些包无法下载，则需自行去 dockerhub 上找，并在下载完毕后，添加 k8s 自己的 tags，例如 coredns<br>
-docker pull coredns/coredns:1.6.7<br>
-docker tag coredns/coredns:1.6.7 <a target="_blank" rel="noopener" href="http://k8s.gcr.io/coredns:1.6.7">k8s.gcr.io/coredns:1.6.7</a><br>
-docker rmi coredns/coredns:1.6.7</p>
-</blockquote>
 <h3 id="第一个控制平面节点安装（k8s01）">第一个控制平面节点安装（k8s01）</h3>
 <p>(info: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/%EF%BC%89">https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/）</a></p>
-<p>采取配置文件安装模式</p>
+<h4 id="采取配置文件安装模式">采取配置文件安装模式</h4>
 <pre><code class="language-bash">kubeadm config print init-defaults &gt; kubeadm.yaml.default
 </code></pre>
 <p>根据生成的默认配置，来动态的调整，因为 k8s 版本变更很快，所以下面的配置不一定是正确的</p>
@@ -2141,9 +2166,8 @@ EOF
 
 # 进行初始化安装
 kubeadm init --config kubeadm.yaml
-# 记录初始化生成的命令，特别是 kubeadm join
 </code></pre>
-<p>配置通过 kubectl 访问集群</p>
+<h4 id="配置通过-kubectl-访问集群">配置通过 kubectl 访问集群</h4>
 <pre><code class="language-bash">mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
@@ -2157,7 +2181,7 @@ source &lt;(kubectl completion bash)
 <pre><code class="language-bash"># 添加用户上下文到配置里，方便切换用户
 kubectl config set-context admin --cluster=kubernetes --user=kubernetes-admin
 </code></pre>
-<p>调整 kube-controller-manager 和 scheduler 的配置.</p>
+<h4 id="调整-kube-controller-manager-和-scheduler-的配置">调整 kube-controller-manager 和 scheduler 的配置</h4>
 <pre><code class="language-bash"># 检查状态
 kubectl get cs
 # 你可能会发现,出现服务连接拒绝问题
@@ -2177,7 +2201,8 @@ scheduler            Healthy   ok
 controller-manager   Healthy   ok
 etcd-0               Healthy   &#123;&quot;health&quot;:&quot;true&quot;&#125;
 </code></pre>
-<p>配置网络插件，网络插件常用的有两种，</p>
+<h4 id="配置网络插件">配置网络插件</h4>
+<p>网络插件常用的有两种</p>
 <p>第一种是 flannel，涉及到更多的 iptables 规则</p>
 <p>第二种是 calico，涉及到更多的路由规则</p>
 <ul>
@@ -2208,7 +2233,7 @@ kubectl apply -f custom-resources.yaml
 <p>默认kubeadm安装完后，禁止调度pod到master上。你可以通过下面的命令，关闭所有master节点的禁止调度</p>
 <pre><code class="language-bash"> kubectl taint nodes --all node-role.kubernetes.io/master-
 </code></pre>
-<p>配置web控制台</p>
+<h4 id="配置web控制台">配置web控制台</h4>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/kubernetes/dashboard">https://github.com/kubernetes/dashboard</a> 代码托管地址</p>
 </blockquote>
@@ -2271,39 +2296,73 @@ kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboar
 # 通过 https://&lt;masterip&gt;:30001 访问
 </code></pre>
 <h3 id="获取其他节点加入集群的命令（k8s01）">获取其他节点加入集群的命令（k8s01）</h3>
+<h4 id="新加控制平面">新加控制平面</h4>
 <pre><code class="language-bash"># 命令格式
-kubeadm join xxx:8443 \
+kubeadm join k8sapi:8443 \
 --token xxx \
 --discovery-token-ca-cert-hash xxx \
 --control-plane --certificate-key xxx
 </code></pre>
-<p>找回命令（若命令失效）</p>
-<pre><code class="language-bash"># 找回 token
-kubeadm token list
-# 找回 discovery-token-ca-cert-hash
-openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2&gt;/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+<h4 id="新加Node节点">新加Node节点</h4>
+<pre><code class="language-bash"># 命令格式
+kubeadm join k8sapi:8443 \
+--token xxx \
+--discovery-token-ca-cert-hash xxx 
 </code></pre>
-<p>命令重建（若命令失效）</p>
-<pre><code class="language-bash"># 创建新的 token 并输出 join 命令
-kubeadm token create --print-join-command
-===
-kubeadm join k8sapi:8443 --token h77qhb.cjj8ig4t2v15dncm     --discovery-token-ca-cert-hash sha256:b7138bb76d19d3d7baf832e46559c400f4fe544d8f0ee81a87f
-# 创建新的 --certificate-key
-kubeadm init phase upload-certs --upload-certs
-===
-fd996c7c0c2047c9c10a377f25a332bf4b5b00ca
+<h4 id="命令重建">命令重建</h4>
+<p>添加Node节点命令</p>
+<pre><code class="language-bash"># 添加Node节点的命令
+add_node_command=`kubeadm token create --print-join-command`
+echo $&#123;add_node_command&#125;
+</code></pre>
+<p>添加控制平面节点命令</p>
+<pre><code class="language-bash"># 创建 --certificate-key
+join_certificate_key=`kubeadm init phase upload-certs --upload-certs|tail -1`
+# 命令组合
+echo &quot;$&#123;add_node_command&#125; --control-plane --certificate-key $&#123;join_certificate_key&#125;&quot;
 </code></pre>
 <h3 id="k8s02和k8s03作为控制平面添加到集群">k8s02和k8s03作为控制平面添加到集群</h3>
 <pre><code class="language-bash">kubeadm join k8sapi:8443 \
 --token h77qhb.cjj8ig4t2v15dncm \
 --discovery-token-ca-cert-hash sha256:b7138bb76d19d3d7baf832e46559c400f4fe544d8f0ee81a87f \
 --control-plane --certificate-key fd996c7c0c2047c9c10a377f25a332bf4b5b00ca
+# 
+sed -i '/- --port=0/d' /etc/kubernetes/manifests/kube-scheduler.yaml
+sed -i '/- --port=0/d' /etc/kubernetes/manifests/kube-controller-manager.yaml
+# 重启 kubelet
+systemctl restart kubelet
 
 # 根据提示，执行相关命令，一般都是下面的命令
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# 等待一分钟，查看所有 pod 是否正常
+kubectl get pod -n kube-system
+===
+NAME                            READY   STATUS    RESTARTS   AGE
+coredns-74ff55c5b-9gkgk         1/1     Running   0          2d13h
+coredns-74ff55c5b-tndb5         1/1     Running   0          15d
+etcd-k8s01                      1/1     Running   0          15d
+etcd-k8s02                      1/1     Running   0          7m12s
+etcd-k8s03                      1/1     Running   0          15d
+kube-apiserver-k8s01            1/1     Running   0          26h
+kube-apiserver-k8s02            1/1     Running   0          7m11s
+kube-apiserver-k8s03            1/1     Running   0          26h
+kube-controller-manager-k8s01   1/1     Running   0          15d
+kube-controller-manager-k8s02   1/1     Running   0          82s
+kube-controller-manager-k8s03   1/1     Running   1          15d
+kube-flannel-ds-42hng           1/1     Running   0          15d
+kube-flannel-ds-b42qj           1/1     Running   0          15d
+kube-flannel-ds-ss8w5           1/1     Running   0          15d
+kube-proxy-2xxpn                1/1     Running   0          15d
+kube-proxy-pg7j7                1/1     Running   0          15d
+kube-proxy-txh2t                1/1     Running   0          15d
+kube-scheduler-k8s01            1/1     Running   0          15d
+kube-scheduler-k8s02            1/1     Running   0          82s
+kube-scheduler-k8s03            1/1     Running   0          15d
 </code></pre>
+<h4 id="问题点">问题点</h4>
 <p>如果etcd中曾经有k8s02和k8s03的节点信息，则你需要先从etcd中删除，否则加入的时候，会卡在检测etcd处，并最终报错.</p>
 <p>删除etcd信息方式：</p>
 <pre><code class="language-bash"># 输出 etcd 节点 id
@@ -2367,7 +2426,7 @@ docker exec \
 </code></pre>
 </li>
 <li>
-<p>集群部署lxcfs deployment</p>
+<p>集群部署 lxcfs 的 deployment 资源对象</p>
 <pre><code class="language-bash">git clone https://github.com/denverdino/lxcfs-admission-webhook.git
 cd lxcfs-admission-webhook
 vim deployment/lxcfs-daemonset.yaml

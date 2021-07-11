@@ -573,6 +573,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -616,7 +625,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1646,6 +1655,48 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/63d8d3d4/">
+				<h2 class="index-title">
+					k8s☞12-1守护进程
+				</h2>
+				<div class="index-brief">
+					前言
+DaemonSet 确保指定的node上都存在一份 pod. 常用来构建一些批量代理性质的app. 例如监控节点app, 或者日志节点app
+特点
+
+当一个节点添加到集群, 或从集群中删除, 则 pod 会被添加/删除
+当DaemonSet被删除, 则 pod 都会被删除.
+pod模板中的 R
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/ed4c29d5/">
 				<h2 class="index-title">
 					k8s☞11-2namespace资源约束
@@ -1730,7 +1781,7 @@ k8s资源约束分为两种: request(软
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1773,7 +1824,7 @@ kubernetes 提供了一种卷类型 projected volum
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					k8s☞09应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -1854,6 +1905,44 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/f6e328b5/">
+				<h2 class="index-title">
+					k8s☞07无状态服务deployment-pod扩缩
+				</h2>
+				<div class="index-brief">
+					前言
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
 					k8s☞06无状态服务deployment-pod更新
@@ -1899,44 +1988,6 @@ https://kubernetes.io/docs/concepts/workl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
-				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
-				</h2>
-				<div class="index-brief">
-					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/9aa66899/">
 				<h2 class="index-title">
 					k8s☞05pod探测器
@@ -1952,45 +2003,6 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/94518966/">
-				<h2 class="index-title">
-					k8s☞03pod
-				</h2>
-				<div class="index-brief">
-					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-26</span>
                     
                             
                                 

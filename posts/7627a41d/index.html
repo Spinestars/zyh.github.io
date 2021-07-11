@@ -575,6 +575,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+										docker☞非root用户执行程序
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -618,7 +627,7 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/9602dad/">
-										k8s☞02v1.18.6安装
+										k8s☞02安装
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1689,7 +1698,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -1697,7 +1706,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -1963,6 +1972,8 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manife
 # 下面这个命令仅在你初始安装的时候需要运行
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey=&quot;$(openssl rand -base64 128)&quot;
 </code></pre>
+<p>升级</p>
+<p><a target="_blank" rel="noopener" href="https://metallb.universe.tf/installation/#upgrade">https://metallb.universe.tf/installation/#upgrade</a></p>
 <p>metallb将会在一个新的<code>ns: metallb-system</code>下创建.</p>
 <p>开始配置地址池</p>
 <p>metallb通过一个地址池(cm对象)来给LB分发ip. 我们将为 metallb 下发一个内网地址池. 请记住, 这些地址必须是没有被其它资源占用的.</p>

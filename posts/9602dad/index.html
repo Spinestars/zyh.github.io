@@ -1628,6 +1628,53 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										python
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/86059ffb/">
+										django☞admin管理视图
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6a4df400/">
+										django☞管理静态文件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f8b5448/">
+										django☞记忆点
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d60c38c/">
+										django☞验证码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										shell
 									</a>
 									
@@ -2238,34 +2285,61 @@ kubectl apply -f custom-resources.yaml
 <p><a target="_blank" rel="noopener" href="https://github.com/kubernetes/dashboard">https://github.com/kubernetes/dashboard</a> 代码托管地址</p>
 </blockquote>
 <pre><code class="language-bash">wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml &amp;&amp; mv recommended.yaml kubernetes-dashboard.yaml
-# 这里我们要修改一些东西
-# 默认控制台的 svc 配置类型不是 NodePort，这会导致我们无法直接通过宿主机ip访问，这里我们为了方便，将 dashboard 的 svc 加入NodePort类型
+</code></pre>
+<ul>
+<li>如果你部署了 metallb，或者有云服务的 lb，那么只需要修改 kubernetes-dashboard.yaml 配置中的 svc 对象类型为  LoadBalancer</li>
+</ul>
+<pre><code class="language-yaml">kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: kubernetes-dashboard
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  ports:
+    - port: 443
+      targetPort: 8443
+  type: LoadBalancer   # 这里新加一条
+  selector:
+    k8s-app: kubernetes-dashboard
+</code></pre>
+<p>之后通过 lb 地址访问即可</p>
+<ul>
+<li>如果你没有配置 metallb，也没有部署在云服务中（即没有云LB），那么需要修改 svc 类型为 NodePort，并且将 pod 的部署到固定的节点上，例如 k8s01</li>
+</ul>
+<pre><code class="language-bash"># 这里我们要修改一些东西
+# 
 #---
 spec:
   ports:
     - port: 443
       targetPort: 8443
       nodePort: 30001
-  type: NodePort
+  type: NodePort   # 这里新加一条
 #---
 # 还需要修改一下部署的位置，如果你集群中已经加入了多个节点，则会导致 pod 分发到其它节点上。这里我们强制分发到 master 上. 找到 kind: Deployment 配置，并修改两个 pod 的分发位置为 nodeName: &lt;master 节点主机名&gt;
 #---
     spec:
-      nodeName: k8s00
+      nodeName: k8s01    # 这里新加一条
       containers:
         - name: kubernetes-dashboard
           image: kubernetesui/dashboard:v2.0.3
           
     spec:
-      nodeName: k8s00
+      nodeName: k8s01    # 这里新加一条
       containers:
         - name: dashboard-metrics-scraper
           image: kubernetesui/metrics-scraper:v1.0.4          
 #---
 # 然后创建
 kubectl create -f kubernetes-dashboard.yaml
-
-# 添加访问 token
+</code></pre>
+<p>之后通过 <a target="_blank" rel="noopener" href="https://k8s01:30001">https://k8s01:30001</a> 访问</p>
+<ul>
+<li>获取访问web服务的token</li>
+</ul>
+<pre><code class="language-bash"># 添加访问 token
 # 官方文档： https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
 # 通过下面内容创建 kube-db-auth.yaml
 cat &gt; kube-db-auth.yaml &lt;&lt; EOF
@@ -2289,12 +2363,10 @@ subjects:
   namespace: kubernetes-dashboard
 EOF
 kubectl apply -f kube-db-auth.yaml
-
 # 通过下面命令拿到 token
 kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '&#123;print $1&#125;')  
-
-# 通过 https://&lt;masterip&gt;:30001 访问
 </code></pre>
+<p><img src="/posts/9602dad/image-20210711163654410.png" alt="image-20210711163654410"></p>
 <h3 id="获取其他节点加入集群的命令（k8s01）">获取其他节点加入集群的命令（k8s01）</h3>
 <h4 id="新加控制平面">新加控制平面</h4>
 <pre><code class="language-bash"># 命令格式

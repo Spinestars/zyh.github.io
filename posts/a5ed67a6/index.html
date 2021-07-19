@@ -1628,6 +1628,53 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										python
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/86059ffb/">
+										django☞admin管理视图
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6a4df400/">
+										django☞管理静态文件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f8b5448/">
+										django☞记忆点
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d60c38c/">
+										django☞验证码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										shell
 									</a>
 									
@@ -1740,22 +1787,23 @@ var _hmt = _hmt || [];
 <li>
 <p>创建私钥key, 证书请求csr</p>
 <p>创建私钥会让你填写一些属性，这里有两个属性特别重要，分别是指定用户名的属性CN和指定用户组的属性O</p>
+<p>例如创建用户<code>zyh</code>，群组<code>it</code></p>
 <pre><code>openssl genrsa -out zyh.key 2048
+openssl req -new -key zyh.key -out zyh.csr -subj &quot;/CN=zyh/O=it&quot;
 </code></pre>
 </li>
-</ol>
-<p>openssl req -new -key zyh.key -out zyh.csr -subj “/CN=zyh/O=it”</p>
-<pre><code>
-2. 构建k8s的CertificateSigningRequest对象
-
-第一步：csr文件进行base64编码
-
-```bash
-RequestStr=`cat zyh.csr | base64 | tr -d &quot;\n&quot;`
+<li>
+<p>构建k8s的CertificateSigningRequest对象</p>
+<ul>
+<li>csr文件进行base64编码</li>
+</ul>
+<pre><code class="language-bash">RequestStr=`cat zyh.csr | base64 | tr -d &quot;\n&quot;`
 </code></pre>
-<p>第二步：将编码后的内容写入 request 字段</p>
+<ul>
+<li>将编码后的内容写入 request 字段</li>
+</ul>
 <pre><code class="language-yaml">cat &lt;&lt;EOF | kubectl apply -f -
-apiVersion: certificates.k8s.io/v1beta1
+apiVersion: certificates.k8s.io/v1
 kind: CertificateSigningRequest
 metadata:
   name: zyh
@@ -1769,10 +1817,9 @@ spec:
 EOF
 </code></pre>
 <p>⭐️usages字段必须是<code>client auth</code></p>
-<p>🌟如果你用的是1.19版本，那么apiVersion是<code>certificates.k8s.io/v1</code></p>
 <p>⭐️需要注意的是，证书签发默认只有1年有效期</p>
 <p>🌟确保当前 csr 没有重名申请</p>
-<ol start="3">
+</li>
 <li>
 <p>批准证书请求，并获取证书</p>
 <p>批准：</p>
@@ -1790,7 +1837,10 @@ kubectl certificate approve zyh
 <p>授权就是给这个用户绑定一个具体的角色。角色代表了一种权限集合。</p>
 <ol>
 <li>
-<p>创建角色对象资源，创建一个developer角色，权限是拥有pod资源的增删改查，且<strong>命名空间是developer</strong></p>
+<p>创建角色对象资源，创建一个<code>developer</code>角色，权限是拥有pod资源的增删改查，且<strong>命名空间是developer</strong></p>
+<blockquote>
+<p>需要先创建developer命名空间</p>
+</blockquote>
 <pre><code class="language-bash">kubectl create role developer --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods --namespace=developer
 </code></pre>
 </li>

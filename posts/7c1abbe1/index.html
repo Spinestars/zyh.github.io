@@ -612,6 +612,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										helm
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/51015304/">
+										helm☞01入门
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										k8s
 									</a>
 									
@@ -797,6 +817,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/3511df2/">
+										k8s☞18日志收集系统
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/c15432fa/">
 										k8s☞kubectl多集群管理
 									</a>
@@ -940,6 +969,15 @@ var _hmt = _hmt || [];
 										ELK
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/95177ce7/">
+										日志☞EFK简单部署-k8s
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/3475106c/">
@@ -1628,6 +1666,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										jquery
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5d527900/">
+										jquery☞伪进度条
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										python
 									</a>
 									
@@ -1635,6 +1693,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/86059ffb/">
 										django☞admin管理视图
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dd4c9efa/">
+										django☞restful简单使用
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1662,6 +1729,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/d60c38c/">
 										django☞验证码
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/876c5852/">
+										python☞json
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1734,7 +1810,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/openvpn/">openvpn</a>
+                        <a href="/tags/安装/">安装</a>
                         </i>
                     </span>
                 
@@ -1742,7 +1818,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/安装/">安装</a>
+                        <a href="/tags/openvpn/">openvpn</a>
                         </i>
                     </span>
                 
@@ -1762,6 +1838,7 @@ var _hmt = _hmt || [];
 比如我这边，移动网络连接电信网络（openvpn所在网络），就容易丢包。</p>
 </blockquote>
 <h2 id="安装">安装</h2>
+<p>以下命令需逐行执行，不能复制批量执行，因为中间需要自行添加变量，以及手动输入一些信息</p>
 <pre><code class="language-bash:">yum install docker
 docker pull kylemanna/openvpn
 OVPN_DATA=&quot;/root/ovpn-data&quot;
@@ -1779,9 +1856,11 @@ docker run --name openvpn -v $&#123;OVPN_DATA&#125;:/etc/openvpn -d -p $&#123;PO
 <p>下面是一个改后的示例配置</p>
 <pre><code class="language-bash">server 192.168.255.0 255.255.255.0
 verb 3
-key /etc/openvpn/pki/private/xxx.key
+# 变更为容器里默认生成的
+key /etc/openvpn/pki/private/&lt;修改我&gt;.key
 ca /etc/openvpn/pki/ca.crt
-cert /etc/openvpn/pki/issued/xxx.crt
+# 变更为容器里默认生成的
+cert /etc/openvpn/pki/issued/&lt;修改我&gt;.crt
 dh /etc/openvpn/pki/dh.pem
 tls-auth /etc/openvpn/pki/ta.key
 key-direction 0
@@ -1805,7 +1884,7 @@ route 192.168.254.0 255.255.255.0
 ### Push Configurations Below
 push &quot;block-outside-dns&quot;
 push &quot;comp-lzo no&quot;
-### 关闭DNS推送，客户端走本地DNS
+### 关闭DNS推送，客户端走本地DNS,需要通知关闭客户端的全局路由 redirect-gateway def1
 #push &quot;dhcp-option DNS 223.5.5.5&quot;
 #push &quot;dhcp-option DNS 114.114.114.114&quot;
 ### 添加客户端需要走openvpn的网络路由，例如访问openvpn所在内网的某个网段，10.100.0.0/16
@@ -1825,22 +1904,23 @@ push &quot;route 114.114.114.114 255.255.255.255&quot;
 <pre><code class="language-bash"># redirect-gateway def1
 </code></pre>
 <h2 id="创建用户脚本">创建用户脚本</h2>
+<blockquote>
+<p>需要注意的是，下列脚本中，是需要自行修改ip的。</p>
+</blockquote>
 <pre><code class="language-bash:">#!/bin/bash
 # 如果是nat后的内网ip，则需要修改配置文件里的ip为外网ip
 # bash xxx.sh &lt;用户名&gt;
 [[ -z $1 ]] &amp;&amp; exit
 CLIENTNAME=$1
-#read -p '输入用户名（字母组成）:' CLIENTNAME
 OVPN_DATA=&quot;/root/ovpn-data&quot;
-PORT=  # 容器映射的宿主机端口
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full $&#123;CLIENTNAME&#125; nopass
 docker run -v $&#123;OVPN_DATA&#125;:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient $CLIENTNAME &gt; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
-sed -i &quot;s/1194/$&#123;PORT&#125;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i '1a comp-lzo' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i '2a tun-mtu 1500' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i '3a auth-nocache' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
-sed -i &quot;s/&lt;服务器内网IP&gt;/&lt;客户端连接的外网IP&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn  # 若为nat环境，自行替换两个ip，若不是nat环境，注释掉本行
-read -p '是否关闭全局路由，（y）关闭全局路由，仅当客户端匹配下发路由时才走openvpn.[确保服务端没有开启DNS推送，若开启则添加对应的DNS路由]；（n）开启全局路由，客户端所有流量均走openvpn.[确保服务端开启了DNS推送]：' yn
+sed -i &quot;s/1194/&lt;外网端口&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn # 修改我
+sed -i &quot;s/&lt;服务器内网IP&gt;/&lt;客户端连接的外网IP&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn  # 修改我
+read -p '是否关闭全局路由，（y）关闭全局路由，仅当客户端匹配下发路由时才走openvpn.[确保服务端没有开启DNS推送，若开启则添加对应的DNS路由]；（n）开启&gt;全局路由，客户端所有流量均走openvpn.[确保服务端开启了DNS推送]：' yn
 [[ $yn == 'y' ]] &amp;&amp; sed -i '/redirect-gateway def1/d' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 mkdir -pv $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
 mv /root/ovpn-data/pki/private/$&#123;CLIENTNAME&#125;.key $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
@@ -1849,6 +1929,8 @@ mv $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn $&#123;OVPN_DATA&#125;/us
 cd $&#123;OVPN_DATA&#125;/users/
 tar zcf $&#123;CLIENTNAME&#125;.tar.gz $&#123;CLIENTNAME&#125;
 echo &quot;`pwd`/$&#123;CLIENTNAME&#125;.tar.gz&quot;
+echo &quot;################################################&quot;
+cat $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;/$&#123;CLIENTNAME&#125;.ovpn
 #sz $&#123;CLIENTNAME&#125;.tar.gz
 </code></pre>
 <h2 id="删除用户脚本">删除用户脚本</h2>

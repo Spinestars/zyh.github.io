@@ -622,6 +622,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/710e3e49/">
+										helm☞02chart
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1778,6 +1787,49 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/7b3cf3d8/">
+				<h2 class="index-title">
+					linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+				</h2>
+				<div class="index-brief">
+					原因
+expect 执行的时候，并不会将窗口大小改变的信号传递给远程会话。所以在脚本中添加即可。
+解决
+#!/usr/bin/env expect 
+#trap sigwinch spawned
+trap &#123;
+ set rows [stty rows]
+ set cols [stty co
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-09</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/">系统</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/linux/">linux</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/4cc38acc/">
 				<h2 class="index-title">
 					aliyun☞常见问题
@@ -2109,46 +2161,6 @@ kube-apiserver
 			</a>
                 <div class="article-meta">
 				    <span>2020-10-19</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/55da993d/">
-				<h2 class="index-title">
-					k8s☞15证书管理
-				</h2>
-				<div class="index-brief">
-					前言
-k8s默认的CA证书有效期是10年。默认签发的服务证书有效期是1年。
-k8s支持自动轮换证书。
-k8s支持轮换时候的证书有效期。不过最长是10年。（我这边设置为100年，没效果）
-https://kubernetes.io/docs/tasks/administer-cluster/kubea
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-16</span>
                     
                             
                                 

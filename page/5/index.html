@@ -622,6 +622,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/710e3e49/">
+										helm☞02chart
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1821,6 +1830,49 @@ kubernetes 提供了一种卷类型 projected volum
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/4b0e4a5/">
+				<h2 class="index-title">
+					k8s☞10应用配置与密码与信息提供
+				</h2>
+				<div class="index-brief">
+					前言
+kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
+所以步骤一般是这样的。
+
+创建secret 和 configmap 对象
+
+以文件方式提供
+kubernetes 提供了一种卷类型 projected volum
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-17</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/d3b80b5f/">
 				<h2 class="index-title">
 					k8s☞08负载均衡service
@@ -1861,14 +1913,21 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
@@ -1899,21 +1958,14 @@ k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/18e4fa73/">
+			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
+					k8s☞07无状态服务deployment-pod扩缩
 				</h2>
 				<div class="index-brief">
 					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
 					...
 				</div>
 			</a>
@@ -2152,47 +2204,6 @@ mysqltonew()&#123;
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/数据库/mysql/">mysql</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
-				<h2 class="index-title">
-					k8s☞04pod钩子函数
-				</h2>
-				<div class="index-brief">
-					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
-
-它将在容器创建后立即运行，但不保证在 ENT
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 

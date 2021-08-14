@@ -622,6 +622,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/710e3e49/">
+										helm☞02chart
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1778,6 +1787,35 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/3988a5f2/">
+				<h2 class="index-title">
+					linux☞输出个性化开机状态
+				</h2>
+				<div class="index-brief">
+					前沿
+觉得默认的登陆不够给力，无法忽悠机器，用wower的话来说，就是先祖忽悠着你
+效果图在此
+
+脚本在此
+
+将脚本放置到 /etc/profile.d/status.sh
+
+#!/bin/bash
+# Author: zyh
+# 需先安装 toilet 和 cowsay 命令
+# yum inst
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-09</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1ddb9d4e/">
 				<h2 class="index-title">
 					问题记录
@@ -1992,17 +2030,32 @@ ansible 某个 task 报错，会导致任务终止，而ignore_errors: true 可�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6a4df400/">
+			<a href="/posts/3f8b5448/">
 				<h2 class="index-title">
-					django☞管理静态文件
+					django☞记忆点
 				</h2>
 				<div class="index-brief">
-					前言
-管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
-内置视图 | Django 文档 | Django (djangoproject.com)
-通用设置
-项目.settings.py中
-STATIC_URL 
+					.git文件
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+static
+
+# Backup files #
+*.bak
+
+# other
+.vscode
+.git
+db
+log
+
+Dockerfile
+FROM python:3.8-alpine
+L
 					...
 				</div>
 			</a>
@@ -2033,32 +2086,17 @@ STATIC_URL
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3f8b5448/">
+			<a href="/posts/6a4df400/">
 				<h2 class="index-title">
-					django☞记忆点
+					django☞管理静态文件
 				</h2>
 				<div class="index-brief">
-					.git文件
-# Django #
-*.log
-*.pot
-*.pyc
-__pycache__
-media
-static
-
-# Backup files #
-*.bak
-
-# other
-.vscode
-.git
-db
-log
-
-Dockerfile
-FROM python:3.8-alpine
-L
+					前言
+管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
+内置视图 | Django 文档 | Django (djangoproject.com)
+通用设置
+项目.settings.py中
+STATIC_URL 
 					...
 				</div>
 			</a>
@@ -2169,51 +2207,6 @@ handlers 的 playbook 样本
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/2c2d50a0/">
-				<h2 class="index-title">
-					redis☞备份
-				</h2>
-				<div class="index-brief">
-					前言
-本文主要记录 redis 的两种数据磁盘固化方式。
-涉及到相关参数，简单的命令操作等。
-rdb
-
-通过fork一个子进程来存储某一时刻redis数据(bgsave方式)。rdb持久化是默认方式。
-特点：
-
-
-小幅度丢失数据(取决于save或者bgsave命令的执行周期)，这里我们不说save，
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-27</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 

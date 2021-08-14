@@ -622,6 +622,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/710e3e49/">
+										helm☞02chart
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1778,6 +1787,47 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/58a1c0c7/">
+				<h2 class="index-title">
+					nginx☞fcgi中alias的使用
+				</h2>
+				<div class="index-brief">
+					前言
+众所周知, nginx 在配置静态资源的时候, root 和 alias 分别是两种指定资源路径的方式.
+如果：
+​	url 是 http://xxx.com/god/a.jpg，且 location 匹配的是 /god/.
+则：
+​	当用 root 定位资源路径时, root 配置的值=域名
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-27</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/nginx/">nginx</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/720afd15/">
 				<h2 class="index-title">
 					ansible☞角色
@@ -2052,48 +2102,6 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/65ab632a/">
-				<h2 class="index-title">
-					redis☞安装
-				</h2>
-				<div class="index-brief">
-					docker 安装
-Docker Hub
-redisName=redis
-versionTag=6
-dataPath=/export/docker-data-redis
-mkdir -p $&#123;dataPath&#125;
-redis.conf 请参考官方默认配置文档，默认配置文档地址： h
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/421d605e/">
 				<h2 class="index-title">
 					日志☞logrotate安装
@@ -2135,18 +2143,19 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					zabbix☞agent和proxy(yum)
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					
+https://repo.zabbix.com/zabbix/
+
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+
+agent 安装
+
 					...
 				</div>
 			</a>
@@ -2158,6 +2167,16 @@ i
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

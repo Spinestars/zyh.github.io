@@ -624,6 +624,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/710e3e49/">
+										helm☞02chart
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1872,8 +1881,7 @@ var _hmt = _hmt || [];
 <p>我们通过 helm 包管理器进行安装</p>
 <p><a target="_blank" rel="noopener" href="https://artifacthub.io/">Artifact Hub</a></p>
 <p>⚠️需要注意的是，elasticsearch和kibana版本要保持一致</p>
-<h3 id="elasticsearch">elasticsearch</h3>
-<p><a target="_blank" rel="noopener" href="https://artifacthub.io/packages/helm/elastic/elasticsearch/7.14.0">elasticsearch 7.14.0 · elastic/elastic (artifacthub.io)</a></p>
+<h3 id="elasticsearch"><a target="_blank" rel="noopener" href="https://artifacthub.io/packages/helm/elastic/elasticsearch/7.14.0">elasticsearch</a></h3>
 <p>下载chart包到本地，并解压</p>
 <pre><code class="language-bash">mkdir kube-efk &amp;&amp; cd kube-efk
 helm repo add elastic https://helm.elastic.co
@@ -1881,6 +1889,16 @@ helm fatch elastic/elasticsearch
 tar xf elasticsearch*.tgz &amp;&amp; cd elasticsearch
 </code></pre>
 <p>编辑 values.yaml，自定义配置</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration">helm-charts/elasticsearch at master · elastic/helm-charts (github.com)</a></p>
+<p>确认要安装的应用角色，默认开启了下列角色</p>
+<p>[Node | Elasticsearch Guide <a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles">7.14] | Elastic</a></p>
+<pre><code class="language-yaml">roles:
+  master: &quot;true&quot;
+  ingest: &quot;true&quot;
+  data: &quot;true&quot;
+  remote_cluster_client: &quot;true&quot;
+  ml: &quot;true&quot;
+</code></pre>
 <p>添加存储类，构建永久性存储</p>
 <pre><code class="language-yaml">volumeClaimTemplate:
   storageClassName: nfs-client
@@ -1899,7 +1917,106 @@ persistence:
     value: &quot;prod&quot;
     effect: &quot;NoSchedule&quot;
 </code></pre>
-<p>未完待续</p>
+<p>开始安装</p>
+<pre><code class="language-bash">kubectl create ns efk
+helm install myes elastic/elasticsearch --version 7.14.0 --namespace efk -f values.yaml
+</code></pre>
+<p>默认的配置里，es会创建三个节点</p>
+<h3 id="fluentd-elasticsearch"><a target="_blank" rel="noopener" href="https://artifacthub.io/packages/helm/kokuwa/fluentd-elasticsearch">fluentd-elasticsearch</a></h3>
+<p>下载chart包到本地，并解压</p>
+<pre><code class="language-bash">cd kube-efk
+helm repo add kokuwa https://kokuwaio.github.io/helm-charts
+helm fatch kokuwa/fluentd-elasticsearch
+tar xf fluentd-elasticsearch*.tgz &amp;&amp; cd fluentd-elasticsearch
+</code></pre>
+<p>编辑 values.yaml，自定义配置</p>
+<p>修改容器的数据目录（如果你不是默认路径的话）</p>
+<pre><code class="language-yaml">hostLogDir:
+  varLog: /var/log
+  #dockerContainers: /var/lib/docker/containers
+  dockerContainers: /export/docker-data-root/containers
+  libSystemdDir: /usr/lib64
+</code></pre>
+<p>修改elasticsearch的路径</p>
+<pre><code class="language-yaml">elasticsearch:
+  auth:
+    enabled: false
+    user: null
+    password: null
+    existingSecret:
+      name: null
+      key: null
+  includeTagKey: true
+  setOutputHostEnvVar: true
+  # If setOutputHostEnvVar is false this value is ignored
+  #hosts: [&quot;elasticsearch-client:9200&quot;]
+  hosts: [&quot;elasticsearch-master.efk.svc.cluster.local:9200&quot;]
+</code></pre>
+<blockquote>
+<p>elasticsearch-master 是es创建完毕后的service_name</p>
+</blockquote>
+<p>添加master节点的容忍</p>
+<pre><code class="language-yaml">tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
+</code></pre>
+<p>开始安装</p>
+<pre><code class="language-bash">helm install myflu kokuwa/fluentd-elasticsearch -f values.yaml
+</code></pre>
+<h3 id="校验-elasticsearch">校验 elasticsearch</h3>
+<p>确认 elasticsearch 是否接收到来自 fluentd-elasticsearch 发送的数据</p>
+<pre><code class="language-bash">kubectl run cirros-$RANDOM --image=cirros --rm -it -- /bin/sh
+
+curl elasticsearch-master.efk.svc.cluster.local:9200/_cat/indices
+===
+green open logstash-2021.07.03             YeQF97-WQZKvg6lieiXxRw 1 1  31045      0   6.7mb  3.4mb
+green open logstash-2021.07.02             qQAZg0rnSAW8FWxrNgwWhQ 1 1  42034      0   7.4mb  3.6mb
+green open logstash-2021.07.01             lJh5YdtySqukuITYrCmWcQ 1 1  30655      0   6.5mb  3.5mb
+green open logstash-2021.06.30             0vw7wc2tT9aNZJfXU2KLtw 1 1  27922      0   5.9mb  3.2mb
+green open logstash-2021.06.29             TiUBVT_MTC-mdP_fRbHoTQ 1 1  27914      0   5.9mb    3mb
+green open logstash-2021.06.28             54MQznz6Sr27Xn8JjSclsg 1 1  27921      0   5.9mb  3.1mb
+green open logstash-2021.06.27             VYcSLdq7QVO-p1rFdoZYRg 1 1  27920      0     6mb  3.1mb
+green open logstash-2021.06.26             C4HUoKhoTf67vcZJXW4H1A 1 1  44168      0   9.3mb  4.7mb
+green open logstash-2021.06.25             2TLEHI3TSiyEEALSWH3j3g 1 1  24310      0   5.4mb  2.8mb
+green open logstash-2021.06.24             Q8kF51zITB-G4xLGjveXEg 1 1  27338      0   6.1mb  2.9mb
+</code></pre>
+<h3 id="kibana"><a target="_blank" rel="noopener" href="https://artifacthub.io/packages/helm/elastic/kibana/7.14.0">kibana</a></h3>
+<p>下载chart包到本地，并解压</p>
+<pre><code class="language-bash">cd kube-efk
+helm fatch elastic/kibana
+tar xf kibana*.tgz &amp;&amp; cd kibana
+</code></pre>
+<p>编辑 values.yaml，自定义配置</p>
+<p>修改elasticsearch地址，其实不用修改，因为这个chart和elasticsearch都是elastic出的，默认值就没问题</p>
+<pre><code class="language-yaml">elasticsearchHosts: &quot;http://elasticsearch-master:9200&quot; 
+</code></pre>
+<p>修改kibana的service类型，从集群外访问</p>
+<pre><code class="language-yaml">service:
+  type: LoadBalancer
+  loadBalancerIP: &quot;&quot;
+  port: 5601
+  nodePort: &quot;&quot;
+  labels: &#123;&#125;
+  annotations:
+    &#123;&#125;
+    # cloud.google.com/load-balancer-type: &quot;Internal&quot;
+    # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+    #service.beta.kubernetes.io/azure-load-balancer-internal: &quot;true&quot;
+    # service.beta.kubernetes.io/openstack-internal-load-balancer: &quot;true&quot;
+    # service.beta.kubernetes.io/cce-load-balancer-internal-vpc: &quot;true&quot;
+</code></pre>
+<blockquote>
+<p>根据你的环境修改，我这里环境用了metallb组件，用来模拟LB，所以annotations不需要添加任何注释</p>
+</blockquote>
+<h3 id="配置kibana">配置kibana</h3>
+<p>添加模式分区</p>
+<p>路径：Stack Management-&gt;Index patterns</p>
+<p>Index pattern name: <code>logstash*</code></p>
+<p>Time field: <code>@timestamp</code></p>
+<p>配置一个展示k8s error错误的图标</p>
+<p><img src="/posts/95177ce7/image-20210814122316905.png" alt="image-20210814122316905"></p>
+<p><img src="/posts/95177ce7/image-20210814122130824.png" alt="image-20210814122130824"></p>
 
 </div>
 

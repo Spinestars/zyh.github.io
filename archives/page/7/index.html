@@ -2171,20 +2171,18 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/445cf088/">
+			<a href="/posts/65ab632a/">
 				<h2 class="index-title">
-					nginx☞日志切割
+					redis☞安装
 				</h2>
 				<div class="index-brief">
-					前言
-本脚本用于将 nginx 日志进行时间周期切割，并 lzo 压缩，最终上传到 s3。
-脚本分为三个函数，切割函数，压缩上传函数，删除函数，需要执行哪个，就填写相对应变量。
-详情可以看脚本注释。
-
-请务必执行前，确认安装了 lzop 和 jq 命令 ，且机器是 aws EC2
-
-脚本在此
-#!/
+					docker 安装
+Docker Hub
+redisName=redis
+versionTag=6
+dataPath=/export/docker-data-redis
+mkdir -p $&#123;dataPath&#125;
+redis.conf 请参考官方默认配置文档，默认配置文档地址： h
 					...
 				</div>
 			</a>
@@ -2195,7 +2193,7 @@ tengine: 2.1.2 # 这是一个很古老的版本…
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
+                                        <a href="/categories/数据库/">数据库</a>
 										
 											>
 										
@@ -2205,7 +2203,7 @@ tengine: 2.1.2 # 这是一个很古老的版本…
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
+                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 

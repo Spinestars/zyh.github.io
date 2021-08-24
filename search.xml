@@ -51,9 +51,9 @@
             
             <tag> 安装 </tag>
             
-            <tag> EFK </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> EFK </tag>
             
         </tags>
       
@@ -80,9 +80,9 @@
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> docker </tag>
             
         </tags>
       
@@ -190,9 +190,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> helm </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -219,9 +219,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> helm </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -248,9 +248,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -277,38 +277,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>prometheus☞04mysql监控</title>
-      <link href="posts/6178b477/"/>
-      <url>posts/6178b477/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#mysql">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://github.com/prometheus/mysqld_exporter">prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)</a></p><p><a href="https://registry.hub.docker.com/r/prom/mysqld-exporter/">prom/mysqld-exporter (docker.com)</a></p><h2 id="安装">安装</h2><h3 id="添加mysql账户">添加mysql账户</h3><pre><code class="language-bash">CREATE USER 'exporter'@'&lt;局域网授信IP&gt;' IDENTIFIED BY 'exporter@123';GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'exporter'@'&lt;局域网授信IP&gt;';GRANT SELECT ON performance_schema.* TO 'exporter'@'&lt;局域网授信IP&gt;';</code></pre><pre><code class="language-bash">docker run -d --net promsnet --name mysqld-exporter -p 9104:9104 --link=my_mysql_container:&lt;被监控的mysql容器名&gt;  \  -e DATA_SOURCE_NAME=&quot;exporter:exporter@123@(&lt;被监控的mysql容器名 or 被监控的mysql实例地址&gt;:3306)/&quot; prom/mysqld-exporter</code></pre><blockquote><p>–link 可选，关联被监控的容器数据库</p></blockquote><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'mysql-001'    static_configs:      - targets: ['mysqld-exporter:9104'] # mysqld-exporter 采集器地址        labels:          instance: &lt;mysql_server_path&gt;:3306 # 变更采集后的标签instance为mysql实例地址</code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:    - alert: MysqlDown      expr: mysql_up == 0      for: 0m      labels:        severity: critical      annotations:        summary: MySQL down (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL instance is down on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlTooManyConnections(&gt;80%)      expr: avg by (instance) (rate(mysql_global_status_threads_connected[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 80      for: 2m      labels:        severity: warning      annotations:        summary: MySQL too many connections (&gt; 80%) (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 80% of MySQL connections are in use on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlRestarted      expr: mysql_global_status_uptime &lt; 60      for: 0m      labels:        severity: info      annotations:        summary: MySQL restarted (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL has just been restarted, less than one minute ago on &#123;&#123; $labels.instance &#125;&#125;.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlHighThreadsRunning      expr: avg by (instance) (rate(mysql_global_status_threads_running[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 60      for: 2m      labels:        severity: warning      annotations:        summary: MySQL high threads running (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 60% of MySQL connections are in running state on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/7362">https://grafana.com/grafana/dashboards/7362</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> prometheus </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> prometheus </tag>
-            
-            <tag> mysql </tag>
+            <tag> k8s </tag>
             
         </tags>
       
@@ -335,9 +306,9 @@
       
         <tags>
             
-            <tag> prometheus </tag>
-            
             <tag> redis </tag>
+            
+            <tag> prometheus </tag>
             
         </tags>
       
@@ -365,6 +336,35 @@
         <tags>
             
             <tag> rabbitmq </tag>
+            
+            <tag> prometheus </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>prometheus☞04mysql监控</title>
+      <link href="posts/6178b477/"/>
+      <url>posts/6178b477/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#mysql">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://github.com/prometheus/mysqld_exporter">prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)</a></p><p><a href="https://registry.hub.docker.com/r/prom/mysqld-exporter/">prom/mysqld-exporter (docker.com)</a></p><h2 id="安装">安装</h2><h3 id="添加mysql账户">添加mysql账户</h3><pre><code class="language-bash">CREATE USER 'exporter'@'&lt;局域网授信IP&gt;' IDENTIFIED BY 'exporter@123';GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'exporter'@'&lt;局域网授信IP&gt;';GRANT SELECT ON performance_schema.* TO 'exporter'@'&lt;局域网授信IP&gt;';</code></pre><pre><code class="language-bash">docker run -d --net promsnet --name mysqld-exporter -p 9104:9104 --link=my_mysql_container:&lt;被监控的mysql容器名&gt;  \  -e DATA_SOURCE_NAME=&quot;exporter:exporter@123@(&lt;被监控的mysql容器名 or 被监控的mysql实例地址&gt;:3306)/&quot; prom/mysqld-exporter</code></pre><blockquote><p>–link 可选，关联被监控的容器数据库</p></blockquote><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'mysql-001'    static_configs:      - targets: ['mysqld-exporter:9104'] # mysqld-exporter 采集器地址        labels:          instance: &lt;mysql_server_path&gt;:3306 # 变更采集后的标签instance为mysql实例地址</code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:    - alert: MysqlDown      expr: mysql_up == 0      for: 0m      labels:        severity: critical      annotations:        summary: MySQL down (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL instance is down on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlTooManyConnections(&gt;80%)      expr: avg by (instance) (rate(mysql_global_status_threads_connected[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 80      for: 2m      labels:        severity: warning      annotations:        summary: MySQL too many connections (&gt; 80%) (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 80% of MySQL connections are in use on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlRestarted      expr: mysql_global_status_uptime &lt; 60      for: 0m      labels:        severity: info      annotations:        summary: MySQL restarted (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;MySQL has just been restarted, less than one minute ago on &#123;&#123; $labels.instance &#125;&#125;.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;    - alert: MysqlHighThreadsRunning      expr: avg by (instance) (rate(mysql_global_status_threads_running[1m])) / avg by (instance) (mysql_global_variables_max_connections) * 100 &gt; 60      for: 2m      labels:        severity: warning      annotations:        summary: MySQL high threads running (instance &#123;&#123; $labels.instance &#125;&#125;)        description: &quot;More than 60% of MySQL connections are in running state on &#123;&#123; $labels.instance &#125;&#125;\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/7362">https://grafana.com/grafana/dashboards/7362</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> prometheus </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
             
             <tag> prometheus </tag>
             
@@ -629,9 +629,9 @@
             
             <tag> linux </tag>
             
-            <tag> expect </tag>
-            
             <tag> ssh </tag>
+            
+            <tag> expect </tag>
             
         </tags>
       
@@ -880,9 +880,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> kubeadm </tag>
             
@@ -913,9 +913,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> 证书 </tag>
             
@@ -944,9 +944,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> authorization </tag>
             
@@ -1002,9 +1002,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> storage </tag>
             
@@ -1087,9 +1087,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> ingress </tag>
             
@@ -1118,9 +1118,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> StatefulSet </tag>
             
@@ -1149,9 +1149,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> DaemonSet </tag>
             
@@ -1180,9 +1180,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> namespace </tag>
             
@@ -1213,46 +1213,13 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
             <tag> 资源约束 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞09应用配置与密码与信息提供</title>
-      <link href="posts/4b0e4a5/"/>
-      <url>posts/4b0e4a5/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。</p><p>所以步骤一般是这样的。</p><ol><li>创建secret 和 configmap 对象</li></ol><h2 id="以文件方式提供">以文件方式提供</h2><p>kubernetes 提供了一种卷类型 projected volume。</p><p>写法：</p><pre><code class="language-yaml:">        volumeMounts:        - name: all-in-one          mountPath: /etc/allinfo          readonly: true  volumes:  - name: all-in-one    projected:      sources:      - secret:          name: user      - secret:          name: pass      - configmap:          name: content      - downwardAPI:          items:            - path: &quot;labels&quot;              fieldRef:                fieldPath: metadata.labels            - path: &quot;annotations&quot;              fieldRef:                fieldPath: metadata.annotations</code></pre><blockquote><p>user, pass, content, labels, annotations 将会以文件形式存在于容器挂载点 /etc/allinfo 内。</p></blockquote><p>创建 secret: user 和 secret: pass</p><pre><code class="language-bash">echo -n &quot;admin&quot; &gt; ./username.txtkubectl create secret generic user --from-file=./username.txtecho -n &quot;1f2d1e2e67df&quot; &gt; ./username.txtkubectl create secret generic pass --from-file=./password.txt</code></pre><p>创建 configmap: content</p><pre><code class="language-bash">echo -n &quot;userinfo&quot; &gt; ./content.txtkubectl create configmap content --from-file=./content.txt</code></pre><p>downwardAPI 内容直接写入</p><h2 id="配置ConfigMap">配置ConfigMap</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/configmap/">https://kubernetes.io/docs/concepts/configuration/configmap/</a></p><p>ConfigMap 常用在两种情况中. 第一种是提供环境变量.第二种是提供配置文件</p><p>一个简单配置例子如下</p><pre><code class="language-yaml">kind: ConfigMapapiVersion: v1metadata:  name: cm-demo  namespace: defaultdata:  data.1: hello  data.2: world  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>上述例子中, 包含的内容有</p><p>环境变量方式:</p><pre><code class="language-yaml">  data.1: hello  data.2: world</code></pre><p>配置文件方式:</p><pre><code class="language-yaml">  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>nginx.config 是文件名, 管道符 | 下面是文件内容.</p><p>需要注意的是, 内容依然要遵循 yaml 的缩进规则</p><p>使用方式如下:</p><pre><code class="language-yaml">    spec:      containers:      - name: nginx        image: nginx        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $&#123;DATA.1&#125; $&#123;DATA.2&#125;&quot;]        ports:        - containerPort: 80        env:        - name: DATA1          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.1        - name: DATA2          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.2        volumeMounts:        - name: cm-demo-vc          subPath: nginx.conf          mountPath: /etc/nginx/nginx.conf      volumes:      - name: cm-demo-vc        configMap:          name: cm-demo</code></pre><p>配置文件数据卷方式:</p><ul><li>通过在 spec.volumes 中定义一个关联声明(cm.demo-vc). 它一端被 spec.containers.volumeMounts 调用, 另一端关联 configMap. 然后通过 spec.containers.volumeMounts 绑定 configMap 后, 就可以使用 subPath 调用配置文件, 并使用 mountPath 挂载到容器里的具体路径上.</li><li>这种方式下,configMap更新后,pod内挂载的也会同时更新.</li></ul><p>环境变量方式:</p><ul><li>通过在 spec.containers.env 中定义. 例子中, DATA1 是环境变量的键, DATA1的值通过valueFrom定义.最终,你可以在容器中使用环境变量DATA1和DATA2</li></ul><h2 id="密码Secret">密码Secret</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/secret/">https://kubernetes.io/docs/concepts/configuration/secret/</a></p><p>secret对象里的值需要写入加密后的.</p><p>secret对象也可以被当作文件挂载或环境变量注入</p><p>一个简单例子:</p><p>我们定义一个用户密码对,分别时username和password</p><p>secret对象要求值必须进行base64编码加密(当type为Opaque的时候).</p><pre><code class="language-bash">[root@k8s00 test-yaml]# echo -n &quot;admin&quot; | base64YWRtaW4=[root@k8s00 test-yaml]# echo -n &quot;admin321&quot; | base64YWRtaW4zMjE=</code></pre><pre><code class="language-yaml"># 创建 secret 对象 mysecretapiVersion: v1kind: Secretmetadata:  name: mysecret  namespace: defaulttype: Opaquedata:  username: YWRtaW4=  password: MWYyZDFlMmU2N2Rm---apiVersion: v1kind: Podmetadata:  name: mypodspec:  containers:  - name: mypod    image: busybox    command:    - sleep    - &quot;3600&quot;    env:      - name: SECRET_USERNAME        valueFrom:          secretKeyRef:            name: mysecret            key: username      - name: SECRET_PASSWORD        valueFrom:          secretKeyRef:            name: mysecret            key: password    volumeMounts:    - name: foo      mountPath: &quot;/etc/foo&quot;      readOnly: true  volumes:  - name: foo    secret:      secretName: mysecret</code></pre><p>在通过上述配置创建好资源后,我们进入pod,进行测试.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl exec -it mypod -- /bin/sh===可以看到两个加密信息生成了两个软连接,并指向了隐藏文件/ # ls -l /etc/foototal 0lrwxrwxrwx    1 root     root            15 Sep 17 07:18 password -&gt; ..data/passwordlrwxrwxrwx    1 root     root            15 Sep 17 07:18 username -&gt; ..data/username===环境变量/ # echo $&#123;SECRET_USERNAME&#125;admin===文件方式/ # cat /etc/foo/usernameadmin/ # </code></pre><h2 id="限制">限制</h2><ul><li>机密资源限制在同一命名空间</li><li>数据大小不能超过1MB</li><li>当pod引用不存在的机密时,pod无法启动</li></ul><h2 id="其它">其它</h2><ol><li><p>不可变的机密(k8s v1.19以上)</p><pre><code class="language-yaml">secret.immutable: true</code></pre><p>这种方式用来构建永久不可变的密码,且构建后无法更改,且构建后使用它的pod也无法卸载掉它.</p><p>因此,一旦构建后想更改,则它和它关联的pod都要删除重建.</p><p>优点:</p><ul><li>避免错误的更新</li><li>显著提高集群性能</li></ul></li><li><p>命令方式创建</p><p>kubectl create configmap/secret <name> xxx</name></p><p>这里xxx可以用两种方式:</p><ul><li>–from-literal=<key>=<value> 指定kv</value></key></li><li>–from-file=&lt;文件/目录&gt; 当为目录的时候,会递归将目录里的文件都写入对象中</li></ul></li><li><p>隐藏的密码信息文件</p><p>你可以将 secret.data.<key> 写成 secret.data.&lt;.key&gt; 来隐藏它.</key></p></li></ol><h2 id="信息提供Downward-API">信息提供Downward API</h2><p><a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/</a></p><p>一个比较合适的解决方案是采用Downward API传递信息到容器. 然后程序根据信息来设置.</p><p>一个简单的例子: 将资源限制数据挂载到容器/etc/podinfo</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: kubernetes-downwardapi-volume-example-2spec:  containers:    - name: client-container      image: k8s.gcr.io/busybox:1.24      command: [&quot;sh&quot;, &quot;-c&quot;]      args:      - while true; do          echo -en '\n';          if [[ -e /etc/podinfo/cpu_limit ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_limit; fi;          if [[ -e /etc/podinfo/cpu_request ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_request; fi;          if [[ -e /etc/podinfo/mem_limit ]]; then            echo -en '\n'; cat /etc/podinfo/mem_limit; fi;          if [[ -e /etc/podinfo/mem_request ]]; then            echo -en '\n'; cat /etc/podinfo/mem_request; fi;          sleep 5;        done;      resources:        requests:          memory: &quot;32Mi&quot;          cpu: &quot;125m&quot;        limits:          memory: &quot;64Mi&quot;          cpu: &quot;250m&quot;      volumeMounts:        - name: podinfo          mountPath: /etc/podinfo  volumes:    - name: podinfo      downwardAPI:        items:          - path: &quot;cpu_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.cpu              divisor: 1m          - path: &quot;cpu_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.cpu              divisor: 1m          - path: &quot;mem_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.memory              divisor: 1Mi          - path: &quot;mem_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.memory              divisor: 1Mi</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> k8s </tag>
-            
-            <tag> 容器 </tag>
-            
-            <tag> ConfigMap </tag>
-            
-            <tag> Secret </tag>
             
         </tags>
       
@@ -1279,9 +1246,42 @@
       
         <tags>
             
+            <tag> 容器 </tag>
+            
             <tag> k8s </tag>
             
+            <tag> ConfigMap </tag>
+            
+            <tag> Secret </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞09应用配置与密码与信息提供</title>
+      <link href="posts/4b0e4a5/"/>
+      <url>posts/4b0e4a5/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。</p><p>所以步骤一般是这样的。</p><ol><li>创建secret 和 configmap 对象</li></ol><h2 id="以文件方式提供">以文件方式提供</h2><p>kubernetes 提供了一种卷类型 projected volume。</p><p>写法：</p><pre><code class="language-yaml:">        volumeMounts:        - name: all-in-one          mountPath: /etc/allinfo          readonly: true  volumes:  - name: all-in-one    projected:      sources:      - secret:          name: user      - secret:          name: pass      - configmap:          name: content      - downwardAPI:          items:            - path: &quot;labels&quot;              fieldRef:                fieldPath: metadata.labels            - path: &quot;annotations&quot;              fieldRef:                fieldPath: metadata.annotations</code></pre><blockquote><p>user, pass, content, labels, annotations 将会以文件形式存在于容器挂载点 /etc/allinfo 内。</p></blockquote><p>创建 secret: user 和 secret: pass</p><pre><code class="language-bash">echo -n &quot;admin&quot; &gt; ./username.txtkubectl create secret generic user --from-file=./username.txtecho -n &quot;1f2d1e2e67df&quot; &gt; ./username.txtkubectl create secret generic pass --from-file=./password.txt</code></pre><p>创建 configmap: content</p><pre><code class="language-bash">echo -n &quot;userinfo&quot; &gt; ./content.txtkubectl create configmap content --from-file=./content.txt</code></pre><p>downwardAPI 内容直接写入</p><h2 id="配置ConfigMap">配置ConfigMap</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/configmap/">https://kubernetes.io/docs/concepts/configuration/configmap/</a></p><p>ConfigMap 常用在两种情况中. 第一种是提供环境变量.第二种是提供配置文件</p><p>一个简单配置例子如下</p><pre><code class="language-yaml">kind: ConfigMapapiVersion: v1metadata:  name: cm-demo  namespace: defaultdata:  data.1: hello  data.2: world  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>上述例子中, 包含的内容有</p><p>环境变量方式:</p><pre><code class="language-yaml">  data.1: hello  data.2: world</code></pre><p>配置文件方式:</p><pre><code class="language-yaml">  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>nginx.config 是文件名, 管道符 | 下面是文件内容.</p><p>需要注意的是, 内容依然要遵循 yaml 的缩进规则</p><p>使用方式如下:</p><pre><code class="language-yaml">    spec:      containers:      - name: nginx        image: nginx        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $&#123;DATA.1&#125; $&#123;DATA.2&#125;&quot;]        ports:        - containerPort: 80        env:        - name: DATA1          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.1        - name: DATA2          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.2        volumeMounts:        - name: cm-demo-vc          subPath: nginx.conf          mountPath: /etc/nginx/nginx.conf      volumes:      - name: cm-demo-vc        configMap:          name: cm-demo</code></pre><p>配置文件数据卷方式:</p><ul><li>通过在 spec.volumes 中定义一个关联声明(cm.demo-vc). 它一端被 spec.containers.volumeMounts 调用, 另一端关联 configMap. 然后通过 spec.containers.volumeMounts 绑定 configMap 后, 就可以使用 subPath 调用配置文件, 并使用 mountPath 挂载到容器里的具体路径上.</li><li>这种方式下,configMap更新后,pod内挂载的也会同时更新.</li></ul><p>环境变量方式:</p><ul><li>通过在 spec.containers.env 中定义. 例子中, DATA1 是环境变量的键, DATA1的值通过valueFrom定义.最终,你可以在容器中使用环境变量DATA1和DATA2</li></ul><h2 id="密码Secret">密码Secret</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/secret/">https://kubernetes.io/docs/concepts/configuration/secret/</a></p><p>secret对象里的值需要写入加密后的.</p><p>secret对象也可以被当作文件挂载或环境变量注入</p><p>一个简单例子:</p><p>我们定义一个用户密码对,分别时username和password</p><p>secret对象要求值必须进行base64编码加密(当type为Opaque的时候).</p><pre><code class="language-bash">[root@k8s00 test-yaml]# echo -n &quot;admin&quot; | base64YWRtaW4=[root@k8s00 test-yaml]# echo -n &quot;admin321&quot; | base64YWRtaW4zMjE=</code></pre><pre><code class="language-yaml"># 创建 secret 对象 mysecretapiVersion: v1kind: Secretmetadata:  name: mysecret  namespace: defaulttype: Opaquedata:  username: YWRtaW4=  password: MWYyZDFlMmU2N2Rm---apiVersion: v1kind: Podmetadata:  name: mypodspec:  containers:  - name: mypod    image: busybox    command:    - sleep    - &quot;3600&quot;    env:      - name: SECRET_USERNAME        valueFrom:          secretKeyRef:            name: mysecret            key: username      - name: SECRET_PASSWORD        valueFrom:          secretKeyRef:            name: mysecret            key: password    volumeMounts:    - name: foo      mountPath: &quot;/etc/foo&quot;      readOnly: true  volumes:  - name: foo    secret:      secretName: mysecret</code></pre><p>在通过上述配置创建好资源后,我们进入pod,进行测试.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl exec -it mypod -- /bin/sh===可以看到两个加密信息生成了两个软连接,并指向了隐藏文件/ # ls -l /etc/foototal 0lrwxrwxrwx    1 root     root            15 Sep 17 07:18 password -&gt; ..data/passwordlrwxrwxrwx    1 root     root            15 Sep 17 07:18 username -&gt; ..data/username===环境变量/ # echo $&#123;SECRET_USERNAME&#125;admin===文件方式/ # cat /etc/foo/usernameadmin/ # </code></pre><h2 id="限制">限制</h2><ul><li>机密资源限制在同一命名空间</li><li>数据大小不能超过1MB</li><li>当pod引用不存在的机密时,pod无法启动</li></ul><h2 id="其它">其它</h2><ol><li><p>不可变的机密(k8s v1.19以上)</p><pre><code class="language-yaml">secret.immutable: true</code></pre><p>这种方式用来构建永久不可变的密码,且构建后无法更改,且构建后使用它的pod也无法卸载掉它.</p><p>因此,一旦构建后想更改,则它和它关联的pod都要删除重建.</p><p>优点:</p><ul><li>避免错误的更新</li><li>显著提高集群性能</li></ul></li><li><p>命令方式创建</p><p>kubectl create configmap/secret <name> xxx</name></p><p>这里xxx可以用两种方式:</p><ul><li>–from-literal=<key>=<value> 指定kv</value></key></li><li>–from-file=&lt;文件/目录&gt; 当为目录的时候,会递归将目录里的文件都写入对象中</li></ul></li><li><p>隐藏的密码信息文件</p><p>你可以将 secret.data.<key> 写成 secret.data.&lt;.key&gt; 来隐藏它.</key></p></li></ol><h2 id="信息提供Downward-API">信息提供Downward API</h2><p><a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/</a></p><p>一个比较合适的解决方案是采用Downward API传递信息到容器. 然后程序根据信息来设置.</p><p>一个简单的例子: 将资源限制数据挂载到容器/etc/podinfo</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: kubernetes-downwardapi-volume-example-2spec:  containers:    - name: client-container      image: k8s.gcr.io/busybox:1.24      command: [&quot;sh&quot;, &quot;-c&quot;]      args:      - while true; do          echo -en '\n';          if [[ -e /etc/podinfo/cpu_limit ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_limit; fi;          if [[ -e /etc/podinfo/cpu_request ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_request; fi;          if [[ -e /etc/podinfo/mem_limit ]]; then            echo -en '\n'; cat /etc/podinfo/mem_limit; fi;          if [[ -e /etc/podinfo/mem_request ]]; then            echo -en '\n'; cat /etc/podinfo/mem_request; fi;          sleep 5;        done;      resources:        requests:          memory: &quot;32Mi&quot;          cpu: &quot;125m&quot;        limits:          memory: &quot;64Mi&quot;          cpu: &quot;250m&quot;      volumeMounts:        - name: podinfo          mountPath: /etc/podinfo  volumes:    - name: podinfo      downwardAPI:        items:          - path: &quot;cpu_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.cpu              divisor: 1m          - path: &quot;cpu_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.cpu              divisor: 1m          - path: &quot;mem_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.memory              divisor: 1Mi          - path: &quot;mem_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.memory              divisor: 1Mi</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> ConfigMap </tag>
             
@@ -1312,42 +1312,11 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> service </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞06无状态服务deployment-pod更新</title>
-      <link href="posts/18e4fa73/"/>
-      <url>posts/18e4fa73/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>对于更新,我们一般会采用滚动更新,即:</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换.</li></ul><p>对于回滚,我们想回滚到任何一个之前的版本.</p><p>而deployment对象可以帮我们实现这些.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p><p>一个基本的deployment例子</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx:1.14.2        ports:        - containerPort: 80</code></pre><p>例子需要注意的点：</p><ul><li>metadata： 这里会定义name，labels，namespace，annotations。其中 annotations （注解）是特殊的，你可以用它来定义一些工具集，例如在阿里云的k8s服务中，你可以添加镜像快照注解信息，从而让 pod 无需从镜像仓库下载启动，而是直接通过快照加速启动。</li><li>selector： deployment使用selector指定的label关联pod。</li></ul><h2 id="构建deployment">构建deployment</h2><p>创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-dep.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><blockquote><p>这里dep的配置中spec.template.spec.container.image=nginx，我没有设置具体版本</p></blockquote><h2 id="确认当前版本">确认当前版本</h2><p>查看版本历史，使用kubectl rollout history</p><blockquote><p>这里涉及到 rollout 指令，回滚的时候也会用到.</p></blockquote><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         &lt;none&gt;</code></pre><p>上述结果中，版本1没有添加 CHANGE-CAUSE 信息</p><p>添加注释信息，使用kubectl annotate deployment/&lt;&gt; <a href="http://kubernetes.io/change-cause=%22first%22">kubernetes.io/change-cause=“first”</a></p><pre><code class="language-bash">kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;first&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first</code></pre><blockquote><p>你也可以在执行命令的时候，追加 --record 来将执行的命令写入到当前change-cause</p><p>如果你不小心写错了，你可以通过添加<code>-</code> 来删除注解，就像下面这样，命令最后有一个<code>-</code></p><p>kubectl annotate deployment/nginx-dep &lt;注解key&gt;-</p></blockquote><h2 id="更新版本">更新版本</h2><p>发布版本1.19.2，将deployment中所有nginx的image版本从默认变更为1.19.2。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.2</code></pre><blockquote><p>除了使用set指令修改，你也可以通过edit修改yaml配置的方式进行</p><p>kubectl edit deployment/nginx-dep</p></blockquote><p>更新状态查看，可运行：</p><pre><code class="language-bash">kubectl rollout status deployment/nginx-dep</code></pre><p>更深层的rs状态查看，可运行：</p><pre><code class="language-bash">kubectl get rs -l app=nginx</code></pre><blockquote><p>-l 是调用标签过滤</p></blockquote><p>再发布一个版本1.18，将deployment中所有nginx的image版本从1.19.2变更为1.18。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.23         nginx image to 1.18</code></pre><p>这样,我们总共有三个版本，你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep --revision=&lt;num&gt;</code></pre><h2 id="回滚版本">回滚版本</h2><p>我们选择将nginx版本回滚到first第一个版本.</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-dep --to-revision=1kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE2         nginx image to 1.19.23         nginx image to 1.184         first</code></pre><h2 id="更新策略">更新策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的，就关多少个老的</p></blockquote><h2 id="最终样子">最终样子</h2><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><h2 id="暂停服务">暂停服务</h2><pre><code class="language-yaml">kubectl rollout pause deployment/nginx-dep</code></pre><p>启用暂停后，再启用更新，则新的更新在暂停期间不会产生任何效果</p><h2 id="恢复服务">恢复服务</h2><pre><code class="language-yaml">kubectl rollout resume deployment/nginx-dep</code></pre><p>启用恢复后，则暂停期间启用的更新将开始发挥作用</p><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history deployment/&lt;&gt; # 查看对象历史kubectl rollout undo deployment/&lt;&gt; --to-revision=&lt;&gt; # 对象版本回退kubectl rollout status deployment/&lt;&gt;# 展示执行状态kubectl rollout pause deployment/&lt;&gt; # 暂停此次版本操作行为kubectl rollout resume deployment/&lt;&gt; # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre><p>更新过程：</p><ul><li>创建新的replicaset</li><li>将新的replicaset扩展</li><li>将旧的replicaset缩容</li><li>新的replicaset对应的pod已就绪或可用</li></ul><p>当<code>kubectl rollout status deployment/&lt;&gt;</code>命令执行完后，$? 状态为 0，则说明 deployment 处于 complete。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> k8s </tag>
-            
-            <tag> 容器 </tag>
-            
-            <tag> deployment </tag>
             
         </tags>
       
@@ -1374,9 +1343,40 @@
       
         <tags>
             
+            <tag> 容器 </tag>
+            
             <tag> k8s </tag>
             
+            <tag> deployment </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞06无状态服务deployment-pod更新</title>
+      <link href="posts/18e4fa73/"/>
+      <url>posts/18e4fa73/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>对于更新,我们一般会采用滚动更新,即:</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换.</li></ul><p>对于回滚,我们想回滚到任何一个之前的版本.</p><p>而deployment对象可以帮我们实现这些.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p><p>一个基本的deployment例子</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx:1.14.2        ports:        - containerPort: 80</code></pre><p>例子需要注意的点：</p><ul><li>metadata： 这里会定义name，labels，namespace，annotations。其中 annotations （注解）是特殊的，你可以用它来定义一些工具集，例如在阿里云的k8s服务中，你可以添加镜像快照注解信息，从而让 pod 无需从镜像仓库下载启动，而是直接通过快照加速启动。</li><li>selector： deployment使用selector指定的label关联pod。</li></ul><h2 id="构建deployment">构建deployment</h2><p>创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-dep.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><blockquote><p>这里dep的配置中spec.template.spec.container.image=nginx，我没有设置具体版本</p></blockquote><h2 id="确认当前版本">确认当前版本</h2><p>查看版本历史，使用kubectl rollout history</p><blockquote><p>这里涉及到 rollout 指令，回滚的时候也会用到.</p></blockquote><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         &lt;none&gt;</code></pre><p>上述结果中，版本1没有添加 CHANGE-CAUSE 信息</p><p>添加注释信息，使用kubectl annotate deployment/&lt;&gt; <a href="http://kubernetes.io/change-cause=%22first%22">kubernetes.io/change-cause=“first”</a></p><pre><code class="language-bash">kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;first&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first</code></pre><blockquote><p>你也可以在执行命令的时候，追加 --record 来将执行的命令写入到当前change-cause</p><p>如果你不小心写错了，你可以通过添加<code>-</code> 来删除注解，就像下面这样，命令最后有一个<code>-</code></p><p>kubectl annotate deployment/nginx-dep &lt;注解key&gt;-</p></blockquote><h2 id="更新版本">更新版本</h2><p>发布版本1.19.2，将deployment中所有nginx的image版本从默认变更为1.19.2。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.2</code></pre><blockquote><p>除了使用set指令修改，你也可以通过edit修改yaml配置的方式进行</p><p>kubectl edit deployment/nginx-dep</p></blockquote><p>更新状态查看，可运行：</p><pre><code class="language-bash">kubectl rollout status deployment/nginx-dep</code></pre><p>更深层的rs状态查看，可运行：</p><pre><code class="language-bash">kubectl get rs -l app=nginx</code></pre><blockquote><p>-l 是调用标签过滤</p></blockquote><p>再发布一个版本1.18，将deployment中所有nginx的image版本从1.19.2变更为1.18。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.23         nginx image to 1.18</code></pre><p>这样,我们总共有三个版本，你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep --revision=&lt;num&gt;</code></pre><h2 id="回滚版本">回滚版本</h2><p>我们选择将nginx版本回滚到first第一个版本.</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-dep --to-revision=1kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE2         nginx image to 1.19.23         nginx image to 1.184         first</code></pre><h2 id="更新策略">更新策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的，就关多少个老的</p></blockquote><h2 id="最终样子">最终样子</h2><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><h2 id="暂停服务">暂停服务</h2><pre><code class="language-yaml">kubectl rollout pause deployment/nginx-dep</code></pre><p>启用暂停后，再启用更新，则新的更新在暂停期间不会产生任何效果</p><h2 id="恢复服务">恢复服务</h2><pre><code class="language-yaml">kubectl rollout resume deployment/nginx-dep</code></pre><p>启用恢复后，则暂停期间启用的更新将开始发挥作用</p><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history deployment/&lt;&gt; # 查看对象历史kubectl rollout undo deployment/&lt;&gt; --to-revision=&lt;&gt; # 对象版本回退kubectl rollout status deployment/&lt;&gt;# 展示执行状态kubectl rollout pause deployment/&lt;&gt; # 暂停此次版本操作行为kubectl rollout resume deployment/&lt;&gt; # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre><p>更新过程：</p><ul><li>创建新的replicaset</li><li>将新的replicaset扩展</li><li>将旧的replicaset缩容</li><li>新的replicaset对应的pod已就绪或可用</li></ul><p>当<code>kubectl rollout status deployment/&lt;&gt;</code>命令执行完后，$? 状态为 0，则说明 deployment 处于 complete。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> deployment </tag>
             
@@ -1432,9 +1432,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -1552,9 +1552,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -1583,9 +1583,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -1614,9 +1614,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -1643,9 +1643,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -1672,9 +1672,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -2009,6 +2009,35 @@
     
     
     <entry>
+      <title>redis☞安装</title>
+      <link href="posts/65ab632a/"/>
+      <url>posts/65ab632a/</url>
+      
+        <content type="html"><![CDATA[<h4 id="docker-安装">docker 安装</h4><p><a href="https://registry.hub.docker.com/_/redis">Docker Hub</a></p><pre><code class="language-bash">redisName=redisversionTag=6dataPath=/export/docker-data-redismkdir -p $&#123;dataPath&#125;redis.conf 请参考官方默认配置文档，默认配置文档地址： https://redis.io/topics/configwget -P $&#123;dataPath&#125; https://raw.githubusercontent.com/redis/redis/$&#123;versionTag&#125;.0/redis.confdocker run --name  $&#123;redisName&#125;_$&#123;versionTag&#125; --mount &quot;type=bind, src=$&#123;dataPath&#125;, dst=/data&quot; -p 6379:6379 --restart always -d redis:$&#123;versionTag&#125; redis-server /data/redis.conf</code></pre><h4 id="编译安装">编译安装</h4><pre><code class="language-shell">#!/bin/bash# by zyh# 2018-06-21# DownUrl: redis源码包# RedisBaseDir： redis安装路径# RedisPort: redis端口# RedisMaxMem：redis内存限制# ZabbixBase: zabbix 根路径# 安装完毕后，会输出# 1. redis信息# 2. zabbix需要额外手动添加的命令， 并在zabbix_server_web里，给机器关联上 &lt;Template Redis Auto Discovert Active mode&gt; 模板# 3. monit需要额外手动添加的配置BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`DownUrl=http://download.redis.io/releases/redis-stable.tar.gzRedisMaxMem=1gRedisPort=6379RedisBaseDir=/export/redis_$&#123;RedisPort&#125;ZabbixBase=/etc/zabbixif [[ $&#123;ZabbixBase&#125; == '/usr/local/zabbix' ]];then    ZabbixShell=$&#123;ZabbixBase&#125;/shell    ZabbixEtc=$&#123;ZabbixBase&#125;/etc/zabbix_agentd.conf.d/redis.confelse    ZabbixShell=/etc/zabbix/shell    ZabbixEtc=/etc/zabbix/zabbix_agentd.d/redis.conffiRedisBaseName=$&#123;RedisBaseDir##*/&#125;export TOP_PID=$$trap 'exit 1' TERMexit_script()&#123;    kill -s TERM $TOP_PID&#125;yum install gcc-c++ -y[[ -d $&#123;RedisBaseDir&#125; ]] &amp;&amp; echo &quot;$&#123;RedisBaseDir&#125;已存在&quot; &amp;&amp; exit_scriptss -tnalp | grep redis | awk '&#123;print $4&#125;' | awk -F':' '&#123;print $2&#125;' | while read line;do    [[ $line -eq $&#123;RedisPort&#125; ]] &amp;&amp; echo &quot;$&#123;RedisPort&#125;已被占用&quot; &amp;&amp; exit_scriptdonecd $&#123;BaseDir&#125; &amp;&amp; mkdir rediswget $&#123;DownUrl&#125; -O redis.tar.gztar xf redis.tar.gz --strip-components 1 -C rediscd redismake PREFIX=$&#123;RedisBaseDir&#125; installmkdir $&#123;RedisBaseDir&#125;/&#123;etc,data,logs&#125;cat&gt;$&#123;RedisBaseDir&#125;/etc/redis.conf &lt;&lt;EOFbind 0.0.0.0protected-mode yesport $&#123;RedisPort&#125;tcp-backlog 511timeout 0tcp-keepalive 300daemonize yessupervised nopidfile $&#123;RedisBaseDir&#125;/redis.pidloglevel warninglogfile &quot;$&#123;RedisBaseDir&#125;/logs/redis.log&quot;databases 16always-show-logo yessave 900 1save 300 10save 60 10000stop-writes-on-bgsave-error yesrdbcompression yesrdbchecksum yesdbfilename redis_$&#123;RedisPort&#125;.rdbdir $&#123;RedisBaseDir&#125;/data/slave-serve-stale-data yesslave-read-only yesrepl-diskless-sync norepl-diskless-sync-delay 5repl-disable-tcp-nodelay noslave-priority 100rename-command FLUSHDB GOD_FLUSHDBrename-command FLUSHALL GOD_FLUSHALLrename-command CONFIG GOD_CONFIGrename-command KEYS GOD_KEYSmaxmemory $&#123;RedisMaxMem&#125;maxmemory-policy allkeys-lrulazyfree-lazy-eviction nolazyfree-lazy-expire nolazyfree-lazy-server-del noslave-lazy-flush noappendonly noappendfilename &quot;appendonly.aof&quot;appendfsync everysecno-appendfsync-on-rewrite noauto-aof-rewrite-percentage 100auto-aof-rewrite-min-size 64mbaof-load-truncated yesaof-use-rdb-preamble nolua-time-limit 5000slowlog-log-slower-than 10000slowlog-max-len 128latency-monitor-threshold 0notify-keyspace-events &quot;&quot;hash-max-ziplist-entries 512hash-max-ziplist-value 64list-max-ziplist-size -2list-compress-depth 0set-max-intset-entries 512zset-max-ziplist-entries 128zset-max-ziplist-value 64hll-sparse-max-bytes 3000activerehashing yesclient-output-buffer-limit normal 0 0 0client-output-buffer-limit slave 256mb 64mb 60client-output-buffer-limit pubsub 32mb 8mb 60hz 10aof-rewrite-incremental-fsync yesEOFcat&gt;$&#123;RedisBaseDir&#125;/redis.sh &lt;&lt; EOF#!/bin/bash# Simple Redis init.d script conceived to work on Linux systems# as it does use of the /proc filesystem.BASEDIR=$&#123;RedisBaseDir&#125;REDISPORT=$&#123;RedisPort&#125;EXEC=\$BASEDIR/bin/redis-serverCLIEXEC=\$BASEDIR/bin/redis-cliPIDFILE=\$BASEDIR/redis.pidCONF=&quot;\$BASEDIR/etc/redis.conf&quot;case &quot;\$1&quot; in    start)        [[ -f \$PIDFILE ]] &amp;&amp; kill -0 \`cat \$PIDFILE\` 2&gt;&gt;\$BASEDIR/crash.log &amp;&amp; echo &quot;\$PIDFILE exists, process is already running or crashed&quot; || &#123;                echo &quot;Starting Redis server...&quot;                \$EXEC \$CONF        &#125;        ;;    stop)        if [ ! -f \$PIDFILE ]        then                echo &quot;\$PIDFILE does not exist, process is not running&quot;        else                PID=\$(cat \$PIDFILE)                echo &quot;Stopping ...&quot;                \$CLIEXEC -p \$REDISPORT shutdown                while [ -x /proc/\$&#123;PID&#125; ]                do                    echo &quot;Waiting for Redis to shutdown ...&quot;                    sleep 1                done                echo &quot;Redis stopped&quot;        fi        ;;    *)        echo &quot;Please use start or stop as first argument&quot;        ;;esacEOFchmod u+x $&#123;RedisBaseDir&#125;/redis.sh#修改内核参数grep -q net.core.somaxconn /etc/sysctl.conf || echo &quot;net.core.somaxconn = 511&quot; &gt;&gt; /etc/sysctl.confgrep -q vm.overcommit_memory /etc/sysctl.conf || &#123;    echo &quot;vm.overcommit_memory = 1&quot; &gt;&gt; /etc/sysctl.conf &amp;&amp; sysctl -p&#125;grep -q '/sys/kernel/mm/transparent_hugepage/enabled' /etc/rc.local || &#123;    echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled    echo 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' &gt;&gt; /etc/rc.local&#125;#修改zabbix监控cat&gt;$&#123;ZabbixEtc&#125;&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFmkdir $&#123;ZabbixShell&#125;cat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashREDISPATH=&quot;/export/redis/bin/redis-cli&quot;HOST=$1PORT=$2REDIS_INFO=&quot;$REDISPATH -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$REDISPATH -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i '2s#/export/redis#'&quot;$&#123;RedisBaseDir&#125;&quot;'#' $&#123;ZabbixShell&#125;/redis_info.shecho '--------------------------------------------------我是 redis 信息-----------------------------------------------------------'echo 'redis相关信息如下：'echo &quot;根路径：$&#123;RedisBaseDir&#125;启动脚本：$&#123;RedisBaseDir&#125;/redis.sh&quot;echo '--------------------------------------------------我是 zabbix 监控信息----------------------------------------------------------'echo '请先安装 zabbix.'echo 'zabbix监控因使用了ss命令，故而需要开启sudo相关信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '---------------------------------------------------我是 monit 监控信息----------------------------------------------------------'echo '请先安装 monit.'echo 'monit配置文件如下:'echo &quot;check process $&#123;RedisBaseName&#125; with pidfile $&#123;RedisBaseDir&#125;/redis.pid  start program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh start\&quot;  stop program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh stop\&quot;if changed pid then alert&quot;</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 数据库 </category>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 安装 </tag>
+            
+            <tag> redis </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>nginx☞日志切割脚本</title>
       <link href="posts/445cf088/"/>
       <url>posts/445cf088/</url>
@@ -2038,141 +2067,27 @@
     
     
     <entry>
-      <title>zabbix☞web监控</title>
-      <link href="posts/3d20f83e/"/>
-      <url>posts/3d20f83e/</url>
+      <title>日志☞logrotate安装</title>
+      <link href="posts/421d605e/"/>
+      <url>posts/421d605e/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
+        <content type="html"><![CDATA[<h4 id="前言">前言</h4><p>logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转</p><h4 id="logrotate-版本更新">logrotate 版本更新</h4><blockquote><p>确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本<a href="D:%5Czyh.cool%5Csource_posts%5C%E6%97%A5%E5%BF%97%5C%E5%85%B6%E5%AE%83%5C%E6%97%A5%E5%BF%97%E2%98%9Elogrotate%E5%AE%89%E8%A3%85%5Clogrotate">logrotate</a></p><p>或者也可以直接去 github 上拉取https://github.com/logrotate/logrotate</p></blockquote><h4 id="添加-logrotate-配置">添加 logrotate 配置</h4><pre><code class="language-bash"># 添加所需切割的日志配置cat &gt; /etc/logrotate.d/nginx &lt;&lt; 'EOF'/usr/local/nginx/logs/access.log &#123;  # 定义日志位置 hourly    # 按照小时切割 rotate 2  # 最多保留两份切割日志 missingok nocompress sharedscripts postrotate  /bin/kill -USR1 `cat /usr/local/nginx/logs/nginx.pid 2&gt;/dev/null` 2&gt;/dev/null || true endscript&#125;EOF</code></pre><h4 id="添加-crontab-配置">添加 crontab 配置</h4><pre><code class="language-bash"># 添加logrotate执行脚本cp /etc/cron.daily/logrotate /etc/cron.hourly/</code></pre><h4 id="重载-crond-服务">重载 crond 服务</h4><pre><code class="language-bash">systemctl reload crond</code></pre>]]></content>
       
       
       <categories>
           
-          <category> 监控 </category>
+          <category> 日志 </category>
           
-          <category> zabbix </category>
+          <category> 其它 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 监控 </tag>
+            <tag> 安装 </tag>
             
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞agent和proxy（yum）</title>
-      <link href="posts/1587f6e8/"/>
-      <url>posts/1587f6e8/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix ☞ nginx</title>
-      <link href="posts/b35b5965/"/>
-      <url>posts/b35b5965/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控 ☞ 远程磁盘检测</title>
-      <link href="posts/1fac36d/"/>
-      <url>posts/1fac36d/</url>
-      
-        <content type="html"><![CDATA[<pre><code class="language-bash">#!/bin/bash # 文件名：disklog.sh # 用途：监视远程系统的磁盘使用情况 BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $BaseDirlogfile=&quot;disk.log&quot; if [[ -n $1 ]];then     logfile=$1 fishellexecuser=`whoami`if [[ $shellexecuser == root ]];then    rm -rf /root/.ssh/known_hostselse    rm -rf /home/$shellexecuser/.ssh/known_hostsfiprintf &quot;%-8s %-14s %-9s %-8s %-6s %-6s %-6s %s\r\n&quot; &quot;Date&quot; &quot;IP ADDRESS&quot; &quot;Device&quot; &quot;Capacity&quot; &quot;Used&quot; &quot;Free&quot; &quot;Percent&quot; &quot;Status&quot; &gt; $logfile ##################### 手动填写区# 提供远程主机IP地址列表 1.1.1.1 2.2.2.2 3.3.3.3IP_LIST=# 监控阈值(百分比) 只填写数字 1 到 100DiskPct=# 执行用户UserName=''# 执行用户所需私钥, 此文件需要与脚本同级目录PemName=''# 企业微信bot机器人地址wx_api=''##################### 手动填写区for ip in $IP_LIST;do     ssh -i $PemName -o StrictHostKeyChecking=no $&#123;UserName&#125;@$ip 'df -H' | grep ^/dev/ &gt; /tmp/$$.df     while read line;do         cur_date=`date  &quot;+%F_%R&quot;`        printf &quot;%-8s %-14s &quot; $cur_date $ip         echo $line | awk '&#123; printf(&quot;%-9s %-8s %-6s %-6s %-8s&quot;, $1,$2,$3,$4,$5); &#125;'         pusg=$(echo $line | egrep -o &quot;[0-9]+%&quot;)         pusg=$&#123;pusg/\%/&#125;;         if [ $pusg -lt $DiskPct ];then             echo OK        else             echo ALERT         fi     done &lt; /tmp/$$.df     rm -rf /tmp/$$.dfdone &gt;&gt; $&#123;logfile&#125;sed -n '1p' $&#123;logfile&#125; &gt; alert.logawk '$NF == &quot;ALERT&quot;&#123;print $0&#125;' $&#123;logfile&#125; &gt;&gt; alert.log#sed -i '1i &quot;磁盘阈值：'&quot;$DiskPct&quot;'&quot;' alert.logcontent=`cat alert.log`grep -q 'ALERT' alert.log &amp;&amp; &#123;curl &quot;$wx_api&quot;  -H 'Content-Type: application/json'  \-d '   &#123;        &quot;msgtype&quot;: &quot;text&quot;,        &quot;text&quot;: &#123;            &quot;content&quot;: &quot;'&quot;$content&quot;'&quot;        &#125;   &#125;'&#125;</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 磁盘 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞redis</title>
-      <link href="posts/6c093771/"/>
-      <url>posts/6c093771/</url>
-      
-        <content type="html"><![CDATA[<h2 id="zabbix-模板">zabbix 模板</h2><ol><li>自动发现规则</li></ol><p><img src="/posts/6c093771/image-20200520152740815.png" alt="image-20200520152740815"></p><ol start="2"><li><p>过滤器</p><p><img src="/posts/6c093771/image-20200520152922570.png" alt="image-20200520152922570"></p></li><li><p>监控项原型</p><table><thead><tr><th>名称</th><th>键值</th><th>间隔</th><th>历史记录</th><th>趋势</th><th>类型</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,connected_clients]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; maxmemory[redis配置的内存上限]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,maxmemory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; mem_fragmentation_ratio[内存碎片率]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis_instantaneous_ops_per_sec[每秒执行的命令个数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,instantaneous_ops_per_sec]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis 存活状态</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; rejected_connections[被拒绝的客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,rejected_connections]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys[redis-master sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys_children[redis-children sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user[redis-master user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user_children[redis-children user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory[redis层面已使用内存-不含碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_pct[操作系统层面已使用内存百分比]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_peak[操作系统层面已使用内存历史峰值-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_peak]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_rss[操作系统层面已使用内存-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_rss]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr></tbody></table></li><li><p>触发器原型</p><table><thead><tr><th>严重性</th><th>名称</th><th>表达式</th></tr></thead><tbody><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  内存碎片化超过50%, 剩余可用内存低于30%</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&gt;1.5  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  可用内存低, 存在使用交换分区</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&lt;1  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  操作系统层面内存占用百分比过高</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>灾难</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis 端口无法访问</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist].last()&#125;&lt;&gt;1</code></td></tr></tbody></table></li><li><p>图形原型，就不详细写了，这里只列出我自己的分类</p><table><thead><tr><th>名称</th><th>宽</th><th>高</th><th>图形类别</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 连接数监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 其他监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis qps 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis mem 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis cpu 监控</code></td><td>900</td><td>200</td><td>正常</td></tr></tbody></table></li></ol><h2 id="脚本">脚本</h2><p>脚本会生成自动发现进程脚本和redis检测脚本</p><p>zabbix的redis配置路径：ZabbixEtc</p><p>zabbix的脚本路径：ZabbixShell</p><p>redis的cli命令路径：RedisCli</p><p>自动发现脚本：ip_port_discovery.sh</p><ul><li>bash ip_port_discovery.sh 进程名或者端口</li></ul><p>redis检测脚本：redis_info.sh</p><ul><li>bash redis_info.sh ip port item</li></ul><pre><code class="language-redis">ZabbixEtc=/etc/zabbix/zabbix_agentd.dZabbixShell=/etc/zabbix/shellRedisCli='docker exec -t redis redis-cli'[[ -d $&#123;ZabbixShell&#125; ]] || mkdir -p $&#123;ZabbixShell&#125;[[ -z $&#123;ZabbixEtc&#125; ]] &amp;&amp; [[ -z $&#123;ZabbixShell&#125; ]] || [[ -z $&#123;RedisCli&#125; ]] &amp;&amp; exitcat&gt;$&#123;ZabbixEtc&#125;/redis.conf&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFcat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashRedisCli=HOST=$1PORT=$2REDIS_INFO=&quot;$RedisCli -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$RedisCli -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i 's#RedisCli=#RedisCli=\&quot;'&quot;$&#123;RedisCli&#125;&quot;'\&quot;#' $&#123;ZabbixShell&#125;/redis_info.shecho '------------------------------------我是 zabbix 监控信息----------------------------------'echo '编辑 visudo，添加如下信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '若redis运行在docker中，执行如下命令'echo 'usermod -a -G docker zabbix'</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-            <tag> zabbix </tag>
+            <tag> logrotate </tag>
             
         </tags>
       
@@ -2262,27 +2177,27 @@
     
     
     <entry>
-      <title>日志☞logrotate安装</title>
-      <link href="posts/421d605e/"/>
-      <url>posts/421d605e/</url>
+      <title>zabbix☞agent和proxy（yum）</title>
+      <link href="posts/1587f6e8/"/>
+      <url>posts/1587f6e8/</url>
       
-        <content type="html"><![CDATA[<h4 id="前言">前言</h4><p>logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转</p><h4 id="logrotate-版本更新">logrotate 版本更新</h4><blockquote><p>确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本<a href="D:%5Czyh.cool%5Csource_posts%5C%E6%97%A5%E5%BF%97%5C%E5%85%B6%E5%AE%83%5C%E6%97%A5%E5%BF%97%E2%98%9Elogrotate%E5%AE%89%E8%A3%85%5Clogrotate">logrotate</a></p><p>或者也可以直接去 github 上拉取https://github.com/logrotate/logrotate</p></blockquote><h4 id="添加-logrotate-配置">添加 logrotate 配置</h4><pre><code class="language-bash"># 添加所需切割的日志配置cat &gt; /etc/logrotate.d/nginx &lt;&lt; 'EOF'/usr/local/nginx/logs/access.log &#123;  # 定义日志位置 hourly    # 按照小时切割 rotate 2  # 最多保留两份切割日志 missingok nocompress sharedscripts postrotate  /bin/kill -USR1 `cat /usr/local/nginx/logs/nginx.pid 2&gt;/dev/null` 2&gt;/dev/null || true endscript&#125;EOF</code></pre><h4 id="添加-crontab-配置">添加 crontab 配置</h4><pre><code class="language-bash"># 添加logrotate执行脚本cp /etc/cron.daily/logrotate /etc/cron.hourly/</code></pre><h4 id="重载-crond-服务">重载 crond 服务</h4><pre><code class="language-bash">systemctl reload crond</code></pre>]]></content>
+        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
       
       
       <categories>
           
-          <category> 日志 </category>
+          <category> 监控 </category>
           
-          <category> 其它 </category>
+          <category> zabbix </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 安装 </tag>
+            <tag> 监控 </tag>
             
-            <tag> logrotate </tag>
+            <tag> zabbix </tag>
             
         </tags>
       
@@ -2291,27 +2206,112 @@
     
     
     <entry>
-      <title>redis☞安装</title>
-      <link href="posts/65ab632a/"/>
-      <url>posts/65ab632a/</url>
+      <title>监控 ☞ 远程磁盘检测</title>
+      <link href="posts/1fac36d/"/>
+      <url>posts/1fac36d/</url>
       
-        <content type="html"><![CDATA[<h4 id="docker-安装">docker 安装</h4><p><a href="https://registry.hub.docker.com/_/redis">Docker Hub</a></p><pre><code class="language-bash">redisName=redisversionTag=6dataPath=/export/docker-data-redismkdir -p $&#123;dataPath&#125;redis.conf 请参考官方默认配置文档，默认配置文档地址： https://redis.io/topics/configwget -P $&#123;dataPath&#125; https://raw.githubusercontent.com/redis/redis/$&#123;versionTag&#125;.0/redis.confdocker run --name  $&#123;redisName&#125;_$&#123;versionTag&#125; --mount &quot;type=bind, src=$&#123;dataPath&#125;, dst=/data&quot; -p 6379:6379 --restart always -d redis:$&#123;versionTag&#125; redis-server /data/redis.conf</code></pre><h4 id="编译安装">编译安装</h4><pre><code class="language-shell">#!/bin/bash# by zyh# 2018-06-21# DownUrl: redis源码包# RedisBaseDir： redis安装路径# RedisPort: redis端口# RedisMaxMem：redis内存限制# ZabbixBase: zabbix 根路径# 安装完毕后，会输出# 1. redis信息# 2. zabbix需要额外手动添加的命令， 并在zabbix_server_web里，给机器关联上 &lt;Template Redis Auto Discovert Active mode&gt; 模板# 3. monit需要额外手动添加的配置BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`DownUrl=http://download.redis.io/releases/redis-stable.tar.gzRedisMaxMem=1gRedisPort=6379RedisBaseDir=/export/redis_$&#123;RedisPort&#125;ZabbixBase=/etc/zabbixif [[ $&#123;ZabbixBase&#125; == '/usr/local/zabbix' ]];then    ZabbixShell=$&#123;ZabbixBase&#125;/shell    ZabbixEtc=$&#123;ZabbixBase&#125;/etc/zabbix_agentd.conf.d/redis.confelse    ZabbixShell=/etc/zabbix/shell    ZabbixEtc=/etc/zabbix/zabbix_agentd.d/redis.conffiRedisBaseName=$&#123;RedisBaseDir##*/&#125;export TOP_PID=$$trap 'exit 1' TERMexit_script()&#123;    kill -s TERM $TOP_PID&#125;yum install gcc-c++ -y[[ -d $&#123;RedisBaseDir&#125; ]] &amp;&amp; echo &quot;$&#123;RedisBaseDir&#125;已存在&quot; &amp;&amp; exit_scriptss -tnalp | grep redis | awk '&#123;print $4&#125;' | awk -F':' '&#123;print $2&#125;' | while read line;do    [[ $line -eq $&#123;RedisPort&#125; ]] &amp;&amp; echo &quot;$&#123;RedisPort&#125;已被占用&quot; &amp;&amp; exit_scriptdonecd $&#123;BaseDir&#125; &amp;&amp; mkdir rediswget $&#123;DownUrl&#125; -O redis.tar.gztar xf redis.tar.gz --strip-components 1 -C rediscd redismake PREFIX=$&#123;RedisBaseDir&#125; installmkdir $&#123;RedisBaseDir&#125;/&#123;etc,data,logs&#125;cat&gt;$&#123;RedisBaseDir&#125;/etc/redis.conf &lt;&lt;EOFbind 0.0.0.0protected-mode yesport $&#123;RedisPort&#125;tcp-backlog 511timeout 0tcp-keepalive 300daemonize yessupervised nopidfile $&#123;RedisBaseDir&#125;/redis.pidloglevel warninglogfile &quot;$&#123;RedisBaseDir&#125;/logs/redis.log&quot;databases 16always-show-logo yessave 900 1save 300 10save 60 10000stop-writes-on-bgsave-error yesrdbcompression yesrdbchecksum yesdbfilename redis_$&#123;RedisPort&#125;.rdbdir $&#123;RedisBaseDir&#125;/data/slave-serve-stale-data yesslave-read-only yesrepl-diskless-sync norepl-diskless-sync-delay 5repl-disable-tcp-nodelay noslave-priority 100rename-command FLUSHDB GOD_FLUSHDBrename-command FLUSHALL GOD_FLUSHALLrename-command CONFIG GOD_CONFIGrename-command KEYS GOD_KEYSmaxmemory $&#123;RedisMaxMem&#125;maxmemory-policy allkeys-lrulazyfree-lazy-eviction nolazyfree-lazy-expire nolazyfree-lazy-server-del noslave-lazy-flush noappendonly noappendfilename &quot;appendonly.aof&quot;appendfsync everysecno-appendfsync-on-rewrite noauto-aof-rewrite-percentage 100auto-aof-rewrite-min-size 64mbaof-load-truncated yesaof-use-rdb-preamble nolua-time-limit 5000slowlog-log-slower-than 10000slowlog-max-len 128latency-monitor-threshold 0notify-keyspace-events &quot;&quot;hash-max-ziplist-entries 512hash-max-ziplist-value 64list-max-ziplist-size -2list-compress-depth 0set-max-intset-entries 512zset-max-ziplist-entries 128zset-max-ziplist-value 64hll-sparse-max-bytes 3000activerehashing yesclient-output-buffer-limit normal 0 0 0client-output-buffer-limit slave 256mb 64mb 60client-output-buffer-limit pubsub 32mb 8mb 60hz 10aof-rewrite-incremental-fsync yesEOFcat&gt;$&#123;RedisBaseDir&#125;/redis.sh &lt;&lt; EOF#!/bin/bash# Simple Redis init.d script conceived to work on Linux systems# as it does use of the /proc filesystem.BASEDIR=$&#123;RedisBaseDir&#125;REDISPORT=$&#123;RedisPort&#125;EXEC=\$BASEDIR/bin/redis-serverCLIEXEC=\$BASEDIR/bin/redis-cliPIDFILE=\$BASEDIR/redis.pidCONF=&quot;\$BASEDIR/etc/redis.conf&quot;case &quot;\$1&quot; in    start)        [[ -f \$PIDFILE ]] &amp;&amp; kill -0 \`cat \$PIDFILE\` 2&gt;&gt;\$BASEDIR/crash.log &amp;&amp; echo &quot;\$PIDFILE exists, process is already running or crashed&quot; || &#123;                echo &quot;Starting Redis server...&quot;                \$EXEC \$CONF        &#125;        ;;    stop)        if [ ! -f \$PIDFILE ]        then                echo &quot;\$PIDFILE does not exist, process is not running&quot;        else                PID=\$(cat \$PIDFILE)                echo &quot;Stopping ...&quot;                \$CLIEXEC -p \$REDISPORT shutdown                while [ -x /proc/\$&#123;PID&#125; ]                do                    echo &quot;Waiting for Redis to shutdown ...&quot;                    sleep 1                done                echo &quot;Redis stopped&quot;        fi        ;;    *)        echo &quot;Please use start or stop as first argument&quot;        ;;esacEOFchmod u+x $&#123;RedisBaseDir&#125;/redis.sh#修改内核参数grep -q net.core.somaxconn /etc/sysctl.conf || echo &quot;net.core.somaxconn = 511&quot; &gt;&gt; /etc/sysctl.confgrep -q vm.overcommit_memory /etc/sysctl.conf || &#123;    echo &quot;vm.overcommit_memory = 1&quot; &gt;&gt; /etc/sysctl.conf &amp;&amp; sysctl -p&#125;grep -q '/sys/kernel/mm/transparent_hugepage/enabled' /etc/rc.local || &#123;    echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled    echo 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' &gt;&gt; /etc/rc.local&#125;#修改zabbix监控cat&gt;$&#123;ZabbixEtc&#125;&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFmkdir $&#123;ZabbixShell&#125;cat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashREDISPATH=&quot;/export/redis/bin/redis-cli&quot;HOST=$1PORT=$2REDIS_INFO=&quot;$REDISPATH -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$REDISPATH -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i '2s#/export/redis#'&quot;$&#123;RedisBaseDir&#125;&quot;'#' $&#123;ZabbixShell&#125;/redis_info.shecho '--------------------------------------------------我是 redis 信息-----------------------------------------------------------'echo 'redis相关信息如下：'echo &quot;根路径：$&#123;RedisBaseDir&#125;启动脚本：$&#123;RedisBaseDir&#125;/redis.sh&quot;echo '--------------------------------------------------我是 zabbix 监控信息----------------------------------------------------------'echo '请先安装 zabbix.'echo 'zabbix监控因使用了ss命令，故而需要开启sudo相关信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '---------------------------------------------------我是 monit 监控信息----------------------------------------------------------'echo '请先安装 monit.'echo 'monit配置文件如下:'echo &quot;check process $&#123;RedisBaseName&#125; with pidfile $&#123;RedisBaseDir&#125;/redis.pid  start program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh start\&quot;  stop program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh stop\&quot;if changed pid then alert&quot;</code></pre>]]></content>
+        <content type="html"><![CDATA[<pre><code class="language-bash">#!/bin/bash # 文件名：disklog.sh # 用途：监视远程系统的磁盘使用情况 BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $BaseDirlogfile=&quot;disk.log&quot; if [[ -n $1 ]];then     logfile=$1 fishellexecuser=`whoami`if [[ $shellexecuser == root ]];then    rm -rf /root/.ssh/known_hostselse    rm -rf /home/$shellexecuser/.ssh/known_hostsfiprintf &quot;%-8s %-14s %-9s %-8s %-6s %-6s %-6s %s\r\n&quot; &quot;Date&quot; &quot;IP ADDRESS&quot; &quot;Device&quot; &quot;Capacity&quot; &quot;Used&quot; &quot;Free&quot; &quot;Percent&quot; &quot;Status&quot; &gt; $logfile ##################### 手动填写区# 提供远程主机IP地址列表 1.1.1.1 2.2.2.2 3.3.3.3IP_LIST=# 监控阈值(百分比) 只填写数字 1 到 100DiskPct=# 执行用户UserName=''# 执行用户所需私钥, 此文件需要与脚本同级目录PemName=''# 企业微信bot机器人地址wx_api=''##################### 手动填写区for ip in $IP_LIST;do     ssh -i $PemName -o StrictHostKeyChecking=no $&#123;UserName&#125;@$ip 'df -H' | grep ^/dev/ &gt; /tmp/$$.df     while read line;do         cur_date=`date  &quot;+%F_%R&quot;`        printf &quot;%-8s %-14s &quot; $cur_date $ip         echo $line | awk '&#123; printf(&quot;%-9s %-8s %-6s %-6s %-8s&quot;, $1,$2,$3,$4,$5); &#125;'         pusg=$(echo $line | egrep -o &quot;[0-9]+%&quot;)         pusg=$&#123;pusg/\%/&#125;;         if [ $pusg -lt $DiskPct ];then             echo OK        else             echo ALERT         fi     done &lt; /tmp/$$.df     rm -rf /tmp/$$.dfdone &gt;&gt; $&#123;logfile&#125;sed -n '1p' $&#123;logfile&#125; &gt; alert.logawk '$NF == &quot;ALERT&quot;&#123;print $0&#125;' $&#123;logfile&#125; &gt;&gt; alert.log#sed -i '1i &quot;磁盘阈值：'&quot;$DiskPct&quot;'&quot;' alert.logcontent=`cat alert.log`grep -q 'ALERT' alert.log &amp;&amp; &#123;curl &quot;$wx_api&quot;  -H 'Content-Type: application/json'  \-d '   &#123;        &quot;msgtype&quot;: &quot;text&quot;,        &quot;text&quot;: &#123;            &quot;content&quot;: &quot;'&quot;$content&quot;'&quot;        &#125;   &#125;'&#125;</code></pre>]]></content>
       
       
       <categories>
           
-          <category> 数据库 </category>
-          
-          <category> redis </category>
+          <category> 监控 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 安装 </tag>
+            <tag> 监控 </tag>
+            
+            <tag> 磁盘 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix ☞ nginx</title>
+      <link href="posts/b35b5965/"/>
+      <url>posts/b35b5965/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞web监控</title>
+      <link href="posts/3d20f83e/"/>
+      <url>posts/3d20f83e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞redis</title>
+      <link href="posts/6c093771/"/>
+      <url>posts/6c093771/</url>
+      
+        <content type="html"><![CDATA[<h2 id="zabbix-模板">zabbix 模板</h2><ol><li>自动发现规则</li></ol><p><img src="/posts/6c093771/image-20200520152740815.png" alt="image-20200520152740815"></p><ol start="2"><li><p>过滤器</p><p><img src="/posts/6c093771/image-20200520152922570.png" alt="image-20200520152922570"></p></li><li><p>监控项原型</p><table><thead><tr><th>名称</th><th>键值</th><th>间隔</th><th>历史记录</th><th>趋势</th><th>类型</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,connected_clients]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; maxmemory[redis配置的内存上限]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,maxmemory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; mem_fragmentation_ratio[内存碎片率]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis_instantaneous_ops_per_sec[每秒执行的命令个数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,instantaneous_ops_per_sec]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis 存活状态</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; rejected_connections[被拒绝的客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,rejected_connections]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys[redis-master sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys_children[redis-children sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user[redis-master user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user_children[redis-children user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory[redis层面已使用内存-不含碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_pct[操作系统层面已使用内存百分比]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_peak[操作系统层面已使用内存历史峰值-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_peak]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_rss[操作系统层面已使用内存-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_rss]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr></tbody></table></li><li><p>触发器原型</p><table><thead><tr><th>严重性</th><th>名称</th><th>表达式</th></tr></thead><tbody><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  内存碎片化超过50%, 剩余可用内存低于30%</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&gt;1.5  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  可用内存低, 存在使用交换分区</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&lt;1  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  操作系统层面内存占用百分比过高</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>灾难</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis 端口无法访问</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist].last()&#125;&lt;&gt;1</code></td></tr></tbody></table></li><li><p>图形原型，就不详细写了，这里只列出我自己的分类</p><table><thead><tr><th>名称</th><th>宽</th><th>高</th><th>图形类别</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 连接数监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 其他监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis qps 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis mem 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis cpu 监控</code></td><td>900</td><td>200</td><td>正常</td></tr></tbody></table></li></ol><h2 id="脚本">脚本</h2><p>脚本会生成自动发现进程脚本和redis检测脚本</p><p>zabbix的redis配置路径：ZabbixEtc</p><p>zabbix的脚本路径：ZabbixShell</p><p>redis的cli命令路径：RedisCli</p><p>自动发现脚本：ip_port_discovery.sh</p><ul><li>bash ip_port_discovery.sh 进程名或者端口</li></ul><p>redis检测脚本：redis_info.sh</p><ul><li>bash redis_info.sh ip port item</li></ul><pre><code class="language-redis">ZabbixEtc=/etc/zabbix/zabbix_agentd.dZabbixShell=/etc/zabbix/shellRedisCli='docker exec -t redis redis-cli'[[ -d $&#123;ZabbixShell&#125; ]] || mkdir -p $&#123;ZabbixShell&#125;[[ -z $&#123;ZabbixEtc&#125; ]] &amp;&amp; [[ -z $&#123;ZabbixShell&#125; ]] || [[ -z $&#123;RedisCli&#125; ]] &amp;&amp; exitcat&gt;$&#123;ZabbixEtc&#125;/redis.conf&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFcat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashRedisCli=HOST=$1PORT=$2REDIS_INFO=&quot;$RedisCli -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$RedisCli -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i 's#RedisCli=#RedisCli=\&quot;'&quot;$&#123;RedisCli&#125;&quot;'\&quot;#' $&#123;ZabbixShell&#125;/redis_info.shecho '------------------------------------我是 zabbix 监控信息----------------------------------'echo '编辑 visudo，添加如下信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '若redis运行在docker中，执行如下命令'echo 'usermod -a -G docker zabbix'</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
             
             <tag> redis </tag>
+            
+            <tag> zabbix </tag>
             
         </tags>
       
@@ -2976,6 +2976,35 @@
     
     
     <entry>
+      <title>python☞json</title>
+      <link href="posts/876c5852/"/>
+      <url>posts/876c5852/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Json与python之间类型关系">Json与python之间类型关系</h2><table><thead><tr><th><strong>JSON类型</strong></th><th><strong>python类型</strong></th></tr></thead><tbody><tr><td><strong>{}</strong></td><td><strong>dict</strong></td></tr><tr><td><strong>[]</strong></td><td><strong>list</strong></td></tr><tr><td><strong>“string”</strong></td><td><strong>str</strong></td></tr><tr><td><strong>“123456”</strong></td><td><strong>int或float</strong></td></tr><tr><td><strong>true/false</strong></td><td><strong>True/False</strong></td></tr><tr><td><strong>null</strong></td><td><strong>None</strong></td></tr></tbody></table><h2 id="序列化">序列化</h2><pre><code class="language-python">import jsonjson.dumps(python_dict)  # 将py类型转为json字符串类型</code></pre><h2 id="反序列化">反序列化</h2><pre><code class="language-python">import jsonjson.loads(json_str)  # 将json字符串类型转为py类型</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 语言 </category>
+          
+          <category> python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> python </tag>
+            
+            <tag> json </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>django☞restful简单使用</title>
       <link href="posts/dd4c9efa/"/>
       <url>posts/dd4c9efa/</url>
@@ -3034,35 +3063,6 @@
     
     
     <entry>
-      <title>python☞json</title>
-      <link href="posts/876c5852/"/>
-      <url>posts/876c5852/</url>
-      
-        <content type="html"><![CDATA[<h2 id="Json与python之间类型关系">Json与python之间类型关系</h2><table><thead><tr><th><strong>JSON类型</strong></th><th><strong>python类型</strong></th></tr></thead><tbody><tr><td><strong>{}</strong></td><td><strong>dict</strong></td></tr><tr><td><strong>[]</strong></td><td><strong>list</strong></td></tr><tr><td><strong>“string”</strong></td><td><strong>str</strong></td></tr><tr><td><strong>“123456”</strong></td><td><strong>int或float</strong></td></tr><tr><td><strong>true/false</strong></td><td><strong>True/False</strong></td></tr><tr><td><strong>null</strong></td><td><strong>None</strong></td></tr></tbody></table><h2 id="序列化">序列化</h2><pre><code class="language-python">import jsonjson.dumps(python_dict)  # 将py类型转为json字符串类型</code></pre><h2 id="反序列化">反序列化</h2><pre><code class="language-python">import jsonjson.loads(json_str)  # 将json字符串类型转为py类型</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 语言 </category>
-          
-          <category> python </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> python </tag>
-            
-            <tag> json </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>linux☞时间</title>
       <link href="posts/cd32aa48/"/>
       <url>posts/cd32aa48/</url>
@@ -3112,9 +3112,9 @@
             
             <tag> 安装 </tag>
             
-            <tag> ELK </tag>
-            
             <tag> docker </tag>
+            
+            <tag> ELK </tag>
             
         </tags>
       
@@ -3226,9 +3226,9 @@
       
         <tags>
             
-            <tag> docker </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> docker </tag>
             
         </tags>
       
@@ -3255,9 +3255,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -3737,11 +3737,11 @@
     
     
     <entry>
-      <title>linux☞centos7重置root密码</title>
-      <link href="posts/13364d65/"/>
-      <url>posts/13364d65/</url>
+      <title>linux☞系统内核优化</title>
+      <link href="posts/f41d0763/"/>
+      <url>posts/f41d0763/</url>
       
-        <content type="html"><![CDATA[<ol><li>开机按ECS，进入启动项</li></ol><p><img src="/posts/13364d65/image-20210706143953672.png" alt="image-20210706143953672"></p><ol start="2"><li><p>按e，编辑第一条</p></li><li><p>将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh</p></li></ol><p><img src="/posts/13364d65/image-20210706144107672.png" alt="image-20210706144107672"></p><ol start="4"><li>按 ctrl+x，进入系统，并执行 <code>passwd</code> 命令进行修改</li></ol>]]></content>
+        <content type="html"><![CDATA[<h2 id="内核优化">内核优化</h2><pre><code class="language-bash"># 内核参数# 系统级别上限， 即整个系统所有进程单位时间可打开的文件描述符数量fs.file-max = 6553500# 三次握手请求频次net.ipv4.tcp_syn_retries = 5# 放弃回应一个TCP请求之前，需要尝试多少次net.ipv4.tcp_retries1 = 3# 三次握手应答频次net.ipv4.tcp_synack_retries = 2# 三次握手完毕， 没有数据沟通的情况下， 空连接存活时间net.ipv4.tcp_keepalive_time = 60# 探测消息发送次数net.ipv4.tcp_keepalive_probes = 3# 探测消息发送间隔时间net.ipv4.tcp_keepalive_intvl = 15net.ipv4.tcp_retries2 = 5net.ipv4.tcp_fin_timeout = 5# 系统处理不属于任何进程的TCP链接net.ipv4.tcp_orphan_retries = 3net.ipv4.tcp_max_orphans = 327680# 在每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目。net.core.netdev_max_backlog = 10240# 对于还未获得对方确认的连接请求，可保存在队列中的最大数目net.ipv4.tcp_max_syn_backlog = 10240# 定义了系统中每一个端口最大的监听队列的长度 net.core.somaxconn=10240#最大timewait数net.ipv4.tcp_max_tw_buckets = 20000net.ipv4.ip_local_port_range=1024 65500# 开启时间戳net.ipv4.tcp_timestamps=1# 针对客户端有效，必须在开启时间戳的前提下net.ipv4.tcp_tw_reuse = 1# 开启 iptables 后， 链路追踪上限和超时时间, 若没有使用 iptables，则无效net.netfilter.nf_conntrack_max = 6553500net.netfilter.nf_conntrack_tcp_timeout_established = 150## tcp栈内存使用， 单位是内存页， 一页=4KB#net.ipv4.tcp_mem = 524288 786432 1310720## socket读写缓冲区大小，单位是字节#net.ipv4.tcp_rmem = 4096 4096 16777216#net.ipv4.tcp_wmem = 4096 4096 16777216##最低内存和缓冲区回收倾向（此参数有一定风险）#vm.min_free_kbytes=409600#vm.vfs_cache_pressure=200</code></pre><pre><code class="language-bash">#修改/etc/security/limits.conf# 单会话级别，可打开的所有文件描述符上限* soft nofile 655350* hard nofile 655350# 单会话级别， 可打开的所有进程上限* soft nproc 10240* hard nproc 10240</code></pre><h2 id="开启-iptables-后">开启 iptables 后</h2><h3 id="查看当前链路表数量命令">查看当前链路表数量命令</h3><blockquote><p>$ sysctl net.netfilter.nf_conntrack_count</p><p>net.netfilter.nf_conntrack_count = 601032</p></blockquote><h3 id="查看连接数最高的10个IP：可以查封某个ip-或者判断是谁导致的">查看连接数最高的10个IP：可以查封某个ip, 或者判断是谁导致的</h3><p>$ awk -F’=’ ‘{c[$2]++}END{for ( i in c) print i,c[i]}’ /proc/net/nf_conntrack | head -10</p>]]></content>
       
       
       <categories>
@@ -3762,11 +3762,11 @@
     
     
     <entry>
-      <title>linux☞系统内核优化</title>
-      <link href="posts/f41d0763/"/>
-      <url>posts/f41d0763/</url>
+      <title>linux☞centos7重置root密码</title>
+      <link href="posts/13364d65/"/>
+      <url>posts/13364d65/</url>
       
-        <content type="html"><![CDATA[<h2 id="内核优化">内核优化</h2><pre><code class="language-bash"># 内核参数# 系统级别上限， 即整个系统所有进程单位时间可打开的文件描述符数量fs.file-max = 6553500# 三次握手请求频次net.ipv4.tcp_syn_retries = 5# 放弃回应一个TCP请求之前，需要尝试多少次net.ipv4.tcp_retries1 = 3# 三次握手应答频次net.ipv4.tcp_synack_retries = 2# 三次握手完毕， 没有数据沟通的情况下， 空连接存活时间net.ipv4.tcp_keepalive_time = 60# 探测消息发送次数net.ipv4.tcp_keepalive_probes = 3# 探测消息发送间隔时间net.ipv4.tcp_keepalive_intvl = 15net.ipv4.tcp_retries2 = 5net.ipv4.tcp_fin_timeout = 5# 系统处理不属于任何进程的TCP链接net.ipv4.tcp_orphan_retries = 3net.ipv4.tcp_max_orphans = 327680# 在每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目。net.core.netdev_max_backlog = 10240# 对于还未获得对方确认的连接请求，可保存在队列中的最大数目net.ipv4.tcp_max_syn_backlog = 10240# 定义了系统中每一个端口最大的监听队列的长度 net.core.somaxconn=10240#最大timewait数net.ipv4.tcp_max_tw_buckets = 20000net.ipv4.ip_local_port_range=1024 65500# 开启时间戳net.ipv4.tcp_timestamps=1# 针对客户端有效，必须在开启时间戳的前提下net.ipv4.tcp_tw_reuse = 1# 开启 iptables 后， 链路追踪上限和超时时间, 若没有使用 iptables，则无效net.netfilter.nf_conntrack_max = 6553500net.netfilter.nf_conntrack_tcp_timeout_established = 150## tcp栈内存使用， 单位是内存页， 一页=4KB#net.ipv4.tcp_mem = 524288 786432 1310720## socket读写缓冲区大小，单位是字节#net.ipv4.tcp_rmem = 4096 4096 16777216#net.ipv4.tcp_wmem = 4096 4096 16777216##最低内存和缓冲区回收倾向（此参数有一定风险）#vm.min_free_kbytes=409600#vm.vfs_cache_pressure=200</code></pre><pre><code class="language-bash">#修改/etc/security/limits.conf# 单会话级别，可打开的所有文件描述符上限* soft nofile 655350* hard nofile 655350# 单会话级别， 可打开的所有进程上限* soft nproc 10240* hard nproc 10240</code></pre><h2 id="开启-iptables-后">开启 iptables 后</h2><h3 id="查看当前链路表数量命令">查看当前链路表数量命令</h3><blockquote><p>$ sysctl net.netfilter.nf_conntrack_count</p><p>net.netfilter.nf_conntrack_count = 601032</p></blockquote><h3 id="查看连接数最高的10个IP：可以查封某个ip-或者判断是谁导致的">查看连接数最高的10个IP：可以查封某个ip, 或者判断是谁导致的</h3><p>$ awk -F’=’ ‘{c[$2]++}END{for ( i in c) print i,c[i]}’ /proc/net/nf_conntrack | head -10</p>]]></content>
+        <content type="html"><![CDATA[<ol><li>开机按ECS，进入启动项</li></ol><p><img src="/posts/13364d65/image-20210706143953672.png" alt="image-20210706143953672"></p><ol start="2"><li><p>按e，编辑第一条</p></li><li><p>将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh</p></li></ol><p><img src="/posts/13364d65/image-20210706144107672.png" alt="image-20210706144107672"></p><ol start="4"><li>按 ctrl+x，进入系统，并执行 <code>passwd</code> 命令进行修改</li></ol>]]></content>
       
       
       <categories>

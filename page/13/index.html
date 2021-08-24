@@ -184,6 +184,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1653,6 +1662,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1785,6 +1814,92 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/a38d0013/">
+				<h2 class="index-title">
+					gitlab☞大版本迁移
+				</h2>
+				<div class="index-brief">
+					前言
+
+现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。
+
+正文
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-06</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其他/">其他</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其他/git/">git</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3321a2dc/">
+				<h2 class="index-title">
+					fpm☞安装-编译方式
+				</h2>
+				<div class="index-brief">
+					前言
+用于编译安装php7.1
+目录结构
+根目录：/usr/local/php
+日志目录：/usr/local/php/var/log -&gt; /export/logs/php
+脚本在此
+#!/bin/bash
+# 脚本, 适用于 php 7.1
+basedir=/usr/local/src
+c
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-08-21</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/fpm/">fpm</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/3f38f454/">
@@ -2110,90 +2225,6 @@ arn:aws:iam::&lt;aws_account_id&gt;:&lt;type&gt;/&lt;name&gt;
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/公有云/aws/">aws</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/604c5952/">
-				<h2 class="index-title">
-					aws☞rds-mysql日志
-				</h2>
-				<div class="index-brief">
-					常规/错误/慢/日志
-# 修改参数组
-slow_query_log：要创建慢速查询日志，请设置为 1。默认值为 0。
-
-general_log(会产生大量日志)：要创建常规日志，请设置为 1。默认值为 0。
-
-long_query_time：要防止在慢速查询日志中记录快速运行的查询，请指定需要记录的
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-02-01</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/">公有云</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/公有云/aws/">aws</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/13364d65/">
-				<h2 class="index-title">
-					linux☞centos7重置root密码
-				</h2>
-				<div class="index-brief">
-					
-开机按ECS，进入启动项
-
-
-
-
-按e，编辑第一条
-
-
-将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh
-
-
-
-
-按 ctrl+x，进入系统，并执行 passwd 命令进行修改
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-01-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
 										
                                     </span>
                                 

@@ -186,6 +186,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1655,6 +1664,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1962,7 +1991,7 @@ https:
   
 ...
 
-harbor_admin_password: &lt;管理员密码&gt;
+harbor_admin_password: &lt;web界面管理员密码&gt;
 
 # Harbor DB configuration
 database:
@@ -2000,7 +2029,7 @@ log:
 cp yourdomain.com.key /etc/docker/certs.d/yourdomain.com/
 cp ca.crt /etc/docker/certs.d/yourdomain.com/
 </code></pre>
-<h2 id="安装">安装</h2>
+<h2 id="安装-启动-关闭">安装/启动/关闭</h2>
 <h3 id="预安装，并启动">预安装，并启动</h3>
 <p>生成 docker-compose 配置，并创建相关数据目录，以及容器所需的依赖数据</p>
 <pre><code>./prepare &amp;&amp; docker-compose up -d
@@ -2008,11 +2037,22 @@ cp ca.crt /etc/docker/certs.d/yourdomain.com/
 <h3 id="直接安装，并启动">直接安装，并启动</h3>
 <pre><code>./install.sh
 </code></pre>
+<h3 id="关闭">关闭</h3>
+<pre><code class="language-bash">docker-compose down
+</code></pre>
 <h2 id="其它">其它</h2>
 <h3 id="证书更换">证书更换</h3>
 <p>nginx需要需要更换 &lt;path_to_data_volume&gt;/secret/cert/ 下的文件</p>
 <p>docker需要更换 /etc/docker/certs.d/yourdomain.com/ 下的文件</p>
 <p>最后，重启容器服务</p>
+<h2 id="web配置-策略">web配置-策略</h2>
+<p>删除策略的具体需求：</p>
+<ol>
+<li>策略执行时，删除所有的含有 untag 镜像</li>
+<li>策略执行时，保留最近7天含有 tag 镜像</li>
+</ol>
+<p><img src="/posts/9573a87d/image-20210823180632775.png" alt="image-20210823180632775"></p>
+<p>策略的测试，可以通过【模拟运行】+运行后的【日志】来确定策略是否满足期望。</p>
 
 </div>
 

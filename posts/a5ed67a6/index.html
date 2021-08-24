@@ -186,6 +186,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1655,6 +1664,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1830,7 +1859,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -1838,7 +1867,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -1857,16 +1886,28 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<p>这里是一个认证的一个基本流程：</p>
+	<h2 id="前言">前言</h2>
+<h3 id="流程介绍">流程介绍</h3>
+<p>这里是一个认证的一个基本流程：</p>
 <p><img src="/posts/a5ed67a6/image-20201016114248549.png" alt="image-20201016114248549"></p>
 <p>即： kubectl =&gt; 用户认证 =&gt; 用户授权 =&gt; 入口控制 -&gt; 资源对象</p>
-<p>用户认证：检查递交信息包含的证书，用户名</p>
-<p>用户授权：给用户授权权限策略，授权方式有多种：ABAC mode, RBAC Mode, and Webhook mode</p>
-<p>入口控制器：具有特殊功能的过滤器，他们会把请求拦截下来，如果请求违反了过滤器的配置，则请求会被拒绝。</p>
-<p>当你从使用者角度来看的时候，k8s把用户分为普通用户和服务用户。普通用户对外（也就是上图里的Human），服务用户对内（也就是上图里的Pod）。</p>
+<p>用户认证：检查递交信息包含的证书，用户名。确定是否是正常用户。</p>
+<p>用户授权：给用户授权权限策略，授权方式有多种：ABAC mode, RBAC Mode, and Webhook mode。确定是否有权限。</p>
+<p>入口控制器：具有特殊功能的过滤器，他们会把请求拦截下来，如果请求违反了过滤器的配置，则请求会被拒绝。确定是否有更精细的粒度控制。</p>
+<blockquote>
+<p>以上三阶段都是通过插件实现的。当某个阶段的某个插件授权通过后，就不会再需要此阶段的其它插件进行校验。</p>
+</blockquote>
+<h2 id="用户认证方式">用户认证方式</h2>
+<h3 id="令牌认证">令牌认证</h3>
+<p>kubectl 通过提交令牌给用户认证</p>
+<h3 id="TSL认证">TSL认证</h3>
+<p>kubectl 和 Api server 双向认证</p>
+<h3 id="username-password认证">username/password认证</h3>
+<h2 id="用户类型">用户类型</h2>
+<p>当你从使用者角度来看的时候，k8s把用户分为<code>普通用户</code>和<code>服务用户</code>。普通用户对外（也就是上图里的Human），服务用户对内（也就是上图里的Pod）。</p>
 <p>请记住，k8s并没有普通用户的<strong>实体对象</strong>。因此，只要你递交的用户拥有k8s集群内部CA所签发的证书，那么这个用户就会被rbac子系统认为是有效的。</p>
-<h2 id="普通用户-user">普通用户 user</h2>
-<h3 id="构建普通用户，用于用户认证阶段">构建普通用户，用于用户认证阶段</h3>
+<h3 id="普通用户-useraccount">普通用户 useraccount</h3>
+<h4 id="如何创建普通用户">如何创建普通用户</h4>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#normal-user">https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#normal-user</a></p>
 <ol>
 <li>
@@ -1918,24 +1959,7 @@ kubectl certificate approve zyh
 <p>至此，一个普通用户就创建完毕了。但是它没有任何权限，还需要进行授权。</p>
 </li>
 </ol>
-<h3 id="创建角色和绑定角色，用于用户授权阶段">创建角色和绑定角色，用于用户授权阶段</h3>
-<p>授权就是给这个用户绑定一个具体的角色。角色代表了一种权限集合。</p>
-<ol>
-<li>
-<p>创建角色对象资源，创建一个<code>developer</code>角色，权限是拥有pod资源的增删改查，且<strong>命名空间是developer</strong></p>
-<blockquote>
-<p>需要先创建developer命名空间</p>
-</blockquote>
-<pre><code class="language-bash">kubectl create role developer --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods --namespace=developer
-</code></pre>
-</li>
-<li>
-<p>创建角色绑定对象资源，且<strong>命名空间是developer</strong></p>
-<pre><code class="language-bash">kubectl create rolebinding developer-binding-zyh --role=developer --user=zyh --namespace=developer
-</code></pre>
-</li>
-</ol>
-<h3 id="添加普通用户到kubectl的配置文件">添加普通用户到kubectl的配置文件</h3>
+<h4 id="如何使用普通用户">如何使用普通用户</h4>
 <ol>
 <li>
 <p>添加用户证书到kubectl配置</p>
@@ -1952,6 +1976,45 @@ kubectl certificate approve zyh
 <pre><code class="language-bash">kubectl config use-context zyh
 </code></pre>
 </li>
+</ol>
+<p>用户的有效期，取决于你证书的有效期。</p>
+<h3 id="服务用户-serviceaccount">服务用户 serviceaccount</h3>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#service-account-automation">https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#service-account-automation</a></p>
+<p>用于Pod认证</p>
+<h4 id="如何创建服务用户">如何创建服务用户</h4>
+<pre><code class="language-bash">kubectl create serviceaccount admin
+</code></pre>
+<blockquote>
+<p>创建完毕后，对应的 secret.namespace 会生成一个新的对象：&lt;sa_name&gt;-token-$RANDOM，用来进行资源对象的认证，请注意这里是认证，不是授权</p>
+</blockquote>
+<h3 id="如何使用">如何使用</h3>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: cirros-6365
+  name: cirros-6365
+  namespace: default
+spec:
+  serviceAccountName: &lt;serviceAccount_name&gt;
+</code></pre>
+<h2 id="用户授权">用户授权</h2>
+<h3 id="用户授权方式">用户授权方式</h3>
+<p>RBAC授权机制：基于角色的授权机制.</p>
+<h3 id="授权步骤">授权步骤</h3>
+<p>授权就是给这个用户绑定一个具体的角色。角色代表了一种权限集合。</p>
+<ol>
+<li>
+<p>创建 role 角色对象资源，创建一个<code>developer</code>角色，权限是拥有 pod 资源的增删改查，且<strong>命名空间是developer</strong></p>
+<pre><code class="language-bash">kubectl create ns developer
+kubectl create role developer --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods --namespace=developer
+</code></pre>
+</li>
+<li>
+<p>创建 rolebinding 角色绑定对象资源，且<strong>命名空间是developer</strong></p>
+<pre><code class="language-bash">kubectl create rolebinding developer-binding-zyh --role=developer --user=zyh --namespace=developer
+</code></pre>
+</li>
 <li>
 <p>测试权限</p>
 <pre><code class="language-bash">kubectl get pod -n developer
@@ -1964,10 +2027,29 @@ Error from server (Forbidden): services is forbidden: User &quot;zyh&quot; canno
 </code></pre>
 </li>
 </ol>
-<p>通过上述创建过程，你可以发现第一阶段和第二阶段其实是分离的。也就是说，你可以创建多个用户，然后用同一个角色绑定多个用户。</p>
-<p>而用户的有效期，取决于你证书的有效期。</p>
-<h2 id="服务用户-serviceaccount">服务用户 serviceaccount</h2>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#service-account-automation">https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#service-account-automation</a></p>
+<p>通过上述创建过程，你可以发现用户创建和用户授权两个阶段是分离的。也就是说，你可以创建多个用户，然后用同一个角色绑定多个用户。</p>
+<h3 id="对象总结">对象总结</h3>
+<p>role 和 rolebinding 是 namespace 级别对象，clusterrole 和 clusterrolebinding 是集群级别对象。</p>
+<p>你可以通过 rolebinding 将 user 和 role 关联起来，实现对一个 user 添加 namespace 级别的 role 权限。</p>
+<p>你可以通过 clusterrolebinding 将 user 和 clusterrole 关联起来，实现对一个 user 添加是集群级别的 clusterrole 权限。</p>
+<p>最特殊的是，你还可以通过 rolebinding 将 user 和 clusterrole 关联起来，实现对一个 user 添加 namespace 级别的 clusterrole 权限。</p>
+<p>这种情况下，因为 clusterrole 是集群级别，因此你可以将多个 namespace 下的 rolebinding 和 user 关联到一个 clusterrole。此时，rolebinding 和 user 拥有的权限将自动被约束在各自的 namespace 下。</p>
+<blockquote>
+<p>当你把 user 替换为 group 的时候，将会授权某个组</p>
+<p>当你把 user 替换为 serviceaccount 的时候，将会授权调用 spec.serviceAccountName 的 pod</p>
+</blockquote>
+<h2 id="请求的实际转化">请求的实际转化</h2>
+<p>客户端对 api server 发起的请求，都会转化为 http 请求</p>
+<p>例如发起一个针对 deployment.default 对象的请求，</p>
+<p>其 request path 是：</p>
+<p>http://<apiserver>:6443/apis/apps/v1/namespaces/default/deployments/my-deployment/</apiserver></p>
+<blockquote>
+<p>这里 /apps/v1 指的是 kubectl api-versions 列出的 versions。</p>
+</blockquote>
+<p>可以针对对象发起的http请求动作是：</p>
+<p>GET/POST/PUT/DELETE</p>
+<p>转化为API的动作是：（即你用kubectl调用的动作）</p>
+<p>get/list/create/update/patch/watch/proxy/redirect/delete/deletecollection</p>
 
 </div>
 
@@ -1983,8 +2065,8 @@ Error from server (Forbidden): services is forbidden: User &quot;zyh&quot; canno
         </div>
         <div class="item right">
             
-              <a href="/posts/1080c6b6/">
-                k8s☞09存储资源
+              <a href="/posts/759b68d8/">
+                go☞001变量学习
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

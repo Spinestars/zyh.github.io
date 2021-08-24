@@ -184,6 +184,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1653,6 +1662,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1787,6 +1816,48 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/7538d100/">
+				<h2 class="index-title">
+					k8s☞16kubeadm集群升级
+				</h2>
+				<div class="index-brief">
+					前言
+https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+分为两部分，升级核心节点和升级工作节点
+升级控制平面节点 Control Plane
+控制平面核心组件包含：
+
+kube-apiserver
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/55da993d/">
 				<h2 class="index-title">
 					k8s☞15证书管理
@@ -1832,11 +1903,13 @@ https://kubernetes.io/docs/tasks/administer-cluster/kubea
 					k8s☞14认证授权
 				</h2>
 				<div class="index-brief">
-					这里是一个认证的一个基本流程：
+					前言
+流程介绍
+这里是一个认证的一个基本流程：
 
 即： kubectl =&gt; 用户认证 =&gt; 用户授权 =&gt; 入口控制 -&gt; 资源对象
-用户认证：检查递交信息包含的证书，用户名
-用户授权：给用户授权权限策略，授权方式有多种：ABAC mode, RBAC Mode, and Webhook 
+用户认证：检查递交信息包含的证书，用户名。确定是否是正常用户。
+用户授权：给用户授权权限策略，授权方式有多种：ABAC mode, RBAC
 					...
 				</div>
 			</a>
@@ -1858,6 +1931,50 @@ https://kubernetes.io/docs/tasks/administer-cluster/kubea
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/759b68d8/">
+				<h2 class="index-title">
+					go☞001变量学习
+				</h2>
+				<div class="index-brief">
+					前言
+变量有两个元数据，一是内存地址，一是内存地址存储的数据。
+变量类型
+
+内存地址也是一串数
+
+如果变量内存地址里存储的是非内存地址,则这类变量称之为值类型变量，也就是普通变量
+如果变量内存地址里存储的是另一个变量的内存地址，则这类变量称之为引用类型变量，也叫指针变量
+💁 变量的内存地址里不能存
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-02</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
 										
                                     </span>
                                 
@@ -2090,88 +2207,6 @@ pod模板中的 R
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ed4c29d5/">
-				<h2 class="index-title">
-					k8s☞11-2namespace资源约束
-				</h2>
-				<div class="index-brief">
-					前言
-https://kubernetes.io/docs/concepts/policy/limit-range/
-namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
-特点
-
-提供 pod 的默认资源约束.
-限制pod的资源约束.
-Lim
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-19</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/64fa9c84/">
-				<h2 class="index-title">
-					k8s☞11-1pod资源约束
-				</h2>
-				<div class="index-brief">
-					前言
-https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-资源约束在我们平时使用的时候主要是cpu和内存层面, 以及本地临时存储(emptyDir)
-k8s资源约束分为两种: request(软
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-19</span>
                     
                             
                                 

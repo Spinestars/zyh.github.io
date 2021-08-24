@@ -184,6 +184,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1653,6 +1662,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1787,6 +1816,49 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/c4126d5a/">
+				<h2 class="index-title">
+					ansible☞playbook-错误捕获
+				</h2>
+				<div class="index-brief">
+					前言
+类似于 python 中的 try…except…finally，ansible 可以用 block…rescue…always
+---
+- hosts: localhost
+  remote_user: zyh
+  gather_facts: no
+  tasks:
+    - block:
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/29683589/">
 				<h2 class="index-title">
 					ansible☞playbook-条件判断
@@ -1881,32 +1953,17 @@ ansible 某个 task 报错，会导致任务终止，而ignore_errors: true 可�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3f8b5448/">
+			<a href="/posts/6a4df400/">
 				<h2 class="index-title">
-					django☞记忆点
+					django☞管理静态文件
 				</h2>
 				<div class="index-brief">
-					.git文件
-# Django #
-*.log
-*.pot
-*.pyc
-__pycache__
-media
-static
-
-# Backup files #
-*.bak
-
-# other
-.vscode
-.git
-db
-log
-
-Dockerfile
-FROM python:3.8-alpine
-L
+					前言
+管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
+内置视图 | Django 文档 | Django (djangoproject.com)
+通用设置
+项目.settings.py中
+STATIC_URL 
 					...
 				</div>
 			</a>
@@ -1937,17 +1994,32 @@ L
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6a4df400/">
+			<a href="/posts/3f8b5448/">
 				<h2 class="index-title">
-					django☞管理静态文件
+					django☞记忆点
 				</h2>
 				<div class="index-brief">
-					前言
-管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
-内置视图 | Django 文档 | Django (djangoproject.com)
-通用设置
-项目.settings.py中
-STATIC_URL 
+					.git文件
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+static
+
+# Backup files #
+*.bak
+
+# other
+.vscode
+.git
+db
+log
+
+Dockerfile
+FROM python:3.8-alpine
+L
 					...
 				</div>
 			</a>
@@ -2169,53 +2241,6 @@ executable 远程执行shell，需要绝对路径
 ansible localhost -m shell -a &quot;chdir=/ ls&quot;
 
 localhost | CHANGED | rc=0 &gt
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4235ddf4/">
-				<h2 class="index-title">
-					ansible☞常用模块-文本文件操作
-				</h2>
-				<div class="index-brief">
-					文本操作
-file
-
-path 文件对象地址
-state 文件类型或者动作状态 （touch: 针对文件, directory：针对目录, link：针对软连接, hard：针对硬链接)
-src 软硬链接的源文件
-owner 属主
-group 属组
-mode 数字权限
-recurse 递归操作
-
-b
 					...
 				</div>
 			</a>

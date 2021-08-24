@@ -184,6 +184,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1653,6 +1662,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1910,15 +1939,17 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/94518966/">
+			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞03pod
+					k8s☞04pod钩子函数
 				</h2>
 				<div class="index-brief">
 					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
+我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
+k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
+postStart
+
+它将在容器创建后立即运行，但不保证在 ENT
 					...
 				</div>
 			</a>
@@ -1949,17 +1980,15 @@ https://kubernete
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
-
-它将在容器创建后立即运行，但不保证在 ENT
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>

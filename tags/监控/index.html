@@ -184,6 +184,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1653,6 +1662,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1908,6 +1937,47 @@ openssl genrsa -out
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/3d20f83e/">
+				<h2 class="index-title">
+					zabbix☞WEB监控
+				</h2>
+				<div class="index-brief">
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
 					zabbix☞agent和proxy(yum)
@@ -1996,88 +2066,18 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/1fac36d/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					监控☞远程磁盘检测
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/8c33f887/">
-				<h2 class="index-title">
-					监控☞企业微信机器人
-				</h2>
-				<div class="index-brief">
-					shell
-wechatUrl=
-wechatData=
-curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
-				<h2 class="index-title">
-					监控☞邮件预警
-				</h2>
-				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
 					...
 				</div>
 			</a>
@@ -2136,18 +2136,47 @@ it = usera|userb
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/8c33f887/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					监控☞企业微信机器人
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					shell
+wechatUrl=
+wechatData=
+curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f8f9b4d0/">
+				<h2 class="index-title">
+					监控☞邮件预警
+				</h2>
+				<div class="index-brief">
+					# $1 收件人
+# $2 主题
+# $3 内容
+smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
+sendUserEmail='it@abc.com'
+sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
+/usr/
 					...
 				</div>
 			</a>

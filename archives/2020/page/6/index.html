@@ -184,6 +184,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1653,6 +1662,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1787,6 +1816,44 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/f9b08c30/">
+				<h2 class="index-title">
+					监控☞微信预警
+				</h2>
+				<div class="index-brief">
+					# conf.ini
+[wechat]
+corpid = 
+
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+
+[group]
+it = usera|userb
+
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/8c33f887/">
 				<h2 class="index-title">
 					监控☞企业微信机器人
@@ -1848,24 +1915,17 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f9b08c30/">
+			<a href="/posts/421d605e/">
 				<h2 class="index-title">
-					监控☞微信预警
+					日志☞logrotate安装
 				</h2>
 				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
 
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
-
-[group]
-it = usera|userb
-
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
 					...
 				</div>
 			</a>
@@ -1876,7 +1936,17 @@ it = usera|userb
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/其它/">其它</a>
 										
                                     </span>
                                 
@@ -1886,18 +1956,18 @@ it = usera|userb
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/65ab632a/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					redis☞安装
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					docker 安装
+Docker Hub
+redisName=redis
+versionTag=6
+dataPath=/export/docker-data-redis
+mkdir -p $&#123;dataPath&#125;
+redis.conf 请参考官方默认配置文档，默认配置文档地址： h
 					...
 				</div>
 			</a>
@@ -1908,7 +1978,17 @@ i
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 
@@ -2086,49 +2166,6 @@ tags的参数
 
 
 –tags=tag_name  执行具有 tag_
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/c4126d5a/">
-				<h2 class="index-title">
-					ansible☞playbook-错误捕获
-				</h2>
-				<div class="index-brief">
-					前言
-类似于 python 中的 try…except…finally，ansible 可以用 block…rescue…always
----
-- hosts: localhost
-  remote_user: zyh
-  gather_facts: no
-  tasks:
-    - block:
 					...
 				</div>
 			</a>

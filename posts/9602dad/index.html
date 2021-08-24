@@ -186,6 +186,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/4c513678/">
+										nginx☞location
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/18de0eed/">
 										nginx☞基本认证
 									</a>
@@ -1655,6 +1664,26 @@ var _hmt = _hmt || [];
 								<li class="directory">
 									<a href="#" class="directory">
 										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+										go☞001变量学习
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
 										java
 									</a>
 									
@@ -1830,7 +1859,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -1838,7 +1867,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -2365,7 +2394,7 @@ kubectl apply -f custom-resources.yaml
 <p>默认kubeadm安装完后，禁止调度pod到master上。你可以通过下面的命令，关闭所有master节点的禁止调度</p>
 <pre><code class="language-bash"> kubectl taint nodes --all node-role.kubernetes.io/master-
 </code></pre>
-<h4 id="配置web控制台">配置web控制台</h4>
+<h4 id="配置web控制台dashboard">配置web控制台dashboard</h4>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/kubernetes/dashboard">https://github.com/kubernetes/dashboard</a> 代码托管地址</p>
 </blockquote>
@@ -2424,6 +2453,8 @@ kubectl create -f kubernetes-dashboard.yaml
 <ul>
 <li>获取访问web服务的token</li>
 </ul>
+<p>dashboard本身是一个pod，如果你想让pod去访问其它的k8s资源，则需要给pod创建一个服务账户(serviceaccount).</p>
+<p>构建一个服务账户admin-user，并通过ClusterRoleBinding授权admin级别的ClusterRole对象</p>
 <pre><code class="language-bash"># 添加访问 token
 # 官方文档： https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
 # 通过下面内容创建 kube-db-auth.yaml
@@ -2631,8 +2662,67 @@ kubectl get --raw &quot;/apis/metrics.k8s.io/v1beta1/nodes&quot;
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands">https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands</a></p>
 </blockquote>
-<pre><code class="language-bash"># 查询集群网络的app
-kubectl run -it --rm --restart=Never --image=infoblox/dnstools:latest dnstools
+<p>一些常用的命令</p>
+<ol>
+<li>kubectl explain</li>
+</ol>
+<blockquote>
+<p>非常有用的命令，帮助你写配置文件</p>
+</blockquote>
+<p>输出配置某个字段的详细说明,例如 deployment.metadata</p>
+<blockquote>
+<p>其中标注有 -required- 的字段是必选字段</p>
+</blockquote>
+<pre><code class="language-bash">kubectl explain deployment.metadata
+</code></pre>
+<ol start="2">
+<li>-o yaml --dry-run</li>
+</ol>
+<p>输出create命令的yaml配置</p>
+<pre><code class="language-bash">kubectl create serviceaccount mysvcaccount -o yaml --dry-run
+</code></pre>
+<ol start="3">
+<li>常用的工具容器</li>
+</ol>
+<pre><code class="language-bash">kubectl run cirros-$RANDOM -it --rm --restart=Never --image=cirros -- /bin/sh
+kubectl run dnstools-$RANDOM -it --rm --restart=Never --image=infoblox/dnstools:latest 
+</code></pre>
+<h3 id="kubectl-调用的配置">kubectl 调用的配置</h3>
+<pre><code class="language-yaml">➜   kubectl config view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://&lt;api_server&gt;:8443
+  name: kubernetes-qa
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://&lt;api_server&gt;:6443
+  name: kubernetes-prod
+  
+contexts:
+- context:
+    cluster: kubernetes-prod
+    user: kubernetes-admin
+  name: prod
+- context:
+    cluster: kubernetes-qa
+    user: user-kfktf786bk
+  name: qa
+  
+current-context: qa           ## 当前使用的配置
+kind: Config
+preferences: &#123;&#125;
+
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
+- name: user-kfktf786bk
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
 </code></pre>
 <h2 id="删除与清理">删除与清理</h2>
 <pre><code class="language-bash"># 从集群里删除某个节点

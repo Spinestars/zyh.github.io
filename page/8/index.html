@@ -1092,7 +1092,7 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/6178b477/">
+									<a href="/posts/7fd13722/">
 										prometheus☞06rabbitmq监控
 									</a>
 								</li>
@@ -1668,7 +1668,106 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/759b68d8/">
-										go☞001变量学习
+										go☞001变量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c3e952e/">
+										go☞002常量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1a034363/">
+										go☞003运算符
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a6b5455/">
+										go☞004条件语句
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/98f86e16/">
+										go☞005函数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/318675c1/">
+										go☞006函数-闭包
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8eb4b1b/">
+										go☞007函数-方法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a705a91a/">
+										go☞008结构体
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/77a46e91/">
+										go☞009接口
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/336ec0ac/">
+										go☞010错误处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2dab3d00/">
+										go☞011异常处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1503f4a/">
+										go☞012常用模块
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1816,25 +1915,147 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/445cf088/">
+			<a href="/posts/3e0f2183/">
 				<h2 class="index-title">
-					nginx☞日志切割
+					jenkins☞从容器中访问宿主机docker命令
 				</h2>
 				<div class="index-brief">
 					前言
-本脚本用于将 nginx 日志进行时间周期切割，并 lzo 压缩，最终上传到 s3。
-脚本分为三个函数，切割函数，压缩上传函数，删除函数，需要执行哪个，就填写相对应变量。
-详情可以看脚本注释。
-
-请务必执行前，确认安装了 lzop 和 jq 命令 ，且机器是 aws EC2
-
-脚本在此
-#!/
+我的jenkins是运行在docker中，但是jenkins官方的镜像里却没有docker命令。
+以至于无法在流水线中打包docker镜像。
+方法
+首先，需要将docker命令、docker.sock文件以及相关依赖文件映射到容器内。
+其次，以root用户访问容器，在容器中添加docker组，
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-05-14</span>
+				    <span>2020-06-09</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/jenkins/">jenkins</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/5db0cd07/">
+				<h2 class="index-title">
+					linux☞ssh-MFA自动登陆
+				</h2>
+				<div class="index-brief">
+					前言
+ssh 关联MFA后,安全度增加了很多,但是每次手动输入MFA动态口令比较麻烦.所以记录一下自动交互输入MFA口令
+命令安装
+sudo apt install oathtool gnupg2 expect
+
+
+oathtool 是我们用来生成MFA口令的工具.
+expect 用来编写交互程序
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-06-06</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/">系统</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/linux/">linux</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/ac6b3b36/">
+				<h2 class="index-title">
+					jdk☞安装和配置
+				</h2>
+				<div class="index-brief">
+					前言
+oracle jdk 现在是商业产品了, 所以线上最好还是用 openjdk.
+安装
+https://adoptopenjdk.net/installation.html#linux-pkg
+rhel之类的，搜索【RPM installation on Centos, RHEL, or Fed
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-06-01</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/java/">java</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/58a1c0c7/">
+				<h2 class="index-title">
+					nginx☞fcgi中alias的使用
+				</h2>
+				<div class="index-brief">
+					前言
+众所周知, nginx 在配置静态资源的时候, root 和 alias 分别是两种指定资源路径的方式.
+如果：
+​	url 是 http://xxx.com/god/a.jpg，且 location 匹配的是 /god/.
+则：
+​	当用 root 定位资源路径时, root 配置的值=域名
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-27</span>
                     
                             
                                 
@@ -1860,28 +2081,25 @@ var _hmt = _hmt || [];
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/421d605e/">
+			<a href="/posts/720afd15/">
 				<h2 class="index-title">
-					日志☞logrotate安装
+					ansible☞角色
 				</h2>
 				<div class="index-brief">
 					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
-
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
+角色的作用就是规范化，将一个playbook各部分分门别类的放置在规定好的目录中。就如同linux系统一样，/etc/就是放配置的，/bin 就是放程序的，/tmp 就是放临时文件的 …
+ansible 会基于官方规定好的目录结构, 去自动加载目录中的文件. 当一个需求很复杂的时候, 我们就可
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-05-14</span>
+				    <span>2020-05-21</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
+                                        <a href="/categories/自动化/">自动化</a>
 										
 											>
 										
@@ -1891,7 +2109,7 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
 										
                                     </span>
                                 
@@ -1901,129 +2119,33 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f9b08c30/">
+			<a href="/posts/724fda19/">
 				<h2 class="index-title">
-					监控☞微信预警
+					ansible☞模板
 				</h2>
 				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
+					前言
+当你用ansible进行多机器的配置调整，且调整的东西都一模一样，此时你不会拒绝模板的诱惑。
+ansible的模板是jinja2，所以jinja2的特性，在这里都可以用。
 
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+模板中，不要出现任何你觉得模板会忽略的东西，包括但不限于空格
 
-[group]
-it = usera|userb
+模块 template
+参数：
 
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/8c33f887/">
-				<h2 class="index-title">
-					监控☞企业微信机器人
-				</h2>
-				<div class="index-brief">
-					shell
-wechatUrl=
-wechatData=
-curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
-				<h2 class="index-title">
-					监控☞邮件预警
-				</h2>
-				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1587f6e8/">
-				<h2 class="index-title">
-					zabbix☞agent和proxy(yum)
-				</h2>
-				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
-
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
-
-agent 安装
+src 模板文件路径
 
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-05-14</span>
+				    <span>2020-05-20</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/自动化/">自动化</a>
 										
 											>
 										
@@ -2033,7 +2155,7 @@ agent 安装
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
 										
                                     </span>
                                 
@@ -2043,64 +2165,37 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1fac36d/">
+			<a href="/posts/6ce01f58/">
 				<h2 class="index-title">
-					监控☞远程磁盘检测
+					ansible☞playbook-include
 				</h2>
 				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
+					引入额外任务
+tasks:
+  - include: add.yml
+
+绑定 kv 对，从而改变额外任务里的变量
+tasks:
+  - include: add.yml
+    var1=hello
+    var2=world
+
+绑定 tags 标记
+
+可以通过tags执行相应的额外任务
+
+tas
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-05-14</span>
+				    <span>2020-05-18</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/b35b5965/">
-				<h2 class="index-title">
-					zabbix☞nginx
-				</h2>
-				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
-
-
-1，nginx增加配置 server_status.server
-
-cat &gt; /usr/local/nginx/
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/自动化/">自动化</a>
 										
 											>
 										
@@ -2110,7 +2205,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
 										
                                     </span>
                                 
@@ -2120,28 +2215,59 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/f5c218d/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					hexo☞本地搜索
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					前言
+安装完 hexo-generator-search 后，发现搜索结果始终是所有文章.
+如果你用的也是 Melody 主题，那么可以参考如下信息，来确认。
+效果图
+
+软件包
+
+截至：2020.05.18，软件包如下
+
+  &quot;dependencies&quot;: &#123;
+    
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-05-14</span>
+				    <span>2020-05-18</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/6209085/">
+				<h2 class="index-title">
+					nginx☞安装
+				</h2>
+				<div class="index-brief">
+					前言
+此脚本用于安装 nginx;tengine;openresty. 安装版本为：
+
+nginx: 1.14
+openresty: 1.15.8.3
+tengine: 2.1.2 # 这是一个很古老的版本…
+
+目录结构
+因为是编译安装，所以产出目录均在 /usr/local/&lt;nginx/o
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-15</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/web/">web</a>
 										
 											>
 										
@@ -2151,7 +2277,7 @@ cat &gt; /usr/local/nginx/
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 
@@ -2161,62 +2287,24 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/662e9d4d/">
 				<h2 class="index-title">
-					zabbix☞redis
+					hexo☞图片显示404错误的解决办法
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
-
-
-
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+					前言
+写作工具：typora
+部署端：github
+部署包：
+# 你可以通过hexo的根目录下的package.json来确认版本
+&quot;hexo&quot;: &quot;^4.0.0&quot;,
+&quot;hexo-asset-image&quot;: &quot;^1.0.0&quo
 					...
 				</div>
 			</a>
                 <div class="article-meta">
 				    <span>2020-05-14</span>
                     
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
                             
                     
                 </div>
@@ -2225,7 +2313,7 @@ redis_info[&#123;#IP&#12
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/page/7/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/9/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/page/7/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/9/">&gt;</a>
 		
 	</div>
 </div>

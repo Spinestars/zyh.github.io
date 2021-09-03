@@ -1092,7 +1092,7 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/6178b477/">
+									<a href="/posts/7fd13722/">
 										prometheus☞06rabbitmq监控
 									</a>
 								</li>
@@ -1668,7 +1668,106 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/759b68d8/">
-										go☞001变量学习
+										go☞001变量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c3e952e/">
+										go☞002常量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1a034363/">
+										go☞003运算符
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a6b5455/">
+										go☞004条件语句
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/98f86e16/">
+										go☞005函数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/318675c1/">
+										go☞006函数-闭包
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8eb4b1b/">
+										go☞007函数-方法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a705a91a/">
+										go☞008结构体
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/77a46e91/">
+										go☞009接口
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/336ec0ac/">
+										go☞010错误处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2dab3d00/">
+										go☞011异常处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1503f4a/">
+										go☞012常用模块
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1816,30 +1915,33 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/ed4c29d5/">
+			<a href="/posts/8a6b5455/">
 				<h2 class="index-title">
-					k8s☞11-2namespace资源约束
+					go☞004条件语句
 				</h2>
 				<div class="index-brief">
 					前言
-https://kubernetes.io/docs/concepts/policy/limit-range/
-namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
-特点
-
-提供 pod 的默认资源约束.
-限制pod的资源约束.
-Lim
+常见的if就不说了
+switch
+case后面的值匹配了变量，就执行对应代码，否则执行default代码
+switch 变量/常量 &#123;
+    case 值1:
+        ...
+    case 值2, 值3:
+        ...
+    default:
+       
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-19</span>
+				    <span>2020-10-04</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
+                                        <a href="/categories/语言/">语言</a>
 										
 											>
 										
@@ -1849,7 +1951,7 @@ Lim
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/语言/go/">go</a>
 										
                                     </span>
                                 
@@ -1859,26 +1961,30 @@ Lim
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/64fa9c84/">
+			<a href="/posts/98f86e16/">
 				<h2 class="index-title">
-					k8s☞11-1pod资源约束
+					go☞005函数
 				</h2>
 				<div class="index-brief">
 					前言
-https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-资源约束在我们平时使用的时候主要是cpu和内存层面, 以及本地临时存储(emptyDir)
-k8s资源约束分为两种: request(软
+如果有参数，则需提供参数类型
+如果有返回值，则需提供返回值类型
+结构
+func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
+    ...
+    return rtn_value
+&#125
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-19</span>
+				    <span>2020-10-04</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
+                                        <a href="/categories/语言/">语言</a>
 										
 											>
 										
@@ -1888,7 +1994,7 @@ k8s资源约束分为两种: request(软
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/语言/go/">go</a>
 										
                                     </span>
                                 
@@ -1898,30 +2004,36 @@ k8s资源约束分为两种: request(软
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/4b0e4a5/">
+			<a href="/posts/1a034363/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					go☞003运算符
 				</h2>
 				<div class="index-brief">
 					前言
-kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
-所以步骤一般是这样的。
+常见的运算符就不说了，学过数学的都会。
+逻辑运算符
+A &amp;&amp; B A和B都为真，则真
+A || B A和B任意为真，则为真
+!A A为真，则为假
+当上述条件为真时，则执行下一步代码
+位运算符
+将整数转为二进制后进行运算
+二进制数：0为假，1为真
+例如：
+a,b := 2,4
 
-创建secret 和 configmap 对象
 
-以文件方式提供
-kubernetes 提供了一种卷类型 projected volum
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-17</span>
+				    <span>2020-10-03</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
+                                        <a href="/categories/语言/">语言</a>
 										
 											>
 										
@@ -1931,7 +2043,7 @@ kubernetes 提供了一种卷类型 projected volum
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/语言/go/">go</a>
 										
                                     </span>
                                 
@@ -1941,30 +2053,31 @@ kubernetes 提供了一种卷类型 projected volum
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/4b0e4a5/">
+			<a href="/posts/8c3e952e/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					go☞002常量
 				</h2>
 				<div class="index-brief">
 					前言
-kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
-所以步骤一般是这样的。
+常量只有一个元数据，就是内存地址存储的数据。
+常量声明的同时必须赋值
+声明和赋值
 
-创建secret 和 configmap 对象
+不能省略 const 关键词，省略了就没法判断是常量还是变量了
 
-以文件方式提供
-kubernetes 提供了一种卷类型 projected volum
+单类型
+const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-17</span>
+				    <span>2020-10-03</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
+                                        <a href="/categories/语言/">语言</a>
 										
 											>
 										
@@ -1974,7 +2087,7 @@ kubernetes 提供了一种卷类型 projected volum
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/语言/go/">go</a>
 										
                                     </span>
                                 
@@ -1984,27 +2097,38 @@ kubernetes 提供了一种卷类型 projected volum
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/d3b80b5f/">
+			<a href="/posts/759b68d8/">
 				<h2 class="index-title">
-					k8s☞08负载均衡service
+					go☞001变量
 				</h2>
 				<div class="index-brief">
 					前言
-在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公网暴漏内网这些后端程序.
-k8s设计了一个service对象来实现这一目的.
-k8sIP
+变量有两个元数据，一是内存地址，一是内存地址存储的数据。
 
+内存地址也是一串数
+
+声明类型
+一些变量类型:
+int
+string
+bool
+chan  	管道
+[数组大小]数组值类型 	数组
+[]数组值类型 	切片
+map   字典
+变量类型
+如果变量内存地址里存储的是非内存地址,则这类变量称
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-16</span>
+				    <span>2020-10-02</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
+                                        <a href="/categories/语言/">语言</a>
 										
 											>
 										
@@ -2014,7 +2138,7 @@ k8sIP
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/语言/go/">go</a>
 										
                                     </span>
                                 
@@ -2024,19 +2148,23 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/1080c6b6/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞09存储资源
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+在使用云服务的时候,我们创建磁盘,需要在存储服务中提交一个请求,里面包含了磁盘类型,磁盘大小.之后,我们再把这个申请的磁盘挂载到所需的计算资源上即可.
+而在k8s中. 当使用存储的时候，我们会涉及到以下主要概念
+构建存储的概念：
+
+
+volume # 这个概念指的是提供的存储服务，例如云商的云
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-14</span>
+				    <span>2020-09-30</span>
                     
                             
                                 
@@ -2062,42 +2190,32 @@ k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/18e4fa73/">
+			<a href="/posts/894f9595/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
+					vsftpd☞安装
 				</h2>
 				<div class="index-brief">
-					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
+					配置文件
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nas-it-local-dep
+  namespace: it
+  labels:
+    app: nas-it-local
+spec:
+  serviceName: nas
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-14</span>
+				    <span>2020-09-29</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/其它/">其它</a>
 										
                                     </span>
                                 
@@ -2107,110 +2225,26 @@ https://kubernetes.io/docs/concepts/workl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/e6ae9474/">
+			<a href="/posts/ae41ae33/">
 				<h2 class="index-title">
-					mysql☞常用命令
+					监控☞monit
 				</h2>
 				<div class="index-brief">
-					查询库表占用空间
-SELECT
-    table_schema AS '数据库',
-    table_name AS '表名',
-    table_rows AS '记录数',
-    TRUNCATE (data_length / 1024 / 1024 / 1024, 3) AS '数据容
+					安装
+yum install monit -y
+
+主配置
+# vim /etc/monitrc
+set daemon  10 # 调整周期
+
+⭐️官方配置文档: https://mmonit.com/monit/documentation/monit.html
+程序保活配置
+默认存放位置: /etc
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-09-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/mysql/">mysql</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/9aa66899/">
-				<h2 class="index-title">
-					k8s☞05pod探测器
-				</h2>
-				<div class="index-brief">
-					探测器
-
-https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
-
-探测器有三种：启动探测器startupProbe、存活探测器livenessPr
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4ebbd3a8/">
-				<h2 class="index-title">
-					zabbix☞预警
-				</h2>
-				<div class="index-brief">
-					定义预警分为几个步骤
-
-定义预警媒介
-定义预警用户
-定义预警动作
-
-触发器达到阈值，调用预警动作，预警动作调用预警用户，预警用户调用预警媒介
-预警媒介
-配置-报警媒介类型，这里有两个要素
-报警媒介类型
-类型有很多种，比如邮件，自定义脚本，这里我们选自定义脚本，来定义一个企业微信预警
-
-脚本需要接收三
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-02</span>
+				    <span>2020-09-27</span>
                     
                             
                                 
@@ -2226,7 +2260,91 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/监控/monit/">monit</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/7627a41d/">
+				<h2 class="index-title">
+					k8s☞13高级版负载均衡ingress
+				</h2>
+				<div class="index-brief">
+					前言
+ingress 可以提供负载均衡/SSL管理/虚拟命名主机/path路由. 它的目的是增加7层流量分发等负载功能. 你可以通过 Ingress 将请求转发到各个 Service 对象.
+但是ingress本身并不是规则的执行者. 它只是记录规则, 规则执行者由ingress-controlle
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-22</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/4bf29cf0/">
+				<h2 class="index-title">
+					k8s☞12-2有状态服务StatefulSet
+				</h2>
+				<div class="index-brief">
+					前言
+当我们构建一个有状态的应用的时候, 例如 mysql / ftp / 包含session的管理界面等. 我们可能会有下列预期:
+
+稳定的、唯一的网络标识符。
+稳定的、持久的存储。
+有序的、优雅的部署和缩放。
+有序的、自动的滚动更新。
+
+StatefulSet 就是干这个的.
+一个例子
+apiV
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-21</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -2238,7 +2356,7 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/page/4/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/6/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/page/4/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/6/">&gt;</a>
 		
 	</div>
 </div>

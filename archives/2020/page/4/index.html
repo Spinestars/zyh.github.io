@@ -1092,7 +1092,7 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/6178b477/">
+									<a href="/posts/7fd13722/">
 										prometheus☞06rabbitmq监控
 									</a>
 								</li>
@@ -1668,7 +1668,106 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/759b68d8/">
-										go☞001变量学习
+										go☞001变量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c3e952e/">
+										go☞002常量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1a034363/">
+										go☞003运算符
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a6b5455/">
+										go☞004条件语句
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/98f86e16/">
+										go☞005函数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/318675c1/">
+										go☞006函数-闭包
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8eb4b1b/">
+										go☞007函数-方法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a705a91a/">
+										go☞008结构体
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/77a46e91/">
+										go☞009接口
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/336ec0ac/">
+										go☞010错误处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2dab3d00/">
+										go☞011异常处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1503f4a/">
+										go☞012常用模块
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1816,24 +1915,21 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/9602dad/">
+			<a href="/posts/d3b80b5f/">
 				<h2 class="index-title">
-					k8s☞02安装
+					k8s☞08负载均衡service
 				</h2>
 				<div class="index-brief">
 					前言
-使用 kubeadm 引导集群 | Kubernetes
-结构
-高可用拓扑选项 | Kubernetes
-我们选堆叠结构
+在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公网暴漏内网这些后端程序.
+k8s设计了一个service对象来实现这一目的.
+k8sIP
 
-不过因为我环境里没有 LB 组件，因此选用 haproxy 来代替，又因为要为 haproxy 做高可用，因此为 haproxy 再外套一层 keepalived。
-如果
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-08-25</span>
+				    <span>2020-09-16</span>
                     
                             
                                 
@@ -1859,22 +1955,26 @@ var _hmt = _hmt || [];
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/e1096625/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞记录点
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
-					1. pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.
-删除pvc后, pv的状态将从bound转为Released.
-如果你想让pv从新绑定到原来的pvc上, 则需要两个步骤:
+					前言
+对于更新,我们一般会采用滚动更新,即:
 
-先创建原来的pvc.
-删除当前pv并重新创建, 或者修改当前pv的配置
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-08-25</span>
+				    <span>2020-09-14</span>
                     
                             
                                 
@@ -1900,33 +2000,25 @@ var _hmt = _hmt || [];
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/65820315/">
+			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					prometheus☞01搭建
+					k8s☞07无状态服务deployment-pod扩缩
 				</h2>
 				<div class="index-brief">
 					前言
-prometheus 监控的构建，相比 zabbix 来说，还是要麻烦一些。
-当然，如果你完全熟悉之后，配置文件化也更容易被其他系统所修改。
-监控端组件
-搞之前，先创建一个网络
-docker network create promsnet
-grafana
-
-数据展示，部署在 proms 端
-
-
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-07-26</span>
+				    <span>2020-09-14</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/容器/">容器</a>
 										
 											>
 										
@@ -1936,7 +2028,7 @@ grafana
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/prometheus/">prometheus</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -1946,22 +2038,110 @@ grafana
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/ed865d2f/">
+			<a href="/posts/e6ae9474/">
 				<h2 class="index-title">
-					zabbix☞server安装注意事项
+					mysql☞常用命令
 				</h2>
 				<div class="index-brief">
-					
-
-数据库编码一定要安装官方来命令来设置，例如zabbix5编码是 utf8和utf8_bin
-
-
-最后web控制台安装界面，要确保zabbix-server可以访问设置的 hostname 的 10051 端口。如果hostname写的域名，那么要确保zabbix-server可以通过 hosts
+					查询库表占用空间
+SELECT
+    table_schema AS '数据库',
+    table_name AS '表名',
+    table_rows AS '记录数',
+    TRUNCATE (data_length / 1024 / 1024 / 1024, 3) AS '数据容
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-07-23</span>
+				    <span>2020-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/mysql/">mysql</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9aa66899/">
+				<h2 class="index-title">
+					k8s☞05pod探测器
+				</h2>
+				<div class="index-brief">
+					探测器
+
+https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+
+探测器有三种：启动探测器startupProbe、存活探测器livenessPr
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/4ebbd3a8/">
+				<h2 class="index-title">
+					zabbix☞预警
+				</h2>
+				<div class="index-brief">
+					定义预警分为几个步骤
+
+定义预警媒介
+定义预警用户
+定义预警动作
+
+触发器达到阈值，调用预警动作，预警动作调用预警用户，预警用户调用预警媒介
+预警媒介
+配置-报警媒介类型，这里有两个要素
+报警媒介类型
+类型有很多种，比如邮件，自定义脚本，这里我们选自定义脚本，来定义一个企业微信预警
+
+脚本需要接收三
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-02</span>
                     
                             
                                 
@@ -1987,28 +2167,29 @@ grafana
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3e0f2183/">
+			<a href="/posts/25f36846/">
 				<h2 class="index-title">
-					jenkins☞从容器中访问宿主机docker命令
+					zabbix☞容器搭建
 				</h2>
 				<div class="index-brief">
-					前言
-我的jenkins是运行在docker中，但是jenkins官方的镜像里却没有docker命令。
-以至于无法在流水线中打包docker镜像。
-方法
-首先，需要将docker命令、docker.sock文件以及相关依赖文件映射到容器内。
-其次，以root用户访问容器，在容器中添加docker组，
+					创建网络
+docker network create -d bridge zbnet
+
+mysql
+mkdir -p /export/docker-data-mysql/&#123;config,logs,data&#125;
+docker run --name mysql57 \
+-p 3306:
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-06-09</span>
+				    <span>2020-08-30</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
+                                        <a href="/categories/监控/">监控</a>
 										
 											>
 										
@@ -2018,7 +2199,7 @@ grafana
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/jenkins/">jenkins</a>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -2028,31 +2209,33 @@ grafana
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/5db0cd07/">
+			<a href="/posts/c83ca575/">
 				<h2 class="index-title">
-					linux☞ssh-MFA自动登陆
+					mysql☞离线迁移脚本
 				</h2>
 				<div class="index-brief">
-					前言
-ssh 关联MFA后,安全度增加了很多,但是每次手动输入MFA动态口令比较麻烦.所以记录一下自动交互输入MFA口令
-命令安装
-sudo apt install oathtool gnupg2 expect
+					databases=&quot;&quot;
 
 
-oathtool 是我们用来生成MFA口令的工具.
-expect 用来编写交互程序
+mysqltonew()&#123;
+    olddatabasehost=
+    olddatabaseport=
+    olddatabase=$1
+    oldUserName=
+    oldpassword=
 
+    newdat
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-06-06</span>
+				    <span>2020-08-29</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
+                                        <a href="/categories/数据库/">数据库</a>
 										
 											>
 										
@@ -2062,7 +2245,7 @@ expect 用来编写交互程序
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
+                                        <a href="/categories/数据库/mysql/">mysql</a>
 										
                                     </span>
                                 
@@ -2072,27 +2255,26 @@ expect 用来编写交互程序
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/ac6b3b36/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					jdk☞安装和配置
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-oracle jdk 现在是商业产品了, 所以线上最好还是用 openjdk.
-安装
-https://adoptopenjdk.net/installation.html#linux-pkg
-rhel之类的，搜索【RPM installation on Centos, RHEL, or Fed
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-06-01</span>
+				    <span>2020-08-26</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
+                                        <a href="/categories/容器/">容器</a>
 										
 											>
 										
@@ -2102,7 +2284,7 @@ rhel之类的，搜索【RPM installation on Centos, RHEL, or Fed
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/java/">java</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -2112,28 +2294,28 @@ rhel之类的，搜索【RPM installation on Centos, RHEL, or Fed
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/58a1c0c7/">
+			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					nginx☞fcgi中alias的使用
+					k8s☞04pod钩子函数
 				</h2>
 				<div class="index-brief">
 					前言
-众所周知, nginx 在配置静态资源的时候, root 和 alias 分别是两种指定资源路径的方式.
-如果：
-​	url 是 http://xxx.com/god/a.jpg，且 location 匹配的是 /god/.
-则：
-​	当用 root 定位资源路径时, root 配置的值=域名
+我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
+k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
+postStart
+
+它将在容器创建后立即运行，但不保证在 ENT
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-05-27</span>
+				    <span>2020-08-26</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
+                                        <a href="/categories/容器/">容器</a>
 										
 											>
 										
@@ -2143,91 +2325,7 @@ rhel之类的，搜索【RPM installation on Centos, RHEL, or Fed
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/720afd15/">
-				<h2 class="index-title">
-					ansible☞角色
-				</h2>
-				<div class="index-brief">
-					前言
-角色的作用就是规范化，将一个playbook各部分分门别类的放置在规定好的目录中。就如同linux系统一样，/etc/就是放配置的，/bin 就是放程序的，/tmp 就是放临时文件的 …
-ansible 会基于官方规定好的目录结构, 去自动加载目录中的文件. 当一个需求很复杂的时候, 我们就可
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-21</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/724fda19/">
-				<h2 class="index-title">
-					ansible☞模板
-				</h2>
-				<div class="index-brief">
-					前言
-当你用ansible进行多机器的配置调整，且调整的东西都一模一样，此时你不会拒绝模板的诱惑。
-ansible的模板是jinja2，所以jinja2的特性，在这里都可以用。
-
-模板中，不要出现任何你觉得模板会忽略的东西，包括但不限于空格
-
-模块 template
-参数：
-
-src 模板文件路径
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -2239,7 +2337,7 @@ src 模板文件路径
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/archives/2020/page/3/">&lt;</a><a class="page-number" href="/archives/2020/">1</a><a class="page-number" href="/archives/2020/page/2/">2</a><a class="page-number" href="/archives/2020/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/archives/2020/page/5/">5</a><a class="page-number" href="/archives/2020/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2020/page/9/">9</a><a class="extend next" rel="next" href="/archives/2020/page/5/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/archives/2020/page/3/">&lt;</a><a class="page-number" href="/archives/2020/">1</a><a class="page-number" href="/archives/2020/page/2/">2</a><a class="page-number" href="/archives/2020/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/archives/2020/page/5/">5</a><a class="page-number" href="/archives/2020/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/archives/2020/page/10/">10</a><a class="extend next" rel="next" href="/archives/2020/page/5/">&gt;</a>
 		
 	</div>
 </div>

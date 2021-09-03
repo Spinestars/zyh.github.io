@@ -1092,7 +1092,7 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/6178b477/">
+									<a href="/posts/7fd13722/">
 										prometheus☞06rabbitmq监控
 									</a>
 								</li>
@@ -1668,7 +1668,106 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file">
 									<a href="/posts/759b68d8/">
-										go☞001变量学习
+										go☞001变量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c3e952e/">
+										go☞002常量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1a034363/">
+										go☞003运算符
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a6b5455/">
+										go☞004条件语句
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/98f86e16/">
+										go☞005函数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/318675c1/">
+										go☞006函数-闭包
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8eb4b1b/">
+										go☞007函数-方法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a705a91a/">
+										go☞008结构体
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/77a46e91/">
+										go☞009接口
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/336ec0ac/">
+										go☞010错误处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2dab3d00/">
+										go☞011异常处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1503f4a/">
+										go☞012常用模块
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1816,29 +1915,29 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/25f36846/">
+			<a href="/posts/63d8d3d4/">
 				<h2 class="index-title">
-					zabbix☞容器搭建
+					k8s☞12-1守护进程
 				</h2>
 				<div class="index-brief">
-					创建网络
-docker network create -d bridge zbnet
+					前言
+DaemonSet 确保指定的node上都存在一份 pod. 常用来构建一些批量代理性质的app. 例如监控节点app, 或者日志节点app
+特点
 
-mysql
-mkdir -p /export/docker-data-mysql/&#123;config,logs,data&#125;
-docker run --name mysql57 \
--p 3306:
+当一个节点添加到集群, 或从集群中删除, 则 pod 会被添加/删除
+当DaemonSet被删除, 则 pod 都会被删除.
+pod模板中的 R
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-08-30</span>
+				    <span>2020-09-20</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
+                                        <a href="/categories/容器/">容器</a>
 										
 											>
 										
@@ -1848,7 +1947,7 @@ docker run --name mysql57 \
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -1858,27 +1957,313 @@ docker run --name mysql57 \
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/c83ca575/">
+			<a href="/posts/ed4c29d5/">
 				<h2 class="index-title">
-					mysql☞离线迁移脚本
+					k8s☞11-2namespace资源约束
 				</h2>
 				<div class="index-brief">
-					databases=&quot;&quot;
+					前言
+https://kubernetes.io/docs/concepts/policy/limit-range/
+namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
+特点
 
-
-mysqltonew()&#123;
-    olddatabasehost=
-    olddatabaseport=
-    olddatabase=$1
-    oldUserName=
-    oldpassword=
-
-    newdat
+提供 pod 的默认资源约束.
+限制pod的资源约束.
+Lim
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-08-29</span>
+				    <span>2020-09-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/64fa9c84/">
+				<h2 class="index-title">
+					k8s☞11-1pod资源约束
+				</h2>
+				<div class="index-brief">
+					前言
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+资源约束在我们平时使用的时候主要是cpu和内存层面, 以及本地临时存储(emptyDir)
+k8s资源约束分为两种: request(软
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/4b0e4a5/">
+				<h2 class="index-title">
+					k8s☞09应用配置与密码与信息提供
+				</h2>
+				<div class="index-brief">
+					前言
+kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
+所以步骤一般是这样的。
+
+创建secret 和 configmap 对象
+
+以文件方式提供
+kubernetes 提供了一种卷类型 projected volum
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-17</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/4b0e4a5/">
+				<h2 class="index-title">
+					k8s☞10应用配置与密码与信息提供
+				</h2>
+				<div class="index-brief">
+					前言
+kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
+所以步骤一般是这样的。
+
+创建secret 和 configmap 对象
+
+以文件方式提供
+kubernetes 提供了一种卷类型 projected volum
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-17</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/d3b80b5f/">
+				<h2 class="index-title">
+					k8s☞08负载均衡service
+				</h2>
+				<div class="index-brief">
+					前言
+在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公网暴漏内网这些后端程序.
+k8s设计了一个service对象来实现这一目的.
+k8sIP
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-16</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/18e4fa73/">
+				<h2 class="index-title">
+					k8s☞06无状态服务deployment-pod更新
+				</h2>
+				<div class="index-brief">
+					前言
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f6e328b5/">
+				<h2 class="index-title">
+					k8s☞07无状态服务deployment-pod扩缩
+				</h2>
+				<div class="index-brief">
+					前言
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/e6ae9474/">
+				<h2 class="index-title">
+					mysql☞常用命令
+				</h2>
+				<div class="index-brief">
+					查询库表占用空间
+SELECT
+    table_schema AS '数据库',
+    table_name AS '表名',
+    table_rows AS '记录数',
+    TRUNCATE (data_length / 1024 / 1024 / 1024, 3) AS '数据容
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-11</span>
                     
                             
                                 
@@ -1904,22 +2289,21 @@ mysqltonew()&#123;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/9aa66899/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞05pod探测器
 				</h2>
 				<div class="index-brief">
-					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
+					探测器
 
-它将在容器创建后立即运行，但不保证在 ENT
+https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+
+探测器有三种：启动探测器startupProbe、存活探测器livenessPr
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-08-26</span>
+				    <span>2020-09-04</span>
                     
                             
                                 
@@ -1936,296 +2320,6 @@ postStart
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/94518966/">
-				<h2 class="index-title">
-					k8s☞03pod
-				</h2>
-				<div class="index-brief">
-					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/c15432fa/">
-				<h2 class="index-title">
-					k8s☞kubectl多集群管理
-				</h2>
-				<div class="index-brief">
-					前言
-sunny0826/kubecm: Easier management of kubeconfig. (github.com)
-下载、安装
-wget -O kubecm_release.tgz https://github.com/sunny0826/kubecm/releases/downl
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/9602dad/">
-				<h2 class="index-title">
-					k8s☞02安装
-				</h2>
-				<div class="index-brief">
-					前言
-使用 kubeadm 引导集群 | Kubernetes
-结构
-高可用拓扑选项 | Kubernetes
-我们选堆叠结构
-
-不过因为我环境里没有 LB 组件，因此选用 haproxy 来代替，又因为要为 haproxy 做高可用，因此为 haproxy 再外套一层 keepalived。
-如果
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-25</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/e1096625/">
-				<h2 class="index-title">
-					k8s☞记录点
-				</h2>
-				<div class="index-brief">
-					1. pv和pvc的绑定关系是终生的. 也就是说你删除了当前pvc, pv依然不能被其它pvc所绑定.
-删除pvc后, pv的状态将从bound转为Released.
-如果你想让pv从新绑定到原来的pvc上, 则需要两个步骤:
-
-先创建原来的pvc.
-删除当前pv并重新创建, 或者修改当前pv的配置
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-25</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/65820315/">
-				<h2 class="index-title">
-					prometheus☞01搭建
-				</h2>
-				<div class="index-brief">
-					前言
-prometheus 监控的构建，相比 zabbix 来说，还是要麻烦一些。
-当然，如果你完全熟悉之后，配置文件化也更容易被其他系统所修改。
-监控端组件
-搞之前，先创建一个网络
-docker network create promsnet
-grafana
-
-数据展示，部署在 proms 端
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-07-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/prometheus/">prometheus</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ed865d2f/">
-				<h2 class="index-title">
-					zabbix☞server安装注意事项
-				</h2>
-				<div class="index-brief">
-					
-
-数据库编码一定要安装官方来命令来设置，例如zabbix5编码是 utf8和utf8_bin
-
-
-最后web控制台安装界面，要确保zabbix-server可以访问设置的 hostname 的 10051 端口。如果hostname写的域名，那么要确保zabbix-server可以通过 hosts
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-07-23</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/3e0f2183/">
-				<h2 class="index-title">
-					jenkins☞从容器中访问宿主机docker命令
-				</h2>
-				<div class="index-brief">
-					前言
-我的jenkins是运行在docker中，但是jenkins官方的镜像里却没有docker命令。
-以至于无法在流水线中打包docker镜像。
-方法
-首先，需要将docker命令、docker.sock文件以及相关依赖文件映射到容器内。
-其次，以root用户访问容器，在容器中添加docker组，
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-06-09</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/jenkins/">jenkins</a>
 										
                                     </span>
                                 
@@ -2237,7 +2331,7 @@ grafana
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/archives/page/5/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/archives/page/7/">7</a><a class="page-number" href="/archives/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/14/">14</a><a class="extend next" rel="next" href="/archives/page/7/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/archives/page/5/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/archives/page/7/">7</a><a class="page-number" href="/archives/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/15/">15</a><a class="extend next" rel="next" href="/archives/page/7/">&gt;</a>
 		
 	</div>
 </div>

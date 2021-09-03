@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		go☞001变量学习 | 
+		go☞001变量 | 
 	 
 	zyh
 	</title>
@@ -1094,7 +1094,7 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/6178b477/">
+									<a href="/posts/7fd13722/">
 										prometheus☞06rabbitmq监控
 									</a>
 								</li>
@@ -1670,7 +1670,106 @@ var _hmt = _hmt || [];
 							<ul>
 								<li class="file active">
 									<a href="/posts/759b68d8/">
-										go☞001变量学习
+										go☞001变量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c3e952e/">
+										go☞002常量
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1a034363/">
+										go☞003运算符
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a6b5455/">
+										go☞004条件语句
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/98f86e16/">
+										go☞005函数
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/318675c1/">
+										go☞006函数-闭包
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8eb4b1b/">
+										go☞007函数-方法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a705a91a/">
+										go☞008结构体
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/77a46e91/">
+										go☞009接口
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/336ec0ac/">
+										go☞010错误处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2dab3d00/">
+										go☞011异常处理
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1503f4a/">
+										go☞012常用模块
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1817,12 +1916,12 @@ var _hmt = _hmt || [];
 	<div id="content">
 		<h1 id="article-title">
 
-	go☞001变量学习
+	go☞001变量
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/759b68d8/" class="leancloud_visitors" data-flag-title="go☞001变量学习"></span>
+			阅读量:<span id="/posts/759b68d8/" class="leancloud_visitors" data-flag-title="go☞001变量"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -1872,14 +1971,22 @@ var _hmt = _hmt || [];
 <div id="article-content">
 	<h2 id="前言">前言</h2>
 <p>变量有两个元数据，一是内存地址，一是内存地址存储的数据。</p>
-<h2 id="变量类型">变量类型</h2>
 <blockquote>
 <p>内存地址也是一串数</p>
 </blockquote>
-<p>如果变量内存地址里存储的是<code>非内存地址</code>,则这类变量称之为<code>值类型</code>变量，也就是普通变量</p>
+<h2 id="声明类型">声明类型</h2>
+<p>一些变量类型:</p>
+<p>int</p>
+<p>string</p>
+<p>bool</p>
+<p>chan  	管道</p>
+<p>[数组大小]数组值类型 	数组</p>
+<p>[]数组值类型 	切片</p>
+<p>map   字典</p>
+<h2 id="变量类型">变量类型</h2>
+<p>如果变量内存地址里存储的是<code>非内存地址</code>,则这类变量称之为<code>值类型</code>变量，也就是<code>普通</code>变量</p>
 <p>如果变量内存地址里存储的是<code>另一个变量的内存地址</code>，则这类变量称之为<code>引用类型</code>变量，也叫<code>指针</code>变量</p>
 <p>💁 变量的内存地址里不能存储变量自己的内存地址</p>
-<h2 id="声明变量和赋值">声明变量和赋值</h2>
 <h3 id="值变量：普通变量">值变量：普通变量</h3>
 <p>方法1：</p>
 <p>仅可以定义一种变量类型</p>
@@ -1963,6 +2070,74 @@ var01的新值是:456
 var01的内存地址（通过var02获取）:824633802928
 var01的新值是（通过*var02获取）:456
 </code></pre>
+<h2 id="作用范围">作用范围</h2>
+<p>函数内定义的是局部变量，生命周期仅在函数被调用期间</p>
+<p>函数外定义的是全局变量，可以在任何地方使用</p>
+<p>当两种变量名一致时，局部变量优先级更高</p>
+<h2 id="数组">数组</h2>
+<p>一维数组：<code>var &lt;var_name&gt; []&lt;type&gt;&#123;&#125;</code></p>
+<p>二维数组：<code>var &lt;var_name&gt; [][]&lt;type&gt;&#123;&#125;</code></p>
+<p>[] 表示数组长度，填入数字代表数组大小，填入<code>...</code>代表不确定数组大小由系统自动计算大小</p>
+<p>不管是一维数组，还是二维数组，只能存在一种类型</p>
+<p>数组一旦定义则不可变的</p>
+<h3 id="例子">例子</h3>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main()&#123;
+    array01 := [3]int&#123;1,2,3&#125;
+    array02 := [3]int&#123;4,5,6&#125;
+    array03 := [][3]int&#123;&#125;                
+    array03 = append(array03, array01)
+    array03 = append(array03, array02)
+    for _,x := range(array03)&#123;
+        for _,y := range(x)&#123;
+            fmt.Println(y)
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p><code>array03</code>定义了一个不限行，限3列的数组，这里不限行<code>[]</code>的写法叫<code>切片</code></p>
+<h2 id="切片">切片</h2>
+<p>切片是可变的数组，可以通过<code>append(切片,追加数组)</code>来扩展<code>切片</code></p>
+<h3 id="写法">写法</h3>
+<p>基本写法</p>
+<pre><code class="language-go">s1 := []int&#123;1,2,3&#125; // 初始化一个内置3元素，容量3的切片s1
+</code></pre>
+<p>添加容量大小的写法</p>
+<pre><code class="language-go">s1 := make([]int, &lt;len&gt;, &lt;cap&gt;) // &lt;len&gt;是定义切片内元素的长度，&lt;cap&gt;是定义切片容纳元素的上限数
+</code></pre>
+<h3 id="常用函数">常用函数</h3>
+<p><code>append(&lt;目标切片&gt;, &lt;填充切片&gt;)</code>，用来扩展目标切片</p>
+<p><code>copy(&lt;目标切片&gt;, &lt;需复制切片&gt;)</code>，用来将切片复制到目标切片</p>
+<h3 id="切片截取">切片截取</h3>
+<pre><code class="language-go">s[:3] //截取0-2构建新切片, 忽略首位数字
+s[3:] //截取3-最后，构建新切片，忽略末尾数字
+</code></pre>
+<h3 id="遍历输出">遍历输出</h3>
+<p>用<code>range</code>关键字</p>
+<p>如果是数组或者切片，它返回(元素序号，元素值)</p>
+<p>如果是集合，它返回(key, value)</p>
+<pre><code class="language-go">for _, i := range &lt;切片&gt;&#123;
+    fmt.Println(i)
+&#125;
+</code></pre>
+<h2 id="集合">集合</h2>
+<p>map 类似于 pythhon 的字典，由kv对组成，它是无序的，因此，在使用 range 返回的时候，无法决定返回顺序。</p>
+<h3 id="写法-2">写法</h3>
+<pre><code class="language-go">var m1 map[&lt;key_type&gt;]value_type
+</code></pre>
+<p>例子：</p>
+<pre><code class="language-go">m1 := map[string]int&#123;&quot;河南&quot;:1, &quot;郑州&quot;:2&#125;
+fmt.Println(m1[&quot;河南&quot;])
+fmt.Println(m1[&quot;郑州&quot;])
+===
+1
+2
+</code></pre>
+<h3 id="删除">删除</h3>
+<p>delete(<map>, <key>) 从map中删除对应的kv</key></map></p>
 
 </div>
 
@@ -1970,9 +2145,9 @@ var01的新值是（通过*var02获取）:456
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/a5ed67a6/">
+              <a href="/posts/8c3e952e/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞14认证授权
+                  go☞002常量
               </a>
             
         </div>

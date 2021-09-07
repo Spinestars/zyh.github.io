@@ -2223,10 +2223,11 @@ hive删除表
 					rabbitmq☞安装
 				</h2>
 				<div class="index-brief">
-					安装rabbitmq server
-docker方式
-# https://hub.docker.com/_/rabbitmq, 然后搜索 management 版本 [docker pull rabbitmq:management]
-mkdir /export/docker-data-rabbitm
+					docker方式
+mkdir -p /export/docker-data-rabbitmq/&#123;data,log,conf.d&#125;
+chown -R 999:999 /export/docker-data-rabbitmq/&#123;data,log,conf.d&#125;
+
+
 					...
 				</div>
 			</a>

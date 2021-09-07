@@ -1977,10 +1977,23 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="安装rabbitmq-server">安装rabbitmq server</h2>
-<h3 id="docker方式">docker方式</h3>
+	<h3 id="docker方式">docker方式</h3>
+<pre><code class="language-bash">mkdir -p /export/docker-data-rabbitmq/&#123;data,log,conf.d&#125;
+chown -R 999:999 /export/docker-data-rabbitmq/&#123;data,log,conf.d&#125;
+</code></pre>
+<p>⚠️<code>999</code>是rabbitmq官方镜像里的<code>rabbitmq</code>的<code>uid</code></p>
+<h4 id="添加额外的日志配置">添加额外的日志配置</h4>
+<p>/export/docker-data-rabbitmq/conf.d/log.conf</p>
+<pre><code>#log.file = rabbit.log
+log.dir = /var/log/rabbitmq
+log.file.level = info
+
+# rotate every night at midnight
+log.file.rotation.date = $D0
+# keep up to 5 archived log files in addition to the current one
+log.file.rotation.count = 5
+</code></pre>
 <pre><code class="language-bash"># https://hub.docker.com/_/rabbitmq, 然后搜索 management 版本 [docker pull rabbitmq:management]
-mkdir /export/docker-data-rabbitmq
 pwd=`cat /proc/sys/kernel/random/uuid | cut -d'-' -f1`
 echo mq@$&#123;pwd&#125;;
 container_name=rabbitmq
@@ -1993,13 +2006,27 @@ docker run --name $&#123;container_name&#125; \
 --cpus=1 \
 --memory=1G --memory-swap=1G \
 --ulimit nofile=204800 \
---mount &quot;type=bind,src=/export/docker-data-rabbitmq,dst=/var/lib/rabbitmq&quot; \
+--mount &quot;type=bind,src=/export/docker-data-rabbitmq/data,dst=/var/lib/rabbitmq&quot; \
+--mount &quot;type=bind,src=/export/docker-data-rabbitmq/conf.d,dst=/etc/rabbitmq/conf.d&quot; \
+--mount &quot;type=bind,src=/export/docker-data-rabbitmq/log,dst=/var/log/rabbitmq&quot; \
 -e RABBITMQ_DEFAULT_VHOST=rabbitmq \
 -e RABBITMQ_DEFAULT_USER=admin \
 -e RABBITMQ_DEFAULT_PASS=mq@$&#123;pwd&#125; \
+-e RABBITMQ_LOGS=rabbitmq.log \
 -d rabbitmq:3.8.13-management
 </code></pre>
-<h3 id="Prometheus-监控">Prometheus 监控</h3>
+<p>需要注意的是，docker方式，<code>RABBITMQ_LOGS</code>默认值是<code>-</code>也就是输出到<code>stdout</code>, 这里我改成了具体文件</p>
+<p>⚠️ 任何配置，环境变量的优先级大于文本配置</p>
+<p>安装logrotate，rabbitmq的日志轮转依托它</p>
+<pre><code class="language-bash">docker exec -it rabbitmq /bin/bash
+apt update
+apt install logrotate
+exit
+</code></pre>
+<p>重启 rabbitmq</p>
+<pre><code class="language-bash">docker restart rabbitmq
+</code></pre>
+<h4 id="Prometheus-监控">Prometheus 监控</h4>
 <p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p>
 <p>若 prometheus 采集器插件没有启动，可以进容器里通过 rabbitmq-plugins enable rabbitmq_prometheus 启动</p>
 <p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p>
@@ -2058,7 +2085,7 @@ rabbitmqctl set_permissions -p $&#123;pro_vhost&#125; $&#123;user_name&#125; &qu
 ## 普通管理者(management)：仅可登陆管理控制台(启用management plugin的情况下)，无法看到节点信息，也无法对策略进行管理。
 ## 其他(other)：无法登陆管理控制台，通常就是普通的生产者和消费者。
 
-user_tag=
+user_tag=administrator
 rabbitmqctl set_user_tags $&#123;user_name&#125; $&#123;user_tag&#125;;
 
 #查看所有用户

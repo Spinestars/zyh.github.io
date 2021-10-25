@@ -1363,6 +1363,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1844,6 +1853,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1898,6 +1916,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1915,20 +1942,25 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/8c3e952e/">
+			<a href="/posts/1a034363/">
 				<h2 class="index-title">
-					go☞002常量
+					go☞003运算符
 				</h2>
 				<div class="index-brief">
 					前言
-常量只有一个元数据，就是内存地址存储的数据。
-常量声明的同时必须赋值
-声明和赋值
+常见的运算符就不说了，学过数学的都会。
+逻辑运算符
+A &amp;&amp; B A和B都为真，则真
+A || B A和B任意为真，则为真
+!A A为真，则为假
+当上述条件为真时，则执行下一步代码
+位运算符
+将整数转为二进制后进行运算
+二进制数：0为假，1为真
+例如：
+a,b := 2,4
 
-不能省略 const 关键词，省略了就没法判断是常量还是变量了
 
-单类型
-const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
 					...
 				</div>
 			</a>
@@ -1970,16 +2002,11 @@ const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&g
 内存地址也是一串数
 
 声明类型
-一些变量类型:
-int
-string
-bool
-chan  	管道
-[数组大小]数组值类型 	数组
-[]数组值类型 	切片
-map   字典
-变量类型
-如果变量内存地址里存储的是非内存地址,则这类变量称
+部分变量类型:
+int，整型，默认是0
+string，字符串，默认是空
+​	字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示rune ，类似于其它语言的字节类型
+bool，布尔，默
 					...
 				</div>
 			</a>

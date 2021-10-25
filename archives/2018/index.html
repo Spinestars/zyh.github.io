@@ -1363,6 +1363,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1844,6 +1853,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1898,6 +1916,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1915,22 +1942,17 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/2e304ad6/">
+			<a href="/posts/438aa722/">
 				<h2 class="index-title">
-					aws☞国内外之间迁移-AMI
+					aws☞rds-mysql参数
 				</h2>
 				<div class="index-brief">
-					
-
-aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。
-
-
-命令步骤如下：
-#源机器上：
-dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M
-
-#aws EC服务器上：
-dd if=/文件A of=/dev/盘B bs=1M ofl
+					# 下列是非默认值
+character_set_client: utf8
+character_set_connection: utf8
+character_set_database: utf8
+character_set_filesystem: utf8
+character_set_results:
 					...
 				</div>
 			</a>
@@ -1961,17 +1983,22 @@ dd if=/文件A of=/dev/盘B bs=1M ofl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/438aa722/">
+			<a href="/posts/2e304ad6/">
 				<h2 class="index-title">
-					aws☞rds-mysql参数
+					aws☞国内外之间迁移-AMI
 				</h2>
 				<div class="index-brief">
-					# 下列是非默认值
-character_set_client: utf8
-character_set_connection: utf8
-character_set_database: utf8
-character_set_filesystem: utf8
-character_set_results:
+					
+
+aws 国内和国外之间无法直接复制 AMI，所以经咨询 aws 技术人员，就有了这么一道手工饭。。。
+
+
+命令步骤如下：
+#源机器上：
+dd if=/dev/源根盘 of=/非根挂载点/文件A bs=1M
+
+#aws EC服务器上：
+dd if=/文件A of=/dev/盘B bs=1M ofl
 					...
 				</div>
 			</a>
@@ -2081,6 +2108,46 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/78ceb386/">
+				<h2 class="index-title">
+					nginx☞泛域名_变量截取
+				</h2>
+				<div class="index-brief">
+					server &#123;
+    listen       80;
+    listen       [::]:80;
+    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
+    root /export/webapps/apple.
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-06</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/nginx/">nginx</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/a38d0013/">
 				<h2 class="index-title">
 					gitlab☞大版本迁移
@@ -2113,46 +2180,6 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/其他/git/">git</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/78ceb386/">
-				<h2 class="index-title">
-					nginx☞泛域名_变量截取
-				</h2>
-				<div class="index-brief">
-					server &#123;
-    listen       80;
-    listen       [::]:80;
-    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
-    root /export/webapps/apple.
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-09-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 

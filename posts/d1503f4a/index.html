@@ -1365,6 +1365,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1846,6 +1855,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1895,6 +1913,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/241ce96c/">
 										shell☞if判定
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1971,6 +1998,7 @@ var _hmt = _hmt || [];
 <div id="article-content">
 	<h2 id="os">os</h2>
 <p><a target="_blank" rel="noopener" href="https://pkg.go.dev/os#File">os package - os - pkg.go.dev</a></p>
+<h3 id="文件">文件</h3>
 <p>os.OpenFile</p>
 <pre><code>func OpenFile(name string, flag int, perm FileMode) (*File, error)
 </code></pre>
@@ -1980,6 +2008,24 @@ var _hmt = _hmt || [];
 <p><code>os.O_CREATE|os.O_RDWR</code> 创建并可读可写</p>
 <p><code>os.O_CREATE|os.O_RDWR|os.O_APPEND</code>创建并可读可写可追加</p>
 <p>⚠️需要注意的是，<code>os.O_APPEND</code>将始终如一的将指针定位到尾部，因此<code>*File.Seek</code>无法使用，所以你也无法实现计算文件行数之类的方法(因为你无法定位到首部)。</p>
+<h3 id="全路径">全路径</h3>
+<p>os.Executable()  返回可执行程序的全路径</p>
+<pre><code class="language-go">func Executable() (string, error)
+</code></pre>
+<p>⚠️ 但在符号链接的情况下，可能返回的是符号链接的路径或者其指向的路径</p>
+<h3 id="命令行参数">命令行参数</h3>
+<p>os.Args <code>[]string</code> ，其<code>os.Args[0]</code>是程序名</p>
+<h3 id="退出程序">退出程序</h3>
+<p>os.Exit(code int) ，以指定的code退出程序，按照通常做法，你应该以<code>0</code>表示正常退出，<code>非0</code>表示异常</p>
+<p>⚠️它会导致<code>defer</code>不执行</p>
+<h2 id="path-filepath">path/filepath</h2>
+<p>获取文件名和路径</p>
+<pre><code class="language-go">if fullPath, err := os.Executable()	; err != nil &#123;
+	fmt.Printf(&quot;Error executing&quot;)	
+&#125; else &#123;
+	basePath, baseName := filepath.Split(fullPath)    
+&#125;
+</code></pre>
 <h2 id="bufio">bufio</h2>
 <p>实现带缓存的I/O</p>
 <h2 id="mysql">mysql</h2>
@@ -2085,6 +2131,46 @@ func main()&#123;
 &#125;
 </code></pre>
 <p>⚠️定义配置文件映射的结构体的时候，属性首字母要大写</p>
+<h2 id="Json">Json</h2>
+<p><a target="_blank" rel="noopener" href="https://pkg.go.dev/encoding/json">https://pkg.go.dev/encoding/json</a></p>
+<p><a target="_blank" rel="noopener" href="https://json2struct.mervine.net/">https://json2struct.mervine.net/</a>    json转struct</p>
+<h3 id="构造json对象，用来传递参数">构造json对象，用来传递参数</h3>
+<pre><code class="language-go">import &quot;encoding/json&quot;	
+postMap := map[string]string&#123;&quot;username&quot;: username, &quot;password&quot;: password&#125;
+postJson, err := json.Marshal(postMap) // postJson 已经是[]byte
+if err != nil &#123;
+    fmt.Println(&quot;Error:json.Marshal&quot;)
+&#125;
+</code></pre>
+<h3 id="解析json对象，获取对象值">解析json对象，获取对象值</h3>
+<pre><code class="language-go">import (
+    &quot;encoding/json&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    var bodyByte = []byte(`[
+        &#123;&quot;Name&quot;: &quot;Platypus&quot;, &quot;Order&quot;: &quot;Monotremata&quot;&#125;,
+        &#123;&quot;Name&quot;: &quot;Quoll&quot;,    &quot;Order&quot;: &quot;Dasyuromorphia&quot;&#125;
+    ]`)
+    type Animal struct &#123;
+        Name  string
+        Order string
+    &#125;
+    var animals []Animal
+    if err := json.Unmarshal(bodyByte, &amp;animals); err != nil &#123;
+        fmt.Println(err)
+    &#125; else &#123;
+        for _, val := range animals &#123;
+            fmt.Printf(&quot;Name:%s, Order:%s\n&quot;, val.Name, val.Order)
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>输出：</p>
+<pre><code class="language-bash">Name:Platypus, Order:Monotremata
+Name:Quoll, Order:Dasyuromorphia
+</code></pre>
 <h2 id="time">time</h2>
 <p><a target="_blank" rel="noopener" href="https://pkg.go.dev/time#Now">time package - time - pkg.go.dev</a></p>
 <p>go采用一种很独特的方式来格式化时间，即：</p>
@@ -2097,6 +2183,38 @@ func main()&#123;
 <p>Z07数字代表时区(-07也可以)</p>
 <p>整体记忆方法就是：01、02、15(03)、04、05、2006(06)、Z07(07)</p>
 <pre><code class="language-go">time.Now().Format(&quot;2006.01.02 15:04:05 Z07&quot;)
+</code></pre>
+<h2 id="http">http</h2>
+<p><a target="_blank" rel="noopener" href="https://pkg.go.dev/net/http">https://pkg.go.dev/net/http</a></p>
+<pre><code class="language-go">import &quot;net/http&quot;
+func GetUser(url, path, username string, password string) (UserJson, error) &#123;
+	client := &amp;http.Client&#123;&#125; // 创建客户端
+	postMap := map[string]string&#123;&quot;username&quot;: username, &quot;password&quot;: password&#125;
+	postJson, err := json.Marshal(postMap)
+	if err != nil &#123;
+		fmt.Println(&quot;Error json.Marshal&quot;)
+	&#125;
+	request, err := http.NewRequest(http.MethodPost, url+path, bytes.NewBuffer(postJson)) // 创建请求体
+	if err != nil &#123;
+		fmt.Println(&quot;Error http.NewRequest&quot;)
+	&#125;
+	request.Header.Set(&quot;Content-Type&quot;, &quot;application/json&quot;) // 添加类型
+	response, err := client.Do(request)
+	if err != nil &#123;
+		fmt.Println(&quot;Error client do request&quot;)
+	&#125;
+	bodyByte, err := io.ReadAll(response.Body)
+	defer response.Body.Close()
+	var user UserJson
+	if err := json.Unmarshal(bodyByte, &amp;user); err != nil &#123;
+		fmt.Println(&quot;Error json unmarshal response userjson&quot;)
+	&#125;
+	return user, err
+&#125;
+
+func main() &#123;
+    myuser, err := GetUser(acmeServer, &quot;/api/user/&quot;, authuser, authpasswd)
+&#125;
 </code></pre>
 
 </div>

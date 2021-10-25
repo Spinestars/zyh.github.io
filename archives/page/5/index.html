@@ -1363,6 +1363,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1844,6 +1853,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1898,6 +1916,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1913,6 +1940,94 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/f8eb4b1b/">
+				<h2 class="index-title">
+					go☞007函数-方法
+				</h2>
+				<div class="index-brief">
+					前言
+一个函数是没有所有者的。
+当一个函数有了接收的人后，它就叫方法
+在python中，一个类（接收者）定义方法，直接在类里写方法即可，只不过有一个self指向了它本身。
+在go中，没有这个self，因此定义方法需要指出谁是接收者
+定义
+func (&lt;接收者&gt; &lt;接收者类型&gt;
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-07</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/318675c1/">
+				<h2 class="index-title">
+					go☞006函数-闭包
+				</h2>
+				<div class="index-brief">
+					前言
+构建闭包原则：
+
+函数A中还有一个函数B，并且函数A返回了函数B
+函数B调用了函数A的形参
+main函数里变量C调用函数A
+
+基本原理
+正常情况下，函数被调用执行完毕后，函数的形参将被释放回收。
+但当函数是一个闭包后，这里假设是函数A。
+此时C=函数A, 而函数A返还函数B，因此C=函数B，函
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-06</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/8a6b5455/">
@@ -2004,6 +2119,50 @@ func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/8c3e952e/">
+				<h2 class="index-title">
+					go☞002常量
+				</h2>
+				<div class="index-brief">
+					前言
+常量只有一个元数据，就是内存地址存储的数据。
+常量声明的同时必须赋值
+声明和赋值
+
+不能省略 const 关键词，省略了就没法判断是常量还是变量了
+
+单类型
+const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1a034363/">
 				<h2 class="index-title">
 					go☞003运算符
@@ -2053,50 +2212,6 @@ a,b := 2,4
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8c3e952e/">
-				<h2 class="index-title">
-					go☞002常量
-				</h2>
-				<div class="index-brief">
-					前言
-常量只有一个元数据，就是内存地址存储的数据。
-常量声明的同时必须赋值
-声明和赋值
-
-不能省略 const 关键词，省略了就没法判断是常量还是变量了
-
-单类型
-const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/759b68d8/">
 				<h2 class="index-title">
 					go☞001变量
@@ -2108,16 +2223,11 @@ const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&g
 内存地址也是一串数
 
 声明类型
-一些变量类型:
-int
-string
-bool
-chan  	管道
-[数组大小]数组值类型 	数组
-[]数组值类型 	切片
-map   字典
-变量类型
-如果变量内存地址里存储的是非内存地址,则这类变量称
+部分变量类型:
+int，整型，默认是0
+string，字符串，默认是空
+​	字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示rune ，类似于其它语言的字节类型
+bool，布尔，默
 					...
 				</div>
 			</a>
@@ -2261,90 +2371,6 @@ set daemon  10 # 调整周期
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/monit/">monit</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/7627a41d/">
-				<h2 class="index-title">
-					k8s☞13高级版负载均衡ingress
-				</h2>
-				<div class="index-brief">
-					前言
-ingress 可以提供负载均衡/SSL管理/虚拟命名主机/path路由. 它的目的是增加7层流量分发等负载功能. 你可以通过 Ingress 将请求转发到各个 Service 对象.
-但是ingress本身并不是规则的执行者. 它只是记录规则, 规则执行者由ingress-controlle
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-22</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4bf29cf0/">
-				<h2 class="index-title">
-					k8s☞12-2有状态服务StatefulSet
-				</h2>
-				<div class="index-brief">
-					前言
-当我们构建一个有状态的应用的时候, 例如 mysql / ftp / 包含session的管理界面等. 我们可能会有下列预期:
-
-稳定的、唯一的网络标识符。
-稳定的、持久的存储。
-有序的、优雅的部署和缩放。
-有序的、自动的滚动更新。
-
-StatefulSet 就是干这个的.
-一个例子
-apiV
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-21</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 

@@ -1365,6 +1365,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1846,6 +1855,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1895,6 +1913,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/241ce96c/">
 										shell☞if判定
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1975,14 +2002,16 @@ var _hmt = _hmt || [];
 <p>内存地址也是一串数</p>
 </blockquote>
 <h2 id="声明类型">声明类型</h2>
-<p>一些变量类型:</p>
-<p>int</p>
-<p>string</p>
-<p>bool</p>
-<p>chan  	管道</p>
-<p>[数组大小]数组值类型 	数组</p>
-<p>[]数组值类型 	切片</p>
-<p>map   字典</p>
+<p>部分变量类型:</p>
+<p>int，整型，默认是0</p>
+<p>string，字符串，默认是空</p>
+<p>​	字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示<code>rune</code> ，类似于其它语言的字节类型</p>
+<p>bool，布尔，默认是false</p>
+<p>chan，管道，默认是nil</p>
+<p>[数组大小]数组值类型 	数组，默认是nil</p>
+<p>[]数组值类型 	切片，默认是nil</p>
+<p>map   字典，默认是nil</p>
+<p>byte，字节，默认是0，本质上是一个整型</p>
 <h2 id="变量类型">变量类型</h2>
 <p>如果变量内存地址里存储的是<code>非内存地址</code>,则这类变量称之为<code>值类型</code>变量，也就是<code>普通</code>变量</p>
 <p>如果变量内存地址里存储的是<code>另一个变量的内存地址</code>，则这类变量称之为<code>引用类型</code>变量，也叫<code>指针</code>变量</p>
@@ -2027,6 +2056,18 @@ var _hmt = _hmt || [];
 <p>例如:</p>
 <pre><code class="language-go">var02 := &amp;var01
 </code></pre>
+<h3 id="变量类型转换">变量类型转换</h3>
+<ol>
+<li>浮点和整数之间</li>
+</ol>
+<p><code>type_name(expression)</code></p>
+<ol start="2">
+<li>字符串和数字之间</li>
+</ol>
+<blockquote>
+<p>import “strconv”</p>
+</blockquote>
+<p><code>strconv.Atoi(expression)</code>  字符串到数字</p>
 <h2 id="普通变量和指针变量的使用区别">普通变量和指针变量的使用区别</h2>
 <p>通过老的普通变量赋值生成的新普通变量，两者之间因为内存地址不一样，因此没有任何关联</p>
 <p>例如：</p>
@@ -2072,6 +2113,7 @@ var01的新值是（通过*var02获取）:456
 </code></pre>
 <h2 id="作用范围">作用范围</h2>
 <p>函数内定义的是局部变量，生命周期仅在函数被调用期间</p>
+<p>​	需要注意的是：if 和 for 这些控制结构中声明的变量的作用域只在相应的代码块内。即一般情况下，局部变量的作用域可以通过代码块（用大括号括起来的部分）判断。</p>
 <p>函数外定义的是全局变量，可以在任何地方使用</p>
 <p>当两种变量名一致时，局部变量优先级更高</p>
 <h2 id="数组">数组</h2>
@@ -2100,7 +2142,9 @@ func main()&#123;
 </code></pre>
 <p><code>array03</code>定义了一个不限行，限3列的数组，这里不限行<code>[]</code>的写法叫<code>切片</code></p>
 <h2 id="切片">切片</h2>
-<p>切片是可变的数组，可以通过<code>append(切片,追加数组)</code>来扩展<code>切片</code></p>
+<p>切片是可变的数组，可以通过<code>append(切片,追加切片)</code>来扩展<code>切片</code></p>
+<p>切片是一个引用变量，因此切片变量存储的是内存地址，这个内存地址就是一个数组</p>
+<p><img src="/posts/759b68d8/image-20211021224622784.png" alt="image-20211021224622784"></p>
 <h3 id="写法">写法</h3>
 <p>基本写法</p>
 <pre><code class="language-go">s1 := []int&#123;1,2,3&#125; // 初始化一个内置3元素，容量3的切片s1
@@ -2108,9 +2152,10 @@ func main()&#123;
 <p>添加容量大小的写法</p>
 <pre><code class="language-go">s1 := make([]int, &lt;len&gt;, &lt;cap&gt;) // &lt;len&gt;是定义切片内元素的长度，&lt;cap&gt;是定义切片容纳元素的上限数
 </code></pre>
+<p>长度决定了切片的初始元素个数，容量决定了切片底层数组的元素个数</p>
 <h3 id="常用函数">常用函数</h3>
-<p><code>append(&lt;目标切片&gt;, &lt;填充切片&gt;)</code>，用来扩展目标切片</p>
-<p><code>copy(&lt;目标切片&gt;, &lt;需复制切片&gt;)</code>，用来将切片复制到目标切片</p>
+<p><code>新切片 = append(&lt;目标切片&gt;, &lt;填充切片&gt;...)</code>，用来扩展目标切片并切出一个新切片。新切片是否在&lt;目标切片&gt;基础上操作取决于&lt;目标切片&gt;容量是否充足</p>
+<p><code>copy(&lt;目标切片&gt;, &lt;需复制切片&gt;)</code>，用来将切片复制到目标切片，目标切片有多长，就填充多长</p>
 <h3 id="切片截取">切片截取</h3>
 <pre><code class="language-go">s[:3] //截取0-2构建新切片, 忽略首位数字
 s[3:] //截取3-最后，构建新切片，忽略末尾数字
@@ -2145,9 +2190,9 @@ fmt.Println(m1[&quot;郑州&quot;])
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/8c3e952e/">
+              <a href="/posts/1a034363/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go☞002常量
+                  go☞003运算符
               </a>
             
         </div>

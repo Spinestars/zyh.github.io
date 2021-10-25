@@ -1363,6 +1363,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1844,6 +1853,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1898,6 +1916,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1913,6 +1940,101 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/88eb7b6/">
+				<h2 class="index-title">
+					windows☞win10迁移数据
+				</h2>
+				<div class="index-brief">
+					
+
+桌面文件备份
+
+
+子系统备份
+如果用的子系统是Ubuntu，那么目录是
+C:\Users\&lt;家目录&gt;\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu***
+将整个文件夹备份
+
+
+其它分区数据备份
+
+
+如果有必要，则清理当前电脑的
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-13</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/">系统</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/windows/">windows</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/e172b6e2/">
+				<h2 class="index-title">
+					prometheus☞02外置prometheus监控k8s
+				</h2>
+				<div class="index-brief">
+					
+prometheus 需要访问kubernetes获取指标，访问kubernetes需要授权。
+
+授权认证
+创建服务账户
+kubectl create sa prometheus -n it
+
+服务账户访问证书
+申请prometheus访问k8s的用户证书
+openssl genrsa -out 
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-03-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/prometheus/">prometheus</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/d2fed0bf/">
@@ -2171,11 +2293,12 @@ jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&
 				<div class="index-brief">
 					os
 os package - os - pkg.go.dev
+文件
 os.OpenFile
 func OpenFile(name string, flag int, perm FileMode) (*File, error)
 
 os.OpenFile根据flag模式来创建/打开一个文件
-这里的返回值*F
+这里的返回
 					...
 				</div>
 			</a>
@@ -2242,83 +2365,6 @@ auto-defend attack-packet
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/其它/网络/">网络</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/e4f7ce4c/">
-				<h2 class="index-title">
-					linux☞ubuntu20-04纯命令行网卡配置
-				</h2>
-				<div class="index-brief">
-					前言
-netplan 用于屏蔽各种网络管理器，它可以让你用一份配置，就帮你把网络给配置好，而无需你考虑网络控制器如何使用。
-20.04 已经默认安装了 netplan.
-记录当前网卡标识名
-ip addr show 
-# ===
-1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt;
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-11-16</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ab1247fb/">
-				<h2 class="index-title">
-					监控☞mysql慢sql预警
-				</h2>
-				<div class="index-brief">
-					用途
-检测数据库中执行缓慢的sql，并记录预警
-脚本
-#!/bin/bash
-# by zyh
-# 检查数据库耗时过长的语句
-# 所需配置文件:
-# 1. userfile.txt 用于判断程序用户的sql是否超时，超时了杀死
-  ##用户名      密码    超时时间
-# 2. databas
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-11-05</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
 										
                                     </span>
                                 

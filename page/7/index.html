@@ -1363,6 +1363,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1844,6 +1853,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1898,6 +1916,15 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -1913,6 +1940,87 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/e6ae9474/">
+				<h2 class="index-title">
+					mysql☞常用命令
+				</h2>
+				<div class="index-brief">
+					查询库表占用空间
+SELECT
+    table_schema AS '数据库',
+    table_name AS '表名',
+    table_rows AS '记录数',
+    TRUNCATE (data_length / 1024 / 1024 / 1024, 3) AS '数据容
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/mysql/">mysql</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9aa66899/">
+				<h2 class="index-title">
+					k8s☞05pod探测器
+				</h2>
+				<div class="index-brief">
+					探测器
+
+https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+
+探测器有三种：启动探测器startupProbe、存活探测器livenessPr
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/4ebbd3a8/">
@@ -2245,93 +2353,6 @@ wget -O kubecm_release.tgz https://github.com/sunny0826/kubecm/releases/downl
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/65820315/">
-				<h2 class="index-title">
-					prometheus☞01搭建
-				</h2>
-				<div class="index-brief">
-					前言
-prometheus 监控的构建，相比 zabbix 来说，还是要麻烦一些。
-当然，如果你完全熟悉之后，配置文件化也更容易被其他系统所修改。
-监控端组件
-搞之前，先创建一个网络
-docker network create promsnet
-grafana
-
-数据展示，部署在 proms 端
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-07-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/prometheus/">prometheus</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/ed865d2f/">
-				<h2 class="index-title">
-					zabbix☞server安装注意事项
-				</h2>
-				<div class="index-brief">
-					
-
-数据库编码一定要安装官方来命令来设置，例如zabbix5编码是 utf8和utf8_bin
-
-
-最后web控制台安装界面，要确保zabbix-server可以访问设置的 hostname 的 10051 端口。如果hostname写的域名，那么要确保zabbix-server可以通过 hosts
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-07-23</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

@@ -1365,6 +1365,15 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/348cba53/">
+										windows-wsl dns异常
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/22b82d75/">
 										windows-包管理工具-scoop
 									</a>
@@ -1846,6 +1855,15 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/26bd5165/">
+										django☞日志
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/6a4df400/">
 										django☞管理静态文件
 									</a>
@@ -1895,6 +1913,15 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/241ce96c/">
 										shell☞if判定
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+										shell☞read嵌套
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1970,13 +1997,18 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>接口和结构体一样，也是一种自定义数据类型，用于给某个实体对象提供一系列方法，</p>
-<p>只不过接口本身不实现这些方法，而是由其它类型（例如结构体）来实现, 你必须实现接口里的所有方法，否则你将无法实现这个接口</p>
-<p>接口类型变量，可以赋值为任何其它数据<code>类型</code>,例如结构体类型</p>
-<h2 id="写法">写法</h2>
-<p>定义方法结合的接口</p>
+<p>接口和结构体一样，也是一种自定义数据类型，若多个数据类型都拥有相同的方法，为了方便的调用这些数据类型的方法，我们就可以将这些方法定义为一个接口。注意，这里只是说定义，并不是实现。</p>
+<p>反过来说，当一个数据类型实现了接口里的所有方法定义，就意味着这个数据类型实现了接口。</p>
+<p>接口类型变量，本质是一个指针。</p>
+<h2 id="什么时候用">什么时候用</h2>
+<p>你写了一个程序，它通过 type-c 接口接收数据并判断 type-c 接口的功能。</p>
+<p>但是拥有 type-c 接口的设备种类很多，每一个设备都是一个结构体，因你的程序是通用的，它就只接收一个 type-c 接口类型，不能接收设备类型。</p>
+<p>因此，这时候就需要使用接口这个类型作为唯一参数了。</p>
+<h2 id="用法">用法</h2>
+<h3 id="如何定义接口？">如何定义接口？</h3>
+<p>定义接口，接口包含方法名。就如同它是一个 type-c 接口</p>
 <blockquote>
-<p>方法名必须唯一，且不能为空</p>
+<p>方法名必须唯一，且不能为空。</p>
 </blockquote>
 <pre><code class="language-go">type &lt;inter_name&gt; interface &#123;
     &lt;method_name1&gt; [return_type]
@@ -1984,80 +2016,99 @@ var _hmt = _hmt || [];
     ...
 &#125;
 </code></pre>
-<p>定义需要方法的结构体</p>
+<h3 id="如何满足接口？">如何满足接口？</h3>
+<p>定义结构体。就如同它是一个设备</p>
 <pre><code class="language-go">type &lt;struct_name&gt; struct &#123;
     var var_name1 var_type
 &#125;
 </code></pre>
-<p>定义方法，因为结构体<code>需要</code>实现方法，所以<code>接收者</code>是结构体</p>
-<pre><code class="language-go">func (s &lt;struct_name&gt;) &lt;method_name1&gt;() [return_type]&#123;
+<p>定义接口方法，因为结构体<code>需要</code>实现方法，所以<code>接收者</code>是结构体</p>
+<pre><code class="language-go">// 实现方法1，例如充电
+func (self &lt;struct_name&gt;) &lt;method_name1&gt;() [return_type]&#123;
     ...
 &#125;
-
-func (s &lt;struct_name&gt;) &lt;method_name2&gt;() [return_type]&#123;
+// 实现方法2，例如数据传输
+func (self &lt;struct_name&gt;) &lt;method_name2&gt;() [return_type]&#123;
     ...
 &#125;
 </code></pre>
 <blockquote>
-<p>如果有额外的接口也拥有相同的方法，则结构体将一并实现.</p>
+<p>接口可以嵌套</p>
 </blockquote>
-<p>最后，接口可以嵌套</p>
+<h3 id="例子">例子</h3>
 <pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
-type zuofan interface &#123;
-    zhongcan()
-    xican()
+// typec 接口
+type typeC interface &#123;
+    chongdian()
+    hdmi()
 &#125;
 
-type kaiche interface &#123;
-    qiche()
-    diandongche()
+// 接口体，设备
+type diannao struct &#123;
+    PinPai string
+    TypeC int
+&#125;
+func (self diannao) chongdian() &#123;
+    if self.TypeC == 1 &#123;
+        fmt.Printf(&quot;%s电脑可以充电\n&quot;, self.PinPai)
+    &#125;
+&#125;
+func (self diannao) hdmi() &#123;
+    if self.TypeC == 2&#123;
+        fmt.Printf(&quot;%s电脑既可以充电，也可以HDMI\n&quot;, self.PinPai)
+    &#125;
 &#125;
 
-type jineng interface &#123;
-    zuofan
-    kaiche
+type shouji struct &#123;
+    PinPai string
+    TypeC int
+&#125;
+func (self shouji) chongdian() &#123;
+    if self.TypeC == 1 &#123;
+        fmt.Printf(&quot;%s手机可以充电\n&quot;, self.PinPai)
+    &#125;
+&#125;
+func (self shouji) hdmi() &#123;
+    if self.TypeC == 2&#123;
+        fmt.Printf(&quot;%s手机既可以充电，也可以HDMI\n&quot;, self.PinPai)
+    &#125;
 &#125;
 
-type ren struct &#123;
-    xingming string
-    xingbie string
-    nianling int
-
-&#125;
-
-func (r ren) zhongcan() &#123;
-    fmt.Printf(&quot;%s,%s,%d岁,学会了中餐\n&quot;, r.xingming, r.xingbie, r.nianling)
-&#125;
-func (r ren) xican() &#123;
-    fmt.Printf(&quot;%s,%s,%d岁,学会了西餐\n&quot;, r.xingming, r.xingbie, r.nianling)
-&#125;
-func (r ren) qiche() &#123;
-    fmt.Printf(&quot;%s,%s,%d岁,学会了汽车\n&quot;, r.xingming, r.xingbie, r.nianling)
-&#125;
-func (r ren) diandongche() &#123;
-    fmt.Printf(&quot;%s,%s,%d岁,学会了电动车\n&quot;, r.xingming, r.xingbie, r.nianling)
+func TypeCInfo(j typeC)&#123;
+    j.chongdian()
+    j.hdmi()
 &#125;
 
 func main()&#123;
-    var jn jineng
-    jn = ren&#123;xingming:&quot;张三&quot;, xingbie:&quot;男&quot;, nianling:20&#125;
-    jn.zhongcan()
-    jn.xican()
-    jn.qiche()
-    jn.diandongche()
+    d1 := diannao&#123;&quot;sanxing&quot;, 2&#125;
+    s1 := shouji&#123;&quot;huawei&quot;, 1&#125;
+    TypeCInfo(d1)
+    TypeCInfo(s1)
 &#125;
-
 </code></pre>
-<p>上述例子：</p>
-<ol>
-<li>声明接口<code>jineng</code>的变量<code>jn</code></li>
-<li>给<code>jn</code>赋值类型，这里是<code>ren</code></li>
-<li>赋值完毕后，<code>ren</code>的实体对象就与<code>jn</code>绑定在了一起</li>
-<li>通过<code>jn</code>接口调用方法</li>
-</ol>
+<p>输出：</p>
+<pre><code>sanxing电脑既可以充电，也可以HDMI
+huawei手机可以充电
+</code></pre>
+<h2 id="用法总结">用法总结</h2>
+<p>当某个函数A的形参argsA是一个接口类型的时候，</p>
+<p>情况一：如果满足接口的数据类型B，在实现方法的时候，方法接收者（数据类型本身）是<code>值</code>，则可以直接将B的变量传递给A，也可以将<code>&amp;B</code>传递给A，也可以将接口变量（已指向&amp;B）传递给A；又因为是<code>值传递</code>，所以方法内针对接收者的修改，并不影响方法外的接收者本身。</p>
+<p>情况二：如果满足接口的数据类型B，在实现方法的时候，方法接收者（数据类型本身）是<code>指针</code>，则只能将<code>&amp;B</code>传递给A，或者将接口变量（已指向&amp;B）传递给A；又因为是<code>指针传递</code>，所以方法内针对接收者的修改，会影响到方法外的接收者本身。</p>
+<p>最后，关于情况一，其实go是强类型，只不过指针可以传入的原因是go解析器底层帮你修正了代码。</p>
+<p>例如，sort.Sort(data Interface) ，它接收<code>sort.Interface</code>类型，因此只要确保排序的数据对象实现了<code>sort.Interface</code>定义的<code>Len(),Less(),Swap()</code>方法，那么直接传入你需要排序的数据对象即可。</p>
+<p>那么，为什么TypeCInfo(j typeC) 明明接收一个interface，却可以接收一个满足interface的数据类型。</p>
+<p>因为golang在底层帮你改了，实际的代码是：</p>
+<pre><code class="language-golang">    var myd1 typeC
+    d1 := diannao&#123;&quot;sanxing&quot;, 2&#125;
+    s1 := shouji&#123;&quot;huawei&quot;, 1&#125;
+    myd1 = &amp;d1
+    TypeCInfo(myd1)
+    myd1 = &amp;s1
+    TypeCInfo(myd1)
+</code></pre>
 
 </div>
 

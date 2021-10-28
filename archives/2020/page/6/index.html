@@ -2178,17 +2178,19 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
-					zabbix☞WEB监控
+					zabbix☞agent和proxy(yum)
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					
+https://repo.zabbix.com/zabbix/
+
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+
+agent 安装
+
 					...
 				</div>
 			</a>
@@ -2210,48 +2212,6 @@ tengine: 2.1.2 # 这是一个很古老的版本…
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/65ab632a/">
-				<h2 class="index-title">
-					redis☞安装
-				</h2>
-				<div class="index-brief">
-					docker 安装
-Docker Hub
-redisName=redis
-versionTag=6
-dataPath=/export/docker-data-redis
-mkdir -p $&#123;dataPath&#125;
-redis.conf 请参考官方默认配置文档，默认配置文档地址： h
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 
@@ -2306,19 +2266,79 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1587f6e8/">
+			<a href="/posts/6c093771/">
 				<h2 class="index-title">
-					zabbix☞agent和proxy(yum)
+					zabbix☞redis
 				</h2>
 				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
+					zabbix 模板
 
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+自动发现规则
 
-agent 安装
 
+
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3d20f83e/">
+				<h2 class="index-title">
+					zabbix☞WEB监控
+				</h2>
+				<div class="index-brief">
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 					...
 				</div>
 			</a>

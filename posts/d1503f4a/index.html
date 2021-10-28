@@ -2018,6 +2018,36 @@ var _hmt = _hmt || [];
 <h3 id="退出程序">退出程序</h3>
 <p>os.Exit(code int) ，以指定的code退出程序，按照通常做法，你应该以<code>0</code>表示正常退出，<code>非0</code>表示异常</p>
 <p>⚠️它会导致<code>defer</code>不执行</p>
+<h2 id="os-user">os/user</h2>
+<p>获取当前用户信息</p>
+<pre><code class="language-go">userInfo, err := user.Current()
+if err != nil &#123;
+    fmt.Println(&quot;Error: get current user&quot;)
+&#125; else &#123;
+    userName := userInfo.Username
+&#125;
+</code></pre>
+<h2 id="os-exec">os/exec</h2>
+<p>执行命令</p>
+<pre><code class="language-go">cmd := appPath + &quot; &quot; + appArgs
+if _, err := exec.LooPath(appPath); err != nil &#123;
+    fmt.Printf(&quot;Error: %s not found\n&quot;, appPath)
+&#125; else &#123;
+    c := exec.Command(&quot;bash&quot;, &quot;-c&quot;, cmd)
+    output, err := c.CombineOutput()
+    if err != nil &#123;
+        fmt.Printf(&quot;Error: %s\n&quot;, output)
+    &#125; else &#123;
+        fmt.Printf(&quot;Success: %s\n&quot;, output)
+    &#125;
+&#125;
+</code></pre>
+<h2 id="bytes">bytes</h2>
+<p>字节对比</p>
+<pre><code class="language-go">if bytes.Equal(aByte, bByte) &#123;
+    fmt.Println(&quot;两者相同&quot;)
+&#125;
+</code></pre>
 <h2 id="path-filepath">path/filepath</h2>
 <p>获取文件名和路径</p>
 <pre><code class="language-go">if fullPath, err := os.Executable()	; err != nil &#123;
@@ -2028,6 +2058,22 @@ var _hmt = _hmt || [];
 </code></pre>
 <h2 id="bufio">bufio</h2>
 <p>实现带缓存的I/O</p>
+<h2 id="io-和-os">io 和 os</h2>
+<p>读写文件或者文件描述符的内容</p>
+<p>💁另外，io/ioutil 也可以实现io和os里的一些文件相关的方法，但是他们已经迁移到了io和os</p>
+<pre><code class="language-go">fd, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0755)
+defer fd.Close()
+if err != nil &#123;
+    fmt.Printf(&quot;Error(open): %s\n&quot;, filePath)
+&#125; else &#123;
+    fByte, err := io.ReadAll(fd)
+    if err != nil &#123;
+        fmt.Printf(&quot;Error(read): %s\n&quot;, err)
+    &#125; else &#123;
+        fmt.Printf(&quot;file content:\n %s\n&quot;, fByte)
+    &#125;
+&#125;
+</code></pre>
 <h2 id="mysql">mysql</h2>
 <p><a target="_blank" rel="noopener" href="https://pkg.go.dev/database/sql#Rows.Next">sql package - database/sql - pkg.go.dev</a></p>
 <pre><code class="language-go">import (
@@ -2131,7 +2177,7 @@ func main()&#123;
 &#125;
 </code></pre>
 <p>⚠️定义配置文件映射的结构体的时候，属性首字母要大写</p>
-<h2 id="Json">Json</h2>
+<h2 id="encoding-json">encoding/json</h2>
 <p><a target="_blank" rel="noopener" href="https://pkg.go.dev/encoding/json">https://pkg.go.dev/encoding/json</a></p>
 <p><a target="_blank" rel="noopener" href="https://json2struct.mervine.net/">https://json2struct.mervine.net/</a>    json转struct</p>
 <h3 id="构造json对象，用来传递参数">构造json对象，用来传递参数</h3>
@@ -2184,7 +2230,7 @@ Name:Quoll, Order:Dasyuromorphia
 <p>整体记忆方法就是：01、02、15(03)、04、05、2006(06)、Z07(07)</p>
 <pre><code class="language-go">time.Now().Format(&quot;2006.01.02 15:04:05 Z07&quot;)
 </code></pre>
-<h2 id="http">http</h2>
+<h2 id="net-http">net/http</h2>
 <p><a target="_blank" rel="noopener" href="https://pkg.go.dev/net/http">https://pkg.go.dev/net/http</a></p>
 <pre><code class="language-go">import &quot;net/http&quot;
 func GetUser(url, path, username string, password string) (UserJson, error) &#123;

@@ -948,7 +948,7 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file active">
+								<li class="file">
 									<a href="/posts/28361833/">
 										redis☞获取没有设置ttl的key
 									</a>
@@ -957,7 +957,7 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file">
+								<li class="file active">
 									<a href="/posts/28361833/">
 										redis☞调整内核参数
 									</a>
@@ -1943,7 +1943,7 @@ var _hmt = _hmt || [];
 	<div id="content">
 		<h1 id="article-title">
 
-	redis☞获取没有设置ttl的key
+	redis☞调整内核参数
 </h1>
 <div class="article-meta">
 	
@@ -2004,110 +2004,27 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
-<p>redis 内存占用爆炸. 所以网上找了一个</p>
-<pre><code class="language-python"># encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&quot;
-import redis
-import argparse
-import time
-import sys
-
-
-class ShowProcess:
-    &quot;&quot;&quot;
-    显示处理进度的类
-    调用该类相关函数即可实现处理进度的显示
-    &quot;&quot;&quot;
-    i = 0 # 当前的处理进度
-    max_steps = 0 # 总共需要处理的次数
-    max_arrow = 100 # 进度条的长度
-
-    # 初始化函数，需要知道总共的处理次数
-    def __init__(self, max_steps):
-        self.max_steps = max_steps
-        self.i = 0
-
-    # 显示函数，根据当前的处理进度i显示进度
-    # 效果为[&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;]100.00%
-    def show_process(self, i = None):
-        if i is not None:
-            self.i = i
-        else:
-            self.i += 1
-        num_arrow = int(self.i * self.max_arrow / self.max_steps) # 计算显示多少个'&gt;'
-        num_line = self.max_arrow - num_arrow # 计算显示多少个'-'
-        percent = self.i * 100.0 / self.max_steps # 计算完成进度，格式为xx.xx%
-        process_bar = '[' + '&gt;' * num_arrow + ' ' * num_line + ']'\
-                      + '%.2f' % percent + '%' + '\r' # 带输出的字符串，'\r'表示不换行回到最左边
-        sys.stdout.write(process_bar) # 这两句打印字符到终端
-        sys.stdout.flush()
-
-    def close(self, words='done'):
-        print ''
-        print words
-        self.i = 0
-
-
-def check_ttl(redis_conn, no_ttl_file, dbindex):
-    start_time = time.time()
-    no_ttl_num = 0
-    keys_num = redis_conn.dbsize()
-    print &quot;there are &#123;num&#125; keys in db &#123;index&#125; &quot;.format(num=keys_num, index=dbindex)
-    process_bar = ShowProcess(keys_num)
-    with open(no_ttl_file, 'a') as f:
-
-        for key in redis_conn.scan_iter(count=1000):
-            process_bar.show_process()
-            if redis_conn.ttl(key) == -1:
-                no_ttl_num += 1
-    #            if no_ttl_num &lt; 1000:
-                f.write(key+'\n')
-            else:
-                continue
-
-    process_bar.close()
-    print &quot;cost time(s):&quot;, time.time() - start_time
-    print &quot;no ttl keys number:&quot;, no_ttl_num
-    print &quot;we write keys with no ttl to the file: %s&quot; % no_ttl_file
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p', type=int, dest='port', action='store', help='port of redis ')
-    parser.add_argument('-d', type=str, dest='db_list', action='store', default=0,
-                        help='ex : -d all / -d 1,2,3,4 ')
-    args = parser.parse_args()
-    port = args.port
-    if args.db_list == 'all':
-        db_list = [i for i in xrange(0, 16)]
-    else:
-        db_list = [int(i) for i in args.db_list.split(',')]
-
-    for index in db_list:
-        try:
-            pool = redis.ConnectionPool(host='127.0.0.1', port=port, db=index)
-            r = redis.StrictRedis(connection_pool=pool)
-        except redis.exceptions.ConnectionError as e:
-            print e
-        else:
-            no_ttl_keys_file = &quot;/tmp/&#123;port&#125;_&#123;db&#125;_no_ttl_keys.txt&quot;.format(port=port, db=index)
-            check_ttl(r, no_ttl_keys_file, index)
-
-
-if __name__ == '__main__':
-    main()
-</code></pre>
-<ol>
-<li>请勿在redis服务器上执行</li>
-<li>修改脚本中 127.0.0.1 为 redis 服务器地址</li>
-<li>脚本执行命令: <code>python nottlkey.py -d all -p 6379  </code></li>
-<li>添加ttl命令：<code>cat no_ttl_keys.txt  |  xargs -i -t ./redis-cli -h &lt;redis_ip&gt; -n &lt;database_num&gt; expire &lt;ttl_time&gt;</code></li>
-</ol>
+	<h4 id="前言">前言</h4>
+<p>之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。<br>
+后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。<br>
+经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。</p>
+<h4 id="我是问题">我是问题</h4>
+<p>redis-bgsave与overcommit_memory的关系。<br>
+当剩余物理内存低于当前redis所用内存的时候，overcommit_memory=1的意义</p>
+<h4 id="官方解释在此">官方解释在此</h4>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://redis.io/topics/faq">https://redis.io/topics/faq</a></p>
+</blockquote>
+<h2 id="Background-saving-fails-with-a-fork-error-under-Linux-even-if-I-have-a-lot-of-free-RAM">Background saving fails with a fork() error under Linux even if I have a lot of free RAM!</h2>
+<p>Short answer: : <code>echo 1 &gt; /proc/sys/vm/overcommit_memory</code></p>
+<p>And now the long one:</p>
+<p>Redis background saving schema relies on the copy-on-write semantic of fork in modern operating systems: Redis forks (creates a child process) that is an exact copy of the parent. The child process dumps the DB on disk and finally exits. In theory the child should use as much memory as the parent being a copy, but actually thanks to the copy-on-write semantic implemented by most modern operating systems the parent and child process will <em>share</em> the common memory pages. A page will be duplicated only when it changes in the child or in the parent. Since in theory all the pages may change while the child process is saving, Linux can’t tell in advance how much memory the child will take, so if the setting is set to zero fork will fail unless there is as much free RAM as required to really duplicate all the parent memory pages, with the result that if you have a Redis dataset of 3 GB and just 2 GB of free memory it will fail.<code>overcommit_memory</code></p>
+<p>Setting to 1 tells Linux to relax and perform the fork in a more optimistic allocation fashion, and this is indeed what you want for Redis.<code>overcommit_memory</code></p>
+<p>A good source to understand how Linux Virtual Memory works and other alternatives for and is this classic from Red Hat Magazine, <a target="_blank" rel="noopener" href="https://people.redhat.com/nhorman/papers/rhel3_vm.pdf">“Understanding Virtual Memory”</a>. You can also refer to the <a target="_blank" rel="noopener" href="http://man7.org/linux/man-pages/man5/proc.5.html">proc(5)</a> man page for explanations of the available values.<code>overcommit_memory``overcommit_ratio</code></p>
+<h4 id="翻译后的大致意思">翻译后的大致意思</h4>
+<p>官方的FAQ，给人一种这么个意思。 如果你不设置overcommit_memory=1，那么COW机制将无法使用，所以当空余内存小于当前redis占用内存时，redis-bgsave 因为无法申请到足够的内存，将导致分配内存失败。<br>
+而COW机制的意思就是：父子进程公用内存页，因此只会copy变化的数据。因此，在COW机制下，redis-bgsave只需要申请到支撑变化数据的内存即可。<br>
+至于是否是因为启用 overcommit_memory=1 从而使得COW机制起作用，限于这是内核层面的东西</p>
 
 </div>
 
@@ -2117,7 +2034,7 @@ if __name__ == '__main__':
             
               <a href="/posts/28361833/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  redis☞调整内核参数
+                  redis☞获取没有设置ttl的key
               </a>
             
         </div>

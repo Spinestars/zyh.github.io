@@ -987,8 +987,8 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
-									<a href="/posts/95177ce7/">
-										日志☞EFK简单部署-k8s
+									<a href="/posts/3475106c/">
+										日志☞01ELK基本使用-beats组件
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -996,8 +996,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3475106c/">
-										日志☞ELK简单部署-容器方式
+									<a href="/posts/f73d84da/">
+										日志☞02ELK基本使用-logstash组件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/95177ce7/">
+										日志☞EFK简单部署-k8s
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1576,6 +1585,33 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/d9cdb70/">
+										jenkins☞001安装和基本配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a33e212/">
+										jenkins☞002声明式语法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4df8a4f/">
+										jenkins☞003共享库
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/3e0f2183/">
 										jenkins☞从容器中访问宿主机docker命令
 									</a>
@@ -1587,15 +1623,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
 										jenkins☞动态agent
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/d9cdb70/">
-										jenkins☞安装和基本配置
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1942,6 +1969,86 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/894f9595/">
+				<h2 class="index-title">
+					vsftpd☞安装
+				</h2>
+				<div class="index-brief">
+					配置文件
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nas-it-local-dep
+  namespace: it
+  labels:
+    app: nas-it-local
+spec:
+  serviceName: nas
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-29</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/ae41ae33/">
+				<h2 class="index-title">
+					监控☞monit
+				</h2>
+				<div class="index-brief">
+					安装
+yum install monit -y
+
+主配置
+# vim /etc/monitrc
+set daemon  10 # 调整周期
+
+⭐️官方配置文档: https://mmonit.com/monit/documentation/monit.html
+程序保活配置
+默认存放位置: /etc
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-27</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/monit/">monit</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/7627a41d/">
 				<h2 class="index-title">
 					k8s☞13高级版负载均衡ingress
@@ -2152,7 +2259,7 @@ k8s资源约束分为两种: request(软
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞10应用配置与密码与信息提供
+					k8s☞09应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -2195,7 +2302,7 @@ kubernetes 提供了一种卷类型 projected volum
 		<div class="index-li">
 			<a href="/posts/4b0e4a5/">
 				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
+					k8s☞10应用配置与密码与信息提供
 				</h2>
 				<div class="index-brief">
 					前言
@@ -2275,93 +2382,10 @@ k8sIP
                 </div>
 		</div>	
 	
-		<div class="index-li">
-			<a href="/posts/18e4fa73/">
-				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
-				</h2>
-				<div class="index-brief">
-					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f6e328b5/">
-				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
-				</h2>
-				<div class="index-brief">
-					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/page/5/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/7/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/page/5/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/7/">&gt;</a>
 		
 	</div>
 </div>

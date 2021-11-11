@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		日志☞ELK简单部署-容器方式 | 
+		日志☞01ELK基本使用-beats组件 | 
 	 
 	zyh
 	</title>
@@ -988,18 +988,27 @@ var _hmt = _hmt || [];
 									</a>
 									
 							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-										日志☞EFK简单部署-k8s
+								<li class="file active">
+									<a href="/posts/3475106c/">
+										日志☞01ELK基本使用-beats组件
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
 							<ul>
-								<li class="file active">
-									<a href="/posts/3475106c/">
-										日志☞ELK简单部署-容器方式
+								<li class="file">
+									<a href="/posts/f73d84da/">
+										日志☞02ELK基本使用-logstash组件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/95177ce7/">
+										日志☞EFK简单部署-k8s
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1578,6 +1587,33 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/d9cdb70/">
+										jenkins☞001安装和基本配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a33e212/">
+										jenkins☞002声明式语法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4df8a4f/">
+										jenkins☞003共享库
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/3e0f2183/">
 										jenkins☞从容器中访问宿主机docker命令
 									</a>
@@ -1589,15 +1625,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
 										jenkins☞动态agent
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/d9cdb70/">
-										jenkins☞安装和基本配置
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1943,12 +1970,12 @@ var _hmt = _hmt || [];
 	<div id="content">
 		<h1 id="article-title">
 
-	日志☞ELK简单部署-容器方式
+	日志☞01ELK基本使用-beats组件
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/3475106c/" class="leancloud_visitors" data-flag-title="日志☞ELK简单部署-容器方式"></span>
+			阅读量:<span id="/posts/3475106c/" class="leancloud_visitors" data-flag-title="日志☞01ELK基本使用-beats组件"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2012,7 +2039,7 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h4 id="前言">前言</h4>
+	<h2 id="前言">前言</h2>
 <ul>
 <li>各组件总下载页: <a target="_blank" rel="noopener" href="https://www.elastic.co/cn/downloads/">https://www.elastic.co/cn/downloads/</a></li>
 <li>容器下载页: <a target="_blank" rel="noopener" href="https://www.docker.elastic.co">https://www.docker.elastic.co</a></li>
@@ -2020,243 +2047,203 @@ var _hmt = _hmt || [];
 <ol>
 <li>Elasticsearch 搜索分析 <a target="_blank" rel="noopener" href="https://www.elastic.co/cn/downloads/elasticsearch">https://www.elastic.co/cn/downloads/elasticsearch</a></li>
 <li>Logstash 转换输出 <a target="_blank" rel="noopener" href="https://www.elastic.co/cn/downloads/logstash">https://www.elastic.co/cn/downloads/logstash</a></li>
-<li>Filebeat 收集 <a target="_blank" rel="noopener" href="https://www.elastic.co/cn/downloads/beats/filebeat">https://www.elastic.co/cn/downloads/beats/filebeat</a></li>
+<li>Beats 收集 <a target="_blank" rel="noopener" href="https://www.elastic.co/cn/downloads/beats/">https://www.elastic.co/cn/downloads/beats/</a></li>
 <li>Kibana 展示 <a target="_blank" rel="noopener" href="https://www.elastic.co/cn/downloads/kibana">https://www.elastic.co/cn/downloads/kibana</a></li>
 </ol>
-<h4 id="数据过程">数据过程:</h4>
-<p>Filebeat ☞ Logstash ☞ Elasticsearch (master node) + data node ☞ Kibana</p>
-<h4 id="安装步骤">安装步骤</h4>
-<pre><code class="language-bash"># docker
-yum install docker -y 或者 yum install docker-ce -y
-yum install python3-pip -y
-pip3 install docker-compose 或者 pip install docker-compose
-systemctl enable docker
-
-# 修改 docker 默认数据目录
-vi /etc/docker/daemon.json
-&#123;
-	&quot;data-root&quot;: &quot;/export/docker-data-root&quot;
-&#125;
-
-systemctl start docker
-
+<h2 id="数据过程">数据过程:</h2>
+<p>data ☞ beats ☞ Logstash ☞ Elasticsearch (master node) + data node ☞ Kibana</p>
+<p>beats 是轻量的数据提取端，它有很多类型，例如：日志文件（Filebeat），网络数据（Packetbeat），服务器指标（Metricbeat），这些 beats 都依赖<a target="_blank" rel="noopener" href="https://github.com/elastic/beats/tree/master/libbeat">libbeat</a></p>
+<p>logstash 不是必须的，但当你需要充当beats的聚合器或者过滤数据的时候，logstash可以帮你</p>
+<p>ℹ️beats 发送数据以事件为一个单位，例如一行就是一个<code>事件</code></p>
+<h2 id="Beats">Beats</h2>
+<p>以filebeat为例，这里我选择二进制方式</p>
+<p>当然还有指标收集器：Merticbeat</p>
+<h3 id="安装">安装</h3>
+<p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation-configuration.html">https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation-configuration.html</a></p>
+<pre><code class="language-bash">curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.15.1-linux-x86_64.tar.gz
+tar xzvf filebeat-7.15.1-linux-x86_64.tar.gz
+cd filebeat-7.15.1-linux-x86_64
 </code></pre>
-<pre><code class="language-yml"># elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准
-sysctl -a | grep  vm.max_map_count  # 查看是否过小, 如果过小执行下一条
-echo 'vm.max_map_count=262144' &gt;&gt; /etc/sysctl.conf &amp;&amp; sysctl -p
+<h3 id="配置">配置</h3>
+<pre><code class="language-bash"># 添加配置文件
+cat &gt; filebeat.yml &lt;&lt; EOF
+filebeat.config:
+  modules:
+    path: $&#123;path.config&#125;/modules.d/*.yml
+    reload.enabled: true
+    reload.period: 10s
 
-mkdir -p /export/docker-compose-data/es;
-touch /export/docker-compose-data/docker-compose.yml;
-touch /export/docker-compose-data/es/es01.yml;
-touch /export/docker-compose-data/es/es02.yml;
-mkdir -p /export/docker-compose-data/kibana;
-touch /export/docker-compose-data/kibana/kibana.yml;
-mkdir -p /export/docker-compose-data/logstash
-touch /export/docker-compose-data/logstash/logstash.yml;
+#filebeat.autodiscover: # 自动发现，常用语docker、k8s
+#  providers:
+#    - type: docker
+#      hints.enabled: true
+
+filebeat.shutdown_timeout: 5s # Filebeat 在关闭时等待发布者完成发送事件的时间
+
+# 注册表记录了收割机读取文件的信息以及读取的最后指针位置
+close_removed: true # 开启状态下，如果文件被删除或者改名，则收割进程将立即关闭文件描述符并终止读取。反之，收割进程将会在完全读取完毕后，才会关闭文件描述符。（如果你要关闭这个选项，则 clean_removed 也需要关闭）.
+clean_removed: true # 只要注册表里的文件名在磁盘上找不到，则清除对应的注册表项。开启它（默认开启）可以一定程度上解决注册表过大。但这会有一个问题，当共享数据盘短时间内取消挂载并重新挂载，则注册表会重新注册文件，这将导致文件被重新读取发送（即重复读取）.
+
+setup.kibana.host: &quot;http://127.0.0.1:5601&quot;
+
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /export/logs/*-access.log
+  tags: [&quot;apache&quot;,&quot;access&quot;]
+
+- type: log
+  enabled: true
+  paths:
+    - /export/logs/*-error.log
+  tags: [&quot;apache&quot;,&quot;error&quot;]
+
+- type: log
+  enabled: true
+  paths:
+    - /export/logs/*.json
+  tags: [&quot;game&quot;]
+# keys_under_root可以让json对象里的key位于根节点，默认为false
+  json.keys_under_root: true
+# 对于同名的key，覆盖原有key值
+  json.overwrite_keys: true
+  json.message_key: message
+#  将解析错误的消息记录储存在error.message字段中
+  json.add_error_key: true
+#  日志多行合并采集
+  multiline.negate: true   # 开启这个功能
+  multiline.pattern: '^&#123;'  # 锚定一个日志位置
+  multiline.match: after  # multiline.pattern作为起点，到下一个multiline.pattern之间的数据合并成一个事件。另一个值是before，用于multiline.pattern锚定结尾
+
+# 删除无用字段
+processors:
+  - drop_fields:
+      fields: [&quot;ecs&quot;]
+
+output.logstash:
+  hosts: [&quot;127.0.0.1:5044&quot;]
+EOF
 </code></pre>
-<pre><code class="language-bash"># es01 master 和 data
-# es02 data
-cat &gt; /export/docker-compose-data/es/es01.yml &lt;&lt; EOF
-node.master: true
-node.data: true
-http.port: 9200
-network.host: 0.0.0.0
-
-http.cors.enabled: true
-http.cors.allow-origin: &quot;*&quot; 
-
-xpack.security.enabled: false
-EOF
-
-cat &gt; /export/docker-compose-data/es/es02.yml &lt;&lt; EOF
-node.master: false
-node.data: true
-http.port: 9200
-network.host: 0.0.0.0
-
-http.cors.enabled: true
-http.cors.allow-origin: &quot;*&quot; 
-
-xpack.security.enabled: false
-EOF
-
-cat &gt; /export/docker-compose-data/kibana/kibana.yml &lt;&lt; EOF
-xpack.monitoring.ui.container.elasticsearch.enabled: true
-i18n.locale: zh-CN
-EOF
-
-cat &gt; /export/docker-compose-data/logstash/logstash.yml &lt;&lt; EOF
-node.name: logstash
-http.host: 0.0.0.0
-http.port: 9600
-log.level: info
-config.reload.automatic: true
-config.reload.interval: 10s
-config.support_escapes: false
-EOF
+<p>ℹ️</p>
+<ol>
+<li>配置文件中有一个<code>$&#123;path.config&#125;</code> 这是引用了配置<code>path.config</code>.关于项目路径的配置，可以从https://www.elastic.co/guide/en/beats/filebeat/current/configuration-path.html中获取.</li>
+<li><code>reload.enabled</code>表示开启动态重载，开启之后，每间隔<code>reload.period</code>时间，Beats就会重载一次<code>path</code>指定的配置.可以从https://www.elastic.co/guide/en/beats/filebeat/current/_live_reloading.html中获取.</li>
+<li><code>filebeat.inputs</code>中我们添加了额外的<code>tags</code>，这个<code>tags</code>字段会出现在事件的根下，因此可以方便的通过<code>tags</code>来动态的生成索引名.</li>
+</ol>
+<h3 id="output负载均衡">output负载均衡</h3>
+<p>仅支持redis/logstash/es，kafka是内部自身负载</p>
+<pre><code class="language-yaml">output.logstash:
+  hosts: [&quot;localhost:5044&quot;, &quot;localhost:5045&quot;]
+  loadbalance: true
+  worker: 2
 </code></pre>
-<h4 id="编写-logstash-管道文件">编写 logstash 管道文件</h4>
-<pre><code class="language-yml"># 示例 /export/docker-compose-data/logstash/pipeline/es-curator.conf
-input &#123;
-	file &#123;
-		path =&gt; &quot;/mnt/info.log&quot;
-		type =&gt; &quot;es-curator&quot;
-		start_position =&gt; &quot;beginning&quot;
-	&#125;
-&#125;
-
-output &#123;
-	if [type] == &quot;es-curator&quot; &#123;
-		elasticsearch &#123;
-			hosts=&gt; [&quot;es01:9200&quot;]
-			index=&gt; &quot;es-curator-%&#123;+YYYY-MM-dd&#125;&quot;
-		&#125;
-	&#125;
-&#125;
-
-
+<p>不开启loadbalance，主机列表里随机选一个作为输出，若故障就切换另一个。</p>
+<p>开启loadbalance，将事件平衡发送到主机列表，具体逻辑官网没说，应该是轮询吧。</p>
+<h3 id="测试-output-是否可用">测试 output 是否可用</h3>
+<pre><code class="language-bash">./filebeat test output
 </code></pre>
-<h4 id="启动服务docker-compose配置文件">启动服务docker-compose配置文件</h4>
+<h3 id="启动">启动</h3>
+<ol>
+<li>测试数据(一定不要针对大文件使用)</li>
+</ol>
+<pre><code class="language-bash">./filebeat -e -d &quot;*&quot;
+# -e 表示关闭文件日志，输出到控制台
+# -d 表示开启debug，后面&quot;*&quot;指输出所有debug
+</code></pre>
 <blockquote>
-<p><a target="_blank" rel="noopener" href="https://docs.docker.com/compose/compose-file/compose-file-v2/">https://docs.docker.com/compose/compose-file/compose-file-v2/</a></p>
-<p>本配置文件参考 2.3 版本, 请勿使用 3.x 版本, 因为它的资源层 deploy, docker-compose命令不支持</p>
+<p>如果上面的命令有事件输出，则说明filebeat配置基本无误，如果没有实际数据对象输出，则直接检查filebeat配置或者日志文件本身。</p>
+<p>默认情况下，filebeat 的每一个事件都会包含以下事件字段：</p>
+<pre><code class="language-json">&#123;
+    ...
+    &quot;@metadata&quot;: &#123; 
+      &quot;beat&quot;: &quot;filebeat&quot;, 
+      &quot;version&quot;: &quot;7.15.1&quot; 
+    &#125;
+&#125;
+</code></pre>
 </blockquote>
-<pre><code class="language-yml">cat &gt; /export/docker-compose-data/docker-compose.yml &lt;&lt; EOF
-version: '2.3'
-services:
-  es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
-    container_name: es01
-    environment:
-      - node.name=es01
-      - cluster.initial_master_nodes=es01
-      - cluster.name=es-sen
-      - bootstrap.memory_lock=true
-      - &quot;ES_JAVA_OPTS=-Xms1536m -Xmx1536m&quot;
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    volumes:
-      - esdata01:/usr/share/elasticsearch/data
-      - /export/docker-compose-data/es/es01.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    ports:
-      - 9200:9200
-    networks:
-      - esnet
-    cpus: 0.5
-    mem_limit: 3G
-    memswap_limit: 3G
-    mem_reservation: 3G
-    healthcheck:
-      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:9200&quot;]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
-    restart: on-failure
-  es02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
-    container_name: es02
-    environment:
-      - node.name=es02
-      - discovery.seed_hosts=es01
-      - cluster.initial_master_nodes=es01
-      - cluster.name=es-sen
-      - bootstrap.memory_lock=true
-      - &quot;ES_JAVA_OPTS=-Xms1536m-Xmx1536m&quot;
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    volumes:
-      - esdata02:/usr/share/elasticsearch/data
-      - /export/docker-compose-data/es/es02.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-    networks:
-      - esnet
-    cpus: 1
-    mem_limit: 3G
-    memswap_limit: 3G
-    mem_reservation: 3G
-    healthcheck:
-      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:9200&quot;]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
-    restart: on-failure
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.4.1
-    container_name: kibana
-    environment:
-      SERVER_NAME: kibana.sen-sdk.com
-      SERVER_HOST: 0.0.0.0
-      ELASTICSEARCH_HOSTS: http://es01:9200
-    volumes:
-      - /export/docker-compose-data/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
-    ports:
-      - 5601:5601
-    networks:
-      - esnet
-    cpus: 0.5
-    mem_limit: 512m
-    memswap_limit: 512m
-    mem_reservation: 512m
-    healthcheck:
-      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:5601&quot;]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
-    restart: on-failure
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.4.1
-    container_name: logstash
-    volumes:
-      - /export/docker-compose-data/logstash/pipeline/:/usr/share/logstash/pipeline/
-      - /export/docker-compose-data/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - logstash:/usr/share/logstash/data
-    ports:
-      - &quot;5044:5044&quot;
-      - &quot;9600:9600&quot;
-    networks:
-      - esnet
-    cpus: 0.5
-    mem_limit: 1g
-    memswap_limit: 1g
-    mem_reservation: 1g
-    healthcheck:
-      test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:9600&quot;]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 120s
-    restart: on-failure
-
-volumes:
-  esdata01:
-    driver: local
-  esdata02:
-    driver: local
-  logstash:
-    driver: local
-
-networks:
-  esnet:
-EOF
+<ol start="2">
+<li>后台启动</li>
+</ol>
+<pre><code class="language-bash">nohup ./filebeat &amp; 2&gt;&amp;1
 </code></pre>
-<h4 id="启动-docker-compose">启动 docker-compose</h4>
-<pre><code class="language-bash">cd /export/docker-compose-data/
-docker-compose up -d
-# docker-compose up -d --no-recreate
+<p>ℹ️ 启动之后，会在<code>$&#123;home.config&#125;/data</code>下生成注册表。注册表不能随意删除，删除意味着filebeat无法确定是否已读过文件，这会导致数据重复导入.</p>
+<h3 id="模块化">模块化</h3>
+<p>除了玩家自定义output，并搭配logstash的pipeline进行事件过滤转换。Beats组件一般还内置了一些通用场景的模块，这些模块已经包含了对应的默认配置，elasticsearch的ingest pipeline、索引模板以及kibana仪表，当你开启这些模块，Beats就可以自动将这些对象帮你创建好。</p>
+<p>详情参见：<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-modules.html">https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-modules.html</a></p>
+<p>ℹ️模块的功能要想使用，output必须是elasticsearch，否则你即便启用，也无法安装.</p>
+<p>官方CSDN也有一个博文，进行了使用简介 <a target="_blank" rel="noopener" href="https://elasticstack.blog.csdn.net/article/details/109178666">https://elasticstack.blog.csdn.net/article/details/109178666</a></p>
+<p>现在，以采集系统日志为例.</p>
+<p>ℹ️ 模块的采集可以单独用一个filebeat去跑。</p>
+<p>在你执行下面的操作之前，请先确认两个条件：</p>
+<ol>
+<li>filebeat的output是Elasticsearch</li>
+<li>filebeat配置了kibana地址</li>
+</ol>
+<p>首先，在kibana中创建图表，在elasticsearch中创建索引管理模板</p>
+<pre><code class="language-bash">./filebeat setup --dashboards --index-management 
 </code></pre>
+<p>其次，开启模块</p>
+<pre><code class="language-bash">./filebeat modules enable system
+</code></pre>
+<p>然后，在elasticsearch中创建ingest pipeline</p>
+<pre><code class="language-bash">./filebeat setup --pipelines --modules system
+</code></pre>
+<p>此时，你可以在kibana后台找到</p>
+<ol>
+<li>索引生命周期策略：filebeat</li>
+<li>索引模式：filebeat-*</li>
+<li>各种dashboard</li>
+<li>以及ingest pipeline</li>
+</ol>
+<p>ℹ️模块默认创建的索引都是filebeat-xxx，因此索引模式也是 filebeat-*，其 dashboard 数据设置的时候通过内置的字段来区分，例如system是通过 event.dataset:system.syslog 过滤.</p>
+<p>最后，针对开启的模块，配置相关文件。默认这些文件都在models.d,在没有 enable 的时候，文件后缀都是 disabled。</p>
+<pre><code class="language-yml"># Module: system
+# Docs: https://www.elastic.co/guide/en/beats/filebeat/7.x/filebeat-module-system.html
+
+- module: system
+  syslog:
+    enabled: true
+    var.paths: [&quot;/path/to/log/syslog*&quot;]
+  auth:
+    enabled: true
+    var.paths: [&quot;/path/to/log/auth.log*&quot;]
+</code></pre>
+<p>最后启动filebeat，查看数据是否有录入</p>
+<pre><code class="language-bash">./filebeat -e -d &quot;*&quot;
+</code></pre>
+<p>ℹ️因为通过模块创建的默认索引名字都是 filebeat-开头的，所以为了避免索引模式匹配到其它索引，建议非模块创建的索引名不以Beats组件名开头.</p>
+<p>如果使用模块的时候，filebeat.output 指向了 logstash，那么logstash.output应该参照如下配置</p>
+<pre><code class="language-conf">output &#123;
+  if [@metadata][pipeline] &#123;
+    elasticsearch &#123;
+      hosts =&gt; &quot;https://myEShost:9200&quot;
+      manage_template =&gt; false
+      index =&gt; &quot;%&#123;[@metadata][beat]&#125;-%&#123;[@metadata][version]&#125;-%&#123;+YYYY.MM.dd&#125;&quot;
+      pipeline =&gt; &quot;%&#123;[@metadata][pipeline]&#125;&quot; 
+      user =&gt; &quot;elastic&quot;
+      password =&gt; &quot;secret&quot;
+    &#125;
+  &#125; else &#123;
+    elasticsearch &#123;
+      hosts =&gt; &quot;https://myEShost:9200&quot;
+      manage_template =&gt; false
+      index =&gt; &quot;%&#123;[@metadata][beat]&#125;-%&#123;[@metadata][version]&#125;-%&#123;+YYYY.MM.dd&#125;&quot;
+      user =&gt; &quot;elastic&quot;
+      password =&gt; &quot;secret&quot;
+    &#125;
+  &#125;
+</code></pre>
+<p>ℹ️pipeline =&gt; “%{[@metadata][pipeline]}” 确保了 logstash.output 可以正确的找到 elasticsearch 中的 ingest pipeline.</p>
+<h3 id="遇到的问题点">遇到的问题点</h3>
+<p>⚠️filebeat读取的文件，一定要有行结尾符，否则将无法载入。</p>
+<pre><code class="language-bash">[root@es logs]# file 16033741222_2021_11_04_09_33_23_1703_15_1.6.13.json
+16033741222_2021_11_04_09_33_23_1703_15_1.6.13.json: ASCII text, with very long lines, with no line terminators
+</code></pre>
+<p>上述文件中，通过file指令可以看到提示<code>with no line terminators</code></p>
+<p>⚠️模块并不能适配所有情况，例如system模块读取centos的auth级别日志（secure)就无法适配dashboard，可能只适配ubuntu的日志。</p>
+<p>⚠️filebeat当前的output.logstash插件无法实现根据fields字段来动态选择管道.</p>
 
 </div>
 
@@ -2264,9 +2251,9 @@ docker-compose up -d
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/cd32aa48/">
+              <a href="/posts/f73d84da/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  linux☞时间
+                  日志☞02ELK基本使用-logstash组件
               </a>
             
         </div>

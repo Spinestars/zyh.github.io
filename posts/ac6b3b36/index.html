@@ -989,8 +989,8 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
-									<a href="/posts/95177ce7/">
-										日志☞EFK简单部署-k8s
+									<a href="/posts/3475106c/">
+										日志☞01ELK基本使用-beats组件
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -998,8 +998,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3475106c/">
-										日志☞ELK简单部署-容器方式
+									<a href="/posts/f73d84da/">
+										日志☞02ELK基本使用-logstash组件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/95177ce7/">
+										日志☞EFK简单部署-k8s
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1578,6 +1587,33 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/d9cdb70/">
+										jenkins☞001安装和基本配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a33e212/">
+										jenkins☞002声明式语法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4df8a4f/">
+										jenkins☞003共享库
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/3e0f2183/">
 										jenkins☞从容器中访问宿主机docker命令
 									</a>
@@ -1589,15 +1625,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
 										jenkins☞动态agent
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/d9cdb70/">
-										jenkins☞安装和基本配置
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -2006,12 +2033,13 @@ var _hmt = _hmt || [];
 <div id="article-content">
 	<h2 id="前言">前言</h2>
 <p>oracle jdk 现在是商业产品了, 所以线上最好还是用 openjdk.</p>
-<h2 id="安装">安装</h2>
+<h2 id="源安装">源安装</h2>
 <p><a target="_blank" rel="noopener" href="https://adoptopenjdk.net/installation.html#linux-pkg">https://adoptopenjdk.net/installation.html#linux-pkg</a></p>
 <p>rhel之类的，搜索【RPM installation on Centos, RHEL, or Fedora】位置，在添加了repo源之后，可以用 <code>yum list adoptopenjdk*</code>来查看源包含的版本</p>
 <p>包命名示例：adoptopenjdk-11-openj9.x86_64，这里 openj9 指的是 jvm 版本 ，还有 hotspot 版本的 jvm</p>
 <hr>
 <p>ubuntu之类的，搜索【Deb installation on Debian or Ubuntu】位置，在添加了源之后，可以用<code>apt-show-versions -a adoptopenjdk* </code>来查看源包含的版本</p>
+<p>另外听说，openj9 内存管理比 hotspot 牛逼很多，能减少一般的内存占用。</p>
 <h2 id="二进制安装">二进制安装</h2>
 <p><a target="_blank" rel="noopener" href="https://adoptopenjdk.net/installation.html?variant=openjdk11&amp;jvmVariant=hotspot#x64_linux-jdk">https://adoptopenjdk.net/installation.html?variant=openjdk11&amp;jvmVariant=hotspot#x64_linux-jdk</a></p>
 <h2 id="二进制配置">二进制配置</h2>
@@ -2019,6 +2047,8 @@ var _hmt = _hmt || [];
 export PATH=$PWD/jdk-11.0.10+9/bin:$PATH
 java -version
 </code></pre>
+<h2 id="容器">容器</h2>
+<p><a target="_blank" rel="noopener" href="https://hub.docker.com/_/adoptopenjdk?tab=tags">https://hub.docker.com/_/adoptopenjdk?tab=tags</a></p>
 
 </div>
 

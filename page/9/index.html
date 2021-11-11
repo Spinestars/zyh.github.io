@@ -987,8 +987,8 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
-									<a href="/posts/95177ce7/">
-										日志☞EFK简单部署-k8s
+									<a href="/posts/3475106c/">
+										日志☞01ELK基本使用-beats组件
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -996,8 +996,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3475106c/">
-										日志☞ELK简单部署-容器方式
+									<a href="/posts/f73d84da/">
+										日志☞02ELK基本使用-logstash组件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/95177ce7/">
+										日志☞EFK简单部署-k8s
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1576,6 +1585,33 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/d9cdb70/">
+										jenkins☞001安装和基本配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a33e212/">
+										jenkins☞002声明式语法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4df8a4f/">
+										jenkins☞003共享库
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/3e0f2183/">
 										jenkins☞从容器中访问宿主机docker命令
 									</a>
@@ -1587,15 +1623,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
 										jenkins☞动态agent
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/d9cdb70/">
-										jenkins☞安装和基本配置
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1942,6 +1969,84 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/6ce01f58/">
+				<h2 class="index-title">
+					ansible☞playbook-include
+				</h2>
+				<div class="index-brief">
+					引入额外任务
+tasks:
+  - include: add.yml
+
+绑定 kv 对，从而改变额外任务里的变量
+tasks:
+  - include: add.yml
+    var1=hello
+    var2=world
+
+绑定 tags 标记
+
+可以通过tags执行相应的额外任务
+
+tas
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-18</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f5c218d/">
+				<h2 class="index-title">
+					hexo☞本地搜索
+				</h2>
+				<div class="index-brief">
+					前言
+安装完 hexo-generator-search 后，发现搜索结果始终是所有文章.
+如果你用的也是 Melody 主题，那么可以参考如下信息，来确认。
+效果图
+
+软件包
+
+截至：2020.05.18，软件包如下
+
+  &quot;dependencies&quot;: &#123;
+    
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-18</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/6209085/">
 				<h2 class="index-title">
 					nginx☞安装
@@ -2054,19 +2159,24 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1587f6e8/">
+			<a href="/posts/f9b08c30/">
 				<h2 class="index-title">
-					zabbix☞agent和proxy(yum)
+					监控☞微信预警
 				</h2>
 				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
+					# conf.ini
+[wechat]
+corpid = 
 
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
 
-agent 安装
+[group]
+it = usera|userb
 
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -2078,16 +2188,6 @@ agent 安装
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -2097,21 +2197,15 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/8c33f887/">
 				<h2 class="index-title">
-					zabbix☞nginx
+					监控☞企业微信机器人
 				</h2>
 				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
-
-
-1，nginx增加配置 server_status.server
-
-cat &gt; /usr/local/nginx/
+					shell
+wechatUrl=
+wechatData=
+curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
 					...
 				</div>
 			</a>
@@ -2123,78 +2217,6 @@ cat &gt; /usr/local/nginx/
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/6c093771/">
-				<h2 class="index-title">
-					zabbix☞redis
-				</h2>
-				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
-
-
-
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -2308,48 +2330,10 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
                 </div>
 		</div>	
 	
-		<div class="index-li">
-			<a href="/posts/f9b08c30/">
-				<h2 class="index-title">
-					监控☞微信预警
-				</h2>
-				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
-
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
-
-[group]
-it = usera|userb
-
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/page/8/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/10/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/page/8/">&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/16/">16</a><a class="extend next" rel="next" href="/page/10/">&gt;</a>
 		
 	</div>
 </div>

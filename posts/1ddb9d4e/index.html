@@ -989,8 +989,8 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
-									<a href="/posts/95177ce7/">
-										日志☞EFK简单部署-k8s
+									<a href="/posts/3475106c/">
+										日志☞01ELK基本使用-beats组件
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -998,8 +998,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3475106c/">
-										日志☞ELK简单部署-容器方式
+									<a href="/posts/f73d84da/">
+										日志☞02ELK基本使用-logstash组件
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/95177ce7/">
+										日志☞EFK简单部署-k8s
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -1578,6 +1587,33 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/d9cdb70/">
+										jenkins☞001安装和基本配置
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a33e212/">
+										jenkins☞002声明式语法
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4df8a4f/">
+										jenkins☞003共享库
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/3e0f2183/">
 										jenkins☞从容器中访问宿主机docker命令
 									</a>
@@ -1589,15 +1625,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
 										jenkins☞动态agent
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/d9cdb70/">
-										jenkins☞安装和基本配置
 									</a>
 								</li>
 								<div class="article-toc" style="display: none;"></div>
@@ -2030,6 +2057,12 @@ echo 'export PATH=~/.local/bin:$PATH' &gt;&gt; ~/.bashrc # 根据所用shell来�
 <p><img src="/posts/1ddb9d4e/image-20200917111208620.png" alt="image-20200917111208620"></p>
 <h3 id="Q-tomcat-添加-pid-文件">Q: tomcat 添加 pid 文件</h3>
 <h4 id="A-catalina-sh-文件的-PRGDIR-dirname-PRG-下面添加新行-CATALINA-PID-PRGDIR-tomcat-pid-此时将在-bin-目录下创建-tomcat-pid">A:  <a target="_blank" rel="noopener" href="http://catalina.sh">catalina.sh</a> 文件的 <code>PRGDIR=dirname &quot;$PRG&quot;</code>下面添加新行 <code>CATALINA_PID=$PRGDIR/tomcat.pid</code> 此时将在 bin/ 目录下创建 tomcat.pid</h4>
+<h3 id="Q：vim中文乱码">Q：vim中文乱码</h3>
+<h4 id="A：-etc-vimrc-中添加">A：/etc/vimrc 中添加</h4>
+<pre><code class="language-bash">set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+set termencoding=utf-8
+set encoding=utf-8
+</code></pre>
 
 </div>
 

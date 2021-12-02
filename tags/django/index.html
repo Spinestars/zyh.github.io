@@ -2079,17 +2079,32 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/6a4df400/">
+			<a href="/posts/3f8b5448/">
 				<h2 class="index-title">
-					django☞管理静态文件
+					django☞记忆点
 				</h2>
 				<div class="index-brief">
-					前言
-管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
-内置视图 | Django 文档 | Django (djangoproject.com)
-通用设置
-项目.settings.py中
-STATIC_URL 
+					.git文件
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+static
+
+# Backup files #
+*.bak
+
+# other
+.vscode
+.git
+db
+log
+
+Dockerfile
+FROM python:3.8-alpine
+L
 					...
 				</div>
 			</a>
@@ -2120,32 +2135,17 @@ STATIC_URL
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3f8b5448/">
+			<a href="/posts/6a4df400/">
 				<h2 class="index-title">
-					django☞记忆点
+					django☞管理静态文件
 				</h2>
 				<div class="index-brief">
-					.git文件
-# Django #
-*.log
-*.pot
-*.pyc
-__pycache__
-media
-static
-
-# Backup files #
-*.bak
-
-# other
-.vscode
-.git
-db
-log
-
-Dockerfile
-FROM python:3.8-alpine
-L
+					前言
+管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
+内置视图 | Django 文档 | Django (djangoproject.com)
+通用设置
+项目.settings.py中
+STATIC_URL 
 					...
 				</div>
 			</a>
@@ -2258,18 +2258,17 @@ ht
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/dd4c9efa/">
+			<a href="/posts/d60c38c/">
 				<h2 class="index-title">
-					django☞restful简单使用
+					django☞验证码
 				</h2>
 				<div class="index-brief">
 					前言
-官方快速教程：Quickstart - Django REST framework (django-rest-framework.org)
+高级主题 — Django Simple Captcha 0.5.14 文档 (django-simple-captcha.readthedocs.io)
 安装
-pip install djangorestframework
+pip install django-simple-captcha
 
-配置
-settings.INSTALLED_APPS加入'rest_framewo
+settings.INSTALLED_APPS加入captch
 					...
 				</div>
 			</a>
@@ -2300,17 +2299,18 @@ settings.INSTALLED_APPS加入'rest_framewo
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/d60c38c/">
+			<a href="/posts/dd4c9efa/">
 				<h2 class="index-title">
-					django☞验证码
+					django☞restful简单使用
 				</h2>
 				<div class="index-brief">
 					前言
-高级主题 — Django Simple Captcha 0.5.14 文档 (django-simple-captcha.readthedocs.io)
+官方快速教程：Quickstart - Django REST framework (django-rest-framework.org)
 安装
-pip install django-simple-captcha
+pip install djangorestframework
 
-settings.INSTALLED_APPS加入captch
+配置
+settings.INSTALLED_APPS加入'rest_framewo
 					...
 				</div>
 			</a>

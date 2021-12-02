@@ -2079,21 +2079,15 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/932d1f08/">
+			<a href="/posts/51015304/">
 				<h2 class="index-title">
-					k8s☞17node污染和pod容忍
+					helm☞01入门
 				</h2>
 				<div class="index-brief">
 					前言
-污点和容忍度 | Kubernetes
-Kubectl Reference Docs (kubernetes.io)
-规则
-pod设定的容忍规则，如果匹配到了绑定在node上的污点规则，则可以被调度到污点节点上，否则不能被调度
-
-容忍规则和污点规则都可以添加多个
-
-node污点命令
-# 查看节
+helm： k8s的包管理器，这里是v3版本
+大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
+chart仓库：存储chart程序包，不包含程序，是一个
 					...
 				</div>
 			</a>
@@ -2114,7 +2108,7 @@ node污点命令
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/容器/helm/">helm</a>
 										
                                     </span>
                                 
@@ -2124,13 +2118,19 @@ node污点命令
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3511df2/">
+			<a href="/posts/710e3e49/">
 				<h2 class="index-title">
-					k8s☞18日志收集系统
+					helm☞02chart
 				</h2>
 				<div class="index-brief">
 					前言
-
+Helm | Getting Started
+chart包构建
+创建框架
+helm create &lt;chart包名&gt;
+必要文件
+Chart.yaml
+Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为sub
 					...
 				</div>
 			</a>
@@ -2151,7 +2151,7 @@ node污点命令
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
+                                        <a href="/categories/容器/helm/">helm</a>
 										
                                     </span>
                                 

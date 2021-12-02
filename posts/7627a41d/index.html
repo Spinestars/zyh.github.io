@@ -2122,7 +2122,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -2130,7 +2130,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -2149,10 +2149,10 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
+	<h1>前言</h1>
 <p>ingress 可以提供负载均衡/SSL管理/虚拟命名主机/path路由. 它的目的是增加7层流量分发等负载功能. 你可以通过 Ingress 将请求转发到各个 Service 对象.</p>
 <p>但是ingress本身并不是规则的执行者. 它只是记录规则, 规则执行者由ingress-controller实现.</p>
-<p>ingress-controller 的实现有很多，具体可以查看页面</p>
+<p>ingress-controller 的实现有很多，具体可以查看页面，k8s官方维护了<code>aws</code>，<code>gce</code>，<code>nginx</code></p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers/">https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers/</a></p>
 <p>例如：</p>
 <ul>
@@ -2166,7 +2166,7 @@ var _hmt = _hmt || [];
 <p>ingress 提供规则, 它需要和后端业务位于同一个ns中.</p>
 </li>
 <li>
-<p>ingress controller 实现规则, 它可以单独是一个ns.因为它会自动去找那些注解含有自己的ingress.</p>
+<p>ingress controller 实现 Ingress 特性对象定义的规则, 将 Ingress 规则转换为 nginx 的配置文件。ingress controller 可以单独位于一个ns.因为它会自动去解析 Ingress 特性对象（前提是注解 annotations 中含有这个 ingress controller）.</p>
 </li>
 <li>
 <p>ingress 针对的主要是 http 和 https. 这些之外的端口暴漏你应该使用 Service.Type=NodePort 或者 Service.Type=LoadBalancer</p>
@@ -2175,12 +2175,152 @@ var _hmt = _hmt || [];
 <h2 id="流量路径">流量路径</h2>
 <p>internet =&gt; Ingress =&gt; Service</p>
 <p><img src="/posts/7627a41d/image-20201023110559218.png" alt="image-20201023110559218"></p>
+<h2 id="Ingress-controller">Ingress controller</h2>
+<ol>
+<li>
+<p>Ingress 想要正常运作, 需要Ingress控制器的支持.</p>
+</li>
+<li>
+<p>可以在k8s中部署多个Ingress控制器, 但是需要通过在 annotations 中用 ingress.class 注解强调想用哪一款.</p>
+</li>
+</ol>
+<p>这里我们选用 nginx ingress 控制器。它的部署文档是: <a target="_blank" rel="noopener" href="https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md">https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md</a> 或者 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">https://kubernetes.github.io/ingress-nginx/deploy/</a></p>
+<p>这里，我将通过helm来安装ingress-nginx. (你也可以选择其它安装方式. 在 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">https://kubernetes.github.io/ingress-nginx/deploy/</a> 中可以找到很多不同环境的安装方式. )</p>
+<h3 id="安装helm">安装helm</h3>
+<p>这里是 helm 的安装文档: <a target="_blank" rel="noopener" href="https://helm.sh/docs/intro/install/.%E5%BD%93%E5%89%8D%E5%AE%83%E7%9A%84%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F%E5%BA%94%E8%AF%A5%E6%98%AF:">https://helm.sh/docs/intro/install/.当前它的安装方式应该是:</a></p>
+<pre><code class="language-bash">curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+</code></pre>
+<p>当前 ingress-nginx 的仓库地址是: <a target="_blank" rel="noopener" href="https://hub.helm.sh/charts/ingress-nginx/ingress-nginx">https://hub.helm.sh/charts/ingress-nginx/ingress-nginx</a> 在这里直接找到安装命令</p>
+<pre><code class="language-bash">helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+#helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo update
+</code></pre>
+<h3 id="配置ingress-nginx">配置ingress-nginx</h3>
+<pre><code class="language-bash">helm show values ingress-nginx/ingress-nginx &gt; values.yaml
+</code></pre>
+<p>将下列信息，添加到helm导出 <code>values.yaml</code></p>
+<pre><code class="language-yaml">controller:
+  lifecycle:
+    preStop:
+      exec:
+        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;sleep 5; /usr/local/openresty/nginx/sbin/nginx -c /etc/nginx/nginx.conf -s quit; while pgrep -x nginx; do sleep 1; done&quot;]
+  terminationGracePeriodSeconds: 300
+  metrics:
+    port: 10254
+    # if this port is changed, change healthz-port: in extraArgs: accordingly
+    enabled: true
+    service:
+      annotations: #&#123;&#125;
+        prometheus.io/scrape: &quot;true&quot;
+        prometheus.io/port: &quot;10254&quot;
+</code></pre>
+<p><code>sleep 5</code>是必须的，但原因不明。没有它，控制器关闭的时候会丢失连接。</p>
+<p><code>terminationGracePeriodSeconds: 600</code>延长pod终止前的宽恕期，不一定是最合适的时间，可能有点长，根据实际情况调整。</p>
+<h3 id="安装ingress-nginx">安装ingress-nginx</h3>
+<pre><code class="language-bash">kubectl create namespace ingress-nginx
+## 安装
+helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx -f values.yaml
+## 升级
+helm upgrade ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx --install -f values.yaml
+</code></pre>
+<pre><code class="language-bash">kubectl get all -n ingress-nginx
+===
+NAME                                            READY   STATUS    RESTARTS   AGE
+pod/ingress-nginx-controller-5886685d54-hf6l6   1/1     Running   0          68m
+
+NAME                                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+service/ingress-nginx-controller             LoadBalancer   10.96.210.139   &lt;pending&gt;     80:32489/TCP,443:30936/TCP   68m
+service/ingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;        443/TCP                      68m
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ingress-nginx-controller   1/1     1            1           68m
+
+NAME                                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/ingress-nginx-controller-5886685d54   1         1         1       68m
+</code></pre>
+<p>我们可以看到 ingress-nginx 控制器创建了一个 <code>pod/ingress-nginx-controller-5886685d54-hf6l6</code>, 这个 pod 其实就是一个 nginx. 它通过 ingress 定义的规则，来动态的变更nginx配置，从而正确的将流量转发给后端应用的service对象.</p>
+<pre><code class="language-bash">kubectl describe pod/ingress-nginx exec -it pod/ingress-nginx-controller-5886685d54-hf6l6
+===
+    Requests:
+      cpu:      100m
+      memory:   90Mi
+</code></pre>
+<p>当前配置默认没有做limit限制. 所以需要关注ingress-nginx创建的pod所在物理节点的性能是否可以满足. 建议强制绑定到多个node节点, 这批节点专门跑用来进行ingress控制器.</p>
+<p>如何强制绑定？？</p>
+<p>通过登陆pod，可以查看转化后的nginx配置.</p>
+<pre><code class="language-bash">kubectl --namespace ingress-nginx exec -it pod/ingress-nginx-controller-5886685d54-hf6l6 -- /bin/bash
+==
+cat /etc/nginx/nginx.conf
+</code></pre>
+<h3 id="解决svc-lb类型的问题">解决svc lb类型的问题</h3>
+<p>我们可以看到通过helm默认安装的 ingress crotroller 的 Service 对象是LoadBalancer类型. 这种类型我们用于云端环境. 而我这里测试环境是裸机,因此你可以看到这里它一直无法获取到<code>EXTERNAL-IP</code>.</p>
+<p>这意味着，我们无法将流量通过<code>service/ingress-nginx-controller</code>传递到<code>pod/ingress-nginx-controller-5886685d54-hf6l6</code>.🙄</p>
+<p>如何解决这个问题.k8s官方文档这里提供了多种裸机安装下的解决方案. <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/baremetal/">https://kubernetes.github.io/ingress-nginx/deploy/baremetal/</a></p>
+<p>我们这里通过 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb">https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb</a> 纯软件方案来解决 LB 类型的 <code>EXTERNAL-IP</code>获取问题. 其它方案并不是采用的 LB 类型, 因此这里不再叙说.</p>
+<p>⚠️metallb 方案在当前并不是一个成熟的方案,当然它应该是可用的😄 所以用于本地测试环境是可以的. 线上环境建议直接用云服务的LB即可.</p>
+<h2 id="metallb">metallb</h2>
+<p><a target="_blank" rel="noopener" href="https://metallb.universe.tf/installation/#installation-with-helm">https://metallb.universe.tf/installation/#installation-with-helm</a></p>
+<p>metallb 模拟了云环境中的负载均衡器功能.</p>
+<p>🌟If you’re using kube-proxy in IPVS mode, since Kubernetes v1.14.2 you have to enable strict ARP mode.</p>
+<p>如果你是ipvs 且 k8s 版本在1.14.2以上, 那么你需要启动严格arp模式.</p>
+<pre><code class="language-bash">kubectl edit configmap -n kube-system kube-proxy
+===
+ipvs:
+  strictARP: true
+</code></pre>
+<p>开始安装</p>
+<pre><code class="language-bash">helm repo add metallb https://metallb.github.io/metallb
+helm fetch metallb metallb/metallb
+</code></pre>
+<p>修改 metalla/values.yaml, 添加地址池，用来给svc下发ip。请记住, 这些地址必须是没有被其它资源占用的.</p>
+<pre><code class="language-bash">configInline:
+  address-pools:
+   - name: default
+     protocol: layer2
+     addresses:
+     - 10.200.16.11 - 10.200.16.19
+</code></pre>
+<p>通过 helm 安装</p>
+<pre><code class="language-bash">kubectl create ns metallb-system
+helm install metallb --namespace metallb-system -f metallb/values.yaml metallb/metallb
+# 下面这个命令仅在你初始安装的时候需要运行
+kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey=&quot;$(openssl rand -base64 128)&quot;
+</code></pre>
+<p>下面,让我们再看看 ingress crotroller 的 svc 对象信息.</p>
+<pre><code class="language-bash">kubectl get svc -n ingress-nginx
+===
+NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE
+ingress-nginx-controller             LoadBalancer   10.96.210.139   10.200.16.11   80:32489/TCP,443:30936/TCP   88m
+ingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;         443/TCP                      88m
+</code></pre>
+<p>终于<code>svc/ingress-nginx-controller</code>拿到了一个<code>EXTERNAL-IP</code>, 现在你就可以将域名解析到<code>EXTERNAL-IP</code>, 并通过这个域名来访问你的应用了.(而且它必须是能通过80访问的.)😄</p>
+<p>假设已经设置编写一个 ingress，则应用后如下所示：</p>
+<pre><code class="language-bash">kubectl get ingress -n it
+===
+NAME                   CLASS    HOSTS          ADDRESS        PORTS   AGE 
+test-it-local-ingress   &lt;none&gt;   test.it.local   10.200.16.11   80      106m
+</code></pre>
+<p>可以看到 ingress 对象中也显示了 metallb 的下发的ip.</p>
+<p>你可以在任意一个节点上通过 ipvs 规则来看到转发情况.</p>
+<pre><code class="language-bash">ipvsadm -L -n
+===
+TCP  10.200.16.11:80 rr
+  -&gt; 10.97.2.57:80                Masq    1      0          0
+TCP  10.200.16.11:443 rr
+  -&gt; 10.97.2.57:443               Masq    1      0          0
+</code></pre>
+<p>这里 10.97.2.57 是 ingress 控制器的 pod ip.</p>
+<blockquote>
+<p>metallb升级：<a target="_blank" rel="noopener" href="https://metallb.universe.tf/installation/#upgrade">https://metallb.universe.tf/installation/#upgrade</a></p>
+</blockquote>
 <h2 id="ingress">ingress</h2>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/ingress/">https://kubernetes.io/docs/concepts/services-networking/ingress/</a></p>
-<h3 id="以nginx-ingress控制器来构建一个例子">以nginx ingress控制器来构建一个例子</h3>
 <p>client =&gt; <a target="_blank" rel="noopener" href="http://one.foo.com/one">http://one.foo.com/one</a> =&gt; Ingress = &gt; Service(one):8001 =&gt; pod</p>
 <p>client =&gt; http://*.foo.com/other =&gt; Ingress  =&gt; Service(other):8002 =&gt; pod</p>
-<p>需要注意的是，在下列 ingress 配置中，通过 annotations 注解来调用 nginx ingress 控制器。不同的 ingress 控制器的注解配置有所不同，具体以控制器本身说明文档为基准。</p>
+<p>ingress编写路由规则，并由ingress-controller进行转化。</p>
+<p>下面是一个示例：</p>
 <pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -2222,7 +2362,7 @@ spec:
 <p>这里有一些注意事项.如上例子所述. pathType 定义了 path 的类型. 它有三个类型:</p>
 <ul>
 <li>
-<p>ImplementationSpecific: 已ingress class为基准. 具体如何匹配,需要看选用的ingress class.这是默认的.</p>
+<p>ImplementationSpecific: 根据选用的 ingress class 来定性.这是默认类型.</p>
 </li>
 <li>
 <p>Exact: 严格匹配. 不能有一点不同.</p>
@@ -2252,6 +2392,7 @@ data:
   tls.key: base64 encoded key  # 这里需要填写 base64 编码后的 key 内容. tls.key 不可更名
 type: kubernetes.io/tls
 </code></pre>
+<p>可以通过<code>cat 证书文件|base64</code>获取编码后的内容</p>
 </li>
 <li>
 <h4 id="在Ingress对象中调用-Secret">在Ingress对象中调用 Secret</h4>
@@ -2278,164 +2419,8 @@ spec:
 </code></pre>
 </li>
 </ol>
-<p>通过配置文件, 可以看出来加密到Ingress就停止了(后端Service对象service1的端口是80).这也符合我们在非k8s环境中的流程.</p>
-<p>另外, 不同的Ingress控制器对于TLS这块也有一定差异.具体以控制器本身说明为准.</p>
-<h2 id="Ingress-controller">Ingress controller</h2>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/">https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/</a></p>
-<p>Ingress 想要正常运作, 需要Ingress控制器的支持.</p>
-<p>你可以在k8s中部署多个Ingress控制器, 但是你需要通过在 annotations 中用 ingress.class 注解强调你想用哪一款.</p>
-<p>就像下面这样</p>
-<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-  name: example
-  namespace: foo
-spec:
-  rules:
-    - host: www.example.com
-      http:
-        paths:
-          - backend:
-              serviceName: exampleService
-              servicePort: 80
-            path: /
-  # This section is only required if TLS is to be enabled for the Ingress
-  tls:
-      - hosts:
-          - www.example.com
-        secretName: example-tls
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: example-tls
-  namespace: foo
-data:
-  tls.crt: &lt;base64 encoded cert&gt;
-  tls.key: &lt;base64 encoded key&gt;
-type: kubernetes.io/tls
-</code></pre>
-<p>这里<code>backend</code>是旧写法，你应该使用新的写法：</p>
-<pre><code class="language-yaml">  backend:
-    service:
-      name: exampleService
-      port:
-        number: 80
-</code></pre>
-<p>这里我们选用 nginx ingress 控制器。它的部署文档是: <a target="_blank" rel="noopener" href="https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md">https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md</a> 或者 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">https://kubernetes.github.io/ingress-nginx/deploy/</a></p>
-<p>这里，我将通过helm来安装ingress-nginx. (你也可以选择其它安装方式. 在 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">https://kubernetes.github.io/ingress-nginx/deploy/</a> 中可以找到很多不同环境的安装方式. )</p>
-<h3 id="helm-安装">helm 安装</h3>
-<p>这里是 helm 的安装文档: <a target="_blank" rel="noopener" href="https://helm.sh/docs/intro/install/">https://helm.sh/docs/intro/install/</a></p>
-<p>当前它的安装方式应该是:</p>
-<pre><code class="language-bash">curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
-</code></pre>
-<h3 id="nginx-ingress-安装">nginx ingress 安装</h3>
-<p>当前 ingress-nginx 的仓库地址是: <a target="_blank" rel="noopener" href="https://hub.helm.sh/charts/ingress-nginx/ingress-nginx">https://hub.helm.sh/charts/ingress-nginx/ingress-nginx</a> 你可以在这里直接找到安装命令</p>
-<pre><code class="language-bash">helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm repo update
-kubectl create namespace ingress-nginx
-## 安装
-helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
-## 升级
-helm upgrade ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx --install
-## 自定义配置安装
-helm show values ingress-nginx/ingress-nginx &gt; ingress-nginx.yaml
-helm install ingress-nginx ingress-nginx/ingress-nginx -f ingress-nginx.yaml -n ingress-nginx
-</code></pre>
-<pre><code class="language-bash">kubectl get all -n ingress-nginx
-===
-NAME                                            READY   STATUS    RESTARTS   AGE
-pod/ingress-nginx-controller-5886685d54-hf6l6   1/1     Running   0          68m
-
-NAME                                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-service/ingress-nginx-controller             LoadBalancer   10.96.210.139   &lt;pending&gt;     80:32489/TCP,443:30936/TCP   68m
-service/ingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;        443/TCP                      68m
-
-NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/ingress-nginx-controller   1/1     1            1           68m
-
-NAME                                                  DESIRED   CURRENT   READY   AGE
-replicaset.apps/ingress-nginx-controller-5886685d54   1         1         1       68m
-</code></pre>
-<p>我们可以看到 ingress-nginx 控制器创建了一个 pod, 这个 pod 其实就是一个 nginx. 它通过接收 ingress 定义的规则, 来动态的变更nginx配置,从而正确的将流量转发给后端应用的service对象.</p>
-<pre><code class="language-bash">kubectl describe pod/ingress-nginx exec -it pod/ingress-nginx-controller-5886685d54-hf6l6
-===
-    Requests:
-      cpu:      100m
-      memory:   90Mi
-</code></pre>
-<p>当前配置默认没有做limit限制. 所以需要关注ingress-nginx创建的pod所在物理节点的性能是否可以满足. 建议强制绑定到多个node节点, 这批节点专门跑用来进行ingress控制器.</p>
-<pre><code class="language-bash">kubectl --namespace ingress-nginx exec -it pod/ingress-nginx-controller-5886685d54-hf6l6 -- /bin/bash
-==
-cat /etc/nginx/nginx.conf
-</code></pre>
-<p>这里我们可以看到ingress-nginx会动态的加载ingress定义的路由规则.</p>
-<p>最后, 我们可能最需要关注的是 <code>service/ingress-nginx-controller</code> 对象. 因为它的类型决定了, 我们如何解析将要暴漏的服务域名.</p>
-<p>我们可以看到通过helm默认安装的 ingress crotroller 的 Service 对象是LoadBalancer类型. 这种类型我们一般是用于云端环境的. 而我这里测试环境是裸机,因此你可以看到这里它一直无法获取到<code>EXTERNAL-IP</code>.</p>
-<p>如何解决这个问题.k8s官方文档这里提供了多种裸机安装下的解决方案. <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/baremetal/">https://kubernetes.github.io/ingress-nginx/deploy/baremetal/</a></p>
-<p>我们这里通过 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb">https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb</a> 方案来解决 LB 类型的 <code>EXTERNAL-IP</code>获取问题. 其它方案并不是采用的 LB 类型, 因此这里不再叙说.</p>
-<p>⚠️metallb 方案在当前并不是一个成熟的方案,当然它应该是可用的😄 所以用于本地测试环境是可以的. 线上环境建议直接用云服务的LB即可.</p>
-<h2 id="metallb">metallb</h2>
-<p><a target="_blank" rel="noopener" href="https://metallb.universe.tf/installation/#installation-with-helm">https://metallb.universe.tf/installation/#installation-with-helm</a></p>
-<p>metallb 模拟了云环境中的负载均衡器功能.</p>
-<p>🌟If you’re using kube-proxy in IPVS mode, since Kubernetes v1.14.2 you have to enable strict ARP mode.</p>
-<p>如果你是ipvs 且 k8s 版本在1.14.2以上, 那么你需要启动严格arp模式.</p>
-<pre><code class="language-bash">kubectl edit configmap -n kube-system kube-proxy
-===
-ipvs:
-  strictARP: true
-</code></pre>
-<p>开始安装</p>
-<pre><code class="language-bash">helm repo add metallb https://metallb.github.io/metallb
-helm fetch metallb metallb/metallb
-</code></pre>
-<p>修改 metalla/values.yaml, 添加地址池，用来给svc下发ip。请记住, 这些地址必须是没有被其它资源占用的.</p>
-<pre><code class="language-bash">configInline:
-  address-pools:
-   - name: default
-     protocol: layer2
-     addresses:
-     - 10.200.16.11 - 10.200.16.19
-</code></pre>
-<p>通过 helm 安装</p>
-<pre><code class="language-bash">kubectl create ns metallb-system
-helm install metallb --namespace metallb-system -f metallb/values.yaml metallb/metallb
-# 下面这个命令仅在你初始安装的时候需要运行
-kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey=&quot;$(openssl rand -base64 128)&quot;
-</code></pre>
-<p>下面,让我们再看看 ingress crotroller 的 svc 对象信息.</p>
-<pre><code class="language-bash">kubectl get svc -n ingress-nginx
-===
-NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE
-ingress-nginx-controller             LoadBalancer   10.96.210.139   10.200.16.11   80:32489/TCP,443:30936/TCP   88m
-ingress-nginx-controller-admission   ClusterIP      10.96.128.101   &lt;none&gt;         443/TCP                      88m
-</code></pre>
-<p>终于<code>svc/ingress-nginx-controller</code>拿到了一个<code>EXTERNAL-IP</code>, 现在你就可以将域名解析到<code>EXTERNAL-IP</code>, 并通过这个域名来访问你的应用了.(而且它必须是能通过80访问的.)😄</p>
-<p>同时, 让我们来看看 ingress 对象信息.</p>
-<p>⭐️我暴漏的应用在ns: it中.</p>
-<pre><code class="language-bash">kubectl get ingress -n it
-===
-NAME                   CLASS    HOSTS          ADDRESS        PORTS   AGE 
-test-it-local-ingress   &lt;none&gt;   test.it.local   10.200.16.11   80      106m
-</code></pre>
-<p>可以看到. ingress 的信息也更新了, 并拿到了 metallb 的下发的ip.</p>
-<p>你可以在任意一个节点上通过 ipvs 规则来看到转发情况.</p>
-<pre><code class="language-bash">ipvsadm -L -n
-===
-TCP  10.200.16.11:80 rr
-  -&gt; 10.97.2.57:80                Masq    1      0          0
-TCP  10.200.16.11:443 rr
-  -&gt; 10.97.2.57:443               Masq    1      0          0
-</code></pre>
-<p>这里 10.97.2.57 是 ingress 控制器的 pod ip.</p>
-<p>升级</p>
-<p><a target="_blank" rel="noopener" href="https://metallb.universe.tf/installation/#upgrade">https://metallb.universe.tf/installation/#upgrade</a></p>
-<h2 id="nginx-ingress-控制器暴漏非80和非443端口">nginx ingress 控制器暴漏非80和非443端口</h2>
+<p>不同的Ingress控制器对于TLS这块也有一定差异.具体以控制器本身说明为准.</p>
+<h2 id="暴漏非80和非443端口">暴漏非80和非443端口</h2>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/">https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/</a></p>
 <p>默认你会发现ingress无法暴漏80和443之外的端口.这是因为默认ingress-nginx并没有开启4层转发.</p>
 <h3 id="开启ingress-nginx中pod的4层转发">开启ingress-nginx中pod的4层转发</h3>
@@ -2480,6 +2465,27 @@ kubectl edit service/ingress-nginx-controller -n ingress-nginx
                 proxy_pass              upstream_balancer;
 
         &#125;
+</code></pre>
+<h1>优雅更新控制器</h1>
+<h2 id="第二个控制器">第二个控制器</h2>
+<p>第二个控制器用于临时接收流量，创建第二个控制器</p>
+<pre><code class="language-bash">kubectl create ns ingress-nginx-temp
+helm install ingress-nginx-temp ingress-nginx/ingress-nginx -n ingress-nginx-temp -f values.yaml
+</code></pre>
+<h2 id="切换DNS，指向临时控制器">切换DNS，指向临时控制器</h2>
+<p>通过观察原控制器日志，等待原控制器流量结束。</p>
+<h2 id="更新原控制器">更新原控制器</h2>
+<p>添加要更新的内容到 values.yaml</p>
+<pre><code class="language-bash">helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx -f values.yaml
+</code></pre>
+<p>查看结果</p>
+<pre><code class="language-bash">kubectl get deployment nginx-ingress-controller -n ingress-nginx -o yaml
+</code></pre>
+<h2 id="切换DNS，指向原控制器">切换DNS，指向原控制器</h2>
+<p>通过观察临时控制器日志，等待临时控制器流量结束</p>
+<h2 id="删除临时控制器">删除临时控制器</h2>
+<pre><code class="language-bash">helm delete --purge nginx-ingress-temp --namespace ingress-nginx-temp
+helm delete ns ingress-nginx-temp
 </code></pre>
 
 </div>

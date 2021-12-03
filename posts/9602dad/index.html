@@ -2648,31 +2648,25 @@ gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors
 EOF
 </code></pre>
 <ol start="3">
-<li>
-<p>安装</p>
-<pre><code class="language-bash"></code></pre>
-</li>
+<li>安装</li>
 </ol>
-<h1>确定 kube* 版本</h1>
-<p>yum list kube* --showduplicates --disableexcludes=kubernetes</p>
-<h1>选择要安装的版本</h1>
-<p>full_verions=1.20.8-0</p>
-<h1>安装 kube 管理组件和 kubelet</h1>
-<p>yum install -y kubelet-$&#123;full_verions&#125; kubeadm-$&#123;full_verions&#125; kubectl-$&#123;full_verions&#125; --disableexcludes=kubernetes<br>
-systemctl enable --now kubelet</p>
-<pre><code>
-
-
-## 高可用组件节点
-
-### 安装负载均衡组件 haproxy 和 高可用组件 keepalived
-
-&gt; k8s01，k8s02 执行
-
-- 安装
-
-```bash
-yum install haproxy keepalived -y
+<pre><code class="language-bash"># 确定 kube* 版本
+yum list kube* --showduplicates --disableexcludes=kubernetes
+# 选择要安装的版本
+full_verions=1.20.8-0
+# 安装 kube 管理组件和 kubelet
+yum install -y kubelet-$&#123;full_verions&#125; kubeadm-$&#123;full_verions&#125; kubectl-$&#123;full_verions&#125; --disableexcludes=kubernetes
+systemctl enable --now kubelet
+</code></pre>
+<h2 id="高可用组件节点">高可用组件节点</h2>
+<h3 id="安装负载均衡组件-haproxy-和-高可用组件-keepalived">安装负载均衡组件 haproxy 和 高可用组件 keepalived</h3>
+<blockquote>
+<p>k8s01，k8s02 执行</p>
+</blockquote>
+<ul>
+<li>安装</li>
+</ul>
+<pre><code class="language-bash">yum install haproxy keepalived -y
 </code></pre>
 <ul>
 <li>haproxy配置</li>

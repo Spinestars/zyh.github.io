@@ -2409,22 +2409,19 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/8a6b5455/">
+			<a href="/posts/98f86e16/">
 				<h2 class="index-title">
-					go☞004条件语句
+					go☞005函数
 				</h2>
 				<div class="index-brief">
 					前言
-常见的if就不说了
-switch
-case后面的值匹配了变量，就执行对应代码，否则执行default代码
-switch 变量/常量 &#123;
-    case 值1:
-        ...
-    case 值2, 值3:
-        ...
-    default:
-       
+如果有参数，则需提供参数类型
+如果有返回值，则需提供返回值类型
+结构
+func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
+    ...
+    return rtn_value
+&#125
 					...
 				</div>
 			</a>
@@ -2634,17 +2631,32 @@ rhel之类的，搜索【RPM installation on Centos, RHEL, or Fe
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6a4df400/">
+			<a href="/posts/3f8b5448/">
 				<h2 class="index-title">
-					django☞管理静态文件
+					django☞记忆点
 				</h2>
 				<div class="index-brief">
-					前言
-管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
-内置视图 | Django 文档 | Django (djangoproject.com)
-通用设置
-项目.settings.py中
-STATIC_URL 
+					.git文件
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+static
+
+# Backup files #
+*.bak
+
+# other
+.vscode
+.git
+db
+log
+
+Dockerfile
+FROM python:3.8-alpine
+L
 					...
 				</div>
 			</a>
@@ -2675,32 +2687,17 @@ STATIC_URL
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3f8b5448/">
+			<a href="/posts/6a4df400/">
 				<h2 class="index-title">
-					django☞记忆点
+					django☞管理静态文件
 				</h2>
 				<div class="index-brief">
-					.git文件
-# Django #
-*.log
-*.pot
-*.pyc
-__pycache__
-media
-static
-
-# Backup files #
-*.bak
-
-# other
-.vscode
-.git
-db
-log
-
-Dockerfile
-FROM python:3.8-alpine
-L
+					前言
+管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
+内置视图 | Django 文档 | Django (djangoproject.com)
+通用设置
+项目.settings.py中
+STATIC_URL 
 					...
 				</div>
 			</a>
@@ -2813,18 +2810,13 @@ ht
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/dd4c9efa/">
+			<a href="/posts/5d527900/">
 				<h2 class="index-title">
-					django☞restful简单使用
+					jquery☞伪进度条
 				</h2>
 				<div class="index-brief">
 					前言
-官方快速教程：Quickstart - Django REST framework (django-rest-framework.org)
-安装
-pip install djangorestframework
-
-配置
-settings.INSTALLED_APPS加入'rest_framewo
+点击-&gt;触发脚本jquery-&gt;脚本访问url-&gt;django view(show_progress)-&gt;view返回数据给脚本jquery-&gt;脚本jquery拿到进度数据百分比-&gt;更新进度条-&gt;重复访问url-&gt;直至进度条数据100%-&gt;
 					...
 				</div>
 			</a>
@@ -2845,7 +2837,7 @@ settings.INSTALLED_APPS加入'rest_framewo
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/python/">python</a>
+                                        <a href="/categories/语言/jquery/">jquery</a>
 										
                                     </span>
                                 

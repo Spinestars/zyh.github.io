@@ -2482,17 +2482,27 @@ var _hmt = _hmt || [];
 <p>pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.</p>
 <p>你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/pods/">https://kubernetes.io/docs/concepts/workloads/pods/</a></p>
-<h2 id="Pod-与-工作负载资源对象">Pod 与 工作负载资源对象</h2>
-<p>pod 一般不单独使用, 因为单独使用意味着没有高可用.k8s建议 pod 要始终和工作负载资源对象一起使用. 你可以认为工作负载资源对象就如同云环境中的资源目标组.这个概念的实际对象差不多是负载均衡服务的缩放组概念. 例如aws的auto scaling.</p>
-<p>k8s将工作负载资源对象主要分为三种:</p>
+<h2 id="Pod与容器">Pod与容器</h2>
+<p>一个pod可以拥有多个容器，并且包含一个init的特殊容器，它始终首先运行。</p>
+<p>若pod只有一个容器，那么pod就是一个包装器</p>
+<p>若pod有多个容器，则一般主容器提供服务；边车/挂斗/附属容器提供额外功能，例如刷新主容器的文件。</p>
+<p>ℹ️上述的功能的实现基于pod内的容器共享网络命名空间和存储空间.</p>
+<p><img src="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg" alt="example pod diagram"></p>
+<blockquote>
+<p>如果你玩过星际争霸，那么应该知道一个人族建筑物，总是会有一个附属建筑物，它很小，但提供了主建筑物所需的科技。</p>
+</blockquote>
+<p>因此，除非你两个容器必须放在一起，否则你应该用多个单容器pod.</p>
+<h2 id="Pod与负载控制器">Pod与负载控制器</h2>
+<p>生产环境中，pod 一般不单独使用，因为单独使用意味着没有高可用，且难以管理。k8s建议 pod 要始终和负载控制器一起使用。负载控制器可以批量创建pod。</p>
+<p>k8s将负载控制器主要分为三种:</p>
 <ul>
 <li>Deployment 无状态 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></li>
 <li>StatefulSet 有状态 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/">https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/</a></li>
 <li>DaemonSet 守护态 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</a></li>
 </ul>
-<p>还有CronJob这类计划任务类型的.</p>
-<p>工作负载资源对象既然类同云服务的缩放组概念. 那么它必然需要依托于镜像模板和缩放规则.</p>
-<p>镜像模板在k8s中叫 pod 模板(pod template).</p>
+<p>还有CronJob、Jobs任务类型的.</p>
+<p>负载控制器类同云服务的缩放组概念. 因此必然需要依托于镜像模板创建 pod 和依托于缩放规则控制 pod 数量。</p>
+<p>镜像模板即 pod 模板(pod template).</p>
 <h2 id="Pod-模板">Pod 模板</h2>
 <p>特点:</p>
 <ul>
@@ -2588,16 +2598,16 @@ total 16
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/3ec72f7e/">
+              <a href="/posts/c83ca575/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞04pod钩子函数
+                  mysql☞离线迁移脚本
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/c15432fa/">
-                k8s☞kubectl多集群管理
+              <a href="/posts/3ec72f7e/">
+                k8s☞04pod钩子函数
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

@@ -2486,15 +2486,16 @@ var _hmt = _hmt || [];
 <p>Node 是 k8s 的工作节点，也就是实际主要跑容器的节点。</p>
 </li>
 </ol>
-<h2 id="服务">服务</h2>
-<p>Control Plane 节点组件服务</p>
+<h2 id="组件">组件</h2>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/overview/components/">https://kubernetes.io/docs/concepts/overview/components/</a></p>
+<p>Control Plane 节点组件</p>
 <ol>
 <li>kube-apiserver  是k8s 的 api 服务，是集群入口，提供 http rset 服务。</li>
 <li>kube-controller-manager 维护集群状态（故障检测/滚动升级/node扩展等），是集群所有资源对象的自动化管理中心。</li>
 <li>kube-scheduler 是负责 pod 的调度, 即如何将 pod 分发到 node</li>
 <li>etcd 注册中心，保存集群状态。</li>
 </ol>
-<p>Node 节点组件服务</p>
+<p>Node 节点组件</p>
 <ol>
 <li>
 <p>kubelet 是节点代理程序，部署在 node 上。它是k8s master和k8s node之间的纽带。处理 pod 创建/启动/监控/重启/销毁等工作。</p>
@@ -2503,8 +2504,60 @@ var _hmt = _hmt || [];
 <li>
 <p>kube-proxy 是节点的网络代理，是 service 资源对象的一部分功能实现，解决节点上各资源的通信</p>
 </li>
+<li>
+<p>Container Runtime 是节点上负责运行容器的环境。它可以是Docker、containerd等。</p>
+</li>
 </ol>
-<h2 id="资源">资源</h2>
+<p>插件</p>
+<p>常用的有DNS插件CoreDNS、网络插件Flannel、可视化插件DashBoard等</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/cluster-administration/addons/">https://kubernetes.io/zh/docs/concepts/cluster-administration/addons/</a></p>
+<h2 id="对象">对象</h2>
+<p>kubernetes 通过实体化的对象来表述资源、策略、状态。</p>
+<p>正常情况下，kubernetes 将会尽可能的达到对象的期望状态。</p>
+<p>上句话的意思就是，对象基本都包含两个字段，分别是 spec 和 status。</p>
+<ul>
+<li>
+<p>spec 表示对象应该拥有的状态特性</p>
+</li>
+<li>
+<p>status 表示对象当前拥有的状态特性</p>
+</li>
+</ul>
+<p>kubernetes 总是想尽办法将 status 向 spec 靠拢。</p>
+<p>创建一个对象，需要一份 yaml 配置，配置里包含如下必备信息：</p>
+<ul>
+<li><code>apiVersion</code> - 创建该对象所使用的 Kubernetes API 的版本</li>
+<li><code>kind</code> - 想要创建的对象的类别</li>
+<li><code>metadata</code> - 帮助唯一性标识对象的一些数据，包括一个 <code>name</code> 字符串、UID 和可选的 <code>namespace</code></li>
+<li><code>spec</code> - 你所期望的该对象的状态</li>
+</ul>
+<p>kubectl 命令调用配置，并将信息转换为 json 发给 Apiserver。</p>
+<p>一个 yaml 配置例子如下：</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+</code></pre>
+<blockquote>
+<p>不同对象的 spec 必然是不一样的，通过 API 文档可以获取</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/kubernetes-api/">https://kubernetes.io/docs/reference/kubernetes-api/</a></p>
+</blockquote>
+<p>介绍一些常用的对象：</p>
 <ol>
 <li>
 <p>Namespace</p>
@@ -2551,26 +2604,17 @@ var _hmt = _hmt || [];
 <h2 id="服务组件流程图">服务组件流程图</h2>
 <blockquote>
 <ul>
-<li>apiserver 负责 etcd 存储的所有操作，且只有 apiserver 才直接操作 etcd 集群</li>
-<li>apiserver 对内（集群中的其他组件）和对外（用户）提供统一的 REST API，其他组件均通过 apiserver 进行通信
-<ul>
-<li>controller manager、scheduler、kube-proxy 和 kubelet 等均通过 apiserver watch API 监测资源变化情况，并对资源作相应的操作</li>
-<li>所有需要更新资源状态的操作均通过 apiserver 的 REST API 进行</li>
-</ul>
-</li>
-<li>apiserver 也会直接调用 kubelet API（如 logs, exec, attach 等），默认不校验 kubelet 证书，但可以通过 <code>--kubelet-certificate-authority</code> 开启（而 GKE 通过 SSH 隧道保护它们之间的通信）</li>
+<li>apiserver 对内（集群中的其他组件）和对外（用户）提供统一的 REST API，其他组件行为均通过 apiserver 进行通信</li>
+<li>apiserver 也会直接调用 kubelet API（如 logs, exec, attach 等），默认不校验 kubelet 证书，但可以通过 <code>--kubelet-certificate-authority</code> 开启</li>
 </ul>
 </blockquote>
-<p><img src="/posts/aaf9b7/image-20200823102314477.png" alt="image-20200823102314477"></p>
 <p><img src="/posts/aaf9b7/image-20200823103640732.png" alt="image-20200823103640732"></p>
 <blockquote>
 <p>以一个pod的构建为例:</p>
 <ul>
-<li>用户通过 REST API 创建一个 Pod</li>
-<li>apiserver 将其写入 etcd</li>
-<li>scheduluer 检测到未绑定 Node 的 Pod，开始调度并更新 Pod 的 Node 绑定</li>
-<li>kubelet 检测到有新的 Pod 调度过来，通过 container runtime 运行该 Pod</li>
-<li>kubelet 通过 container runtime 取到 Pod 状态，并更新到 apiserver 中</li>
+<li>用户通过提交请求到Apiserver创建一个 Pod，apiserver 将 pod 状态写入 etcd。</li>
+<li>scheduluer 通过 etcd 检测到未绑定 Node 的 Pod，开始调度并给pod分配node，并更新etcd的pod绑定状态。</li>
+<li>kubelet 通过 etcd 检测到有新的 Pod 调度过来，通过 container runtime 运行该 Pod，并更新Pod运行状态。</li>
 </ul>
 </blockquote>
 <p><img src="/posts/aaf9b7/image-20200823102430144.png" alt="image-20200823102430144"></p>
@@ -2581,16 +2625,16 @@ var _hmt = _hmt || [];
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/b7cf7b1f/">
+              <a href="/posts/2c5a64ff/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  docker☞01安装
+                  aws☞s3 初始化安装
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/1a545f72/">
-                006-kafka基本监控
+              <a href="/posts/b7cf7b1f/">
+                docker☞01安装
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

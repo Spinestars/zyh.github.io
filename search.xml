@@ -228,35 +228,6 @@
     
     
     <entry>
-      <title>k8s☞17node污染和pod容忍</title>
-      <link href="posts/932d1f08/"/>
-      <url>posts/932d1f08/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍度 | Kubernetes</a></p><p><a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#taint">Kubectl Reference Docs (kubernetes.io)</a></p><h2 id="规则">规则</h2><p>pod设定的容忍规则，如果匹配到了绑定在node上的污点规则，则可以被调度到污点节点上，否则不能被调度</p><blockquote><p>容忍规则和污点规则都可以添加多个</p></blockquote><h2 id="node污点命令">node污点命令</h2><pre><code class="language-bash"># 查看节点污染信息，若无污染则为 nonekubectl describe nodes | grep TaintsTaints:             &lt;none&gt;Taints:             node-role.kubernetes.io/master:NoScheduleTaints:             &lt;none&gt;</code></pre><p>上述例子中：</p><p>KEY是<code>node-role.kubernetes.io/master</code></p><p>VAL没有</p><p>TAINT_EFFECT是<code>NoSchedule</code></p><pre><code class="language-bash"># 添加污点## 标签对:污染关键词kubectl taint nodes &lt;NODE_NAME&gt; KEY_1=VAL_1:TAINT_EFFECT_1 ... KEY_N=VAL_N:TAINT_EFFECT_N# 移除污点kubectl taint nodes &lt;NODE_NAME&gt; KEY_1-</code></pre><h3 id="污染关键词-TAINT-EFFECT">污染关键词 TAINT_EFFECT</h3><p>TAINT_EFFECT 包含以下三种状态：</p><p><code>NoSchedule</code> 容忍规则没有匹配到此污点的pod绝对不会被调度拥有此污点的节点</p><blockquote><p>对于 NoSchedule，有一个例外，就是污点添加之前，pod已经在节点上了，则pod会继续运行。</p></blockquote><p><code>PreferNoSchedule</code>容忍规则没有匹配到此污点的pod尽量不会被调度到拥有此污点的节点</p><p><code>NoExecute</code> 容忍规则没有匹配到此污点的pod绝对不会被调度拥有此污点的节点，如果pod已经在污点添加之前就运行了，则会被立即驱逐</p><p>ℹ️ 特殊规则，就是容忍规则里包含了<code>tolerationSeconds</code>，则pod的容忍规则即使完全符合node的污染规则，也仅仅只能在<code>tolerationSeconds</code>宽恕期之内继续运行。</p><h2 id="pod容忍配置">pod容忍配置</h2><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: nginx  labels:    env: testspec:  containers:  - name: nginx    image: nginx    imagePullPolicy: IfNotPresent  tolerations:  - key: &quot;example-key&quot;    operator: &quot;Exists&quot;    effect: &quot;NoExecute&quot;    tolerationSeconds: 3600</code></pre><p>上述配置表示，当 pod 所在节点被添加了一个<code>example-key:NoExecute</code> 污点的时候，pod 将不会被驱逐，而是可以继续存活3600秒，如果还未到3600秒，污点就被移除，则 pod 驱逐也会停止。</p><pre><code class="language-yaml">tolerations:- key: &quot;key1&quot;  operator: &quot;Equal&quot;  value: &quot;value1&quot;  effect: &quot;NoSchedule&quot;</code></pre><p>上述pod的容忍配置表示，当 pod 所在节点被添加了一个<code>key1=value1:NoSchedule</code>污点的时候，pod 将不会被驱逐。</p><h2 id="内置的污点">内置的污点</h2><p>当某种条件为真时，节点控制器会自动给节点添加一个污点。当前内置的污点包括：</p><ul><li><code>node.kubernetes.io/not-ready</code>：节点未准备好。这相当于节点状态 <code>Ready</code> 的值为 “<code>False</code>”。</li><li><code>node.kubernetes.io/unreachable</code>：节点控制器访问不到节点. 这相当于节点状态 <code>Ready</code> 的值为 “<code>Unknown</code>”。</li><li><code>node.kubernetes.io/memory-pressure</code>：节点存在内存压力。</li><li><code>node.kubernetes.io/disk-pressure</code>：节点存在磁盘压力。</li><li><code>node.kubernetes.io/pid-pressure</code>: 节点的 PID 压力。</li><li><code>node.kubernetes.io/network-unavailable</code>：节点网络不可用。</li><li><code>node.kubernetes.io/unschedulable</code>: 节点不可调度。</li><li><code>node.cloudprovider.kubernetes.io/uninitialized</code>：如果 kubelet 启动时指定了一个 “外部” 云平台驱动， 它将给当前节点添加一个污点将其标志为不可用。在 cloud-controller-manager 的一个控制器初始化这个节点后，kubelet 将删除这个污点。</li></ul><p>从上述状态来看，如果你想让某个pod在出现上述问题（例如节点网络故障）后，依然被调度在当前节点保持1小时，那么你可以添加下列容忍规则：</p><pre><code class="language-yaml">tolerations:- key: &quot;node.kubernetes.io/network-unavailable&quot;  operator: &quot;Exists&quot;  effect: &quot;NoExecute&quot;  tolerationSeconds: 3600</code></pre><h2 id="特殊情况">特殊情况</h2><p>DaemonSet 控制器自动为所有守护进程添加如下<code>标签</code>的 <code>NoSchedule</code> 容忍度以防 DaemonSet 崩溃：</p><ul><li><code>node.kubernetes.io/memory-pressure</code></li><li><code>node.kubernetes.io/disk-pressure</code></li><li><code>node.kubernetes.io/pid-pressure</code> (1.14 或更高版本)</li><li><code>node.kubernetes.io/unschedulable</code> (1.10 或更高版本)</li><li><code>node.kubernetes.io/network-unavailable</code> (<em>只适合主机网络配置</em>)</li></ul><p>也就是说守护进程所在节点出现上述问题，从而导致自动添加污点的时候，守护进程也不会被驱逐。</p><h2 id="案例">案例</h2><h3 id="专属服务：专属节点">专属服务：专属节点</h3><p>线上服务器组专用</p><pre><code class="language-bash"># 添加污点## 仅允许拥有 dedicated=&lt;groupName&gt;:NoSchedule 容忍规则的 pod 可以被调度到此节点kubectl taint nodes k8s001 dedicated=prod:NoSchedule# 添加标签kubectl label nodes k8s001 dedicated=prod</code></pre><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: nginx  labels:    dedicated: prodspec:  affinity:    nodeAffinity:      requiredDuringSchedulingIgnoredDuringExecution:        nodeSelectorTerms:        - matchExpressions:          - key: dedicated            operator: In            values:             - prod  tolerations:  - key: &quot;dedicated&quot;    operator: &quot;Equal&quot;    value: &quot;prod&quot;    effect: &quot;NoSchedule&quot;  containers:  - name: nginx    image: nginx    imagePullPolicy: IfNotPresent</code></pre><p>tolerations 确保了 nginx pod 可以调度到拥有 dedicated=prod:NoSchedule 污点的节点，而 k8s001 拥有此污点。</p><p>affinity.nodeAffinity 节点亲和确保了必须调度到拥有 dedicated=prod 标签的节点，而 k8s001 拥有此标签。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
-            
-            <tag> k8s </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>helm☞01入门</title>
       <link href="posts/51015304/"/>
       <url>posts/51015304/</url>
@@ -275,36 +246,7 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> helm </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞18日志收集系统</title>
-      <link href="posts/3511df2/"/>
-      <url>posts/3511df2/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
             
             <tag> k8s </tag>
             
@@ -333,9 +275,67 @@
       
         <tags>
             
+            <tag> helm </tag>
+            
             <tag> k8s </tag>
             
-            <tag> helm </tag>
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞17node污染和pod容忍</title>
+      <link href="posts/932d1f08/"/>
+      <url>posts/932d1f08/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍度 | Kubernetes</a></p><p><a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#taint">Kubectl Reference Docs (kubernetes.io)</a></p><h2 id="规则">规则</h2><p>pod设定的容忍规则，如果匹配到了绑定在node上的污点规则，则可以被调度到污点节点上，否则不能被调度</p><blockquote><p>容忍规则和污点规则都可以添加多个</p></blockquote><h2 id="node污点命令">node污点命令</h2><pre><code class="language-bash"># 查看节点污染信息，若无污染则为 nonekubectl describe nodes | grep TaintsTaints:             &lt;none&gt;Taints:             node-role.kubernetes.io/master:NoScheduleTaints:             &lt;none&gt;</code></pre><p>上述例子中：</p><p>KEY是<code>node-role.kubernetes.io/master</code></p><p>VAL没有</p><p>TAINT_EFFECT是<code>NoSchedule</code></p><pre><code class="language-bash"># 添加污点## 标签对:污染关键词kubectl taint nodes &lt;NODE_NAME&gt; KEY_1=VAL_1:TAINT_EFFECT_1 ... KEY_N=VAL_N:TAINT_EFFECT_N# 移除污点kubectl taint nodes &lt;NODE_NAME&gt; KEY_1-</code></pre><h3 id="污染关键词-TAINT-EFFECT">污染关键词 TAINT_EFFECT</h3><p>TAINT_EFFECT 包含以下三种状态：</p><p><code>NoSchedule</code> 容忍规则没有匹配到此污点的pod绝对不会被调度拥有此污点的节点</p><blockquote><p>对于 NoSchedule，有一个例外，就是污点添加之前，pod已经在节点上了，则pod会继续运行。</p></blockquote><p><code>PreferNoSchedule</code>容忍规则没有匹配到此污点的pod尽量不会被调度到拥有此污点的节点</p><p><code>NoExecute</code> 容忍规则没有匹配到此污点的pod绝对不会被调度拥有此污点的节点，如果pod已经在污点添加之前就运行了，则会被立即驱逐</p><p>ℹ️ 特殊规则，就是容忍规则里包含了<code>tolerationSeconds</code>，则pod的容忍规则即使完全符合node的污染规则，也仅仅只能在<code>tolerationSeconds</code>宽恕期之内继续运行。</p><h2 id="pod容忍配置">pod容忍配置</h2><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: nginx  labels:    env: testspec:  containers:  - name: nginx    image: nginx    imagePullPolicy: IfNotPresent  tolerations:  - key: &quot;example-key&quot;    operator: &quot;Exists&quot;    effect: &quot;NoExecute&quot;    tolerationSeconds: 3600</code></pre><p>上述配置表示，当 pod 所在节点被添加了一个<code>example-key:NoExecute</code> 污点的时候，pod 将不会被驱逐，而是可以继续存活3600秒，如果还未到3600秒，污点就被移除，则 pod 驱逐也会停止。</p><pre><code class="language-yaml">tolerations:- key: &quot;key1&quot;  operator: &quot;Equal&quot;  value: &quot;value1&quot;  effect: &quot;NoSchedule&quot;</code></pre><p>上述pod的容忍配置表示，当 pod 所在节点被添加了一个<code>key1=value1:NoSchedule</code>污点的时候，pod 将不会被驱逐。</p><h2 id="内置的污点">内置的污点</h2><p>当某种条件为真时，节点控制器会自动给节点添加一个污点。当前内置的污点包括：</p><ul><li><code>node.kubernetes.io/not-ready</code>：节点未准备好。这相当于节点状态 <code>Ready</code> 的值为 “<code>False</code>”。</li><li><code>node.kubernetes.io/unreachable</code>：节点控制器访问不到节点. 这相当于节点状态 <code>Ready</code> 的值为 “<code>Unknown</code>”。</li><li><code>node.kubernetes.io/memory-pressure</code>：节点存在内存压力。</li><li><code>node.kubernetes.io/disk-pressure</code>：节点存在磁盘压力。</li><li><code>node.kubernetes.io/pid-pressure</code>: 节点的 PID 压力。</li><li><code>node.kubernetes.io/network-unavailable</code>：节点网络不可用。</li><li><code>node.kubernetes.io/unschedulable</code>: 节点不可调度。</li><li><code>node.cloudprovider.kubernetes.io/uninitialized</code>：如果 kubelet 启动时指定了一个 “外部” 云平台驱动， 它将给当前节点添加一个污点将其标志为不可用。在 cloud-controller-manager 的一个控制器初始化这个节点后，kubelet 将删除这个污点。</li></ul><p>从上述状态来看，如果你想让某个pod在出现上述问题（例如节点网络故障）后，依然被调度在当前节点保持1小时，那么你可以添加下列容忍规则：</p><pre><code class="language-yaml">tolerations:- key: &quot;node.kubernetes.io/network-unavailable&quot;  operator: &quot;Exists&quot;  effect: &quot;NoExecute&quot;  tolerationSeconds: 3600</code></pre><h2 id="特殊情况">特殊情况</h2><p>DaemonSet 控制器自动为所有守护进程添加如下<code>标签</code>的 <code>NoSchedule</code> 容忍度以防 DaemonSet 崩溃：</p><ul><li><code>node.kubernetes.io/memory-pressure</code></li><li><code>node.kubernetes.io/disk-pressure</code></li><li><code>node.kubernetes.io/pid-pressure</code> (1.14 或更高版本)</li><li><code>node.kubernetes.io/unschedulable</code> (1.10 或更高版本)</li><li><code>node.kubernetes.io/network-unavailable</code> (<em>只适合主机网络配置</em>)</li></ul><p>也就是说守护进程所在节点出现上述问题，从而导致自动添加污点的时候，守护进程也不会被驱逐。</p><h2 id="案例">案例</h2><h3 id="专属服务：专属节点">专属服务：专属节点</h3><p>线上服务器组专用</p><pre><code class="language-bash"># 添加污点## 仅允许拥有 dedicated=&lt;groupName&gt;:NoSchedule 容忍规则的 pod 可以被调度到此节点kubectl taint nodes k8s001 dedicated=prod:NoSchedule# 添加标签kubectl label nodes k8s001 dedicated=prod</code></pre><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: nginx  labels:    dedicated: prodspec:  affinity:    nodeAffinity:      requiredDuringSchedulingIgnoredDuringExecution:        nodeSelectorTerms:        - matchExpressions:          - key: dedicated            operator: In            values:             - prod  tolerations:  - key: &quot;dedicated&quot;    operator: &quot;Equal&quot;    value: &quot;prod&quot;    effect: &quot;NoSchedule&quot;  containers:  - name: nginx    image: nginx    imagePullPolicy: IfNotPresent</code></pre><p>tolerations 确保了 nginx pod 可以调度到拥有 dedicated=prod:NoSchedule 污点的节点，而 k8s001 拥有此污点。</p><p>affinity.nodeAffinity 节点亲和确保了必须调度到拥有 dedicated=prod 标签的节点，而 k8s001 拥有此标签。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞18日志收集系统</title>
+      <link href="posts/3511df2/"/>
+      <url>posts/3511df2/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -420,9 +420,9 @@
       
         <tags>
             
-            <tag> prometheus </tag>
-            
             <tag> rabbitmq </tag>
+            
+            <tag> prometheus </tag>
             
         </tags>
       
@@ -752,35 +752,6 @@
     
     
     <entry>
-      <title>jenkins☞动态agent</title>
-      <link href="posts/3b5cd3e1/"/>
-      <url>posts/3b5cd3e1/</url>
-      
-        <content type="html"><![CDATA[<h2 id="流程">流程</h2><p>jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master</p><h2 id="凭证信息">凭证信息</h2><p>通过 kube config 里的加密信息获取凭据所需的证书</p><pre><code class="language-bash">certificate-authority-data=client-certificate-data=client-key-data=echo &quot;$&#123;certificate-authority-data&#125;&quot; | base64 -d &gt; ca.crtecho &quot;$&#123;client-certificate-data&#125;&quot; | base64 -d &gt; client.crtecho &quot;$&#123;client-key-data&#125;&quot; | base64 -d &gt; client.keyopenssl pkcs12 -export -out cert.pfx -inkey client.key -in client.crt -certfile ca.crt</code></pre><p>将 pkcs12 传输到 jenkins 凭据中</p><p><img src="/posts/3b5cd3e1/image-20210116152344875.png" alt="image-20210116152344875"></p><p>💁你需要在凭据【密码】位置中输入你生成 pkcs12 证书时输入的密码.</p><h2 id="安装插件">安装插件</h2><ol><li>安装 kubernetes 插件</li><li>添加一个新的插件配置</li></ol><p><img src="/posts/3b5cd3e1/image-20210116152033813.png" alt="image-20210116152033813"></p><ol start="3"><li>确保插件配置【连接测试】显示成功连接</li></ol><h2 id="配置-pipeline-动态生成-agent">配置 pipeline 动态生成 agent</h2><p>关于 agent 的 pod 模板，默认插件已经提供了一个，只不过你看不到。因此哪怕你什么都不做，你 pipeline stages 也会在默认的 agent pod 里执行。</p><p>我们一般选择给 agent pod 添加一个额外的容器，这个额外的容器里包含了我们执行 stages 所需要的环境，例如叫 jenkinstools。</p><p>即最终，整个pod包含两个容器，分别是沟通 jenkins-master 的 jenkins-agent 服务和执行我们工作流步骤的 jenkinstools 容器。</p><p>需要注意的是：</p><p>多容器 pod 模板有诸多的硬性限制：</p><p>Multiple containers can be defined in a pod. One of them is automatically created with name <code>jnlp</code>, and runs the Jenkins JNLP agent service, with args <code>$&#123;computer.jnlpmac&#125; $&#123;computer.name&#125;</code>, and will be the container acting as Jenkins agent.</p><p>Other containers must run a long running process, so the container does not exit. If the default entrypoint or command just runs something and exit then it should be overridden with something like <code>cat</code> with <code>ttyEnabled: true</code>.</p><p><strong>WARNING</strong> If you want to provide your own Docker image for the JNLP agent, you <strong>must</strong> name the container <code>jnlp</code> so it overrides the default one. Failing to do so will result in two agents trying to concurrently connect to the master.</p><ol><li>jnlp agent 容器会自动创建，哪怕你没有定义。</li><li>如果你自定义了 JNLP 服务所在的容器，那么负责连接 master 的 jnlp agent 容器名必须叫 jnlp。</li><li>其它容器，也就是我们用来执行 stages 的容器，必须运行一个持久的程序，以便于容器不会自动退出。例如 cat 命令并附加一个伪终端。</li><li>stages 阶段执行的时候，必须明确的指定额外容器，否则会默认在 jnlp 容器里执行. （这个不是很确定，但是我测试是这样）</li></ol><p>下图是我的 pod 模板配置（部分截图）</p><p><img src="/posts/3b5cd3e1/image-20210126182630608.png" alt="image-20210126182630608"></p><p>在 pipeline 里调用插件配置</p><pre><code>pipeline&#123;    agent&#123;        kubernetes&#123;            label &quot;jenkins-agent&quot; // pod 模板标签            cloud 'kubernetes'  // 插件配置名        &#125;    &#125;    stages &#123;        stage('Start Command On Remote Machine') &#123;            steps &#123;                container('jenkinstools') &#123;  // 明确指定 pod 里的执行容器名                    script&#123;                        mytools.getRemoteIP(serverIP)                        mytools.ansible(ansibleRemoteUser,&quot;$&#123;ansibleShellCommand&#125;&quot;)                    &#125;                &#125;            &#125;        &#125;    &#125;&#125;</code></pre><h2 id="问题点">问题点</h2><h3 id="额外的自定义-pod-属性">额外的自定义 pod 属性</h3><p>默认 pod 模板的 web 界面，并没有提供所有的属性输入框，例如 spec.hostAliases 指定自定义域名解析</p><p>因此，当需要一些自定义的属性时，就需要编写自定义的 yaml，并将其填入 【Raw YAML for the Pod】，并将【Yaml merge strategy】设置为 【Merge】</p><p>以添加自定义域名解析为例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podspec:  hostAliases:  - ip: &quot;1.1.1.1&quot;    hostnames:    - &quot;test.com&quot;</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 自动化 </category>
-          
-          <category> jenkins </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> k8s </tag>
-            
-            <tag> jenkins </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>jenkins☞002声明式语法</title>
       <link href="posts/8a33e212/"/>
       <url>posts/8a33e212/</url>
@@ -825,6 +796,35 @@
       
       
         <tags>
+            
+            <tag> jenkins </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>jenkins☞动态agent</title>
+      <link href="posts/3b5cd3e1/"/>
+      <url>posts/3b5cd3e1/</url>
+      
+        <content type="html"><![CDATA[<h2 id="流程">流程</h2><p>jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master</p><h2 id="凭证信息">凭证信息</h2><p>通过 kube config 里的加密信息获取凭据所需的证书</p><pre><code class="language-bash">certificate-authority-data=client-certificate-data=client-key-data=echo &quot;$&#123;certificate-authority-data&#125;&quot; | base64 -d &gt; ca.crtecho &quot;$&#123;client-certificate-data&#125;&quot; | base64 -d &gt; client.crtecho &quot;$&#123;client-key-data&#125;&quot; | base64 -d &gt; client.keyopenssl pkcs12 -export -out cert.pfx -inkey client.key -in client.crt -certfile ca.crt</code></pre><p>将 pkcs12 传输到 jenkins 凭据中</p><p><img src="/posts/3b5cd3e1/image-20210116152344875.png" alt="image-20210116152344875"></p><p>💁你需要在凭据【密码】位置中输入你生成 pkcs12 证书时输入的密码.</p><h2 id="安装插件">安装插件</h2><ol><li>安装 kubernetes 插件</li><li>添加一个新的插件配置</li></ol><p><img src="/posts/3b5cd3e1/image-20210116152033813.png" alt="image-20210116152033813"></p><ol start="3"><li>确保插件配置【连接测试】显示成功连接</li></ol><h2 id="配置-pipeline-动态生成-agent">配置 pipeline 动态生成 agent</h2><p>关于 agent 的 pod 模板，默认插件已经提供了一个，只不过你看不到。因此哪怕你什么都不做，你 pipeline stages 也会在默认的 agent pod 里执行。</p><p>我们一般选择给 agent pod 添加一个额外的容器，这个额外的容器里包含了我们执行 stages 所需要的环境，例如叫 jenkinstools。</p><p>即最终，整个pod包含两个容器，分别是沟通 jenkins-master 的 jenkins-agent 服务和执行我们工作流步骤的 jenkinstools 容器。</p><p>需要注意的是：</p><p>多容器 pod 模板有诸多的硬性限制：</p><p>Multiple containers can be defined in a pod. One of them is automatically created with name <code>jnlp</code>, and runs the Jenkins JNLP agent service, with args <code>$&#123;computer.jnlpmac&#125; $&#123;computer.name&#125;</code>, and will be the container acting as Jenkins agent.</p><p>Other containers must run a long running process, so the container does not exit. If the default entrypoint or command just runs something and exit then it should be overridden with something like <code>cat</code> with <code>ttyEnabled: true</code>.</p><p><strong>WARNING</strong> If you want to provide your own Docker image for the JNLP agent, you <strong>must</strong> name the container <code>jnlp</code> so it overrides the default one. Failing to do so will result in two agents trying to concurrently connect to the master.</p><ol><li>jnlp agent 容器会自动创建，哪怕你没有定义。</li><li>如果你自定义了 JNLP 服务所在的容器，那么负责连接 master 的 jnlp agent 容器名必须叫 jnlp。</li><li>其它容器，也就是我们用来执行 stages 的容器，必须运行一个持久的程序，以便于容器不会自动退出。例如 cat 命令并附加一个伪终端。</li><li>stages 阶段执行的时候，必须明确的指定额外容器，否则会默认在 jnlp 容器里执行. （这个不是很确定，但是我测试是这样）</li></ol><p>下图是我的 pod 模板配置（部分截图）</p><p><img src="/posts/3b5cd3e1/image-20210126182630608.png" alt="image-20210126182630608"></p><p>在 pipeline 里调用插件配置</p><pre><code>pipeline&#123;    agent&#123;        kubernetes&#123;            label &quot;jenkins-agent&quot; // pod 模板标签            cloud 'kubernetes'  // 插件配置名        &#125;    &#125;    stages &#123;        stage('Start Command On Remote Machine') &#123;            steps &#123;                container('jenkinstools') &#123;  // 明确指定 pod 里的执行容器名                    script&#123;                        mytools.getRemoteIP(serverIP)                        mytools.ansible(ansibleRemoteUser,&quot;$&#123;ansibleShellCommand&#125;&quot;)                    &#125;                &#125;            &#125;        &#125;    &#125;&#125;</code></pre><h2 id="问题点">问题点</h2><h3 id="额外的自定义-pod-属性">额外的自定义 pod 属性</h3><p>默认 pod 模板的 web 界面，并没有提供所有的属性输入框，例如 spec.hostAliases 指定自定义域名解析</p><p>因此，当需要一些自定义的属性时，就需要编写自定义的 yaml，并将其填入 【Raw YAML for the Pod】，并将【Yaml merge strategy】设置为 【Merge】</p><p>以添加自定义域名解析为例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podspec:  hostAliases:  - ip: &quot;1.1.1.1&quot;    hostnames:    - &quot;test.com&quot;</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 自动化 </category>
+          
+          <category> jenkins </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> k8s </tag>
             
             <tag> jenkins </tag>
             
@@ -1017,9 +1017,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> kubeadm </tag>
             
@@ -1050,9 +1050,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> 证书 </tag>
             
@@ -1081,9 +1081,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> authorization </tag>
             
@@ -1256,33 +1256,6 @@
     
     
     <entry>
-      <title>go☞004条件语句</title>
-      <link href="posts/8a6b5455/"/>
-      <url>posts/8a6b5455/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常见的if就不说了</p><h2 id="switch">switch</h2><p>case后面的值匹配了变量，就执行对应代码，否则执行default代码</p><pre><code class="language-go">switch 变量/常量 &#123;    case 值1:        ...    case 值2, 值3:        ...    default:        ...&#125;</code></pre><p>条件为真，就执行对应代码，否则执行default代码</p><pre><code class="language-go">switch &#123;    case 条件1:        ...    case 条件2:        ...    default:        ...&#125;</code></pre><h3 id="switch特殊">switch特殊</h3><p><code>fallthrough</code>关键词</p><p>当某个case执行语句中包含<code>fallthrough</code>的话，则紧邻的下一条<code>case</code>不需要判断条件就会直接执行</p><h2 id="select">select</h2><p>select语句与switch类似，但它仅用来监听和channel有关的IO操作，当 IO 操作发生时，触发相应的动作。</p><p>那么既然case条件与channel有关，则case条件必然伴随着写入和读取chan类型变量</p><p>子句执行规则：</p><p>select判断所有case条件是否与chan有关：</p><p>与chan有关：</p><p>​判断case条件是否可完成chan的I/O操作：</p><p>​可完成：</p><p>​<code>随机</code>执行一个完成case条件的语句</p><p>​不可完成：</p><p>​有default子句：执行default子句</p><p>​无default子句：阻塞，直到出现一个可完成的case条件</p><p>与chan无关：</p><p>​直接报错</p><pre><code class="language-go">package mainimport (    &quot;fmt&quot;)func main() &#123;    ch1 := make(chan int,1)    for i := 0; i &lt; 10; i++&#123;        select &#123;        case x := &lt;- ch1:            fmt.Printf(&quot;ch1取出数据%d\n&quot;,x)        case ch1 &lt;- i:            fmt.Printf(&quot;ch1插入数据%d\n&quot;,i)        &#125;    &#125;&#125;</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 语言 </category>
-          
-          <category> go </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> go </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>go☞005函数</title>
       <link href="posts/98f86e16/"/>
       <url>posts/98f86e16/</url>
@@ -1310,11 +1283,11 @@
     
     
     <entry>
-      <title>go☞002常量</title>
-      <link href="posts/8c3e952e/"/>
-      <url>posts/8c3e952e/</url>
+      <title>go☞004条件语句</title>
+      <link href="posts/8a6b5455/"/>
+      <url>posts/8a6b5455/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常量只有一个元数据，就是内存地址存储的数据。</p><p>常量声明的同时必须赋值</p><h2 id="声明和赋值">声明和赋值</h2><blockquote><p>不能省略 const 关键词，省略了就没法判断是常量还是变量了</p></blockquote><h3 id="单类型">单类型</h3><pre><code class="language-go">const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="多类型">多类型</h3><p>根据变量值，自动判断变量类型</p><pre><code class="language-go">const &lt;常量1&gt;, &lt;常量2&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="单类型和多类型混合">单类型和多类型混合</h3><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt; &lt;类型2&gt; = &lt;常量2的值&gt;)</code></pre><p>上述写法中，如果常量2和常量1一样，则可以直接写常量2，省略其余。</p><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt;,&lt;常量22&gt;)</code></pre><p>需要注意的是，前两两行声明的常量数量需要对齐一致。</p><p>⚠️常量声明赋值的时候，常量的值只能是<code>string</code>,<code>int</code>,<code>bool</code>类型，如果你的值是<code>函数</code>返回，则这个<code>函数</code>必须是<code>内置函数</code></p><p>例如：</p><pre><code class="language-go">package mainimport &quot;fmt&quot;func rtnlen(p string) (int) &#123;    return len(p)&#125;var (    code03 = &quot;abc&quot;    code04 = rtnlen(code03)    // 这里不会报错，因为变量没有 “必须为内置函数” 这个限制)const (    code06 = &quot;abc&quot;    code05 = rtnlen(code06)    // 这里会报错，因为 rtnlen() 不是内置函数，将其更换为 len() 就不会报错)func main()&#123;    fmt.Println(code05)    fmt.Println(code03, code04)&#125;</code></pre><h2 id="特殊常量iota">特殊常量iota</h2><p>有一个内置的特殊常量iota，每声明一个常量，它会+1，初始值是0</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常见的if就不说了</p><h2 id="switch">switch</h2><p>case后面的值匹配了变量，就执行对应代码，否则执行default代码</p><pre><code class="language-go">switch 变量/常量 &#123;    case 值1:        ...    case 值2, 值3:        ...    default:        ...&#125;</code></pre><p>条件为真，就执行对应代码，否则执行default代码</p><pre><code class="language-go">switch &#123;    case 条件1:        ...    case 条件2:        ...    default:        ...&#125;</code></pre><h3 id="switch特殊">switch特殊</h3><p><code>fallthrough</code>关键词</p><p>当某个case执行语句中包含<code>fallthrough</code>的话，则紧邻的下一条<code>case</code>不需要判断条件就会直接执行</p><h2 id="select">select</h2><p>select语句与switch类似，但它仅用来监听和channel有关的IO操作，当 IO 操作发生时，触发相应的动作。</p><p>那么既然case条件与channel有关，则case条件必然伴随着写入和读取chan类型变量</p><p>子句执行规则：</p><p>select判断所有case条件是否与chan有关：</p><p>与chan有关：</p><p>​判断case条件是否可完成chan的I/O操作：</p><p>​可完成：</p><p>​<code>随机</code>执行一个完成case条件的语句</p><p>​不可完成：</p><p>​有default子句：执行default子句</p><p>​无default子句：阻塞，直到出现一个可完成的case条件</p><p>与chan无关：</p><p>​直接报错</p><pre><code class="language-go">package mainimport (    &quot;fmt&quot;)func main() &#123;    ch1 := make(chan int,1)    for i := 0; i &lt; 10; i++&#123;        select &#123;        case x := &lt;- ch1:            fmt.Printf(&quot;ch1取出数据%d\n&quot;,x)        case ch1 &lt;- i:            fmt.Printf(&quot;ch1插入数据%d\n&quot;,i)        &#125;    &#125;&#125;</code></pre>]]></content>
       
       
       <categories>
@@ -1342,6 +1315,33 @@
       <url>posts/1a034363/</url>
       
         <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常见的运算符就不说了，学过数学的都会。</p><h2 id="逻辑运算符">逻辑运算符</h2><p><code>A &amp;&amp; B</code> A和B都为真，则真</p><p><code>A || B</code> A和B任意为真，则为真</p><p><code>!A</code> A为真，则为假</p><p>当上述条件为真时，则执行下一步代码</p><h2 id="位运算符">位运算符</h2><p>将整数转为二进制后进行运算</p><p>二进制数：0为假，1为真</p><p>例如：</p><pre><code class="language-go">a,b := 2,4</code></pre><p>若<code>c := a &amp; b</code>按位与，按照<code>位数</code>分别进行<code>与</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 0 0 0</code></pre><p>因此，最终 c = 0</p><p>若<code>c := a | b</code>按位或，按照<code>位数</code>分别进行<code>或</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a ^ b</code>按位异或，按照<code>位数</code>分别进行<code>异或</code>运算</p><p>异或：相同为0，不同为1</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a &amp;^ b</code>，</p><p>则c等于将a中ab都为1的位写为0后的新a</p><pre><code>a： 0 1 0b： 1 0 0c： 0 1 0  # a中没有ab都为1的位，因此c的值依然是a</code></pre><p>若<code>c := a&lt;&lt;b</code>左移运算，即<code>a*2的b次方</code>。c等于32</p><p>若<code>c := a&gt;&gt;b</code>右移运算，即<code>a/2的b次方</code>，c等于0</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 语言 </category>
+          
+          <category> go </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> go </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>go☞002常量</title>
+      <link href="posts/8c3e952e/"/>
+      <url>posts/8c3e952e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常量只有一个元数据，就是内存地址存储的数据。</p><p>常量声明的同时必须赋值</p><h2 id="声明和赋值">声明和赋值</h2><blockquote><p>不能省略 const 关键词，省略了就没法判断是常量还是变量了</p></blockquote><h3 id="单类型">单类型</h3><pre><code class="language-go">const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="多类型">多类型</h3><p>根据变量值，自动判断变量类型</p><pre><code class="language-go">const &lt;常量1&gt;, &lt;常量2&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="单类型和多类型混合">单类型和多类型混合</h3><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt; &lt;类型2&gt; = &lt;常量2的值&gt;)</code></pre><p>上述写法中，如果常量2和常量1一样，则可以直接写常量2，省略其余。</p><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt;,&lt;常量22&gt;)</code></pre><p>需要注意的是，前两两行声明的常量数量需要对齐一致。</p><p>⚠️常量声明赋值的时候，常量的值只能是<code>string</code>,<code>int</code>,<code>bool</code>类型，如果你的值是<code>函数</code>返回，则这个<code>函数</code>必须是<code>内置函数</code></p><p>例如：</p><pre><code class="language-go">package mainimport &quot;fmt&quot;func rtnlen(p string) (int) &#123;    return len(p)&#125;var (    code03 = &quot;abc&quot;    code04 = rtnlen(code03)    // 这里不会报错，因为变量没有 “必须为内置函数” 这个限制)const (    code06 = &quot;abc&quot;    code05 = rtnlen(code06)    // 这里会报错，因为 rtnlen() 不是内置函数，将其更换为 len() 就不会报错)func main()&#123;    fmt.Println(code05)    fmt.Println(code03, code04)&#125;</code></pre><h2 id="特殊常量iota">特殊常量iota</h2><p>有一个内置的特殊常量iota，每声明一个常量，它会+1，初始值是0</p>]]></content>
       
       
       <categories>
@@ -1409,9 +1409,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> storage </tag>
             
@@ -1438,9 +1438,9 @@
       
         <tags>
             
-            <tag> vsftpd </tag>
-            
             <tag> 安装 </tag>
+            
+            <tag> vsftpd </tag>
             
         </tags>
       
@@ -1494,9 +1494,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ingress </tag>
             
@@ -1525,9 +1525,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> StatefulSet </tag>
             
@@ -1556,9 +1556,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> DaemonSet </tag>
             
@@ -1587,13 +1587,13 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
             
-            <tag> 资源约束 </tag>
+            <tag> 容器 </tag>
             
             <tag> namespace </tag>
+            
+            <tag> 资源约束 </tag>
             
         </tags>
       
@@ -1620,46 +1620,13 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
             <tag> 资源约束 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞10应用配置与密码与信息提供</title>
-      <link href="posts/4b0e4a5/"/>
-      <url>posts/4b0e4a5/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。</p><p>所以步骤一般是这样的。</p><ol><li>创建secret 和 configmap 对象</li></ol><h2 id="以文件方式提供">以文件方式提供</h2><p>kubernetes 提供了一种卷类型 projected volume。</p><p>写法：</p><pre><code class="language-yaml:">        volumeMounts:        - name: all-in-one          mountPath: /etc/allinfo          readonly: true  volumes:  - name: all-in-one    projected:      sources:      - secret:          name: user      - secret:          name: pass      - configmap:          name: content      - downwardAPI:          items:            - path: &quot;labels&quot;              fieldRef:                fieldPath: metadata.labels            - path: &quot;annotations&quot;              fieldRef:                fieldPath: metadata.annotations</code></pre><blockquote><p>user, pass, content, labels, annotations 将会以文件形式存在于容器挂载点 /etc/allinfo 内。</p></blockquote><p>创建 secret: user 和 secret: pass</p><pre><code class="language-bash">echo -n &quot;admin&quot; &gt; ./username.txtkubectl create secret generic user --from-file=./username.txtecho -n &quot;1f2d1e2e67df&quot; &gt; ./username.txtkubectl create secret generic pass --from-file=./password.txt</code></pre><p>创建 configmap: content</p><pre><code class="language-bash">echo -n &quot;userinfo&quot; &gt; ./content.txtkubectl create configmap content --from-file=./content.txt</code></pre><p>downwardAPI 内容直接写入</p><h2 id="配置ConfigMap">配置ConfigMap</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/configmap/">https://kubernetes.io/docs/concepts/configuration/configmap/</a></p><p>ConfigMap 常用在两种情况中. 第一种是提供环境变量.第二种是提供配置文件</p><p>一个简单配置例子如下</p><pre><code class="language-yaml">kind: ConfigMapapiVersion: v1metadata:  name: cm-demo  namespace: defaultdata:  data.1: hello  data.2: world  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>上述例子中, 包含的内容有</p><p>环境变量方式:</p><pre><code class="language-yaml">  data.1: hello  data.2: world</code></pre><p>配置文件方式:</p><pre><code class="language-yaml">  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>nginx.config 是文件名, 管道符 | 下面是文件内容.</p><p>需要注意的是, 内容依然要遵循 yaml 的缩进规则</p><p>使用方式如下:</p><pre><code class="language-yaml">    spec:      containers:      - name: nginx        image: nginx        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $&#123;DATA.1&#125; $&#123;DATA.2&#125;&quot;]        ports:        - containerPort: 80        env:        - name: DATA1          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.1        - name: DATA2          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.2        volumeMounts:        - name: cm-demo-vc          subPath: nginx.conf          mountPath: /etc/nginx/nginx.conf      volumes:      - name: cm-demo-vc        configMap:          name: cm-demo</code></pre><p>配置文件数据卷方式:</p><ul><li>通过在 spec.volumes 中定义一个关联声明(cm.demo-vc). 它一端被 spec.containers.volumeMounts 调用, 另一端关联 configMap. 然后通过 spec.containers.volumeMounts 绑定 configMap 后, 就可以使用 subPath 调用配置文件, 并使用 mountPath 挂载到容器里的具体路径上.</li><li>这种方式下,configMap更新后,pod内挂载的也会同时更新.</li></ul><p>环境变量方式:</p><ul><li>通过在 spec.containers.env 中定义. 例子中, DATA1 是环境变量的键, DATA1的值通过valueFrom定义.最终,你可以在容器中使用环境变量DATA1和DATA2</li></ul><h2 id="密码Secret">密码Secret</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/secret/">https://kubernetes.io/docs/concepts/configuration/secret/</a></p><p>secret对象里的值需要写入加密后的.</p><p>secret对象也可以被当作文件挂载或环境变量注入</p><p>一个简单例子:</p><p>我们定义一个用户密码对,分别时username和password</p><p>secret对象要求值必须进行base64编码加密(当type为Opaque的时候).</p><pre><code class="language-bash">[root@k8s00 test-yaml]# echo -n &quot;admin&quot; | base64YWRtaW4=[root@k8s00 test-yaml]# echo -n &quot;admin321&quot; | base64YWRtaW4zMjE=</code></pre><pre><code class="language-yaml"># 创建 secret 对象 mysecretapiVersion: v1kind: Secretmetadata:  name: mysecret  namespace: defaulttype: Opaquedata:  username: YWRtaW4=  password: MWYyZDFlMmU2N2Rm---apiVersion: v1kind: Podmetadata:  name: mypodspec:  containers:  - name: mypod    image: busybox    command:    - sleep    - &quot;3600&quot;    env:      - name: SECRET_USERNAME        valueFrom:          secretKeyRef:            name: mysecret            key: username      - name: SECRET_PASSWORD        valueFrom:          secretKeyRef:            name: mysecret            key: password    volumeMounts:    - name: foo      mountPath: &quot;/etc/foo&quot;      readOnly: true  volumes:  - name: foo    secret:      secretName: mysecret</code></pre><p>在通过上述配置创建好资源后,我们进入pod,进行测试.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl exec -it mypod -- /bin/sh===可以看到两个加密信息生成了两个软连接,并指向了隐藏文件/ # ls -l /etc/foototal 0lrwxrwxrwx    1 root     root            15 Sep 17 07:18 password -&gt; ..data/passwordlrwxrwxrwx    1 root     root            15 Sep 17 07:18 username -&gt; ..data/username===环境变量/ # echo $&#123;SECRET_USERNAME&#125;admin===文件方式/ # cat /etc/foo/usernameadmin/ # </code></pre><h2 id="限制">限制</h2><ul><li>机密资源限制在同一命名空间</li><li>数据大小不能超过1MB</li><li>当pod引用不存在的机密时,pod无法启动</li></ul><h2 id="其它">其它</h2><ol><li><p>不可变的机密(k8s v1.19以上)</p><pre><code class="language-yaml">secret.immutable: true</code></pre><p>这种方式用来构建永久不可变的密码,且构建后无法更改,且构建后使用它的pod也无法卸载掉它.</p><p>因此,一旦构建后想更改,则它和它关联的pod都要删除重建.</p><p>优点:</p><ul><li>避免错误的更新</li><li>显著提高集群性能</li></ul></li><li><p>命令方式创建</p><p>kubectl create configmap/secret <name> xxx</name></p><p>这里xxx可以用两种方式:</p><ul><li>–from-literal=<key>=<value> 指定kv</value></key></li><li>–from-file=&lt;文件/目录&gt; 当为目录的时候,会递归将目录里的文件都写入对象中</li></ul></li><li><p>隐藏的密码信息文件</p><p>你可以将 secret.data.<key> 写成 secret.data.&lt;.key&gt; 来隐藏它.</key></p></li></ol><h2 id="信息提供Downward-API">信息提供Downward API</h2><p><a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/</a></p><p>一个比较合适的解决方案是采用Downward API传递信息到容器. 然后程序根据信息来设置.</p><p>一个简单的例子: 将资源限制数据挂载到容器/etc/podinfo</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: kubernetes-downwardapi-volume-example-2spec:  containers:    - name: client-container      image: k8s.gcr.io/busybox:1.24      command: [&quot;sh&quot;, &quot;-c&quot;]      args:      - while true; do          echo -en '\n';          if [[ -e /etc/podinfo/cpu_limit ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_limit; fi;          if [[ -e /etc/podinfo/cpu_request ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_request; fi;          if [[ -e /etc/podinfo/mem_limit ]]; then            echo -en '\n'; cat /etc/podinfo/mem_limit; fi;          if [[ -e /etc/podinfo/mem_request ]]; then            echo -en '\n'; cat /etc/podinfo/mem_request; fi;          sleep 5;        done;      resources:        requests:          memory: &quot;32Mi&quot;          cpu: &quot;125m&quot;        limits:          memory: &quot;64Mi&quot;          cpu: &quot;250m&quot;      volumeMounts:        - name: podinfo          mountPath: /etc/podinfo  volumes:    - name: podinfo      downwardAPI:        items:          - path: &quot;cpu_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.cpu              divisor: 1m          - path: &quot;cpu_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.cpu              divisor: 1m          - path: &quot;mem_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.memory              divisor: 1Mi          - path: &quot;mem_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.memory              divisor: 1Mi</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
-            
-            <tag> k8s </tag>
-            
-            <tag> ConfigMap </tag>
-            
-            <tag> Secret </tag>
             
         </tags>
       
@@ -1686,9 +1653,42 @@
       
         <tags>
             
+            <tag> k8s </tag>
+            
             <tag> 容器 </tag>
             
+            <tag> ConfigMap </tag>
+            
+            <tag> Secret </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞10应用配置与密码与信息提供</title>
+      <link href="posts/4b0e4a5/"/>
+      <url>posts/4b0e4a5/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。</p><p>所以步骤一般是这样的。</p><ol><li>创建secret 和 configmap 对象</li></ol><h2 id="以文件方式提供">以文件方式提供</h2><p>kubernetes 提供了一种卷类型 projected volume。</p><p>写法：</p><pre><code class="language-yaml:">        volumeMounts:        - name: all-in-one          mountPath: /etc/allinfo          readonly: true  volumes:  - name: all-in-one    projected:      sources:      - secret:          name: user      - secret:          name: pass      - configmap:          name: content      - downwardAPI:          items:            - path: &quot;labels&quot;              fieldRef:                fieldPath: metadata.labels            - path: &quot;annotations&quot;              fieldRef:                fieldPath: metadata.annotations</code></pre><blockquote><p>user, pass, content, labels, annotations 将会以文件形式存在于容器挂载点 /etc/allinfo 内。</p></blockquote><p>创建 secret: user 和 secret: pass</p><pre><code class="language-bash">echo -n &quot;admin&quot; &gt; ./username.txtkubectl create secret generic user --from-file=./username.txtecho -n &quot;1f2d1e2e67df&quot; &gt; ./username.txtkubectl create secret generic pass --from-file=./password.txt</code></pre><p>创建 configmap: content</p><pre><code class="language-bash">echo -n &quot;userinfo&quot; &gt; ./content.txtkubectl create configmap content --from-file=./content.txt</code></pre><p>downwardAPI 内容直接写入</p><h2 id="配置ConfigMap">配置ConfigMap</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/configmap/">https://kubernetes.io/docs/concepts/configuration/configmap/</a></p><p>ConfigMap 常用在两种情况中. 第一种是提供环境变量.第二种是提供配置文件</p><p>一个简单配置例子如下</p><pre><code class="language-yaml">kind: ConfigMapapiVersion: v1metadata:  name: cm-demo  namespace: defaultdata:  data.1: hello  data.2: world  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>上述例子中, 包含的内容有</p><p>环境变量方式:</p><pre><code class="language-yaml">  data.1: hello  data.2: world</code></pre><p>配置文件方式:</p><pre><code class="language-yaml">  nginx.conf: |    property.1=value-1    property.2=value-2    property.3=value-3</code></pre><p>nginx.config 是文件名, 管道符 | 下面是文件内容.</p><p>需要注意的是, 内容依然要遵循 yaml 的缩进规则</p><p>使用方式如下:</p><pre><code class="language-yaml">    spec:      containers:      - name: nginx        image: nginx        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo $&#123;DATA.1&#125; $&#123;DATA.2&#125;&quot;]        ports:        - containerPort: 80        env:        - name: DATA1          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.1        - name: DATA2          valueFrom:            configMapKeyRef:              name: cm-demo-vc              key: data.2        volumeMounts:        - name: cm-demo-vc          subPath: nginx.conf          mountPath: /etc/nginx/nginx.conf      volumes:      - name: cm-demo-vc        configMap:          name: cm-demo</code></pre><p>配置文件数据卷方式:</p><ul><li>通过在 spec.volumes 中定义一个关联声明(cm.demo-vc). 它一端被 spec.containers.volumeMounts 调用, 另一端关联 configMap. 然后通过 spec.containers.volumeMounts 绑定 configMap 后, 就可以使用 subPath 调用配置文件, 并使用 mountPath 挂载到容器里的具体路径上.</li><li>这种方式下,configMap更新后,pod内挂载的也会同时更新.</li></ul><p>环境变量方式:</p><ul><li>通过在 spec.containers.env 中定义. 例子中, DATA1 是环境变量的键, DATA1的值通过valueFrom定义.最终,你可以在容器中使用环境变量DATA1和DATA2</li></ul><h2 id="密码Secret">密码Secret</h2><p><a href="https://kubernetes.io/docs/concepts/configuration/secret/">https://kubernetes.io/docs/concepts/configuration/secret/</a></p><p>secret对象里的值需要写入加密后的.</p><p>secret对象也可以被当作文件挂载或环境变量注入</p><p>一个简单例子:</p><p>我们定义一个用户密码对,分别时username和password</p><p>secret对象要求值必须进行base64编码加密(当type为Opaque的时候).</p><pre><code class="language-bash">[root@k8s00 test-yaml]# echo -n &quot;admin&quot; | base64YWRtaW4=[root@k8s00 test-yaml]# echo -n &quot;admin321&quot; | base64YWRtaW4zMjE=</code></pre><pre><code class="language-yaml"># 创建 secret 对象 mysecretapiVersion: v1kind: Secretmetadata:  name: mysecret  namespace: defaulttype: Opaquedata:  username: YWRtaW4=  password: MWYyZDFlMmU2N2Rm---apiVersion: v1kind: Podmetadata:  name: mypodspec:  containers:  - name: mypod    image: busybox    command:    - sleep    - &quot;3600&quot;    env:      - name: SECRET_USERNAME        valueFrom:          secretKeyRef:            name: mysecret            key: username      - name: SECRET_PASSWORD        valueFrom:          secretKeyRef:            name: mysecret            key: password    volumeMounts:    - name: foo      mountPath: &quot;/etc/foo&quot;      readOnly: true  volumes:  - name: foo    secret:      secretName: mysecret</code></pre><p>在通过上述配置创建好资源后,我们进入pod,进行测试.</p><pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl exec -it mypod -- /bin/sh===可以看到两个加密信息生成了两个软连接,并指向了隐藏文件/ # ls -l /etc/foototal 0lrwxrwxrwx    1 root     root            15 Sep 17 07:18 password -&gt; ..data/passwordlrwxrwxrwx    1 root     root            15 Sep 17 07:18 username -&gt; ..data/username===环境变量/ # echo $&#123;SECRET_USERNAME&#125;admin===文件方式/ # cat /etc/foo/usernameadmin/ # </code></pre><h2 id="限制">限制</h2><ul><li>机密资源限制在同一命名空间</li><li>数据大小不能超过1MB</li><li>当pod引用不存在的机密时,pod无法启动</li></ul><h2 id="其它">其它</h2><ol><li><p>不可变的机密(k8s v1.19以上)</p><pre><code class="language-yaml">secret.immutable: true</code></pre><p>这种方式用来构建永久不可变的密码,且构建后无法更改,且构建后使用它的pod也无法卸载掉它.</p><p>因此,一旦构建后想更改,则它和它关联的pod都要删除重建.</p><p>优点:</p><ul><li>避免错误的更新</li><li>显著提高集群性能</li></ul></li><li><p>命令方式创建</p><p>kubectl create configmap/secret <name> xxx</name></p><p>这里xxx可以用两种方式:</p><ul><li>–from-literal=<key>=<value> 指定kv</value></key></li><li>–from-file=&lt;文件/目录&gt; 当为目录的时候,会递归将目录里的文件都写入对象中</li></ul></li><li><p>隐藏的密码信息文件</p><p>你可以将 secret.data.<key> 写成 secret.data.&lt;.key&gt; 来隐藏它.</key></p></li></ol><h2 id="信息提供Downward-API">信息提供Downward API</h2><p><a href="https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/">https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/</a></p><p>一个比较合适的解决方案是采用Downward API传递信息到容器. 然后程序根据信息来设置.</p><p>一个简单的例子: 将资源限制数据挂载到容器/etc/podinfo</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: kubernetes-downwardapi-volume-example-2spec:  containers:    - name: client-container      image: k8s.gcr.io/busybox:1.24      command: [&quot;sh&quot;, &quot;-c&quot;]      args:      - while true; do          echo -en '\n';          if [[ -e /etc/podinfo/cpu_limit ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_limit; fi;          if [[ -e /etc/podinfo/cpu_request ]]; then            echo -en '\n'; cat /etc/podinfo/cpu_request; fi;          if [[ -e /etc/podinfo/mem_limit ]]; then            echo -en '\n'; cat /etc/podinfo/mem_limit; fi;          if [[ -e /etc/podinfo/mem_request ]]; then            echo -en '\n'; cat /etc/podinfo/mem_request; fi;          sleep 5;        done;      resources:        requests:          memory: &quot;32Mi&quot;          cpu: &quot;125m&quot;        limits:          memory: &quot;64Mi&quot;          cpu: &quot;250m&quot;      volumeMounts:        - name: podinfo          mountPath: /etc/podinfo  volumes:    - name: podinfo      downwardAPI:        items:          - path: &quot;cpu_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.cpu              divisor: 1m          - path: &quot;cpu_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.cpu              divisor: 1m          - path: &quot;mem_limit&quot;            resourceFieldRef:              containerName: client-container              resource: limits.memory              divisor: 1Mi          - path: &quot;mem_request&quot;            resourceFieldRef:              containerName: client-container              resource: requests.memory              divisor: 1Mi</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ConfigMap </tag>
             
@@ -1719,42 +1719,11 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> service </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞06无状态服务deployment-pod更新</title>
-      <link href="posts/18e4fa73/"/>
-      <url>posts/18e4fa73/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>对于更新,我们一般会采用滚动更新,即:</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换.</li></ul><p>对于回滚,我们想回滚到任何一个之前的版本.</p><p>而deployment对象可以帮我们实现这些.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p><p>一个基本的deployment例子</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx:1.14.2        ports:        - containerPort: 80</code></pre><p>例子需要注意的点：</p><ul><li>metadata： 这里会定义name，labels，namespace，annotations。其中 annotations （注解）是特殊的，你可以用它来定义一些工具集，例如在阿里云的k8s服务中，你可以添加镜像快照注解信息，从而让 pod 无需从镜像仓库下载启动，而是直接通过快照加速启动。</li><li>selector： deployment使用selector指定的label关联pod。</li></ul><h2 id="构建deployment">构建deployment</h2><p>创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-dep.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><blockquote><p>这里dep的配置中spec.template.spec.container.image=nginx，我没有设置具体版本</p></blockquote><h2 id="确认当前版本">确认当前版本</h2><p>查看版本历史，使用kubectl rollout history</p><blockquote><p>这里涉及到 rollout 指令，回滚的时候也会用到.</p></blockquote><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         &lt;none&gt;</code></pre><p>上述结果中，版本1没有添加 CHANGE-CAUSE 信息</p><p>添加注释信息，使用kubectl annotate deployment/&lt;&gt; <a href="http://kubernetes.io/change-cause=%22first%22">kubernetes.io/change-cause=“first”</a></p><pre><code class="language-bash">kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;first&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first</code></pre><blockquote><p>你也可以在执行命令的时候，追加 --record 来将执行的命令写入到当前change-cause</p><p>如果你不小心写错了，你可以通过添加<code>-</code> 来删除注解，就像下面这样，命令最后有一个<code>-</code></p><p>kubectl annotate deployment/nginx-dep &lt;注解key&gt;-</p></blockquote><h2 id="更新版本">更新版本</h2><p>发布版本1.19.2，将deployment中所有nginx的image版本从默认变更为1.19.2。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.2</code></pre><blockquote><p>除了使用set指令修改，你也可以通过edit修改yaml配置的方式进行</p><p>kubectl edit deployment/nginx-dep</p></blockquote><p>更新状态查看，可运行：</p><pre><code class="language-bash">kubectl rollout status deployment/nginx-dep</code></pre><p>更深层的rs状态查看，可运行：</p><pre><code class="language-bash">kubectl get rs -l app=nginx</code></pre><blockquote><p>-l 是调用标签过滤</p></blockquote><p>再发布一个版本1.18，将deployment中所有nginx的image版本从1.19.2变更为1.18。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.23         nginx image to 1.18</code></pre><p>这样,我们总共有三个版本，你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep --revision=&lt;num&gt;</code></pre><h2 id="回滚版本">回滚版本</h2><p>我们选择将nginx版本回滚到first第一个版本.</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-dep --to-revision=1kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE2         nginx image to 1.19.23         nginx image to 1.184         first</code></pre><h2 id="更新策略">更新策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的，就关多少个老的</p></blockquote><h2 id="最终样子">最终样子</h2><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><h2 id="暂停服务">暂停服务</h2><pre><code class="language-yaml">kubectl rollout pause deployment/nginx-dep</code></pre><p>启用暂停后，再启用更新，则新的更新在暂停期间不会产生任何效果</p><h2 id="恢复服务">恢复服务</h2><pre><code class="language-yaml">kubectl rollout resume deployment/nginx-dep</code></pre><p>启用恢复后，则暂停期间启用的更新将开始发挥作用</p><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history deployment/&lt;&gt; # 查看对象历史kubectl rollout undo deployment/&lt;&gt; --to-revision=&lt;&gt; # 对象版本回退kubectl rollout status deployment/&lt;&gt;# 展示执行状态kubectl rollout pause deployment/&lt;&gt; # 暂停此次版本操作行为kubectl rollout resume deployment/&lt;&gt; # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre><p>更新过程：</p><ul><li>创建新的replicaset</li><li>将新的replicaset扩展</li><li>将旧的replicaset缩容</li><li>新的replicaset对应的pod已就绪或可用</li></ul><p>当<code>kubectl rollout status deployment/&lt;&gt;</code>命令执行完后，$? 状态为 0，则说明 deployment 处于 complete。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
-            
-            <tag> k8s </tag>
-            
-            <tag> deployment </tag>
             
         </tags>
       
@@ -1781,9 +1750,40 @@
       
         <tags>
             
+            <tag> k8s </tag>
+            
             <tag> 容器 </tag>
             
+            <tag> deployment </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞06无状态服务deployment-pod更新</title>
+      <link href="posts/18e4fa73/"/>
+      <url>posts/18e4fa73/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>对于更新,我们一般会采用滚动更新,即:</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换.</li></ul><p>对于回滚,我们想回滚到任何一个之前的版本.</p><p>而deployment对象可以帮我们实现这些.</p><p><a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/">https://kubernetes.io/docs/concepts/workloads/controllers/deployment/</a></p><p>一个基本的deployment例子</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx:1.14.2        ports:        - containerPort: 80</code></pre><p>例子需要注意的点：</p><ul><li>metadata： 这里会定义name，labels，namespace，annotations。其中 annotations （注解）是特殊的，你可以用它来定义一些工具集，例如在阿里云的k8s服务中，你可以添加镜像快照注解信息，从而让 pod 无需从镜像仓库下载启动，而是直接通过快照加速启动。</li><li>selector： deployment使用selector指定的label关联pod。</li></ul><h2 id="构建deployment">构建deployment</h2><p>创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-dep.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><blockquote><p>这里dep的配置中spec.template.spec.container.image=nginx，我没有设置具体版本</p></blockquote><h2 id="确认当前版本">确认当前版本</h2><p>查看版本历史，使用kubectl rollout history</p><blockquote><p>这里涉及到 rollout 指令，回滚的时候也会用到.</p></blockquote><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         &lt;none&gt;</code></pre><p>上述结果中，版本1没有添加 CHANGE-CAUSE 信息</p><p>添加注释信息，使用kubectl annotate deployment/&lt;&gt; <a href="http://kubernetes.io/change-cause=%22first%22">kubernetes.io/change-cause=“first”</a></p><pre><code class="language-bash">kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;first&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first</code></pre><blockquote><p>你也可以在执行命令的时候，追加 --record 来将执行的命令写入到当前change-cause</p><p>如果你不小心写错了，你可以通过添加<code>-</code> 来删除注解，就像下面这样，命令最后有一个<code>-</code></p><p>kubectl annotate deployment/nginx-dep &lt;注解key&gt;-</p></blockquote><h2 id="更新版本">更新版本</h2><p>发布版本1.19.2，将deployment中所有nginx的image版本从默认变更为1.19.2。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.19.2kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.19.2&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.2</code></pre><blockquote><p>除了使用set指令修改，你也可以通过edit修改yaml配置的方式进行</p><p>kubectl edit deployment/nginx-dep</p></blockquote><p>更新状态查看，可运行：</p><pre><code class="language-bash">kubectl rollout status deployment/nginx-dep</code></pre><p>更深层的rs状态查看，可运行：</p><pre><code class="language-bash">kubectl get rs -l app=nginx</code></pre><blockquote><p>-l 是调用标签过滤</p></blockquote><p>再发布一个版本1.18，将deployment中所有nginx的image版本从1.19.2变更为1.18。</p><pre><code class="language-bash">kubectl set image deployment/nginx-dep nginx=nginx:1.18kubectl annotate deployment/nginx-dep kubernetes.io/change-cause=&quot;nginx image to 1.18&quot;kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE1         first2         nginx image to 1.19.23         nginx image to 1.18</code></pre><p>这样,我们总共有三个版本，你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-dep --revision=&lt;num&gt;</code></pre><h2 id="回滚版本">回滚版本</h2><p>我们选择将nginx版本回滚到first第一个版本.</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-dep --to-revision=1kubectl rollout history deployment/nginx-dep#---deployment.apps/nginx-dep REVISION  CHANGE-CAUSE2         nginx image to 1.19.23         nginx image to 1.184         first</code></pre><h2 id="更新策略">更新策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的，就关多少个老的</p></blockquote><h2 id="最终样子">最终样子</h2><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-dep  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: rollingUpdate # 定义变更策略. 除了 rollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字  template:    metadata:      labels:        app: nginx    spec:      containers:      - name: nginx        image: nginx        ports:        - containerPort: 80</code></pre><h2 id="暂停服务">暂停服务</h2><pre><code class="language-yaml">kubectl rollout pause deployment/nginx-dep</code></pre><p>启用暂停后，再启用更新，则新的更新在暂停期间不会产生任何效果</p><h2 id="恢复服务">恢复服务</h2><pre><code class="language-yaml">kubectl rollout resume deployment/nginx-dep</code></pre><p>启用恢复后，则暂停期间启用的更新将开始发挥作用</p><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history deployment/&lt;&gt; # 查看对象历史kubectl rollout undo deployment/&lt;&gt; --to-revision=&lt;&gt; # 对象版本回退kubectl rollout status deployment/&lt;&gt;# 展示执行状态kubectl rollout pause deployment/&lt;&gt; # 暂停此次版本操作行为kubectl rollout resume deployment/&lt;&gt; # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre><p>更新过程：</p><ul><li>创建新的replicaset</li><li>将新的replicaset扩展</li><li>将旧的replicaset缩容</li><li>新的replicaset对应的pod已就绪或可用</li></ul><p>当<code>kubectl rollout status deployment/&lt;&gt;</code>命令执行完后，$? 状态为 0，则说明 deployment 处于 complete。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> deployment </tag>
             
@@ -1839,9 +1839,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -1941,37 +1941,6 @@
     
     
     <entry>
-      <title>k8s☞04pod钩子函数</title>
-      <link href="posts/3ec72f7e/"/>
-      <url>posts/3ec72f7e/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。</p><p>k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop</p><h2 id="postStart">postStart</h2><ol><li>它将在容器创建后立即运行，但不保证在 ENTRYPOINT 之前运行</li><li>它是同步状态，如果它卡住，pod 无法达到 running 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: poststart-testspec:  containers:  - name: poststart-test    image: nginx    lifecycle:      postStart:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is postStart-test &gt; /usr/share/nginx/html/index.html&quot;]</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl apply -f poststart-test.yamlpod/poststart-test created[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS              RESTARTS   AGE   IP       NODE    NOMINATED NODE   READINESS GATESpoststart-test   0/1     ContainerCreating   0          7s    &lt;none&gt;   k8s02   &lt;none&gt;           &lt;none&gt;[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATESpoststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none2[root@k8s00 ~]# curl 10.97.2.6This is postStart-test</code></pre><h2 id="preStop">preStop</h2><ol><li>它将在容器结束之前运行</li><li>它是同步的，如果它卡住，pod 将停留在 running 状态，无法达到 failed 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: prestop-testspec:  containers:  - name: prestop-test    image: nginx    volumeMounts:    - name: prestop-test-tmp      mountPath: /usr/share    lifecycle:      preStop:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is preStop &gt; /usr/share/message&quot;]  volumes:  - name: prestop-test-tmp    hostPath:      path: /tmp</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl delete pod prestop-test# 这里 prestop-test 被调度到 k8s02[root@k8s02 ~]# cat /tmp/messageThis is preStop</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
-            
-            <tag> k8s </tag>
-            
-            <tag> pod </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>k8s☞03pod</title>
       <link href="posts/94518966/"/>
       <url>posts/94518966/</url>
@@ -1990,9 +1959,40 @@
       
         <tags>
             
+            <tag> k8s </tag>
+            
             <tag> 容器 </tag>
             
+            <tag> pod </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞04pod钩子函数</title>
+      <link href="posts/3ec72f7e/"/>
+      <url>posts/3ec72f7e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。</p><p>k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop</p><h2 id="postStart">postStart</h2><ol><li>它将在容器创建后立即运行，但不保证在 ENTRYPOINT 之前运行</li><li>它是同步状态，如果它卡住，pod 无法达到 running 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: poststart-testspec:  containers:  - name: poststart-test    image: nginx    lifecycle:      postStart:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is postStart-test &gt; /usr/share/nginx/html/index.html&quot;]</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl apply -f poststart-test.yamlpod/poststart-test created[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS              RESTARTS   AGE   IP       NODE    NOMINATED NODE   READINESS GATESpoststart-test   0/1     ContainerCreating   0          7s    &lt;none&gt;   k8s02   &lt;none&gt;           &lt;none&gt;[root@k8s00 ~]# kubectl get pod -o wideNAME             READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATESpoststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none2[root@k8s00 ~]# curl 10.97.2.6This is postStart-test</code></pre><h2 id="preStop">preStop</h2><ol><li>它将在容器结束之前运行</li><li>它是同步的，如果它卡住，pod 将停留在 running 状态，无法达到 failed 状态</li><li>它位于容器 lifecycle 中</li></ol><p>示例：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: prestop-testspec:  containers:  - name: prestop-test    image: nginx    volumeMounts:    - name: prestop-test-tmp      mountPath: /usr/share    lifecycle:      preStop:        exec:          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is preStop &gt; /usr/share/message&quot;]  volumes:  - name: prestop-test-tmp    hostPath:      path: /tmp</code></pre><pre><code class="language-bash">[root@k8s00 ~]# kubectl delete pod prestop-test# 这里 prestop-test 被调度到 k8s02[root@k8s02 ~]# cat /tmp/messageThis is preStop</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -2021,9 +2021,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2050,9 +2050,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2079,9 +2079,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2445,35 +2445,6 @@
     
     
     <entry>
-      <title>redis☞安装</title>
-      <link href="posts/65ab632a/"/>
-      <url>posts/65ab632a/</url>
-      
-        <content type="html"><![CDATA[<h4 id="docker-安装">docker 安装</h4><p><a href="https://registry.hub.docker.com/_/redis">Docker Hub</a></p><pre><code class="language-bash">redisName=redisversionTag=6dataPath=/export/docker-data-redismkdir -p $&#123;dataPath&#125;# redis.conf 请参考官方默认配置文档，默认配置文档地址： https://redis.io/topics/configwget -P $&#123;dataPath&#125; https://raw.githubusercontent.com/redis/redis/$&#123;versionTag&#125;.0/redis.confdocker run --name $&#123;redisName&#125;_$&#123;versionTag&#125; \--mount &quot;type=bind, src=$&#123;dataPath&#125;, dst=/data&quot; \-p 6379:6379 \--restart always \-d redis:$&#123;versionTag&#125; redis-server /data/redis.conf</code></pre><p>ℹ️配置改动：<code>bind 0.0.0.0</code></p><h4 id="编译安装">编译安装</h4><pre><code class="language-shell">#!/bin/bash# by zyh# 2018-06-21# DownUrl: redis源码包# RedisBaseDir： redis安装路径# RedisPort: redis端口# RedisMaxMem：redis内存限制# ZabbixBase: zabbix 根路径# 安装完毕后，会输出# 1. redis信息# 2. zabbix需要额外手动添加的命令， 并在zabbix_server_web里，给机器关联上 &lt;Template Redis Auto Discovert Active mode&gt; 模板# 3. monit需要额外手动添加的配置BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`DownUrl=http://download.redis.io/releases/redis-stable.tar.gzRedisMaxMem=1gRedisPort=6379RedisBaseDir=/export/redis_$&#123;RedisPort&#125;ZabbixBase=/etc/zabbixif [[ $&#123;ZabbixBase&#125; == '/usr/local/zabbix' ]];then    ZabbixShell=$&#123;ZabbixBase&#125;/shell    ZabbixEtc=$&#123;ZabbixBase&#125;/etc/zabbix_agentd.conf.d/redis.confelse    ZabbixShell=/etc/zabbix/shell    ZabbixEtc=/etc/zabbix/zabbix_agentd.d/redis.conffiRedisBaseName=$&#123;RedisBaseDir##*/&#125;export TOP_PID=$$trap 'exit 1' TERMexit_script()&#123;    kill -s TERM $TOP_PID&#125;yum install gcc-c++ -y[[ -d $&#123;RedisBaseDir&#125; ]] &amp;&amp; echo &quot;$&#123;RedisBaseDir&#125;已存在&quot; &amp;&amp; exit_scriptss -tnalp | grep redis | awk '&#123;print $4&#125;' | awk -F':' '&#123;print $2&#125;' | while read line;do    [[ $line -eq $&#123;RedisPort&#125; ]] &amp;&amp; echo &quot;$&#123;RedisPort&#125;已被占用&quot; &amp;&amp; exit_scriptdonecd $&#123;BaseDir&#125; &amp;&amp; mkdir rediswget $&#123;DownUrl&#125; -O redis.tar.gztar xf redis.tar.gz --strip-components 1 -C rediscd redismake PREFIX=$&#123;RedisBaseDir&#125; installmkdir $&#123;RedisBaseDir&#125;/&#123;etc,data,logs&#125;cat&gt;$&#123;RedisBaseDir&#125;/etc/redis.conf &lt;&lt;EOFbind 0.0.0.0protected-mode yesport $&#123;RedisPort&#125;tcp-backlog 511timeout 0tcp-keepalive 300daemonize yessupervised nopidfile $&#123;RedisBaseDir&#125;/redis.pidloglevel warninglogfile &quot;$&#123;RedisBaseDir&#125;/logs/redis.log&quot;databases 16always-show-logo yessave 900 1save 300 10save 60 10000stop-writes-on-bgsave-error yesrdbcompression yesrdbchecksum yesdbfilename redis_$&#123;RedisPort&#125;.rdbdir $&#123;RedisBaseDir&#125;/data/slave-serve-stale-data yesslave-read-only yesrepl-diskless-sync norepl-diskless-sync-delay 5repl-disable-tcp-nodelay noslave-priority 100rename-command FLUSHDB GOD_FLUSHDBrename-command FLUSHALL GOD_FLUSHALLrename-command CONFIG GOD_CONFIGrename-command KEYS GOD_KEYSmaxmemory $&#123;RedisMaxMem&#125;maxmemory-policy allkeys-lrulazyfree-lazy-eviction nolazyfree-lazy-expire nolazyfree-lazy-server-del noslave-lazy-flush noappendonly noappendfilename &quot;appendonly.aof&quot;appendfsync everysecno-appendfsync-on-rewrite noauto-aof-rewrite-percentage 100auto-aof-rewrite-min-size 64mbaof-load-truncated yesaof-use-rdb-preamble nolua-time-limit 5000slowlog-log-slower-than 10000slowlog-max-len 128latency-monitor-threshold 0notify-keyspace-events &quot;&quot;hash-max-ziplist-entries 512hash-max-ziplist-value 64list-max-ziplist-size -2list-compress-depth 0set-max-intset-entries 512zset-max-ziplist-entries 128zset-max-ziplist-value 64hll-sparse-max-bytes 3000activerehashing yesclient-output-buffer-limit normal 0 0 0client-output-buffer-limit slave 256mb 64mb 60client-output-buffer-limit pubsub 32mb 8mb 60hz 10aof-rewrite-incremental-fsync yesEOFcat&gt;$&#123;RedisBaseDir&#125;/redis.sh &lt;&lt; EOF#!/bin/bash# Simple Redis init.d script conceived to work on Linux systems# as it does use of the /proc filesystem.BASEDIR=$&#123;RedisBaseDir&#125;REDISPORT=$&#123;RedisPort&#125;EXEC=\$BASEDIR/bin/redis-serverCLIEXEC=\$BASEDIR/bin/redis-cliPIDFILE=\$BASEDIR/redis.pidCONF=&quot;\$BASEDIR/etc/redis.conf&quot;case &quot;\$1&quot; in    start)        [[ -f \$PIDFILE ]] &amp;&amp; kill -0 \`cat \$PIDFILE\` 2&gt;&gt;\$BASEDIR/crash.log &amp;&amp; echo &quot;\$PIDFILE exists, process is already running or crashed&quot; || &#123;                echo &quot;Starting Redis server...&quot;                \$EXEC \$CONF        &#125;        ;;    stop)        if [ ! -f \$PIDFILE ]        then                echo &quot;\$PIDFILE does not exist, process is not running&quot;        else                PID=\$(cat \$PIDFILE)                echo &quot;Stopping ...&quot;                \$CLIEXEC -p \$REDISPORT shutdown                while [ -x /proc/\$&#123;PID&#125; ]                do                    echo &quot;Waiting for Redis to shutdown ...&quot;                    sleep 1                done                echo &quot;Redis stopped&quot;        fi        ;;    *)        echo &quot;Please use start or stop as first argument&quot;        ;;esacEOFchmod u+x $&#123;RedisBaseDir&#125;/redis.sh#修改内核参数grep -q net.core.somaxconn /etc/sysctl.conf || echo &quot;net.core.somaxconn = 511&quot; &gt;&gt; /etc/sysctl.confgrep -q vm.overcommit_memory /etc/sysctl.conf || &#123;    echo &quot;vm.overcommit_memory = 1&quot; &gt;&gt; /etc/sysctl.conf &amp;&amp; sysctl -p&#125;grep -q '/sys/kernel/mm/transparent_hugepage/enabled' /etc/rc.local || &#123;    echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled    echo 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' &gt;&gt; /etc/rc.local&#125;#修改zabbix监控cat&gt;$&#123;ZabbixEtc&#125;&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFmkdir $&#123;ZabbixShell&#125;cat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashREDISPATH=&quot;/export/redis/bin/redis-cli&quot;HOST=$1PORT=$2REDIS_INFO=&quot;$REDISPATH -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$REDISPATH -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i '2s#/export/redis#'&quot;$&#123;RedisBaseDir&#125;&quot;'#' $&#123;ZabbixShell&#125;/redis_info.shecho '--------------------------------------------------我是 redis 信息-----------------------------------------------------------'echo 'redis相关信息如下：'echo &quot;根路径：$&#123;RedisBaseDir&#125;启动脚本：$&#123;RedisBaseDir&#125;/redis.sh&quot;echo '--------------------------------------------------我是 zabbix 监控信息----------------------------------------------------------'echo '请先安装 zabbix.'echo 'zabbix监控因使用了ss命令，故而需要开启sudo相关信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '---------------------------------------------------我是 monit 监控信息----------------------------------------------------------'echo '请先安装 monit.'echo 'monit配置文件如下:'echo &quot;check process $&#123;RedisBaseName&#125; with pidfile $&#123;RedisBaseDir&#125;/redis.pid  start program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh start\&quot;  stop program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh stop\&quot;if changed pid then alert&quot;</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 数据库 </category>
-          
-          <category> redis </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 安装 </tag>
-            
-            <tag> redis </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>日志☞logrotate安装</title>
       <link href="posts/421d605e/"/>
       <url>posts/421d605e/</url>
@@ -2503,56 +2474,27 @@
     
     
     <entry>
-      <title>zabbix☞web监控</title>
-      <link href="posts/3d20f83e/"/>
-      <url>posts/3d20f83e/</url>
+      <title>redis☞安装</title>
+      <link href="posts/65ab632a/"/>
+      <url>posts/65ab632a/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
+        <content type="html"><![CDATA[<h4 id="docker-安装">docker 安装</h4><p><a href="https://registry.hub.docker.com/_/redis">Docker Hub</a></p><pre><code class="language-bash">redisName=redisversionTag=6dataPath=/export/docker-data-redismkdir -p $&#123;dataPath&#125;# redis.conf 请参考官方默认配置文档，默认配置文档地址： https://redis.io/topics/configwget -P $&#123;dataPath&#125; https://raw.githubusercontent.com/redis/redis/$&#123;versionTag&#125;.0/redis.confdocker run --name $&#123;redisName&#125;_$&#123;versionTag&#125; \--mount &quot;type=bind, src=$&#123;dataPath&#125;, dst=/data&quot; \-p 6379:6379 \--restart always \-d redis:$&#123;versionTag&#125; redis-server /data/redis.conf</code></pre><p>ℹ️配置改动：<code>bind 0.0.0.0</code></p><h4 id="编译安装">编译安装</h4><pre><code class="language-shell">#!/bin/bash# by zyh# 2018-06-21# DownUrl: redis源码包# RedisBaseDir： redis安装路径# RedisPort: redis端口# RedisMaxMem：redis内存限制# ZabbixBase: zabbix 根路径# 安装完毕后，会输出# 1. redis信息# 2. zabbix需要额外手动添加的命令， 并在zabbix_server_web里，给机器关联上 &lt;Template Redis Auto Discovert Active mode&gt; 模板# 3. monit需要额外手动添加的配置BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`DownUrl=http://download.redis.io/releases/redis-stable.tar.gzRedisMaxMem=1gRedisPort=6379RedisBaseDir=/export/redis_$&#123;RedisPort&#125;ZabbixBase=/etc/zabbixif [[ $&#123;ZabbixBase&#125; == '/usr/local/zabbix' ]];then    ZabbixShell=$&#123;ZabbixBase&#125;/shell    ZabbixEtc=$&#123;ZabbixBase&#125;/etc/zabbix_agentd.conf.d/redis.confelse    ZabbixShell=/etc/zabbix/shell    ZabbixEtc=/etc/zabbix/zabbix_agentd.d/redis.conffiRedisBaseName=$&#123;RedisBaseDir##*/&#125;export TOP_PID=$$trap 'exit 1' TERMexit_script()&#123;    kill -s TERM $TOP_PID&#125;yum install gcc-c++ -y[[ -d $&#123;RedisBaseDir&#125; ]] &amp;&amp; echo &quot;$&#123;RedisBaseDir&#125;已存在&quot; &amp;&amp; exit_scriptss -tnalp | grep redis | awk '&#123;print $4&#125;' | awk -F':' '&#123;print $2&#125;' | while read line;do    [[ $line -eq $&#123;RedisPort&#125; ]] &amp;&amp; echo &quot;$&#123;RedisPort&#125;已被占用&quot; &amp;&amp; exit_scriptdonecd $&#123;BaseDir&#125; &amp;&amp; mkdir rediswget $&#123;DownUrl&#125; -O redis.tar.gztar xf redis.tar.gz --strip-components 1 -C rediscd redismake PREFIX=$&#123;RedisBaseDir&#125; installmkdir $&#123;RedisBaseDir&#125;/&#123;etc,data,logs&#125;cat&gt;$&#123;RedisBaseDir&#125;/etc/redis.conf &lt;&lt;EOFbind 0.0.0.0protected-mode yesport $&#123;RedisPort&#125;tcp-backlog 511timeout 0tcp-keepalive 300daemonize yessupervised nopidfile $&#123;RedisBaseDir&#125;/redis.pidloglevel warninglogfile &quot;$&#123;RedisBaseDir&#125;/logs/redis.log&quot;databases 16always-show-logo yessave 900 1save 300 10save 60 10000stop-writes-on-bgsave-error yesrdbcompression yesrdbchecksum yesdbfilename redis_$&#123;RedisPort&#125;.rdbdir $&#123;RedisBaseDir&#125;/data/slave-serve-stale-data yesslave-read-only yesrepl-diskless-sync norepl-diskless-sync-delay 5repl-disable-tcp-nodelay noslave-priority 100rename-command FLUSHDB GOD_FLUSHDBrename-command FLUSHALL GOD_FLUSHALLrename-command CONFIG GOD_CONFIGrename-command KEYS GOD_KEYSmaxmemory $&#123;RedisMaxMem&#125;maxmemory-policy allkeys-lrulazyfree-lazy-eviction nolazyfree-lazy-expire nolazyfree-lazy-server-del noslave-lazy-flush noappendonly noappendfilename &quot;appendonly.aof&quot;appendfsync everysecno-appendfsync-on-rewrite noauto-aof-rewrite-percentage 100auto-aof-rewrite-min-size 64mbaof-load-truncated yesaof-use-rdb-preamble nolua-time-limit 5000slowlog-log-slower-than 10000slowlog-max-len 128latency-monitor-threshold 0notify-keyspace-events &quot;&quot;hash-max-ziplist-entries 512hash-max-ziplist-value 64list-max-ziplist-size -2list-compress-depth 0set-max-intset-entries 512zset-max-ziplist-entries 128zset-max-ziplist-value 64hll-sparse-max-bytes 3000activerehashing yesclient-output-buffer-limit normal 0 0 0client-output-buffer-limit slave 256mb 64mb 60client-output-buffer-limit pubsub 32mb 8mb 60hz 10aof-rewrite-incremental-fsync yesEOFcat&gt;$&#123;RedisBaseDir&#125;/redis.sh &lt;&lt; EOF#!/bin/bash# Simple Redis init.d script conceived to work on Linux systems# as it does use of the /proc filesystem.BASEDIR=$&#123;RedisBaseDir&#125;REDISPORT=$&#123;RedisPort&#125;EXEC=\$BASEDIR/bin/redis-serverCLIEXEC=\$BASEDIR/bin/redis-cliPIDFILE=\$BASEDIR/redis.pidCONF=&quot;\$BASEDIR/etc/redis.conf&quot;case &quot;\$1&quot; in    start)        [[ -f \$PIDFILE ]] &amp;&amp; kill -0 \`cat \$PIDFILE\` 2&gt;&gt;\$BASEDIR/crash.log &amp;&amp; echo &quot;\$PIDFILE exists, process is already running or crashed&quot; || &#123;                echo &quot;Starting Redis server...&quot;                \$EXEC \$CONF        &#125;        ;;    stop)        if [ ! -f \$PIDFILE ]        then                echo &quot;\$PIDFILE does not exist, process is not running&quot;        else                PID=\$(cat \$PIDFILE)                echo &quot;Stopping ...&quot;                \$CLIEXEC -p \$REDISPORT shutdown                while [ -x /proc/\$&#123;PID&#125; ]                do                    echo &quot;Waiting for Redis to shutdown ...&quot;                    sleep 1                done                echo &quot;Redis stopped&quot;        fi        ;;    *)        echo &quot;Please use start or stop as first argument&quot;        ;;esacEOFchmod u+x $&#123;RedisBaseDir&#125;/redis.sh#修改内核参数grep -q net.core.somaxconn /etc/sysctl.conf || echo &quot;net.core.somaxconn = 511&quot; &gt;&gt; /etc/sysctl.confgrep -q vm.overcommit_memory /etc/sysctl.conf || &#123;    echo &quot;vm.overcommit_memory = 1&quot; &gt;&gt; /etc/sysctl.conf &amp;&amp; sysctl -p&#125;grep -q '/sys/kernel/mm/transparent_hugepage/enabled' /etc/rc.local || &#123;    echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled    echo 'echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled' &gt;&gt; /etc/rc.local&#125;#修改zabbix监控cat&gt;$&#123;ZabbixEtc&#125;&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFmkdir $&#123;ZabbixShell&#125;cat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashREDISPATH=&quot;/export/redis/bin/redis-cli&quot;HOST=$1PORT=$2REDIS_INFO=&quot;$REDISPATH -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$REDISPATH -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i '2s#/export/redis#'&quot;$&#123;RedisBaseDir&#125;&quot;'#' $&#123;ZabbixShell&#125;/redis_info.shecho '--------------------------------------------------我是 redis 信息-----------------------------------------------------------'echo 'redis相关信息如下：'echo &quot;根路径：$&#123;RedisBaseDir&#125;启动脚本：$&#123;RedisBaseDir&#125;/redis.sh&quot;echo '--------------------------------------------------我是 zabbix 监控信息----------------------------------------------------------'echo '请先安装 zabbix.'echo 'zabbix监控因使用了ss命令，故而需要开启sudo相关信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '---------------------------------------------------我是 monit 监控信息----------------------------------------------------------'echo '请先安装 monit.'echo 'monit配置文件如下:'echo &quot;check process $&#123;RedisBaseName&#125; with pidfile $&#123;RedisBaseDir&#125;/redis.pid  start program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh start\&quot;  stop program = \&quot;$&#123;RedisBaseDir&#125;/redis.sh stop\&quot;if changed pid then alert&quot;</code></pre>]]></content>
       
       
       <categories>
           
-          <category> 监控 </category>
+          <category> 数据库 </category>
           
-          <category> zabbix </category>
+          <category> redis </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> zabbix </tag>
+            <tag> 安装 </tag>
             
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞agent和proxy（yum）</title>
-      <link href="posts/1587f6e8/"/>
-      <url>posts/1587f6e8/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
+            <tag> redis </tag>
             
         </tags>
       
@@ -2566,6 +2508,35 @@
       <url>posts/b35b5965/</url>
       
         <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞web监控</title>
+      <link href="posts/3d20f83e/"/>
+      <url>posts/3d20f83e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
       
       
       <categories>
@@ -2611,6 +2582,35 @@
             <tag> redis </tag>
             
             <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞agent和proxy（yum）</title>
+      <link href="posts/1587f6e8/"/>
+      <url>posts/1587f6e8/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
             
         </tags>
       
@@ -2935,11 +2935,11 @@
     
     
     <entry>
-      <title>django☞记忆点</title>
-      <link href="posts/3f8b5448/"/>
-      <url>posts/3f8b5448/</url>
+      <title>django☞管理静态文件</title>
+      <link href="posts/6a4df400/"/>
+      <url>posts/6a4df400/</url>
       
-        <content type="html"><![CDATA[<h2 id="git文件">.git文件</h2><pre><code class="language-bash"># Django #*.log*.pot*.pyc__pycache__mediastatic# Backup files #*.bak# other.vscode.gitdblog</code></pre><h2 id="Dockerfile">Dockerfile</h2><pre><code class="language-bash">FROM python:3.8-alpineLABEL maintainer=&quot;aaa103439@hotmail.com&quot;WORKDIR /app COPY . /appRUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories &amp;&amp; \    apk update &amp;&amp; \    apk add gcc musl-dev jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev libffi-dev openssl-dev &amp;&amp; \    pip install --upgrade pip &amp;&amp; pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/CMD [&quot;sh&quot;,&quot;/app/start.sh&quot;]</code></pre><h2 id="生成-settings-SECRET-KEY">生成 settings.SECRET_KEY</h2><pre><code class="language-python">#!/usr/bin/env python# coding=utf-8from django.core.management.utils import  get_random_secret_keyprint(&quot;务必妥善保管好此密码&quot;)print(get_random_secret_key())</code></pre><h2 id="调用-fontawesome-free-图标库">调用 fontawesome-free 图标库</h2><pre><code class="language-bash">pip install fontawesome-free</code></pre><p><code>settings.INSTALLED_APPS</code> 中加入<code>fontawesome-free</code></p><h2 id="外键">外键</h2><p>外键，顾名思义不是自己的字段，而是引用其它表的字段。</p><blockquote><p>外键不是通过字段名定义的，而是通过【外键约束】定义</p></blockquote><p>外键可以实现一对多、多对多和一对一的关系。</p><p>外键既可以通过数据库来约束，也可以不设置约束，仅依靠应用程序的逻辑来保证。</p><p>学生表【student】有主键【sid】，成绩表也有主键【sid】, 学生表和成绩表是1对1的关系</p><p><img src="/posts/3f8b5448/image-20210716114155366.png" alt="image-20210716114155366"></p><p>如果没有【外键约束】的规则建立，则两个表在数据库看来是没有关系的，即：要保持两个表的关系，则需要应用程序去保证逻辑正确，也就是说，应用程序不能插入相同学号的数据到表里。</p><p>若应用程序不想去维持，则就需要数据库【外键约束】去维持。</p><p>在没有django的时候，你需要直接写入SQL语句去实现【外键约束】，例如</p><pre><code class="language-sql">ALTER TABLE scoresADD CONSTRAINT fk_student_sidFOREIGN KEY (student_sid)REFERENCES student (sid);</code></pre><p>django创建外键约束的方式如下，成绩表的【sid】字段定义如下</p><pre><code class="language-python">sid = models.OneToOneField('student', null=True, on_delete=models.CASCADE)</code></pre><h3 id="一对一-models-OneToOneField">一对一 models.OneToOneField()</h3><p>常用于“扩展”另一个模型的主键，就如同上述例子，扩展了学生的额外属性【成绩】</p><h3 id="一对多-models-ForeignKey">一对多 models.ForeignKey()</h3><p>常用于A包含B，外键定义在B表中，引用A表的主键</p><h3 id="多对多-ManyToManyField">多对多 ManyToManyField()</h3><p>你中有我，我中有你，一个班有多个老师，一个老师可以教多个班</p><h3 id="查询">查询</h3><h3 id="on-delete">on_delete</h3><p>字面意思，当删除的时候，应该怎么做</p><p><code>CASCADE</code>：删除</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://docs.djangoproject.com/zh-hans/3.1/howto/static-files/">管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)</a></p><p><a href="https://docs.djangoproject.com/zh-hans/3.1/ref/views/">内置视图 | Django 文档 | Django (djangoproject.com)</a></p><h2 id="通用设置">通用设置</h2><p>项目.settings.py中</p><pre><code class="language-python">STATIC_URL = '/static/'if DEBUG:    STATICFILES_DIRS = [        BASE_DIR / &quot;static&quot;,    ]else:    STATIC_ROOT = BASE_DIR / &quot;static&quot;MEDIA_URL = '/media/'MEDIA_ROOT = BASE_DIR / &quot;media</code></pre><h2 id="DEBUG开启">DEBUG开启</h2><p>无需其它改动</p><h2 id="DEBUG关闭">DEBUG关闭</h2><p>项目.urls.py中</p><pre><code class="language-python">from django.views.static import servefrom django.urls import path, include, re_pathfrom . import settingsif not settings.DEBUG:    urlpatterns += [        re_path(r'^media/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.MEDIA_ROOT,        &#125;),        re_path(r'^static/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.STATIC_ROOT,        &#125;),    ]</code></pre><h2 id="部署静态文件">部署静态文件</h2><pre><code class="language-bash">python manage.py collectstatic --noinput</code></pre>]]></content>
       
       
       <categories>
@@ -2964,11 +2964,11 @@
     
     
     <entry>
-      <title>django☞管理静态文件</title>
-      <link href="posts/6a4df400/"/>
-      <url>posts/6a4df400/</url>
+      <title>django☞记忆点</title>
+      <link href="posts/3f8b5448/"/>
+      <url>posts/3f8b5448/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://docs.djangoproject.com/zh-hans/3.1/howto/static-files/">管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)</a></p><p><a href="https://docs.djangoproject.com/zh-hans/3.1/ref/views/">内置视图 | Django 文档 | Django (djangoproject.com)</a></p><h2 id="通用设置">通用设置</h2><p>项目.settings.py中</p><pre><code class="language-python">STATIC_URL = '/static/'if DEBUG:    STATICFILES_DIRS = [        BASE_DIR / &quot;static&quot;,    ]else:    STATIC_ROOT = BASE_DIR / &quot;static&quot;MEDIA_URL = '/media/'MEDIA_ROOT = BASE_DIR / &quot;media</code></pre><h2 id="DEBUG开启">DEBUG开启</h2><p>无需其它改动</p><h2 id="DEBUG关闭">DEBUG关闭</h2><p>项目.urls.py中</p><pre><code class="language-python">from django.views.static import servefrom django.urls import path, include, re_pathfrom . import settingsif not settings.DEBUG:    urlpatterns += [        re_path(r'^media/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.MEDIA_ROOT,        &#125;),        re_path(r'^static/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.STATIC_ROOT,        &#125;),    ]</code></pre><h2 id="部署静态文件">部署静态文件</h2><pre><code class="language-bash">python manage.py collectstatic --noinput</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="git文件">.git文件</h2><pre><code class="language-bash"># Django #*.log*.pot*.pyc__pycache__mediastatic# Backup files #*.bak# other.vscode.gitdblog</code></pre><h2 id="Dockerfile">Dockerfile</h2><pre><code class="language-bash">FROM python:3.8-alpineLABEL maintainer=&quot;aaa103439@hotmail.com&quot;WORKDIR /app COPY . /appRUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories &amp;&amp; \    apk update &amp;&amp; \    apk add gcc musl-dev jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev libffi-dev openssl-dev &amp;&amp; \    pip install --upgrade pip &amp;&amp; pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/CMD [&quot;sh&quot;,&quot;/app/start.sh&quot;]</code></pre><h2 id="生成-settings-SECRET-KEY">生成 settings.SECRET_KEY</h2><pre><code class="language-python">#!/usr/bin/env python# coding=utf-8from django.core.management.utils import  get_random_secret_keyprint(&quot;务必妥善保管好此密码&quot;)print(get_random_secret_key())</code></pre><h2 id="调用-fontawesome-free-图标库">调用 fontawesome-free 图标库</h2><pre><code class="language-bash">pip install fontawesome-free</code></pre><p><code>settings.INSTALLED_APPS</code> 中加入<code>fontawesome-free</code></p><h2 id="外键">外键</h2><p>外键，顾名思义不是自己的字段，而是引用其它表的字段。</p><blockquote><p>外键不是通过字段名定义的，而是通过【外键约束】定义</p></blockquote><p>外键可以实现一对多、多对多和一对一的关系。</p><p>外键既可以通过数据库来约束，也可以不设置约束，仅依靠应用程序的逻辑来保证。</p><p>学生表【student】有主键【sid】，成绩表也有主键【sid】, 学生表和成绩表是1对1的关系</p><p><img src="/posts/3f8b5448/image-20210716114155366.png" alt="image-20210716114155366"></p><p>如果没有【外键约束】的规则建立，则两个表在数据库看来是没有关系的，即：要保持两个表的关系，则需要应用程序去保证逻辑正确，也就是说，应用程序不能插入相同学号的数据到表里。</p><p>若应用程序不想去维持，则就需要数据库【外键约束】去维持。</p><p>在没有django的时候，你需要直接写入SQL语句去实现【外键约束】，例如</p><pre><code class="language-sql">ALTER TABLE scoresADD CONSTRAINT fk_student_sidFOREIGN KEY (student_sid)REFERENCES student (sid);</code></pre><p>django创建外键约束的方式如下，成绩表的【sid】字段定义如下</p><pre><code class="language-python">sid = models.OneToOneField('student', null=True, on_delete=models.CASCADE)</code></pre><h3 id="一对一-models-OneToOneField">一对一 models.OneToOneField()</h3><p>常用于“扩展”另一个模型的主键，就如同上述例子，扩展了学生的额外属性【成绩】</p><h3 id="一对多-models-ForeignKey">一对多 models.ForeignKey()</h3><p>常用于A包含B，外键定义在B表中，引用A表的主键</p><h3 id="多对多-ManyToManyField">多对多 ManyToManyField()</h3><p>你中有我，我中有你，一个班有多个老师，一个老师可以教多个班</p><h3 id="查询">查询</h3><h3 id="on-delete">on_delete</h3><p>字面意思，当删除的时候，应该怎么做</p><p><code>CASCADE</code>：删除</p>]]></content>
       
       
       <categories>
@@ -3846,9 +3846,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -3862,64 +3862,6 @@
       <url>posts/1a545f72/</url>
       
         <content type="html"><![CDATA[<h2 id="采集工具">采集工具</h2><p><a href="https://github.com/danielqsj/kafka_exporter">https://github.com/danielqsj/kafka_exporter</a></p><h3 id="安装">安装</h3><pre><code class="language-bash">appVersion=1.4.2mkdir -p /export/srccd /export/srccurl &quot;https://github.com/danielqsj/kafka_exporter/releases/download/v$&#123;appVersion&#125;/kafka_exporter-$&#123;appVersion&#125;.linux-amd64.tar.gz&quot; -o kafka_exporter.tgztar xf kafka_exporter.tgz &amp;&amp; mv kafka_exporter-$&#123;appVersion&#125;.linux-amd64 ../kafka_exportercd ../kafka_exporter./kafka_exporter --kafka.server=hadoop001:8123 --sasl.enabled --sasl.username=&quot;broker&quot; --sasl.password=&quot;broker&quot; --sasl.mechanism=&quot;scram-sha256&quot;</code></pre><p>ℹ️默认<code>kafka_exporter</code>监听在<code>9308</code>端口上.</p><h2 id="监控系统">监控系统</h2><h3 id="Prometheus">Prometheus</h3><p>主配置里加入</p><pre><code class="language-yml">  - job_name: &quot;kafka_exporter&quot;    metrics_path: /metrics    static_configs:      - targets: ['kafka_exporter_ip_port']        labels:          instance: it-zz-kafka-cluster</code></pre><p><code>kafka_exporter_ip_port</code>换成真实IP和端口</p><p>告警规则里加入</p><p><a href="https://awesome-prometheus-alerts.grep.to/rules#kafka-1">https://awesome-prometheus-alerts.grep.to/rules#kafka-1</a></p><pre><code class="language-yml">  - alert: KafkaTopicsReplicas    expr: sum(kafka_topic_partition_in_sync_replica) by (topic) &lt; 3    for: 0m    labels:      severity: critical    annotations:      summary: Kafka topics replicas (instance &#123;&#123; $labels.instance &#125;&#125;)      description: &quot;Kafka topic in-sync partition\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;  - alert: KafkaConsumersGroup    expr: sum(kafka_consumergroup_lag) by (consumergroup) &gt; 50    for: 1m    labels:      severity: critical    annotations:      summary: Kafka consumers group (instance &#123;&#123; $labels.instance &#125;&#125;)      description: &quot;Kafka consumers group\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h3 id="grafana">grafana</h3><p>Grafana Dashboard ID: 7589, name: Kafka Exporter Overview.</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 消息 </category>
-          
-          <category> kafka </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 安装 </tag>
-            
-            <tag> kafka </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>003-kafka基本认证</title>
-      <link href="posts/2fb0e26c/"/>
-      <url>posts/2fb0e26c/</url>
-      
-        <content type="html"><![CDATA[<p>kafka的认证是通过java认证技术JAAS实现。</p><p><a href="http://kafka.apache.org/documentation/#security_sasl_plain">http://kafka.apache.org/documentation/#security_sasl_plain</a></p><h1>服务端</h1><h2 id="开启认证端口">开启认证端口</h2><p>在kafka的服务端配置中追加：</p><pre><code class="language-properties"> # 用户认证listeners=SASL_PLAINTEXT://&lt;服务器名&gt;:8123security.inter.broker.protocol=SASL_PLAINTEXTsasl.enabled.mechanisms=SCRAM-SHA-256 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256</code></pre><p><code>SASL_PLAINTEXT</code>非SSL的SASL认证端口.</p><p><code>listeners</code>可以支持多端口配置，例如同时开启认证和非认证端口<code>PLAINTEXT://&lt;服务器名&gt;:9092,SASL_PLAINTEXT://&lt;服务器名&gt;:8123</code></p><p><code>security.inter.broker.protocol</code> 配置broker之间的通信协议</p><p><code>sasl.enabled.mechanisms</code> 开启访问broker的认证通信机制sasl，以及配置所用的机制算法</p><p><code>sasl.mechanism.inter.broker.protocol</code> 开启broker之间认证通信机制sasl，以及配置所用的机制算法</p><p>ℹ️相对于<a href="http://kafka.apache.org/documentation/#security_sasl_plain">SASL/PLAIN</a>算法将用户数据放在本地，<a href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法将用户数据存放在zk。因此<a href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法可以动态的增删用户.</p><h2 id="添加用户配置">添加用户配置</h2><ol><li>添加用户</li></ol><pre><code class="language-bash"># 创建kafka之间通信用户bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=broker]' --entity-type users --entity-name broker# 创建客户端访问kafka的用户bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=123456]' --entity-type users --entity-name itw</code></pre><p>⚠️<code>broker</code>用户用于brokers之间通信，此用户必须在kafka启动之前创建。</p><ol start="2"><li>列出当前用户列表</li></ol><pre><code class="language-bash">bin/kafka-configs.sh --zookeeper localhost:2181 --describe --entity-type users --entity-name itw</code></pre><ol start="3"><li>删除用户</li></ol><pre><code class="language-bash">bin/kafka-configs.sh --zookeeper localhost:2181 --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name itw</code></pre><ol start="4"><li>添加broker之间的认证信息到<code>config/server.properties</code></li></ol><pre><code class="language-properties">listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \    username=&quot;broker&quot; \    password=&quot;broker&quot;;</code></pre><p>格式：<code>listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config</code>=<code>listener.name.&lt;protocol&gt;.&lt;sasl_mechanisms&gt;.sasl.jaas.config</code></p><h2 id="授权">授权</h2><p><a href="http://kafka.apache.org/documentation/#security_authz">http://kafka.apache.org/documentation/#security_authz</a></p><p>默认情况下，如果不做限制，任何用户都是超级权限。因此默认我们需要开启ACL级别的限制</p><pre><code class="language-properties"># 授权方面# 设置身份验证使用的类authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer# 设置超级账号，如果是多个需要分号分割，例如：User:admin;User:rootsuper.users=User:broker# 如果没有ACL规则，则不允许任何用户allow.everyone.if.no.acl.found=false</code></pre><p>上述配置默认情况下仅允许<code>broker</code>用户无需任何ACL规则就拥有所有权限。</p><h3 id="命令行工具">命令行工具</h3><p><a href="http://kafka.apache.org/documentation/#security_authz_cli">http://kafka.apache.org/documentation/#security_authz_cli</a></p><p><code>bin/kafka-acls.sh</code>用来授权的工具</p><p>常用的参数：</p><p>–bootstrap-server 指定broker列表</p><p>–add 添加</p><p>–remove 删除</p><p>–producer 指定生产者规则，在没有operation参数时，默认就是只写</p><p>–consumer 指定消费者规则，在没有operation参数时，默认就是只读</p><p>–operation 授权列表（READ、WRITE、DELETE、CREATE、ALTER、DESCRIBE、ALL）</p><p>–allow-principal User:[用户名] 允许指定用户</p><p>–deny-prinicipal User:[用户名] 拒绝指定用户</p><p>–allow-host [Host] 允许的主机网络</p><p>–deny-host [Host] 拒绝的主机网络</p><p>–group [group_name] 此规则仅能用于此消费者组</p><p>–resource-pattern-type 匹配类型，常用的有前缀匹配 prefixed</p><p>–topic 以字符串匹配的主题</p><p>–command-config 指定管理员配置文件</p><p>超管客户端配置<code>config/my.tools.properties</code></p><pre><code class="language-properties">security.protocol=SASL_PLAINTEXTsasl.mechanism=SCRAM-SHA-256sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \  username=&quot;broker&quot; \  password=&quot;broker&quot;;</code></pre><h3 id="只写授权">只写授权</h3><pre><code class="language-bash">bin/kafka-acls.sh \--bootstrap-server kafka1:8123 \--command-config config/my.tools.properties \--add \--allow-principal User:elk \--producer \--resource-pattern-type prefixed \--topic zz.it.elk.</code></pre><p>授权用户<code>itw</code>只写权限</p><h3 id="只读授权">只读授权</h3><pre><code class="language-bash">bin/kafka-acls.sh \--bootstrap-server kafka1:8123 \--command-config config/my.tools.properties \--add \--allow-principal User:elk \--group logstash \--consumer \--resource-pattern-type prefixed \--topic zz.it.elk.</code></pre><p>授权用户<code>itr</code>只读权限，但调用此用户的消费者必须隶属于消费者组<code>groupit</code></p><h3 id="授权给谁了">授权给谁了</h3><p>列出所有授权规则</p><blockquote><p>可以通过追加 --principal User:elk 列出某个认证用户使用的规则.</p></blockquote><pre><code class="language-bash">bin/kafka-acls.sh \--bootstrap-server kafka1:8123 \--command-config config/my.tools.properties \--list Current ACLs for resource `ResourcePattern(resourceType=TOPIC, name=zz.it., patternType=PREFIXED)`:        (principal=User:itr, host=*, operation=DESCRIBE, permissionType=ALLOW)        (principal=User:elk, host=*, operation=DESCRIBE, permissionType=ALLOW)        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)        (principal=User:itw, host=*, operation=WRITE, permissionType=ALLOW)        (principal=User:itw, host=*, operation=CREATE, permissionType=ALLOW)        (principal=User:itr, host=*, operation=READ, permissionType=ALLOW)        (principal=User:itw, host=*, operation=DESCRIBE, permissionType=ALLOW)Current ACLs for resource `ResourcePattern(resourceType=TOPIC, name=zz.it.elk., patternType=PREFIXED)`:        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)        (principal=User:elk, host=*, operation=ALL, permissionType=ALLOW)        (principal=User:elk, host=*, operation=DESCRIBE, permissionType=ALLOW)Current ACLs for resource `ResourcePattern(resourceType=GROUP, name=logstash, patternType=PREFIXED)`:        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)Current ACLs for resource `ResourcePattern(resourceType=GROUP, name=groupit, patternType=PREFIXED)`:        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)        (principal=User:itr, host=*, operation=READ, permissionType=ALLOW)</code></pre><p>上述结果可以看到，resource 后就是 ACL 授权后绑定的对象。而删除ACL是针对 resource 的，而不是针对用户的</p><h3 id="删除授权">删除授权</h3><p>删除<code>Current ACLs for resource ResourcePattern(resourceType=TOPIC, name=zz.it., patternType=PREFIXED)</code>下的ACL规则</p><pre><code class="language-bash">bin/kafka-acls.sh --bootstrap-server kafka1:8123 --command-config config/my.tools.properties --remove --topic zz.it. --resource-pattern-type prefixed</code></pre><p>删除<code>Current ACLs for resource ResourcePattern(resourceType=GROUP, name=groupit, patternType=PREFIXED)</code>下的ACL规则</p><pre><code class="language-bash">bin/kafka-acls.sh --bootstrap-server kafka1:8123 --command-config config/my.tools.properties --remove --group groupit --resource-pattern-type prefixed</code></pre><h1>客户端</h1><h2 id="kafka自带的客户端工具">kafka自带的客户端工具</h2><p>生产客户端配置<code>config/my.producer.properties</code></p><pre><code class="language-properties">security.protocol=SASL_PLAINTEXTsasl.mechanism=SCRAM-SHA-256sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \    username=&quot;itw&quot; \    password=&quot;123456&quot;;</code></pre><p>消费客户端配置<code>config/my.consumer.properties</code></p><pre><code class="language-properties">group.id=groupitsecurity.protocol=SASL_PLAINTEXTsasl.mechanism=SCRAM-SHA-256sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \    username=&quot;itr&quot; \    password=&quot;123456&quot;;</code></pre><h2 id="测试">测试</h2><pre><code class="language-bash"># 创建主题bin/kafka-topics.sh --bootstrap-server kafka1:8123 --create --replication-factor 3 --partitions 8 --topic zz.it.email --command-config config/my.tools.properties</code></pre><pre><code class="language-bash"># 生产连接brokerbin/kafka-console-producer.sh --bootstrap-server kafka1:8123 --producer.config config/my.producer.properties  --topic zz.it.email</code></pre><pre><code class="language-bash"># 消费者连接brokerbin/kafka-console-consumer.sh --bootstrap-server kafka1:8123 --consumer.config config/my.consumer.properties  --topic zz.it.email</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 消息 </category>
-          
-          <category> kafka </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 安装 </tag>
-            
-            <tag> kafka </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>004-kafka用户配额</title>
-      <link href="posts/14fdb3fd/"/>
-      <url>posts/14fdb3fd/</url>
-      
-        <content type="html"><![CDATA[<h1>简要</h1><p>配额可以应用于认证用户（user）、客户端ID（<a href="http://client.id">client.id</a>）</p><p>配额信息存储在zk中，认证用户的配额信息位于<code>/config/users</code>，客户端ID的配额信息位于<code>/config/clients</code></p><p>主要说下网络限速。</p><h2 id="添加配额">添加配额</h2><ul><li>producer_byte_rate 生产速率，单位是字节/s</li><li>consumer_byte_rate 消费速率，单位是字节/s</li></ul><pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka1:8123 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048' --entity-type users --entity-name user1 --entity-type clients --entity-name clientA --command-config config/my.tools.properties</code></pre><p>通过<code>user1</code>认证，且符合<code>client.id=clientA</code>的客户端，在生产和消费的时候，速度均限制在1KB/s</p><h2 id="列出配额">列出配额</h2><pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka1:8123 --describe --entity-type users --entity-name user1 --entity-type clients --command-config config/my.tools.properties</code></pre><h2 id="删除配额">删除配额</h2><pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka1:8123 --alter --delete-config 'producer_byte_rate' --entity-type users --entity-name user1 --entity-type clients --entity-name clientA --command-config config/my.tools.properties</code></pre><p>删除<code>user-principal 'user1', client-id 'clientA'</code>配额规则中的生产网络限制<code>producer_byte_rate</code></p>]]></content>
       
       
       <categories>
@@ -3973,11 +3915,69 @@
     
     
     <entry>
+      <title>003-kafka基本认证</title>
+      <link href="posts/2fb0e26c/"/>
+      <url>posts/2fb0e26c/</url>
+      
+        <content type="html"><![CDATA[<p>kafka的认证是通过java认证技术JAAS实现。</p><p><a href="http://kafka.apache.org/documentation/#security_sasl_plain">http://kafka.apache.org/documentation/#security_sasl_plain</a></p><h1>服务端</h1><h2 id="开启认证端口">开启认证端口</h2><p>在kafka的服务端配置中追加：</p><pre><code class="language-properties"> # 用户认证listeners=SASL_PLAINTEXT://&lt;服务器名&gt;:8123security.inter.broker.protocol=SASL_PLAINTEXTsasl.enabled.mechanisms=SCRAM-SHA-256 sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256</code></pre><p><code>SASL_PLAINTEXT</code>非SSL的SASL认证端口.</p><p><code>listeners</code>可以支持多端口配置，例如同时开启认证和非认证端口<code>PLAINTEXT://&lt;服务器名&gt;:9092,SASL_PLAINTEXT://&lt;服务器名&gt;:8123</code></p><p><code>security.inter.broker.protocol</code> 配置broker之间的通信协议</p><p><code>sasl.enabled.mechanisms</code> 开启访问broker的认证通信机制sasl，以及配置所用的机制算法</p><p><code>sasl.mechanism.inter.broker.protocol</code> 开启broker之间认证通信机制sasl，以及配置所用的机制算法</p><p>ℹ️相对于<a href="http://kafka.apache.org/documentation/#security_sasl_plain">SASL/PLAIN</a>算法将用户数据放在本地，<a href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法将用户数据存放在zk。因此<a href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法可以动态的增删用户.</p><h2 id="添加用户配置">添加用户配置</h2><ol><li>添加用户</li></ol><pre><code class="language-bash"># 创建kafka之间通信用户bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=broker]' --entity-type users --entity-name broker# 创建客户端访问kafka的用户bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=123456]' --entity-type users --entity-name itw</code></pre><p>⚠️<code>broker</code>用户用于brokers之间通信，此用户必须在kafka启动之前创建。</p><ol start="2"><li>列出当前用户列表</li></ol><pre><code class="language-bash">bin/kafka-configs.sh --zookeeper localhost:2181 --describe --entity-type users --entity-name itw</code></pre><ol start="3"><li>删除用户</li></ol><pre><code class="language-bash">bin/kafka-configs.sh --zookeeper localhost:2181 --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name itw</code></pre><ol start="4"><li>添加broker之间的认证信息到<code>config/server.properties</code></li></ol><pre><code class="language-properties">listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \    username=&quot;broker&quot; \    password=&quot;broker&quot;;</code></pre><p>格式：<code>listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config</code>=<code>listener.name.&lt;protocol&gt;.&lt;sasl_mechanisms&gt;.sasl.jaas.config</code></p><h2 id="授权">授权</h2><p><a href="http://kafka.apache.org/documentation/#security_authz">http://kafka.apache.org/documentation/#security_authz</a></p><p>默认情况下，如果不做限制，任何用户都是超级权限。因此默认我们需要开启ACL级别的限制</p><pre><code class="language-properties"># 授权方面# 设置身份验证使用的类authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer# 设置超级账号，如果是多个需要分号分割，例如：User:admin;User:rootsuper.users=User:broker# 如果没有ACL规则，则不允许任何用户allow.everyone.if.no.acl.found=false</code></pre><p>上述配置默认情况下仅允许<code>broker</code>用户无需任何ACL规则就拥有所有权限。</p><h3 id="命令行工具">命令行工具</h3><p><a href="http://kafka.apache.org/documentation/#security_authz_cli">http://kafka.apache.org/documentation/#security_authz_cli</a></p><p><code>bin/kafka-acls.sh</code>用来授权的工具</p><p>常用的参数：</p><p>–bootstrap-server 指定broker列表</p><p>–add 添加</p><p>–remove 删除</p><p>–producer 指定生产者规则，在没有operation参数时，默认就是只写</p><p>–consumer 指定消费者规则，在没有operation参数时，默认就是只读</p><p>–operation 授权列表（READ、WRITE、DELETE、CREATE、ALTER、DESCRIBE、ALL）</p><p>–allow-principal User:[用户名] 允许指定用户</p><p>–deny-prinicipal User:[用户名] 拒绝指定用户</p><p>–allow-host [Host] 允许的主机网络</p><p>–deny-host [Host] 拒绝的主机网络</p><p>–group [group_name] 此规则仅能用于此消费者组</p><p>–resource-pattern-type 匹配类型，常用的有前缀匹配 prefixed</p><p>–topic 以字符串匹配的主题</p><p>–command-config 指定管理员配置文件</p><p>超管客户端配置<code>config/my.tools.properties</code></p><pre><code class="language-properties">security.protocol=SASL_PLAINTEXTsasl.mechanism=SCRAM-SHA-256sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \  username=&quot;broker&quot; \  password=&quot;broker&quot;;</code></pre><h3 id="只写授权">只写授权</h3><pre><code class="language-bash">bin/kafka-acls.sh \--bootstrap-server kafka1:8123 \--command-config config/my.tools.properties \--add \--allow-principal User:elk \--producer \--resource-pattern-type prefixed \--topic zz.it.elk.</code></pre><p>授权用户<code>itw</code>只写权限</p><h3 id="只读授权">只读授权</h3><pre><code class="language-bash">bin/kafka-acls.sh \--bootstrap-server kafka1:8123 \--command-config config/my.tools.properties \--add \--allow-principal User:elk \--group logstash \--consumer \--resource-pattern-type prefixed \--topic zz.it.elk.</code></pre><p>授权用户<code>itr</code>只读权限，但调用此用户的消费者必须隶属于消费者组<code>groupit</code></p><h3 id="授权给谁了">授权给谁了</h3><p>列出所有授权规则</p><blockquote><p>可以通过追加 --principal User:elk 列出某个认证用户使用的规则.</p></blockquote><pre><code class="language-bash">bin/kafka-acls.sh \--bootstrap-server kafka1:8123 \--command-config config/my.tools.properties \--list Current ACLs for resource `ResourcePattern(resourceType=TOPIC, name=zz.it., patternType=PREFIXED)`:        (principal=User:itr, host=*, operation=DESCRIBE, permissionType=ALLOW)        (principal=User:elk, host=*, operation=DESCRIBE, permissionType=ALLOW)        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)        (principal=User:itw, host=*, operation=WRITE, permissionType=ALLOW)        (principal=User:itw, host=*, operation=CREATE, permissionType=ALLOW)        (principal=User:itr, host=*, operation=READ, permissionType=ALLOW)        (principal=User:itw, host=*, operation=DESCRIBE, permissionType=ALLOW)Current ACLs for resource `ResourcePattern(resourceType=TOPIC, name=zz.it.elk., patternType=PREFIXED)`:        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)        (principal=User:elk, host=*, operation=ALL, permissionType=ALLOW)        (principal=User:elk, host=*, operation=DESCRIBE, permissionType=ALLOW)Current ACLs for resource `ResourcePattern(resourceType=GROUP, name=logstash, patternType=PREFIXED)`:        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)Current ACLs for resource `ResourcePattern(resourceType=GROUP, name=groupit, patternType=PREFIXED)`:        (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)        (principal=User:itr, host=*, operation=READ, permissionType=ALLOW)</code></pre><p>上述结果可以看到，resource 后就是 ACL 授权后绑定的对象。而删除ACL是针对 resource 的，而不是针对用户的</p><h3 id="删除授权">删除授权</h3><p>删除<code>Current ACLs for resource ResourcePattern(resourceType=TOPIC, name=zz.it., patternType=PREFIXED)</code>下的ACL规则</p><pre><code class="language-bash">bin/kafka-acls.sh --bootstrap-server kafka1:8123 --command-config config/my.tools.properties --remove --topic zz.it. --resource-pattern-type prefixed</code></pre><p>删除<code>Current ACLs for resource ResourcePattern(resourceType=GROUP, name=groupit, patternType=PREFIXED)</code>下的ACL规则</p><pre><code class="language-bash">bin/kafka-acls.sh --bootstrap-server kafka1:8123 --command-config config/my.tools.properties --remove --group groupit --resource-pattern-type prefixed</code></pre><h1>客户端</h1><h2 id="kafka自带的客户端工具">kafka自带的客户端工具</h2><p>生产客户端配置<code>config/my.producer.properties</code></p><pre><code class="language-properties">security.protocol=SASL_PLAINTEXTsasl.mechanism=SCRAM-SHA-256sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \    username=&quot;itw&quot; \    password=&quot;123456&quot;;</code></pre><p>消费客户端配置<code>config/my.consumer.properties</code></p><pre><code class="language-properties">group.id=groupitsecurity.protocol=SASL_PLAINTEXTsasl.mechanism=SCRAM-SHA-256sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \    username=&quot;itr&quot; \    password=&quot;123456&quot;;</code></pre><h2 id="测试">测试</h2><pre><code class="language-bash"># 创建主题bin/kafka-topics.sh --bootstrap-server kafka1:8123 --create --replication-factor 3 --partitions 8 --topic zz.it.email --command-config config/my.tools.properties</code></pre><pre><code class="language-bash"># 生产连接brokerbin/kafka-console-producer.sh --bootstrap-server kafka1:8123 --producer.config config/my.producer.properties  --topic zz.it.email</code></pre><pre><code class="language-bash"># 消费者连接brokerbin/kafka-console-consumer.sh --bootstrap-server kafka1:8123 --consumer.config config/my.consumer.properties  --topic zz.it.email</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 消息 </category>
+          
+          <category> kafka </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 安装 </tag>
+            
+            <tag> kafka </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>005-kafka基本维护</title>
       <link href="posts/124a3d6d/"/>
       <url>posts/124a3d6d/</url>
       
         <content type="html"><![CDATA[<h1>分区重新分配工具</h1><p>bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布，包括增加副本，迁移副本等。</p><p>此工具有三大选项：</p><ul><li>–generate：创建分配计划，用户通过指定topic列表和broker列表来生成指定topic列表的【分区重新分配计划】。</li><li>–execute:  执行分配计划，通过【分区重新分配计划】或者自定义分配计划进行实际行动。</li><li>–verify: 核实计划执行情况，返回计划执行状态，也可以重复的添加/删除分配过程中的网络限流。</li></ul><h2 id="扩展集群">扩展集群</h2><p>集群扩展意味着增加一个新的broker。</p><p>kafka不会自动平衡数据。</p><p>需要手动启动分区重新分配工具（bin/kafka-reassign-partitions.sh）来进行自动化分配。</p><h3 id="创建分配计划">创建分配计划</h3><p>编写【指定要迁移】的topic列表文件<code>topics-to-move.json</code></p><pre><code class="language-json"> &#123;&quot;topics&quot;: [&#123;&quot;topic&quot;: &quot;foo1&quot;&#125;,              &#123;&quot;topic&quot;: &quot;foo2&quot;&#125;],  &quot;version&quot;:1  &#125;</code></pre><p>将topic列表里的topic迁移到<code>broker.id</code>为&quot;5和6&quot;的节点上.</p><pre><code class="language-bash">bin/kafka-reassign-partitions.sh \--command-config config/my.tools.properties \--bootstrap-server kafka1:8123 \--topics-to-move-json-file topics-to-move.json \--broker-list &quot;5,6&quot; \--generate</code></pre><p>输出如下：先输出当前topic分区的分布配置，然后输出调整后的分布配置</p><pre><code class="language-json">Current partition replica assignment  &#123;&quot;version&quot;:1,  &quot;partitions&quot;:[&#123;&quot;topic&quot;:&quot;foo1&quot;,&quot;partition&quot;:2,&quot;replicas&quot;:[1,2]&#125;,                &#123;&quot;topic&quot;:&quot;foo1&quot;,&quot;partition&quot;:0,&quot;replicas&quot;:[3,4]&#125;,                &#123;&quot;topic&quot;:&quot;foo2&quot;,&quot;partition&quot;:2,&quot;replicas&quot;:[1,2]&#125;,                &#123;&quot;topic&quot;:&quot;foo2&quot;,&quot;partition&quot;:0,&quot;replicas&quot;:[3,4]&#125;,                &#123;&quot;topic&quot;:&quot;foo1&quot;,&quot;partition&quot;:1,&quot;replicas&quot;:[2,3]&#125;,                &#123;&quot;topic&quot;:&quot;foo2&quot;,&quot;partition&quot;:1,&quot;replicas&quot;:[2,3]&#125;]  &#125;Proposed partition reassignment configuration  &#123;&quot;version&quot;:1,  &quot;partitions&quot;:[&#123;&quot;topic&quot;:&quot;foo1&quot;,&quot;partition&quot;:2,&quot;replicas&quot;:[5,6]&#125;,                &#123;&quot;topic&quot;:&quot;foo1&quot;,&quot;partition&quot;:0,&quot;replicas&quot;:[5,6]&#125;,                &#123;&quot;topic&quot;:&quot;foo2&quot;,&quot;partition&quot;:2,&quot;replicas&quot;:[5,6]&#125;,                &#123;&quot;topic&quot;:&quot;foo2&quot;,&quot;partition&quot;:0,&quot;replicas&quot;:[5,6]&#125;,                &#123;&quot;topic&quot;:&quot;foo1&quot;,&quot;partition&quot;:1,&quot;replicas&quot;:[5,6]&#125;,                &#123;&quot;topic&quot;:&quot;foo2&quot;,&quot;partition&quot;:1,&quot;replicas&quot;:[5,6]&#125;]  &#125;</code></pre><p>将上面输出的两部分配置，分别保存为当前topic分区落点配置<code>topics-current-plan.json</code>和预期topic分区落点配置<code>topics-expect-plan.json</code></p><h3 id="执行分配计划">执行分配计划</h3><pre><code class="language-bash">bin/kafka-reassign-partitions.sh \--command-config config/my.tools.properties \--bootstrap-server kafka1:8123 \--reassignment-json-file topics-expect-plan.json \--execute</code></pre><p>ℹ️自定义分配计划只需要满足上面分配计划的文件格式即可.</p><blockquote><p>添加限速：–throttle 50000000  限速50MB/s  你可以多次重复执行上述命令并通过新的限速值来动态调整限速.</p></blockquote><h3 id="检查分配计划">检查分配计划</h3><pre><code class="language-bash">bin/kafka-reassign-partitions.sh \--command-config config/my.tools.properties \--bootstrap-server kafka1:8123 \--reassignment-json-file topics-expect-plan.json \--verify</code></pre><p>ℹ️如果–execute期间添加了–throttle，则–verify会在迁移完成后清空–throttle</p><h2 id="分区副本因子调整">分区副本因子调整</h2><p>调整副本因子，其实就是自定义分区配置，参考上面的配置，仅针对需要调整的topic的分区自定义配置并执行即可。</p><h2 id="问题点">问题点</h2><h3 id="限速带来的问题">限速带来的问题</h3><p>使用限速可能会导致复制速度过慢，以至于复制速度低于生产者写入速度。这会导致复制数据滞后越来越大。因此，应该在复制期间，监控滞后状态。这里的复制速度，就是消费速度。</p><p>滞后指标如下：</p><pre><code class="language-bash">kafka.server:type=FetcherLagMetrics,name=ConsumerLag,clientId=([-.\w]+),topic=([-.\w]+),partition=([0-9]+)</code></pre><p>如果发现指标没有降低，则应该放宽限速。</p><p>关于消费速度滞后监控，可以采取prometheus+grafana。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 消息 </category>
+          
+          <category> kafka </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 安装 </tag>
+            
+            <tag> kafka </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>004-kafka用户配额</title>
+      <link href="posts/14fdb3fd/"/>
+      <url>posts/14fdb3fd/</url>
+      
+        <content type="html"><![CDATA[<h1>简要</h1><p>配额可以应用于认证用户（user）、客户端ID（<a href="http://client.id">client.id</a>）</p><p>配额信息存储在zk中，认证用户的配额信息位于<code>/config/users</code>，客户端ID的配额信息位于<code>/config/clients</code></p><p>主要说下网络限速。</p><h2 id="添加配额">添加配额</h2><ul><li>producer_byte_rate 生产速率，单位是字节/s</li><li>consumer_byte_rate 消费速率，单位是字节/s</li></ul><pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka1:8123 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048' --entity-type users --entity-name user1 --entity-type clients --entity-name clientA --command-config config/my.tools.properties</code></pre><p>通过<code>user1</code>认证，且符合<code>client.id=clientA</code>的客户端，在生产和消费的时候，速度均限制在1KB/s</p><h2 id="列出配额">列出配额</h2><pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka1:8123 --describe --entity-type users --entity-name user1 --entity-type clients --command-config config/my.tools.properties</code></pre><h2 id="删除配额">删除配额</h2><pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka1:8123 --alter --delete-config 'producer_byte_rate' --entity-type users --entity-name user1 --entity-type clients --entity-name clientA --command-config config/my.tools.properties</code></pre><p>删除<code>user-principal 'user1', client-id 'clientA'</code>配额规则中的生产网络限制<code>producer_byte_rate</code></p>]]></content>
       
       
       <categories>
@@ -4168,33 +4168,6 @@
     
     
     <entry>
-      <title>nginx ☞ 泛域名_变量截取</title>
-      <link href="posts/78ceb386/"/>
-      <url>posts/78ceb386/</url>
-      
-        <content type="html"><![CDATA[<pre><code class="language-bash">server &#123;    listen       80;    listen       [::]:80;    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;    root /export/webapps/apple.com/$userName;    access_log  /var/log/nginx/access.log  main;    #开启浏览器静态文件缓存    location ~ .*\.(html|htm|gif|jpg|jpeg|bmp|png|ico|txt|js|css)$ &#123;        expires      3h;    &#125;        # https://&lt;username&gt;.apple.com/api -&gt; /export/webapps/apple.com/api.php #####    location ~* ^/(api|event_api)$ &#123;        root /export/webapps/apple.com;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;        # https://&lt;username&gt;.apple.com/&lt;uri&gt; -&gt; /export/webapps/apple.com/&lt;username&gt;/&lt;uri&gt;.php    location ~* ^/[0-9a-zA-Z]+$ &#123;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;&#125;</code></pre><blockquote><p>location 优先级从上往下依次递减：<br>location =      仅匹配字符串自身<br>location ^~    匹配某个字符串开头的uri<br>location ~      正则匹配，区分大小写<br>location ~*    正则匹配，不区分大小写<br>location /      表示匹配“域名/之后的uri”，再比如localtion /images，表示匹配“域名/images之后的uri</p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> web </category>
-          
-          <category> nginx </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>gitlab☞大版本迁移</title>
       <link href="posts/a38d0013/"/>
       <url>posts/a38d0013/</url>
@@ -4214,6 +4187,33 @@
         <tags>
             
             <tag> gitlab </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>nginx ☞ 泛域名_变量截取</title>
+      <link href="posts/78ceb386/"/>
+      <url>posts/78ceb386/</url>
+      
+        <content type="html"><![CDATA[<pre><code class="language-bash">server &#123;    listen       80;    listen       [::]:80;    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;    root /export/webapps/apple.com/$userName;    access_log  /var/log/nginx/access.log  main;    #开启浏览器静态文件缓存    location ~ .*\.(html|htm|gif|jpg|jpeg|bmp|png|ico|txt|js|css)$ &#123;        expires      3h;    &#125;        # https://&lt;username&gt;.apple.com/api -&gt; /export/webapps/apple.com/api.php #####    location ~* ^/(api|event_api)$ &#123;        root /export/webapps/apple.com;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;        # https://&lt;username&gt;.apple.com/&lt;uri&gt; -&gt; /export/webapps/apple.com/&lt;username&gt;/&lt;uri&gt;.php    location ~* ^/[0-9a-zA-Z]+$ &#123;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;&#125;</code></pre><blockquote><p>location 优先级从上往下依次递减：<br>location =      仅匹配字符串自身<br>location ^~    匹配某个字符串开头的uri<br>location ~      正则匹配，区分大小写<br>location ~*    正则匹配，不区分大小写<br>location /      表示匹配“域名/之后的uri”，再比如localtion /images，表示匹配“域名/images之后的uri</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> web </category>
+          
+          <category> nginx </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> nginx </tag>
             
         </tags>
       
@@ -4379,9 +4379,9 @@
       
         <tags>
             
-            <tag> 安装 </tag>
-            
             <tag> openvpn </tag>
+            
+            <tag> 安装 </tag>
             
         </tags>
       

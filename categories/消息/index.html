@@ -95,16 +95,24 @@ var _hmt = _hmt || [];
 			<a href="/about" class="menu-item-link">ABOUT</a>
 		</li>
 	
-
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
 	
 
+	
 		<li class="menu-item">
-			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
-				UidGenerator
-			</a>
+			<a href="/categories" class="menu-item-link">分类</a>
 		</li>
+	
+
+#<li class="menu-item">
+#			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
+#				UidGenerator
+#			</a>
+#		</li>
 		<li class="menu-item">
-			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
+			<a href="https://github.com/Spinestars" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
 			</a>
 		</li>
@@ -2489,6 +2497,46 @@ curl &quot;https://github.com/danielqsj/kafka
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/bd4c8d1c/">
+				<h2 class="index-title">
+					002-kafka基本安装
+				</h2>
+				<div class="index-brief">
+					安装
+http://kafka.apache.org/downloads
+下载二进制包
+cd /export &amp;&amp; mkdir src &amp;&amp; cd src
+curl https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/2fb0e26c/">
 				<h2 class="index-title">
 					003-kafka基本认证
@@ -2501,6 +2549,47 @@ http://kafka.apache.org/documentation/#security_sasl_plain
 在kafka的服务端配置中追加：
  # 用户认证
 listeners=SASL_PLAINTEXT://&
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/124a3d6d/">
+				<h2 class="index-title">
+					005-kafka基本维护
+				</h2>
+				<div class="index-brief">
+					分区重新分配工具
+bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布，包括增加副本，迁移副本等。
+此工具有三大选项：
+
+–generate：创建分配计划，用户通过指定topic列表和broker列表来生成指定topic列表的【分区重新分配计划】。
+–ex
 					...
 				</div>
 			</a>
@@ -2544,87 +2633,6 @@ listeners=SASL_PLAINTEXT://&
 
 producer_byte_rate 生产速率，单位是字节/s
 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/bd4c8d1c/">
-				<h2 class="index-title">
-					002-kafka基本安装
-				</h2>
-				<div class="index-brief">
-					安装
-http://kafka.apache.org/downloads
-下载二进制包
-cd /export &amp;&amp; mkdir src &amp;&amp; cd src
-curl https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/124a3d6d/">
-				<h2 class="index-title">
-					005-kafka基本维护
-				</h2>
-				<div class="index-brief">
-					分区重新分配工具
-bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布，包括增加副本，迁移副本等。
-此工具有三大选项：
-
-–generate：创建分配计划，用户通过指定topic列表和broker列表来生成指定topic列表的【分区重新分配计划】。
-–ex
 					...
 				</div>
 			</a>

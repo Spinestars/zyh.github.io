@@ -95,16 +95,24 @@ var _hmt = _hmt || [];
 			<a href="/about" class="menu-item-link">ABOUT</a>
 		</li>
 	
-
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
 	
 
+	
 		<li class="menu-item">
-			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
-				UidGenerator
-			</a>
+			<a href="/categories" class="menu-item-link">分类</a>
 		</li>
+	
+
+#<li class="menu-item">
+#			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
+#				UidGenerator
+#			</a>
+#		</li>
 		<li class="menu-item">
-			<a href="https://github.com/wujun234" class="menu-item-link" target="_blank">
+			<a href="https://github.com/Spinestars" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
 			</a>
 		</li>
@@ -2407,21 +2415,14 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/18e4fa73/">
+			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
+					k8s☞07无状态服务deployment-pod扩缩
 				</h2>
 				<div class="index-brief">
 					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
 					...
 				</div>
 			</a>
@@ -2452,14 +2453,21 @@ https://kubernetes.io/docs/concepts/workl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
@@ -2530,17 +2538,15 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞03pod
 				</h2>
 				<div class="index-brief">
 					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
-
-它将在容器创建后立即运行，但不保证在 ENT
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
@@ -2571,15 +2577,17 @@ postStart
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/94518966/">
+			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞03pod
+					k8s☞04pod钩子函数
 				</h2>
 				<div class="index-brief">
 					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
-https://kubernete
+我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
+k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
+postStart
+
+它将在容器创建后立即运行，但不保证在 ENT
 					...
 				</div>
 			</a>

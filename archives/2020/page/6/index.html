@@ -105,12 +105,6 @@ var _hmt = _hmt || [];
 			<a href="/categories" class="menu-item-link">分类</a>
 		</li>
 	
-
-#<li class="menu-item">
-#			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
-#				UidGenerator
-#			</a>
-#		</li>
 		<li class="menu-item">
 			<a href="https://github.com/Spinestars" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
@@ -2651,47 +2645,6 @@ tengine: 2.1.2 # 这是一个很古老的版本…
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/421d605e/">
-				<h2 class="index-title">
-					日志☞logrotate安装
-				</h2>
-				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
-
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/65ab632a/">
 				<h2 class="index-title">
 					redis☞安装
@@ -2734,21 +2687,60 @@ mkdir -p $&#123;dataPath&#125;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
+			<a href="/posts/421d605e/">
 				<h2 class="index-title">
-					zabbix ☞ nginx
+					日志☞logrotate安装
+				</h2>
+				<div class="index-brief">
+					前言
+logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
+logrotate 版本更新
+
+确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
+或者也可以直接去 gith
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1587f6e8/">
+				<h2 class="index-title">
+					zabbix☞agent和proxy（yum）
 				</h2>
 				<div class="index-brief">
 					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+https://repo.zabbix.com/zabbix/
 
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 
-1，nginx增加配置 server_status.server
+agent 安装
 
-cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>

@@ -105,12 +105,6 @@ var _hmt = _hmt || [];
 			<a href="/categories" class="menu-item-link">分类</a>
 		</li>
 	
-
-#<li class="menu-item">
-#			<a href="https://github.com/wujun234/uid-generator-spring-boot-starter" class="menu-item-link" target="_blank">
-#				UidGenerator
-#			</a>
-#		</li>
 		<li class="menu-item">
 			<a href="https://github.com/Spinestars" class="menu-item-link" target="_blank">
 				<i class="fa fa-github fa-2x"></i>
@@ -2415,14 +2409,21 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞06无状态服务deployment-pod更新
 				</h2>
 				<div class="index-brief">
 					前言
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+对于更新,我们一般会采用滚动更新,即:
+
+先扩展一部分新版本
+删除一部分老版本
+重复上述行为,直至所有老版本被替换.
+
+对于回滚,我们想回滚到任何一个之前的版本.
+而deployment对象可以帮我们实现这些.
+https://kubernetes.io/docs/concepts/workl
 					...
 				</div>
 			</a>
@@ -2453,21 +2454,14 @@ k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/18e4fa73/">
+			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
+					k8s☞07无状态服务deployment-pod扩缩
 				</h2>
 				<div class="index-brief">
 					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
 					...
 				</div>
 			</a>

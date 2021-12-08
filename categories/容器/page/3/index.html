@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod钩子函数
+										    k8s☞04pod生命周期
                      
 									</a>
 								</li>
@@ -746,7 +746,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/9aa66899/">
                      
-										    k8s☞05pod探测器
+										    k8s☞05容器生命周期-回调和探针
                      
 									</a>
 								</li>
@@ -2097,6 +2097,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/38c126f9/">
+                     
+										    go-013文件先读再覆盖写
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2449,14 +2460,17 @@ k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以�
 		<div class="index-li">
 			<a href="/posts/9aa66899/">
 				<h2 class="index-title">
-					k8s☞05pod探测器
+					k8s☞05容器生命周期-回调和探针
 				</h2>
 				<div class="index-brief">
-					探测器
+					容器生命周期-回调
+容器状态包含3个：
 
-https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+waiting，一般对应Pod的pending阶段
+running，容器运行OK
+terminated，容器退出
 
-探测器有三种：启动探测器startupProbe、存活探测器livenessPr
+我们在实际工作中，可能会遇到需要在容器生命周期中按预定计划执行某个动作，例如容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前
 					...
 				</div>
 			</a>
@@ -2493,8 +2507,8 @@ https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-r
 				</h2>
 				<div class="index-brief">
 					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器， 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP，你会更有这种感觉.
 https://kubernete
 					...
 				</div>
@@ -2528,15 +2542,16 @@ https://kubernete
 		<div class="index-li">
 			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞04pod钩子函数
+					k8s☞04pod生命周期
 				</h2>
 				<div class="index-brief">
-					前言
-我们在实际工作中，可能会遇到容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。
-k8s 给我们提供了两个函数用于处理这些工作，分别是 postStart和 preStop
-postStart
+					Pod-生命周期
+pod生命周期包含5个状态：
 
-它将在容器创建后立即运行，但不保证在 ENT
+pending，调度时间和拉取容器镜像时间，容器均处于waiting状态
+running，至少一个容器处于启动、重启、running状态
+failed，pod里的容器全退出，有部分容器以非0状态进入terminated状态
+succeeded，pod
 					...
 				</div>
 			</a>
@@ -2690,51 +2705,6 @@ wget -O kubecm_release.tgz https://github.com/sunny0826/kubecm/releases/downl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/aaf9b7/">
-				<h2 class="index-title">
-					k8s☞01常见术语概念
-				</h2>
-				<div class="index-brief">
-					前言
-Kubernetes 组件 | Kubernetes
-词汇表 | Kubernetes
-结构图
-
-
-
-Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
-
-control plane 和 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/b7cf7b1f/">
 				<h2 class="index-title">
 					docker☞01安装
@@ -2771,6 +2741,51 @@ yum-conf
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/docker/">docker</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/aaf9b7/">
+				<h2 class="index-title">
+					k8s☞01常见术语概念
+				</h2>
+				<div class="index-brief">
+					前言
+Kubernetes 组件 | Kubernetes
+词汇表 | Kubernetes
+结构图
+
+
+
+Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
+
+control plane 和 
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 

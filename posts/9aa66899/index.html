@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞05pod探测器 | 
+		k8s☞05容器生命周期-回调和探针 | 
 	 
 	zyh
 	</title>
@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod钩子函数
+										    k8s☞04pod生命周期
                      
 									</a>
 								</li>
@@ -748,7 +748,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/9aa66899/">
                      
-										    k8s☞05pod探测器
+										    k8s☞05容器生命周期-回调和探针
                      
 									</a>
 								</li>
@@ -2099,6 +2099,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/38c126f9/">
+                     
+										    go-013文件先读再覆盖写
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2409,12 +2420,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞05pod探测器
+	k8s☞05容器生命周期-回调和探针
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/9aa66899/" class="leancloud_visitors" data-flag-title="k8s☞05pod探测器"></span>
+			阅读量:<span id="/posts/9aa66899/" class="leancloud_visitors" data-flag-title="k8s☞05容器生命周期-回调和探针"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2478,12 +2489,94 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="探测器">探测器</h2>
+	<h1>容器生命周期-回调</h1>
+<p>容器状态包含3个：</p>
+<ul>
+<li>waiting，一般对应Pod的pending阶段</li>
+<li>running，容器运行OK</li>
+<li>terminated，容器退出</li>
+</ul>
+<p>我们在实际工作中，可能会遇到需要在容器生命周期中按预定计划执行某个动作，例如容器程序的准备工作，以及容器结束之前的处理工作。比如，容器开始之前下载一些包，或者容器结束之前上传日志等。</p>
+<p>k8s 给我们提供了两个回调用于处理这些工作，分别是 postStart和 preStop.</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/containers/container-lifecycle-hooks/">https://kubernetes.io/zh/docs/concepts/containers/container-lifecycle-hooks/</a></p>
+<h2 id="postStart">postStart</h2>
+<ol>
+<li>k8s在在容器创建后立即【发送】postStart，但【不保证】在 ENTRYPOINT 之前运行</li>
+<li>如果它卡住，【容器】无法达到 running 状态。</li>
+</ol>
+<p>示例：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: poststart-test
+spec:
+  containers:
+  - name: poststart-test
+    image: nginx
+    lifecycle:
+      postStart:
+        exec:
+          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is postStart-test &gt; /usr/share/nginx/html/index.html&quot;]
+</code></pre>
+<pre><code class="language-bash">[root@k8s00 ~]# kubectl apply -f poststart-test.yaml
+pod/poststart-test created
+[root@k8s00 ~]# kubectl get pod -o wide
+NAME             READY   STATUS              RESTARTS   AGE   IP       NODE    NOMINATED NODE   READINESS GATES
+poststart-test   0/1     ContainerCreating   0          7s    &lt;none&gt;   k8s02   &lt;none&gt;           &lt;none&gt;
+[root@k8s00 ~]# kubectl get pod -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATES
+poststart-test   1/1     Running   0          10s   10.97.2.6   k8s02   &lt;none&gt;           &lt;none2
+[root@k8s00 ~]# curl 10.97.2.6
+This is postStart-test
+</code></pre>
+<h2 id="preStop">preStop</h2>
+<ol>
+<li>k8s它将在【容器】结束前立即【发送】preStop，但执行时间受限于【Pod】终止宽限期。</li>
+<li>应该设置足够长的终止宽限期<code>terminationGracePeriodSeconds</code>，这个期限应该大于preStop执行时间+kubelet通知【container runtime】发关闭信号给【容器】+【容器】关闭时间。</li>
+<li>它执行期间，Pod依然处于svc的端点列表内。</li>
+</ol>
+<blockquote>
+<p>【容器】的结束需要被k8s知悉，任何k8s不知悉的结束动作，不会触发preStop。例如容器因执行完自动结束，这种状态k8s无法得知。</p>
+</blockquote>
+<p>示例：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: prestop-test
+spec:
+  containers:
+  - name: prestop-test
+    image: nginx
+    volumeMounts:
+    - name: prestop-test-tmp
+      mountPath: /usr/share
+    lifecycle:
+      preStop:
+        exec:
+          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is preStop &gt; /usr/share/message&quot;]
+  volumes:
+  - name: prestop-test-tmp
+    hostPath:
+      path: /tmp
+</code></pre>
+<pre><code class="language-bash">[root@k8s00 ~]# kubectl delete pod prestop-test
+# 这里 prestop-test 被调度到 k8s02
+[root@k8s02 ~]# cat /tmp/message
+This is preStop
+</code></pre>
+<h2 id="操作">操作</h2>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/">https://kubernetes.io/zh/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/</a></p>
+<h2 id="分歧">分歧</h2>
+<p><strong>说明：</strong> Kubernetes 只有在 Pod 手动结束或因控制器调度的时候才会发送 preStop 事件， 但在 Pod（Completed）时 preStop 的事件处理逻辑不会被触发。这个限制在 <a target="_blank" rel="noopener" href="https://github.com/kubernetes/kubernetes/issues/55807">issue #55087</a> 中被追踪。</p>
+<p>因此，Job类不应该使用preStop来执行结束逻辑，而是应该将逻辑放在容器内执行。k8s无法提前获悉容器退出信号，因此无法在容器退出前发送preStop。</p>
+<h1>容器生命周期-探针</h1>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes">https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes</a></p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle-1">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle-1</a></p>
 </blockquote>
-<p>探测器有三种：启动探测器startupProbe、存活探测器livenessProbe，就绪探测器readinessProbe</p>
-<p>探测器有三种探测方式，命令方式，http方式，tcp方式。</p>
+<p>k8s通过探测器判断何时重启容器。</p>
+<p>探测器种类：启动探测器startupProbe、存活探测器livenessProbe，就绪探测器readinessProbe。</p>
+<p>每种探测器探测方式：命令方式，http方式，tcp方式。</p>
 <p>例如命令方式：</p>
 <pre><code class="language-yaml">    livenessProbe:
       exec:
@@ -2493,12 +2586,20 @@ var _hmt = _hmt || [];
       initialDelaySeconds: 5
       periodSeconds: 5
 </code></pre>
+<p>优先级：启动探测器&gt;存活探测器&gt;就绪探测器</p>
+<p>默认行为：任何没有显式指定的探针，自动设为<code>success</code>。</p>
 <p>kubelet 使用启动探测器可以知道应用程序容器什么时候启动了。 如果配置了这类探测器，就可以控制容器在启动成功后再进行存活性和就绪检查， 确保这些存活、就绪探测器不会影响应用程序的启动。 这可以用于对慢启动容器进行存活性检测，避免它们在启动运行之前就被杀掉。</p>
-<p>kubelet 使用就绪探测器可以知道容器什么时候准备好了并可以开始接受请求流量， 当一个 Pod 内的所有容器都准备好了，才能把这个 Pod 看作就绪了。 这种信号的一个用途就是控制哪个 Pod 作为 Service 的后端。 在 Pod 还没有准备好的时候，会从 Service 的负载均衡器中被剔除的。</p>
-<p>kubelet 使用存活探测器来知道什么时候要重启容器。 例如，存活探测器可以捕捉到死锁程序（进程在，但程序已无法进一步执行）。 这样的情况下重启容器有助于让应用程序在有问题的情况下更可用。</p>
+<p>若启动探针存在，则其它两类探针将延后运行。行为上，探针失败则重启【容器】.。</p>
+<p>若存活探针存在，行为上，探针失败重启【容器】。</p>
+<p>若就绪探针存在，行为上，探针成功Pod加入svc端点列表。默认为<code>failure</code>，因此，成功之前svc会将Pod从端点列表中移除。</p>
+<blockquote>
+<p>首先，就绪探针比较符合常见需求，即探针失败，则不会提供服务。但它不会重启容器，因此无法自动解决问题。</p>
+<p>其次，需要存活探针来判断程序的基本条件从而确保容器重启。</p>
+<p>最后，启动探针可以判断环境，环境不满足直接重启。</p>
+</blockquote>
 <h2 id="探测器的一些配置">探测器的一些配置</h2>
 <ul>
-<li><code>initialDelaySeconds</code>：容器启动后要等待多少秒后存活和就绪探测器才被初始化，默认是 0 秒，最小值是 0。</li>
+<li><code>initialDelaySeconds</code>：容器启动后要等待多少秒后存活和就绪探测器开始第一次探测，默认是 0 秒，最小值是 0。</li>
 <li><code>periodSeconds</code>：执行探测的时间间隔（单位是秒）。默认是 10 秒。最小值是 1。</li>
 <li><code>timeoutSeconds</code>：探测的超时后等待多少秒。默认值是 1 秒。最小值是 1。</li>
 <li><code>successThreshold</code>：探测器在失败后，被视为成功的最小连续成功数。默认值是 1。 存活和启动探测的这个值必须是 1。最小值是 1。</li>
@@ -2522,37 +2623,7 @@ startupProbe:
   # 启动超时时间=failureThreshold*periodSeconds
 
 </code></pre>
-<blockquote>
-<p>kubelet 检测总时间超过 300 秒后，如果还未检测成功，认为启动失败。</p>
-</blockquote>
-<h2 id="就绪探测器-readinessProbe">就绪探测器 readinessProbe</h2>
-<p>目的在于仅确认容器是否健康，但是并不删除容器，不健康时候不提供接收svc流量。适用于下列场景：</p>
-<ol>
-<li>容器启动后，加载数据多，加载完之前无法提供服务</li>
-</ol>
-<p>它将在容器整个生命周期中运行。</p>
-<p>例如：</p>
-<pre><code class="language-yaml:">apiVersion: v1
-kind: Pod
-metadata:
-  name: goproxy
-  labels:
-    app: goproxy
-spec:
-  containers:
-  - name: goproxy
-    image: k8s.gcr.io/goproxy:0.1
-    ports:
-    - containerPort: 8080
-    readinessProbe:
-      tcpSocket:
-        port: 8080
-      initialDelaySeconds: 5
-      periodSeconds: 10
-</code></pre>
-<blockquote>
-<p>kubelet 等待 initialDelaySeconds 后开始第一次检测，每次检测间隔10秒，检测成功，认为可以提供服务</p>
-</blockquote>
+<p>上述例子意思是：kubelet 检测总时间超过 300 秒后，如果还未检测成功，认为启动失败。</p>
 <h2 id="存活探测器-livenessProbe">存活探测器 livenessProbe</h2>
 <p>目的在于确认容器是否健康，并在不健康的时候重启容器。</p>
 <p>它将在容器整个生命周期中运行。</p>
@@ -2583,10 +2654,36 @@ spec:
 <blockquote>
 <p>探测器会认为 200&lt;=x&lt;400 的状态码为正常。</p>
 </blockquote>
+<h2 id="就绪探测器-readinessProbe">就绪探测器 readinessProbe</h2>
+<p>目的在于仅确认容器是否健康，但是并不删除容器，【不健康时候不接收svc流量】 。适用于下列场景：</p>
+<ol>
+<li>容器启动后，加载数据多，加载完之前无法提供服务</li>
+</ol>
+<p>它将在容器整个生命周期中运行。</p>
+<p>例如：</p>
+<pre><code class="language-yaml:">apiVersion: v1
+kind: Pod
+metadata:
+  name: goproxy
+  labels:
+    app: goproxy
+spec:
+  containers:
+  - name: goproxy
+    image: k8s.gcr.io/goproxy:0.1
+    ports:
+    - containerPort: 8080
+    readinessProbe:
+      tcpSocket:
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+</code></pre>
+<p>上述例子意思是：kubelet 等待 initialDelaySeconds 后开始第一次检测，每次检测间隔10秒，检测成功，认为可以提供服务</p>
 <h2 id="最佳实践">最佳实践</h2>
 <ol>
 <li>存活和就绪探针的健康状态接口应该是两个互相独立的接口</li>
-<li>存活探针的健康状态接口应该是直接返回状态结果，不应该有任何逻辑</li>
+<li>存活探针的健康状态接口应该是直接返回http code，不应该有任何逻辑</li>
 <li>就绪探针的健康状态接口应该提供就绪所需要的逻辑。但是不应该添加重新构建就绪的逻辑。例如：处理http请求的程序需要一个数据库连接的就绪状态，那么就应该在就绪探针的健康状态接口里添加数据库连接的检查逻辑。</li>
 </ol>
 

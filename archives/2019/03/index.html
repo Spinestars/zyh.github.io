@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod钩子函数
+										    k8s☞04pod生命周期
                      
 									</a>
 								</li>
@@ -746,7 +746,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/9aa66899/">
                      
-										    k8s☞05pod探测器
+										    k8s☞05容器生命周期-回调和探针
                      
 									</a>
 								</li>
@@ -2097,6 +2097,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/38c126f9/">
+                     
+										    go-013文件先读再覆盖写
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2409,51 +2420,6 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/aaf9b7/">
-				<h2 class="index-title">
-					k8s☞01常见术语概念
-				</h2>
-				<div class="index-brief">
-					前言
-Kubernetes 组件 | Kubernetes
-词汇表 | Kubernetes
-结构图
-
-
-
-Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
-
-control plane 和 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/b7cf7b1f/">
 				<h2 class="index-title">
 					docker☞01安装
@@ -2490,6 +2456,51 @@ yum-conf
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/docker/">docker</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/aaf9b7/">
+				<h2 class="index-title">
+					k8s☞01常见术语概念
+				</h2>
+				<div class="index-brief">
+					前言
+Kubernetes 组件 | Kubernetes
+词汇表 | Kubernetes
+结构图
+
+
+
+Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
+
+control plane 和 
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -2583,49 +2594,6 @@ listeners=SASL_PLAINTEXT://&
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/14fdb3fd/">
-				<h2 class="index-title">
-					004-kafka用户配额
-				</h2>
-				<div class="index-brief">
-					简要
-配额可以应用于认证用户（user）、客户端ID（client.id）
-配额信息存储在zk中，认证用户的配额信息位于/config/users，客户端ID的配额信息位于/config/clients
-主要说下网络限速。
-添加配额
-
-producer_byte_rate 生产速率，单位是字节/s
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/bd4c8d1c/">
 				<h2 class="index-title">
 					002-kafka基本安装
@@ -2677,6 +2645,49 @@ bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布�
 
 –generate：创建分配计划，用户通过指定topic列表和broker列表来生成指定topic列表的【分区重新分配计划】。
 –ex
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/14fdb3fd/">
+				<h2 class="index-title">
+					004-kafka用户配额
+				</h2>
+				<div class="index-brief">
+					简要
+配额可以应用于认证用户（user）、客户端ID（client.id）
+配额信息存储在zk中，认证用户的配额信息位于/config/users，客户端ID的配额信息位于/config/clients
+主要说下网络限速。
+添加配额
+
+producer_byte_rate 生产速率，单位是字节/s
+
 					...
 				</div>
 			</a>

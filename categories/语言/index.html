@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod钩子函数
+										    k8s☞04pod生命周期
                      
 									</a>
 								</li>
@@ -746,7 +746,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/9aa66899/">
                      
-										    k8s☞05pod探测器
+										    k8s☞05容器生命周期-回调和探针
                      
 									</a>
 								</li>
@@ -2097,6 +2097,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/38c126f9/">
+                     
+										    go-013文件先读再覆盖写
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2407,6 +2418,58 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/38c126f9/">
+				<h2 class="index-title">
+					go-013文件先读再覆盖写
+				</h2>
+				<div class="index-brief">
+					涉及模块
+
+os
+fmt
+io/ioutil
+
+代码
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;io/ioutil&quot;
+)
+
+func main()&#123;
+    filePath :
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-12-07</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/b06f599c/">
@@ -2769,52 +2832,6 @@ main函数里变量C调用函数A
 			</a>
                 <div class="article-meta">
 				    <span>2020-10-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/8a6b5455/">
-				<h2 class="index-title">
-					go☞004条件语句
-				</h2>
-				<div class="index-brief">
-					前言
-常见的if就不说了
-switch
-case后面的值匹配了变量，就执行对应代码，否则执行default代码
-switch 变量/常量 &#123;
-    case 值1:
-        ...
-    case 值2, 值3:
-        ...
-    default:
-       
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-04</span>
                     
                             
                                 

@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod钩子函数
+										    k8s☞04pod生命周期
                      
 									</a>
 								</li>
@@ -746,7 +746,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/9aa66899/">
                      
-										    k8s☞05pod探测器
+										    k8s☞05容器生命周期-回调和探针
                      
 									</a>
 								</li>
@@ -2097,6 +2097,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/38c126f9/">
+                     
+										    go-013文件先读再覆盖写
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2409,6 +2420,51 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/960fc783/">
+				<h2 class="index-title">
+					ansible☞playbook-tags
+				</h2>
+				<div class="index-brief">
+					tags的定义
+
+tags 可以让你在执行playbook的时候，有选择地执行某些任务，因此 tags 是 tasks 下的关键词
+
+ansible-playbook test.play &lt;--tags-args&gt;
+
+tags的参数
+
+
+–tags=tag_name  执行具有 tag_
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/c4126d5a/">
 				<h2 class="index-title">
 					ansible☞playbook-错误捕获
@@ -2546,32 +2602,17 @@ ansible 某个 task 报错，会导致任务终止，而ignore_errors: true 可�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3f8b5448/">
+			<a href="/posts/6a4df400/">
 				<h2 class="index-title">
-					django☞记忆点
+					django☞管理静态文件
 				</h2>
 				<div class="index-brief">
-					.git文件
-# Django #
-*.log
-*.pot
-*.pyc
-__pycache__
-media
-static
-
-# Backup files #
-*.bak
-
-# other
-.vscode
-.git
-db
-log
-
-Dockerfile
-FROM python:3.8-alpine
-L
+					前言
+管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
+内置视图 | Django 文档 | Django (djangoproject.com)
+通用设置
+项目.settings.py中
+STATIC_URL 
 					...
 				</div>
 			</a>
@@ -2602,17 +2643,32 @@ L
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6a4df400/">
+			<a href="/posts/3f8b5448/">
 				<h2 class="index-title">
-					django☞管理静态文件
+					django☞记忆点
 				</h2>
 				<div class="index-brief">
-					前言
-管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
-内置视图 | Django 文档 | Django (djangoproject.com)
-通用设置
-项目.settings.py中
-STATIC_URL 
+					.git文件
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+static
+
+# Backup files #
+*.bak
+
+# other
+.vscode
+.git
+db
+log
+
+Dockerfile
+FROM python:3.8-alpine
+L
 					...
 				</div>
 			</a>
@@ -2794,51 +2850,6 @@ ansible localhost -m apt_repository -a &quot;repo=ppa:nginx/st
 			</a>
                 <div class="article-meta">
 				    <span>2020-04-26</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1e274151/">
-				<h2 class="index-title">
-					ansible☞常用模块-命令调用
-				</h2>
-				<div class="index-brief">
-					shell
-
-远程执行一个命令
-部分参数解析：
-chdir 远程工作目录
-executable 远程执行shell，需要绝对路径
-
-ansible localhost -m shell -a &quot;chdir=/ ls&quot;
-
-localhost | CHANGED | rc=0 &gt
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-20</span>
                     
                             
                                 

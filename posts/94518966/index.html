@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod钩子函数
+										    k8s☞04pod生命周期
                      
 									</a>
 								</li>
@@ -748,7 +748,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/9aa66899/">
                      
-										    k8s☞05pod探测器
+										    k8s☞05容器生命周期-回调和探针
                      
 									</a>
 								</li>
@@ -2099,6 +2099,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/38c126f9/">
+                     
+										    go-013文件先读再覆盖写
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2479,8 +2490,8 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器, 可以类比为ecs/ec2上的app程序.</p>
-<p>你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP,你会更有这种感觉.</p>
+<p>pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器， 可以类比为ecs/ec2上的app程序.</p>
+<p>你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP，你会更有这种感觉.</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/pods/">https://kubernetes.io/docs/concepts/workloads/pods/</a></p>
 <h2 id="Pod与容器">Pod与容器</h2>
 <p>一个pod可以拥有多个容器，并且包含一个init的特殊容器，它始终首先运行。</p>
@@ -2501,68 +2512,70 @@ var _hmt = _hmt || [];
 <li>DaemonSet 守护态 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/">https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/</a></li>
 </ul>
 <p>还有CronJob、Jobs任务类型的.</p>
-<p>负载控制器类同云服务的缩放组概念. 因此必然需要依托于镜像模板创建 pod 和依托于缩放规则控制 pod 数量。</p>
+<p>负载控制器需要依托于镜像模板创建 pod 和依托于缩放规则控制 pod 数量。</p>
 <p>镜像模板即 pod 模板(pod template).</p>
-<h2 id="Pod-模板">Pod 模板</h2>
-<p>特点:</p>
-<ul>
-<li>模板修改并应用后，会重建新的pod, 并终止现有pod.</li>
-</ul>
-<p>例子:</p>
-<pre><code class="language-yaml">apiVersion: batch/v1beta1
-kind: CronJob
+<h2 id="负载控制器-Pod模板">负载控制器 - Pod模板</h2>
+<p>一个构建nginx的例子</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: hello
+  name: nginx-deployment
+  labels:
+    app: nginx
 spec:
-  schedule: &quot;*/1 * * * *&quot;
-  jobTemplate:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
     spec:
-      template:   ## 从这里开始, 以下内容就是 Pod 模板.
-        spec:
-          containers:
-          - name: hello
-            image: busybox
-            args:
-            - /bin/sh
-            - -c
-            - date; echo Hello from the Kubernetes cluster
-          restartPolicy: OnFailure
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
 </code></pre>
-<blockquote>
-<p>这是一个计划任务，它会遵循 “*/1 * * * *” 时间规则来启动 hello</p>
-</blockquote>
 <h3 id="如何寻找最合适的kind所属的apiVersion">如何寻找最合适的kind所属的apiVersion</h3>
 <p>在这里可能有人不知道如何选择apiVersion。你可以通过kubectl api-versions来找到kind所属的apiGroup，然后再通过</p>
 <p>kubectl get --raw “/apis” 的输出找 preferredVersion。</p>
-<pre><code class="language-bash">➜  kubectl api-resources | grep jobs
-cronjobs                          cj           batch                          true         CronJob
-jobs                                           batch                          true         Job
-➜  kubectl get --raw &quot;/apis&quot; |python -mjson.tool | grep -B 1 batch
-        &#123;
-            &quot;name&quot;: &quot;batch&quot;,
---
-                &#123;
-                    &quot;groupVersion&quot;: &quot;batch/v1&quot;,
---
-                &#123;
-                    &quot;groupVersion&quot;: &quot;batch/v1beta1&quot;,
---
-            &quot;preferredVersion&quot;: &#123;
-                &quot;groupVersion&quot;: &quot;batch/v1&quot;,
+<pre><code class="language-bash">➜   kubectl api-resources | grep deployment
+deployments                       deploy       apps/v1                                true         Deployment
+➜   kubectl get --raw &quot;/apis&quot;|jq '.groups[]|select(.name==&quot;apps&quot;)'
+&#123;
+  &quot;name&quot;: &quot;apps&quot;，
+  &quot;versions&quot;: [
+    &#123;
+      &quot;groupVersion&quot;: &quot;apps/v1&quot;，
+      &quot;version&quot;: &quot;v1&quot;
+    &#125;
+  ]，
+  &quot;preferredVersion&quot;: &#123;
+    &quot;groupVersion&quot;: &quot;apps/v1&quot;，
+    &quot;version&quot;: &quot;v1&quot;
+  &#125;
+&#125;
 </code></pre>
-<p>如上命令所示，在我的k8s版本中 kind: jobs 的最合适apiVersion是 batch/v1</p>
-<h2 id="Pod-存储-网络">Pod 存储/网络</h2>
-<h3 id="pod-存储">pod 存储</h3>
-<p>这是一个大问题. 如果你想真正的使用k8s的pod资源, 那么需要先看这一部分的内容.</p>
-<p>简单来说, 存储资源主要分网络和本地两大类.</p>
-<p>本地这一类一般用于临时或者特殊环境. 就如同云服务中的存储类节点里的那种本地盘, 它不可靠. 因为pod本身默认是不强制绑定某个节点的,因此如果你pod异常了,那么它有可能重建的时候漂移到其它节点.此时你如果用本地盘，那么数据将丢失。</p>
-<p>网络这一类,可以对接的有云服务厂家的存储资源,也可以对接自建的nfs这一类网络存储。</p>
-<p>细致的说明, 参考官方文档https://kubernetes.io/docs/concepts/storage/</p>
-<h3 id="pod-网络">pod 网络</h3>
-<p>鉴于前面提到的pod类同于ecs/ec2. 因此. pod中的容器就如同ecs/ec2里的app一样，都有相同的ip, 端口范围, 主机名.</p>
+<p>如上命令所示，在我的k8s版本中kind: Deployment的最合适apiVersion是apps/v1</p>
+<h2 id="pod-存储">pod 存储</h2>
+<p>这是一个大问题. 如果你想真正的使用k8s的pod资源， 那么需要先看这一部分的内容.</p>
+<p>简单来说， 存储资源主要分网络和本地两大类.</p>
+<ul>
+<li>
+<p>本地 用于临时或者特殊环境. 就如同云服务中的【存储类节点】里的那种本地盘， 它不可靠. 因为pod本身默认是不强制绑定某个节点的，因此如果你pod异常了，那么它有可能重建的时候漂移到其它节点.此时你如果用本地盘，那么数据将丢失。</p>
+</li>
+<li>
+<p>网络 可以对接的有云服务厂家的存储资源，也可以对接自建的nfs这一类网络存储。</p>
+</li>
+</ul>
+<p>细致的说明， 参考官方文档https://kubernetes.io/docs/concepts/storage/</p>
+<h2 id="pod-网络">pod 网络</h2>
+<p>鉴于前面提到的pod类同于ecs/ec2. 因此. pod中的容器就如同ecs/ec2里的app一样，都有相同的ip， 端口范围， 主机名.</p>
 <p>k8s的网络基于各种插件.每一种插件的实现详情见官网. <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model">https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model</a></p>
-<p>如果你是本地搭建, 那么常用的插件是Flannel. 如果你是在云服务上搭建,那么建议使用云服务已有的k8s服务.</p>
-<p>如果你必须在云服务上自己搭建,那么aws/azure/gcp都有对应的网络插件.它可以让你在k8s中结合使用云服务的网络组件.</p>
+<p>如果你是本地搭建， 那么常用的插件是Flannel. 如果你是在云服务上搭建，那么建议使用云服务已有的k8s服务.</p>
+<p>如果你必须在云服务上自己搭建，那么aws/azure/gcp都有对应的网络插件.它可以让你在k8s中结合使用云服务的网络组件.</p>
 <h2 id="静态pod">静态pod</h2>
 <p>特点：</p>
 <ol>
@@ -2582,15 +2595,23 @@ jobs                                           batch                          tr
 <blockquote>
 <p>当你通过kubeadm创建的时候，那么k8s的几个重要组件均会以静态pod的方式在master节点上创建，你可以在/etc/kubernetes/manifests/这里找到他们的配置</p>
 </blockquote>
-<pre><code class="language-bash">[root@k8s00 ~]# ll /etc/kubernetes/manifests/
+<pre><code class="language-bash">➜   ll /etc/kubernetes/manifests/
 total 16
 -rw------- 1 root root 1848 Aug 25 16:28 etcd.yaml
 -rw------- 1 root root 2709 Aug 25 16:28 kube-apiserver.yaml
 -rw------- 1 root root 2564 Aug 25 16:33 kube-controller-manager.yaml
 -rw------- 1 root root 1120 Aug 25 16:33 kube-scheduler.yaml
 </code></pre>
-<h2 id="Pod终止">Pod终止</h2>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination">https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination</a></p>
+<h2 id="Pod生命周期">Pod生命周期</h2>
+<p>pod的一生只会发生一次调度，因此在没有挂掉之前，会一直在被调度节点上运行。</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/</a></p>
+<h3 id="重启策略">重启策略</h3>
+<p>Pod通过<code>restartPolicy</code>设置重启策略，其值Always、OnFailure 和 Never。默认值是 Always。</p>
+<p><code>kubelet</code> 会按指数回退方式计算重启的间隔时间（10s、20s、40s、…），其最长间隔为 5 分钟。</p>
+<p>一旦Pod稳定运行了10分钟，那么重启间隔时间将从头计算。</p>
+<h3 id="Pod终止">Pod终止</h3>
+<p>通过kubectl发起的删除操作，会优雅的终止Pod，终止期默认是30秒。</p>
+<p>如果存在<code>prestop</code>钩子，则会延迟2秒。</p>
 
 </div>
 
@@ -2607,7 +2628,7 @@ total 16
         <div class="item right">
             
               <a href="/posts/3ec72f7e/">
-                k8s☞04pod钩子函数
+                k8s☞04pod生命周期
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

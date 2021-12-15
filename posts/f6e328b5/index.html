@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞07无状态服务deployment-pod扩缩 | 
+		k8s☞07自动扩缩 | 
 	 
 	zyh
 	</title>
@@ -726,7 +726,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -759,7 +759,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -770,7 +770,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2420,12 +2420,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞07无状态服务deployment-pod扩缩
+	k8s☞07自动扩缩
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/f6e328b5/" class="leancloud_visitors" data-flag-title="k8s☞07无状态服务deployment-pod扩缩"></span>
+			阅读量:<span id="/posts/f6e328b5/" class="leancloud_visitors" data-flag-title="k8s☞07自动扩缩"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2489,18 +2489,19 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
+	<h1>基本</h1>
 <p>k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。</p>
-<p>k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量。</p>
-<h2 id="手动缩放">手动缩放</h2>
+<p>k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。</p>
+<h1>手动缩放</h1>
+<p>就是指定一个副本数量</p>
 <pre><code class="language-yaml">kubectl scale deployment.v1.apps/nginx-dep --replicas=10
 </code></pre>
-<h2 id="自动缩放">自动缩放</h2>
-<p>k8s的自动缩放首先要安装监控服务，毕竟没有监控指标，就无法根据指标进行自动缩放。</p>
-<h3 id="metrics-server">metrics-server</h3>
+<h1>自动缩放</h1>
+<p>自动缩放基于hpa对象资源，hpa需要监控服务，毕竟没有监控指标，就无法根据指标进行自动缩放。</p>
+<h2 id="添加监控服务-metrics-server">添加监控服务 metrics-server</h2>
 <p><a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/metrics-server">https://github.com/kubernetes-sigs/metrics-server</a></p>
 <p>metrics 服务器可以通过资源度量值 API 对外提供度量数据，Horizontal Pod Autoscaler 正是根据此 API 来获取度量数据.如果没有此服务,HPA将无法工作.</p>
-<pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+<pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 </code></pre>
 <p>默认 metrics-server 的 deployment 无法直接使用, 我们需要添加几个参数,  来禁止 ca 认证和开通 dns</p>
 <p>在 deployment.spec.template.spec.containers 中新加入下列配置:</p>
@@ -2511,9 +2512,9 @@ var _hmt = _hmt || [];
 </code></pre>
 <pre><code class="language-bash">kubectl apply -f components.yaml
 </code></pre>
-<h3 id="hpa">hpa</h3>
+<h2 id="创建测试用例">创建测试用例</h2>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/</a></p>
-<p>创建一个用于测试的web服务, hpa-test.yaml</p>
+<p>hpa-test.yaml</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -2552,9 +2553,9 @@ spec:
     run: php-apache
 </code></pre>
 <blockquote>
-<p>Service 类型给一组pod提供访问接口</p>
+<p>Service 类型通过<code>spec.selector</code>选择pod</p>
 </blockquote>
-<h3 id="基于CPU指标开启">基于CPU指标开启</h3>
+<h2 id="基于CPU指标开启">基于CPU指标开启</h2>
 <p>命令方式:</p>
 <pre><code class="language-bash">kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=5
 </code></pre>
@@ -2575,46 +2576,46 @@ spec:
 <blockquote>
 <p>这里的意思是, cpu 阈值50%, 最小pod数1, 最大pod数5. hpa会将所有pod的平均cpu利用率维持在50%, 并且pod数量在1~5的范围内波动</p>
 </blockquote>
+<p>⚠️只允许拥有一个规则</p>
 <p>查看当前cpu使用率</p>
-<pre><code class="language-bash">kubectl get hpa
-===
+<pre><code class="language-bash">➜   kubectl get hpa --watch
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   0%/50%    1         5         1          57m
 </code></pre>
-<p>添加测试用的客户端, 访问web服务, 增加web服务的cpu使用率</p>
+<p>⚠️如果<code>TARGETS</code>显示<code>unknown</code>没有获取到Deployment的资源利用率，则说明Deployment中没有添加对应的资源限制。</p>
+<p>通过busybox以死循环方式访问web服务，快速增加测试服务的cpu使用率</p>
 <pre><code class="language-bash">kubectl run -it --rm load-generator --image=busybox /bin/sh
 while true; do wget -q -O- http://php-apache; done
 === 会输出大量OK!
 OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!
 </code></pre>
 <p>在经过一段时间等待后(不会超过1分钟, 默认监控抓取数据间隔时间是1分钟),我们可以看到 pod 数量发生变化</p>
-<pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get hpa
+<pre><code class="language-bash">➜   kubectl get hpa --watch
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   0%/50%    1         5         1          60m
-[root@k8s00 test-yaml]# kubectl get hpa
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   0%/50%    1         5         1          60m
-[root@k8s00 test-yaml]# kubectl get hpa
 NAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   250%/50%   1         5         1          61m
-[root@k8s00 test-yaml]# kubectl get hpa
 NAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   250%/50%   1         5         1          61m
-[root@k8s00 test-yaml]# kubectl get deployment/php-apache
+➜   kubectl get deployment/php-apache
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 php-apache   5/5     5            5           68m
-[root@k8s00 test-yaml]# 
 </code></pre>
 <p>现在,关闭客户端请求,等待1分钟以上.再次看hpa, 这时候cpu利用率已经下降</p>
-<pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get hpa
+<pre><code class="language-bash">➜   kubectl get hpa
 NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
 php-apache   Deployment/php-apache   11%/50%   1         5         5          64m
 </code></pre>
-<p>这时候,再看pod数量,它应该已经开始缩减,但是这个缩减并不是在cpu使用率下降之后就立即执行,而是内部有一个算法.它避免因立即执行从而导致资源出现反复波动.</p>
-<pre><code class="language-bash">[root@k8s00 test-yaml]# kubectl get deployment php-apache
+<p>再看pod数量,它应该已经开始缩减。</p>
+<blockquote>
+<p>缩减并不是在cpu使用率下降之后就立即执行,而是内部有一个算法.它避免因立即执行从而导致资源出现反复波动.</p>
+</blockquote>
+<pre><code class="language-bash">➜   kubectl get deployment php-apache
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 php-apache   5/5     5            5           70m
-[root@k8s00 test-yaml]# kubectl describe deployment/php-apache
+➜   kubectl describe deployment/php-apache
 Name:                   php-apache
 Namespace:              default
 CreationTimestamp:      Wed, 16 Sep 2020 10:22:32 +0800
@@ -2654,12 +2655,15 @@ Events:
   Normal  ScalingReplicaSet  6m50s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 4
   Normal  ScalingReplicaSet  4m49s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 1
 </code></pre>
-<h3 id="基于其它非资源类型的指标">基于其它非资源类型的指标</h3>
+<hr>
+<h1>常用的也就上面的基于CPU指标</h1>
+<h2 id="基于其它非资源类型的指标">基于其它非资源类型的指标</h2>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a></p>
 <p>当前hpa的api版本是autoscaling/v1，它只能抓取cpu指标。</p>
-<p>如果你想抓取内存指标(当前也只支持内存)和非资源类型指标,那么需要将版本变更为autoscaling/v2beta2。</p>
-<p>autoscaling/v2beta2版本的配置有了一些变化,且可能随时会有新的变化.你可以在</p>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a> 找到它的例子。</p>
-<pre><code class="language-yaml">apiVersion: autoscaling/v2beta2
+<p>如果你想抓取内存指标(当前也只支持内存)和非资源类型指标,那么需要将版本变更为autoscaling/v2。</p>
+<p>autoscaling/v2版本的配置有了一些变化,且可能随时会有新的变化.</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/#HorizontalPodAutoscalerSpec">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/#HorizontalPodAutoscalerSpec</a></p>
+<pre><code class="language-yaml">apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: php-apache
@@ -2704,17 +2708,18 @@ spec:
 <blockquote>
 <p>请注意：</p>
 <ol>
-<li>targetCPUUtilizationPercentage被metrics数组代替，metrics数组包含了多种度量指标。</li>
-<li>target中数据由两种组成：
-<ul>
-<li>averageValue：每一个pod都需要满足此指标值</li>
-<li>value：所有pod供需满足此指标</li>
-</ul>
+<li>指标字段targetCPUUtilizationPercentage被metrics数组代替，metrics数组包含了多种度量指标。</li>
+<li>指标分为：直接资源类 Resource，Pod类 Pods，第三类 Object，非k8s对象类 External，容器资源类 ContainerResource</li>
+<li>指标分类：
+<ol>
+<li>name 指定指标标识名</li>
+<li>target.type 指定指标【值】类型，例如<code>AverageValue</code>表示平均值，即每一个pod都需要满足此指标值</li>
+</ol>
 </li>
 </ol>
 </blockquote>
-<p>这些指标可以分为三类，第一类 Resource，第二类 Pods，第三类 Object。</p>
-<h3 id="基于标签的k8s对象指标">基于标签的k8s对象指标</h3>
+<p>⚠️关于<code>Resource</code>类型，要么是cpu，要么是memory，两者应二选一。</p>
+<h2 id="基于标签的k8s对象指标">基于标签的k8s对象指标</h2>
 <pre><code class="language-yaml">- type: Object
   object:
     metric:
@@ -2728,7 +2733,7 @@ spec:
 <p>从监控系统里获取标签verb=GET的值</p>
 </blockquote>
 <p>上述例子的意思是，确保每一个pod都能满足标签为verb=GET的http请求数量。</p>
-<h3 id="基于非k8s对象指标">基于非k8s对象指标</h3>
+<h2 id="基于非k8s对象指标">基于非k8s对象指标</h2>
 <pre><code class="language-yaml">- type: External
   external:
     metric:
@@ -2740,7 +2745,7 @@ spec:
 </code></pre>
 <p>当类型变为External的时候，就可以指定监控系统里存储的其它监控指标。</p>
 <p>例如，监控系统从消息队列服务里拿到了消息数量的指标，并附加queue=worker_tasks。那么就可以和上述例子一样，根据消息数量指标进行缩放。</p>
-<h2 id="度量">度量</h2>
+<h1>度量</h1>
 <p>hpa和度量指标API里的数据均使用k8s中称为量纲的特殊整数表示。</p>
 <p>量纲的意思就是：</p>
 <ul>
@@ -2758,7 +2763,7 @@ spec:
             
               <a href="/posts/18e4fa73/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞06无状态服务deployment-pod更新
+                  k8s☞06无状态服务deployment
               </a>
             
         </div>

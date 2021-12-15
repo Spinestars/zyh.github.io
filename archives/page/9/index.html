@@ -724,7 +724,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -757,7 +757,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -768,7 +768,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2739,24 +2739,19 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f9b08c30/">
+			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
-					监控 ☞ 微信预警
+					zabbix☞agent和proxy（yum）
 				</h2>
 				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
+					
+https://repo.zabbix.com/zabbix/
 
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 
-[group]
-it = usera|userb
+agent 安装
 
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -2769,6 +2764,16 @@ it = usera|userb
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
 										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
                                     </span>
                                 
                             
@@ -2777,15 +2782,17 @@ it = usera|userb
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8c33f887/">
+			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
-					监控☞企业微信机器人
+					zabbix☞web监控
 				</h2>
 				<div class="index-brief">
-					shell
-wechatUrl=
-wechatData=
-curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 					...
 				</div>
 			</a>
@@ -2797,6 +2804,16 @@ curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞04pod生命周期 | 
+		k8s☞04Pod-init容器 - 容器 - k8s - pod | 
 	 
 	zyh
 	</title>
@@ -726,7 +726,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -759,7 +759,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -770,7 +770,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2420,12 +2420,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞04pod生命周期
+	k8s☞04Pod-init容器 - 容器 - k8s - pod
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/3ec72f7e/" class="leancloud_visitors" data-flag-title="k8s☞04pod生命周期"></span>
+			阅读量:<span id="/posts/3ec72f7e/" class="leancloud_visitors" data-flag-title="k8s☞04Pod-init容器 - 容器 - k8s - pod"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2459,87 +2459,43 @@ var _hmt = _hmt || [];
     
 		<span>Tags：</span>
             
-                
-                    <span>
-                        <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
-                        </i>
-                    </span>
-                
-            
-                
-                    <span>
-                        <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
-                        </i>
-                    </span>
-                
-            
-                
-                    <span>
-                        <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/pod/">pod</a>
-                        </i>
-                    </span>
-                
-            
     
 		</div>
 
 </div>
 
 <div id="article-content">
-	<h1>Pod-生命周期</h1>
-<p>pod生命周期包含5个状态：</p>
+	<h1>使用场景</h1>
 <ul>
-<li>pending，调度时间和拉取容器镜像时间，容器均处于waiting状态</li>
-<li>running，至少一个容器处于启动、重启、running状态</li>
-<li>failed，pod里的容器全退出，有部分容器以非0状态进入terminated状态</li>
-<li>succeeded，pod里的容器全部以0状态进入terminated状态</li>
-<li>unknown，pod所在节点和主节点之间失联，不过这种状态会因k8s的策略转为failed状态</li>
+<li>Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 <code>sed</code>、<code>awk</code>、<code>python</code> 或 <code>dig</code> 这样的工具而去 <code>FROM</code> 一个镜像来生成一个新的镜像。</li>
+<li>Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性降低。</li>
+<li>应用镜像的创建者和部署者可以各自独立工作，而没有必要联合构建一个单独的应用镜像。</li>
+<li>Init 容器能以不同于 Pod 内应用容器的文件系统视图运行。因此，Init 容器可以访问应用容器不能访问的 <a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/configuration/secret/">Secret</a> 的权限。</li>
+<li>由于 Init 容器必须在应用容器启动之前运行完成，因此 Init 容器 提供了一种机制来阻塞或延迟应用容器的启动，直到满足了一组先决条件。 一旦前置条件满足，Pod 内的所有的应用容器会并行启动。</li>
 </ul>
-<p>pod是通过uid来鉴别，而不是pod名，pod被替换时名称可以不变。</p>
-<h2 id="重启策略">重启策略</h2>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle</a></p>
-<p>pod重启策略的间隔时间是10s，成指数上涨，但不超过5分钟。一旦重启成功且运行10分钟，则重置为10s。</p>
-<h2 id="状况">状况</h2>
-<p>通过<code>kubectl describe pod/&lt;pod_name&gt;</code>查看<code>Conditions</code>字段条件</p>
-<pre><code class="language-bash">Conditions:
-  Type              Status
-  Initialized       True
-  Ready             False
-  ContainersReady   False
-  PodScheduled      True
+<h1>示例</h1>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox:1.28
+    command: ['sh', '-c', 'echo The app is running! &amp;&amp; sleep 3600']
+  initContainers:
+  - name: init-myservice
+    image: busybox:1.28
+    command: ['sh', '-c', &quot;until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done&quot;]
+  - name: init-mydb
+    image: busybox:1.28
+    command: ['sh', '-c', &quot;until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done&quot;]
 </code></pre>
-<blockquote>
-<p>Ready为True，即表示【应该】被加入到svc的端点列表中。</p>
-<p>但极端情况下有可能因为其它服务没准备好，导致及时Pod的Ready为True，svc也无法正常的转发流量到Pod。</p>
-<p>这种行为，可能在滚动更新的时候，会导致丢数据。</p>
-</blockquote>
-<p>针对上述问题，kubernetes允许在上面4个默认状态的基础上自定义就绪状态类型。</p>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate</a></p>
-<h2 id="终止">终止</h2>
-<ol>
-<li>
-<p>Apiserver拿到删除请求、Apiserver更新pod状态，转为<code>Terminating</code></p>
-</li>
-<li>
-<p>kubelet推送preStop事件到容器中执行，如果设置了preStop的话</p>
-</li>
-<li>
-<p>kubelet通过<code>container runtime</code>发送信号给每个容器中pid为1的进程号，并同时将pod从svc端点中剥离。</p>
-</li>
-<li>
-<p>容器关闭后，Apiserver将Pod删除。</p>
-</li>
-</ol>
-<blockquote>
-<ul>
-<li>2和3是并行的，并且执行时间取决于Pod终止宽限期<code>terminationGracePeriodSeconds</code></li>
-<li>kubectl 添加<code>--grace-period=0 --force</code>可以立即删除Pod</li>
-</ul>
-</blockquote>
-<p>ℹ️失败的pod状态会根据<code>kube-controller-manager</code> 参数 <code>terminated-pod-gc-threshold</code>阈值设置保存一定数量。默认这个值是<code>12500</code>，不清楚为何设置这么高。<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kubernetes/pull/79047%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E8%A2%AB%E9%A9%B3%E5%9B%9E%E7%9A%84%E4%BF%AE%E6%AD%A3%EF%BC%8C%E5%AE%83%E6%8F%90%E8%AE%AE%E8%AE%BE%E7%BD%AE%E4%B8%BA">https://github.com/kubernetes/kubernetes/pull/79047这是一个被驳回的修正，它提议设置为</a><code>500</code>。</p>
+<p>通过添加init容器，等待svc对象创建，延迟启动应用容器。</p>
+<h1>行为</h1>
+<p>init容器按照Pod.spec.initContainers中定义的顺序启动。</p>
 
 </div>
 
@@ -2549,7 +2505,7 @@ var _hmt = _hmt || [];
             
               <a href="/posts/94518966/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞03pod
+                  k8s☞03Pod
               </a>
             
         </div>

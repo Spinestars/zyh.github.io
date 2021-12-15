@@ -726,7 +726,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -759,7 +759,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -770,7 +770,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2627,11 +2627,19 @@ log:
     location: /export/docker-data-harbor/log
 </code></pre>
 <h3 id="https的配置">https的配置</h3>
-<p>证书配置分为两部分，一个是nginx的，一个是docker的</p>
-<pre><code class="language-bash">cp yourdomain.com.cert /etc/docker/certs.d/yourdomain.com/  # 如果你更换了默认端口，则复制到 /etc/docker/certs.d/yourdomain.com:port/
+<p>证书配置分为两部分，一个是nginx的，一个是docker的，两地证书一样，只不过docker需要额外的<code>ca.cert</code></p>
+<ul>
+<li>docker位置(可用软连接)</li>
+</ul>
+<pre><code class="language-bash">cp yourdomain.com.cert /etc/docker/certs.d/yourdomain.com/  
+# 如果你更换了默认端口，则复制到 /etc/docker/certs.d/yourdomain.com:port/
 cp yourdomain.com.key /etc/docker/certs.d/yourdomain.com/
 cp ca.crt /etc/docker/certs.d/yourdomain.com/
 </code></pre>
+<ul>
+<li>nginx位置(不可用软连接)</li>
+</ul>
+<p>nginx的证书会从<code>harbor.yml</code>中的<code>https.certificate</code> <code>https.private_key</code>处复制到 <code>&lt;path_to_data_volume&gt;/secret/cert/ </code></p>
 <h2 id="安装-启动-关闭">安装/启动/关闭</h2>
 <h3 id="预安装，并启动">预安装，并启动</h3>
 <p>生成 docker-compose 配置，并创建相关数据目录，以及容器所需的依赖数据</p>
@@ -2645,9 +2653,8 @@ cp ca.crt /etc/docker/certs.d/yourdomain.com/
 </code></pre>
 <h2 id="其它">其它</h2>
 <h3 id="证书更换">证书更换</h3>
-<p>nginx需要需要更换 &lt;path_to_data_volume&gt;/secret/cert/ 下的文件</p>
-<p>docker需要更换 /etc/docker/certs.d/yourdomain.com/ 下的文件</p>
-<p>最后，重启容器服务</p>
+<p>nginx需要更换 &lt;path_to_data_volume&gt;/secret/cert/ 下的文件，并重启nginx容器</p>
+<p>docker需要更换 /etc/docker/certs.d/yourdomain.com/ 下的文件，应该无需重启</p>
 <h2 id="web配置-策略">web配置-策略</h2>
 <p>删除策略的具体需求：</p>
 <ol>

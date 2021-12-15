@@ -724,7 +724,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -757,7 +757,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -768,7 +768,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2420,19 +2420,18 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/14fdb3fd/">
+			<a href="/posts/2fb0e26c/">
 				<h2 class="index-title">
-					004-kafka用户配额
+					003-kafka基本认证
 				</h2>
 				<div class="index-brief">
-					简要
-配额可以应用于认证用户（user）、客户端ID（client.id）
-配额信息存储在zk中，认证用户的配额信息位于/config/users，客户端ID的配额信息位于/config/clients
-主要说下网络限速。
-添加配额
-
-producer_byte_rate 生产速率，单位是字节/s
-
+					kafka的认证是通过java认证技术JAAS实现。
+http://kafka.apache.org/documentation/#security_sasl_plain
+服务端
+开启认证端口
+在kafka的服务端配置中追加：
+ # 用户认证
+listeners=SASL_PLAINTEXT://&
 					...
 				</div>
 			</a>
@@ -2711,6 +2710,46 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/78ceb386/">
+				<h2 class="index-title">
+					nginx ☞ 泛域名_变量截取
+				</h2>
+				<div class="index-brief">
+					server &#123;
+    listen       80;
+    listen       [::]:80;
+    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
+    root /export/webapps/apple.
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-09-06</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/nginx/">nginx</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/a38d0013/">
 				<h2 class="index-title">
 					gitlab☞大版本迁移
@@ -2743,46 +2782,6 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/其他/git/">git</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/78ceb386/">
-				<h2 class="index-title">
-					nginx ☞ 泛域名_变量截取
-				</h2>
-				<div class="index-brief">
-					server &#123;
-    listen       80;
-    listen       [::]:80;
-    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
-    root /export/webapps/apple.
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-09-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 

@@ -724,7 +724,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -757,7 +757,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -768,7 +768,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2604,15 +2604,19 @@ node污点命令
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/51015304/">
+			<a href="/posts/710e3e49/">
 				<h2 class="index-title">
-					helm☞01入门
+					helm☞02chart
 				</h2>
 				<div class="index-brief">
 					前言
-helm： k8s的包管理器，这里是v3版本
-大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
-chart仓库：存储chart程序包，不包含程序，是一个
+Helm | Getting Started
+chart包构建
+创建框架
+helm create &lt;chart包名&gt;
+必要文件
+Chart.yaml
+Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为sub
 					...
 				</div>
 			</a>
@@ -2643,19 +2647,15 @@ chart仓库：存储chart程序包，不包含程序，是一个
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/710e3e49/">
+			<a href="/posts/51015304/">
 				<h2 class="index-title">
-					helm☞02chart
+					helm☞01入门
 				</h2>
 				<div class="index-brief">
 					前言
-Helm | Getting Started
-chart包构建
-创建框架
-helm create &lt;chart包名&gt;
-必要文件
-Chart.yaml
-Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为sub
+helm： k8s的包管理器，这里是v3版本
+大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
+chart仓库：存储chart程序包，不包含程序，是一个
 					...
 				</div>
 			</a>

@@ -726,7 +726,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -759,7 +759,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -770,7 +770,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2490,20 +2490,22 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公网暴漏内网这些后端程序.</p>
+<p>在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公/内网发布后端程序。</p>
 <p>k8s设计了一个service对象来实现这一目的.</p>
 <h2 id="k8sIP">k8sIP</h2>
 <p>在提Service对象之前,需要先知道k8s中存在的三种IP.即 NodeIP, ClusterIP, PodIP</p>
 <p>NodeIP 就是物理节点ip, 这个没得说, 玩家自己定义</p>
 <p>ClusterIP 是k8s的一个虚拟ip, 本身没有任何实体, 也就是VIP</p>
 <p>PodIP 是容器共享的一个网络命名空间对应的ip, 一个pod里的容器共用</p>
-<h2 id="Service">Service</h2>
+<h2 id="与kube-proxy">与kube-proxy</h2>
+<p>kube-proxy 是实现 svc 的重要组件，kube-proxy 通过代理方式转发流量到Pod。其代理方式分三种：namespace 方式，iptables 方式，ipvs方式。基本用的都是 ipvs 方式。</p>
+<p>ipvs方式的前置要求是 ipvs 组件，如果 kube-proxy 没有检测到 ipvs 组件则会回退到 iptables 方式，如果依然不合适，则继续回退到 namespace。</p>
+<h2 id="类型">类型</h2>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/services-networking/service/">https://kubernetes.io/zh/docs/concepts/services-networking/service/</a></p>
-<p>Service对象通过servicespec.type来设定类型, 共计4个类型: ClusterIP, NodePort, LoadBalancer, ExternalName. 这四个类型可以分为两类</p>
-<ul>
-<li>创建Service对象供集群内部访问</li>
-</ul>
-<p>ClusterIP(默认类型): 反向代理集群内的pod. 供集群内其它服务访问. 流量过程是: 集群内部其它服务=&gt;ClusterIP:端口=&gt;Pod</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/">https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/</a></p>
+<p>Service对象通过spec.type来设定类型, 共计4个类型: ClusterIP, NodePort, LoadBalancer, ExternalName. 这四个类型可以分为两类</p>
+<h3 id="ClusterIP">ClusterIP</h3>
+<p>ClusterIP(默认类型): 反向代理集群内的pod. 供集群内其它服务访问. 流量过程是: 集群内部其它服务=&gt;svc_name=&gt;ClusterIP:端口=&gt;Pod</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Service
 metadata:
@@ -2511,17 +2513,34 @@ metadata:
 spec:
   selector:
     app: myapp
+  type: ClusterIP
   ports:
-  - protocol: TCP
+  - name: myapp-http
+    protocol: TCP
     port: 80
     targetPort: 8080
-    name: myapp-http
+  - name: myapp-https
+    protocol: TCP
+    port: 443
+    targetPort: 8081
 </code></pre>
 <blockquote>
-<p>上述例子中, 集群内部访问myservice.default的时候,此时会访问到app=myapp的pod</p>
-<p>这里port是Service暴露端口, targetPort是pod暴露端口. 默认情况下, targetPort将等于port</p>
-<p>spec.type没有定义是因为ClusterIP是Service对象的默认类型</p>
+<p>spec.selector：选择器，选择目标pod的标签</p>
+<p>spec.ports：</p>
+<ul>
+<li>
+<p>name 是端口名，由小写字母、数字、<code>-</code>组成</p>
+</li>
+<li>
+<p>port 是Service暴露端口</p>
+</li>
+<li>
+<p>targetPort是pod暴露端口. 默认情况下, targetPort将等于port</p>
+</li>
+</ul>
 </blockquote>
+<p>ℹ️若spec.type没有定义，则默认是<code>ClusterIP</code></p>
+<h3 id="ExternalName">ExternalName</h3>
 <p>ExternalName: 构建一个CNAME解析(service对象-CNAME-其它域名).  我能想到的主要是让集群内部服务可以访问到集群外部服务.</p>
 <p>例如:</p>
 <pre><code class="language-yaml">kind: Service
@@ -2536,10 +2555,8 @@ spec:
 <blockquote>
 <p>集群内部访问my-service.prod的时候, <a target="_blank" rel="noopener" href="http://xn--k8sdnsmy-vq8m536awioci6an95by58d3far6b.database.example.com">将通过k8s的dns服务返回my.database.example.com</a></p>
 </blockquote>
-<ul>
-<li>供集群外部访问</li>
-</ul>
-<p>NodePort: 反向代理集群内的pod(使用NAT在每一个集群node上的相同端口上公开Service, 是ClusterIP类型的超集). 供集群外服务访问. 流量过程是: 集群外=&gt;任意节点ip:端口=&gt;ClusterIP:端口=&gt;Pod</p>
+<h3 id="NodePort">NodePort</h3>
+<p>NodePort: 反向代理集群内的pod(使用NAT在每一个集群node上的相同端口上公开Service, 是【ClusterIP类型的超集】). 供集群外服务访问. 流量过程是: 集群外=&gt;任意节点ip:端口=&gt;svc_name=&gt;ClusterIP:端口=&gt;Pod</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Service
 metadata:
@@ -2558,27 +2575,44 @@ spec:
 <blockquote>
 <p>集群外部此时可以访问任意物理节点ip:31000, 此时可以访问到集群内部app=myapp的pod.</p>
 <p>这里nodePort是物理节点暴露端口, port是Service暴露端口, targetPort是pod暴露端口.</p>
-<p>nodePort可以不定义, 则此时会自动从30000-32767随机分配.</p>
+<p>nodePort 可以不定义, 会自动从30000-32767随机分配.其范围的修改需要指定 apiserver 组件的<code>--service-node-port-range</code>。</p>
 </blockquote>
-<p>LoadBalancer: 对接云商的负载均衡服务, 给Service分配一个固定IP. 方便云服务商的LB服务绑定. (是NodePort类型的超集). 流量过程是: 集群外=&gt;云服务LB=&gt;任意物理节点ip:端口=&gt;ClusterIP:端口=&gt;Pod</p>
+<h3 id="LoadBalancer">LoadBalancer</h3>
+<p>LoadBalancer: 对接云商的负载均衡服务, 给Service分配一个固定IP. 方便云服务商的LB服务绑定. 【是NodePort类型的超集。 流量过程是: 集群外=&gt;云服务LB=&gt;任意物理节点ip:端口=&gt;svc_name=&gt;ClusterIP:端口=&gt;Pod</p>
 <p>这种类型建议直接参考官方文档: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer">https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer</a></p>
-<h2 id="Headless-Service">Headless Service</h2>
-<p>这是一种特殊的对象, 从配置上来看,它和ClusterIP类型的区别就是<code>service.spec.clusterIP: None</code>.</p>
-<p>它具有以下特点:</p>
+<h3 id="Headless-Service">Headless Service</h3>
+<p>正常情况下，dns服务会将svc的域名解析为clusterIP（vip），然后通过代理方式将到达vip的流量转发到endpoints列表。</p>
+<p>而Headless类型下，svc没有vip，也没有转发规则，而是通过A记录解析将<code>svc_name.ns_name</code>直接解析为<code>endpoints</code>列表，即直达pod。</p>
+<p>不同点：</p>
 <ul>
-<li>结合StatefulSet对象使用, 从而创建一连串名称有序的有状态应用副本.</li>
-<li>pod拥有整个生命周期内唯一且不变的域名. 因此 pod 之间可以通过域名访问.它的格式应该是这样的:<code>&lt;podname&gt;-&lt;index&gt;.&lt;svcname&gt;.&lt;nsname&gt;.svc.cluster.local</code></li>
+<li>配置上，设置<code>spec.clusterIP: None</code>。</li>
+<li>解析上，A记录方式解析为endpoints列表的所有ip，而不是ClusterIP。</li>
 </ul>
-<p>一个关于zk集群构建的k8s官方例子: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tutorials/stateful-application/zookeeper/">https://kubernetes.io/docs/tutorials/stateful-application/zookeeper/</a></p>
+<p>常见于分布式应用部署场景，例如StatefulSet 控制器使用 Headless 结合Pod标识构建 Pod 唯一子域名，具体如何使用参考 StatefulSet，这里暂不考虑。</p>
 <h2 id="粘性会话">粘性会话</h2>
 <p>有些时候,我们需要会话黏性,你可以通过service.spec.sessionAffinity=ClientIP来设置.并同时可以通过service.spec.sessionAffinityConfig.clientIP.timeoutSeconds来设置会话保持时间,它默认是3小时.</p>
-<h2 id="多端口">多端口</h2>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services">https://kubernetes.io/docs/concepts/services-networking/service/#multi-port-services</a></p>
-<p>有些时候,某个服务可能同时存在多个端口,例如web服务,会同时有80和443.这种情况下你需要针对两个端口分别设定一个端口名称.即 <a target="_blank" rel="noopener" href="http://service.spec.ports.name">service.spec.ports.name</a></p>
-<h2 id="环境变量">环境变量</h2>
+<h2 id="服务发现">服务发现</h2>
+<p>Pod 可以通过两种方式发现svc。</p>
+<h3 id="DNS">DNS</h3>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/services-networking/service/#dns">https://kubernetes.io/zh/docs/concepts/services-networking/service/#dns</a></p>
+<p>Pod可以发现集群任何位置的svc</p>
+<p>不同ns下，你可以通过<code>svc_name.ns_name</code>访问 svc</p>
+<p>相同ns下，可只通过<code>svc_name</code>访问 svc</p>
+<h3 id="环境变量">环境变量</h3>
+<p>Pod仅可以发现相同ns下的svc</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/service/#environment-variables">https://kubernetes.io/docs/concepts/services-networking/service/#environment-variables</a></p>
-<p>当service创建的时候,kubelet会生成一批环境变量.你可以在其它pod中使用这些环境变量访问service.不过前提是service对象必须提前创建.</p>
-<p>不过,我觉得一般来说,有dns方式,都会通过dns去访问.而且dns也没有先创建service这一个限制.</p>
+<p>当service创建的时候,kubelet会生成一批环境变量。例如，svc 名称是 myservice，ClusterIP是10.0.0.11，暴漏的端口是6379，则生成以下环境变量：</p>
+<pre><code class="language-bash">MYSERVICE_SERVICE_HOST=10.0.0.11
+MYSERVICE_SERVICE_PORT=6379
+MYSERVICE_PORT=tcp://10.0.0.11:6379
+MYSERVICE_PORT_6379_TCP=tcp://10.0.0.11:6379
+MYSERVICE_PORT_6379_TCP_PROTO=tcp
+MYSERVICE_PORT_6379_TCP_PORT=6379
+MYSERVICE_PORT_6379_TCP_ADDR=10.0.0.11
+</code></pre>
+<p>ℹ️ 则不管你使用哪种方式，都应该提前通过<code>init</code>容器来校验svc对象已成功创建，例如通过until死循环来判断解析是否成功。</p>
+<h2 id="其它暴露方式">其它暴露方式</h2>
+<p>除了 svc 暴露服务，还可以通过 ingress 暴露服务，它是充当集群入口，可以在单ip下暴露多服务。这里暂不讨论。</p>
 
 </div>
 
@@ -2595,7 +2629,7 @@ spec:
         <div class="item right">
             
               <a href="/posts/18e4fa73/">
-                k8s☞06无状态服务deployment-pod更新
+                k8s☞06无状态服务deployment
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

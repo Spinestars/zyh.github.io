@@ -724,7 +724,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -757,7 +757,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -768,7 +768,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2594,10 +2594,10 @@ kubernetes 提供了一种卷类型 projected volum
 				</h2>
 				<div class="index-brief">
 					前言
-在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公网暴漏内网这些后端程序.
+在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公/内网发布后端程序。
 k8s设计了一个service对象来实现这一目的.
 k8sIP
-
+在提
 					...
 				</div>
 			</a>
@@ -2630,19 +2630,14 @@ k8sIP
 		<div class="index-li">
 			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment-pod更新
+					k8s☞06无状态服务deployment
 				</h2>
 				<div class="index-brief">
-					前言
-对于更新,我们一般会采用滚动更新,即:
-
-先扩展一部分新版本
-删除一部分老版本
-重复上述行为,直至所有老版本被替换.
-
-对于回滚,我们想回滚到任何一个之前的版本.
-而deployment对象可以帮我们实现这些.
-https://kubernetes.io/docs/concepts/workl
+					基本
+Deployment控制器用来管理无状态应用，通过Deployment控制器创建ReplicaSet，ReplicaSet控制Pod副本集。
+任何时候，都不应该直接去创建ReplicaSet控制器，应始终使用Deployment控制器。
+例子
+API语法：https://kubernetes.
 					...
 				</div>
 			</a>
@@ -2675,12 +2670,14 @@ https://kubernetes.io/docs/concepts/workl
 		<div class="index-li">
 			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞07自动扩缩
 				</h2>
 				<div class="index-brief">
-					前言
+					基本
 k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。
+手动缩放
+
 					...
 				</div>
 			</a>
@@ -2756,7 +2753,7 @@ terminated，容器退出
 		<div class="index-li">
 			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞03pod
+					k8s☞03Pod
 				</h2>
 				<div class="index-brief">
 					前言
@@ -2795,16 +2792,13 @@ https://kubernete
 		<div class="index-li">
 			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞04pod生命周期
+					k8s☞04Pod-init容器 - 容器 - k8s - pod
 				</h2>
 				<div class="index-brief">
-					Pod-生命周期
-pod生命周期包含5个状态：
+					使用场景
 
-pending，调度时间和拉取容器镜像时间，容器均处于waiting状态
-running，至少一个容器处于启动、重启、running状态
-failed，pod里的容器全退出，有部分容器以非0状态进入terminated状态
-succeeded，pod
+Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 sed、awk、python 或 dig 这样的工具而去 FROM 一个镜像来生成一个新的镜像。
+Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性
 					...
 				</div>
 			</a>

@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞03pod | 
+		k8s☞03Pod | 
 	 
 	zyh
 	</title>
@@ -726,7 +726,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -759,7 +759,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -770,7 +770,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2420,12 +2420,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞03pod
+	k8s☞03Pod
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/94518966/" class="leancloud_visitors" data-flag-title="k8s☞03pod"></span>
+			阅读量:<span id="/posts/94518966/" class="leancloud_visitors" data-flag-title="k8s☞03Pod"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2602,16 +2602,57 @@ total 16
 -rw------- 1 root root 2564 Aug 25 16:33 kube-controller-manager.yaml
 -rw------- 1 root root 1120 Aug 25 16:33 kube-scheduler.yaml
 </code></pre>
-<h2 id="Pod生命周期">Pod生命周期</h2>
-<p>pod的一生只会发生一次调度，因此在没有挂掉之前，会一直在被调度节点上运行。</p>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/</a></p>
+<h2 id="Pod-生命周期">Pod-生命周期</h2>
+<p>pod生命周期包含5个状态：</p>
+<ul>
+<li>pending，调度时间和拉取容器镜像时间，容器均处于waiting状态</li>
+<li>running，至少一个容器处于启动、重启、running状态</li>
+<li>failed，pod里的容器全退出，有部分容器以非0状态进入terminated状态</li>
+<li>succeeded，pod里的容器全部以0状态进入terminated状态</li>
+<li>unknown，pod所在节点和主节点之间失联，不过这种状态会因k8s的策略转为failed状态</li>
+</ul>
+<p>pod是通过uid来鉴别，而不是pod名，pod被替换时名称可以不变。</p>
 <h3 id="重启策略">重启策略</h3>
-<p>Pod通过<code>restartPolicy</code>设置重启策略，其值Always、OnFailure 和 Never。默认值是 Always。</p>
-<p><code>kubelet</code> 会按指数回退方式计算重启的间隔时间（10s、20s、40s、…），其最长间隔为 5 分钟。</p>
-<p>一旦Pod稳定运行了10分钟，那么重启间隔时间将从头计算。</p>
-<h3 id="Pod终止">Pod终止</h3>
-<p>通过kubectl发起的删除操作，会优雅的终止Pod，终止期默认是30秒。</p>
-<p>如果存在<code>prestop</code>钩子，则会延迟2秒。</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle</a></p>
+<p>pod重启策略的间隔时间是10s，成指数上涨，但不超过5分钟。一旦重启成功且运行10分钟，则重置为10s。</p>
+<h3 id="状况">状况</h3>
+<p>通过<code>kubectl describe pod/&lt;pod_name&gt;</code>查看<code>Conditions</code>字段条件</p>
+<pre><code class="language-bash">Conditions:
+  Type              Status
+  Initialized       True
+  Ready             False
+  ContainersReady   False
+  PodScheduled      True
+</code></pre>
+<blockquote>
+<p>Ready为True，即表示【应该】被加入到svc的端点列表中。</p>
+<p>但极端情况下有可能因为其它服务没准备好，导致及时Pod的Ready为True，svc也无法正常的转发流量到Pod。</p>
+<p>这种行为，可能在滚动更新的时候，会导致丢数据。</p>
+</blockquote>
+<p>针对上述问题，kubernetes允许在上面4个默认状态的基础上自定义就绪状态类型。</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate</a></p>
+<h3 id="终止">终止</h3>
+<ol>
+<li>
+<p>Apiserver拿到删除请求、Apiserver更新pod状态，转为<code>Terminating</code></p>
+</li>
+<li>
+<p>kubelet推送preStop事件到容器中执行，如果设置了preStop的话</p>
+</li>
+<li>
+<p>kubelet通过<code>container runtime</code>发送信号给每个容器中pid为1的进程号，并同时将pod从svc端点中剥离。</p>
+</li>
+<li>
+<p>容器关闭后，Apiserver将Pod删除。</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>2和3是并行的，并且执行时间取决于Pod终止宽限期<code>terminationGracePeriodSeconds</code></li>
+<li>kubectl 添加<code>--grace-period=0 --force</code>可以立即删除Pod</li>
+</ul>
+</blockquote>
+<p>ℹ️失败的pod状态会根据<code>kube-controller-manager</code> 参数 <code>terminated-pod-gc-threshold</code>阈值设置保存一定数量。默认这个值是<code>12500</code>，不清楚为何设置这么高。<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kubernetes/pull/79047%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E8%A2%AB%E9%A9%B3%E5%9B%9E%E7%9A%84%E4%BF%AE%E6%AD%A3%EF%BC%8C%E5%AE%83%E6%8F%90%E8%AE%AE%E8%AE%BE%E7%BD%AE%E4%B8%BA">https://github.com/kubernetes/kubernetes/pull/79047这是一个被驳回的修正，它提议设置为</a><code>500</code>。</p>
 
 </div>
 
@@ -2628,7 +2669,7 @@ total 16
         <div class="item right">
             
               <a href="/posts/3ec72f7e/">
-                k8s☞04pod生命周期
+                k8s☞04Pod-init容器 - 容器 - k8s - pod
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

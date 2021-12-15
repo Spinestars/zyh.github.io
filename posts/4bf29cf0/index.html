@@ -726,7 +726,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -737,7 +737,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -759,7 +759,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -770,7 +770,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2546,15 +2546,18 @@ spec:
         requests:
           storage: 1Gi
 </code></pre>
+<ul>
+<li>StatefulSet.spec.serviceName 设定 svc 名</li>
+</ul>
 <h2 id="特点">特点</h2>
 <ul>
-<li>pod 拥有唯一的顺序索引和稳定的网络身份(不管怎么删, 名字都不变, ip 会变). pod 被部署的时候其名字是按照<code>&lt;statefulset name&gt;-&lt;ordinal index&gt;</code>创建的(web-0, web-1). 这个名字就是他们的hostname.(这是默认行为)</li>
+<li>Pod 标识：拥有唯一的有序索引和稳定的网络身份。pod 被部署的时候其名字是按照<code>&lt;statefulset_name&gt;-&lt;index&gt;</code>创建的，例如(web-0, web-1)。这个名字就是他们的hostname，且不管 pod 如何调度，都永不变。</li>
+<li>Service 必须是 headless。StatefulSet 使用 headless 结合Pod标识来构建 Pod 子域名。其Pod子域名格式：<code>$(pod 名称).$(服务名称).$(命名空间).svc.cluster.local</code></li>
 <li>pod 不管怎么删, pod与pvc之间的关系都不会混乱.</li>
-<li>pod 之间可以通过固定的域名互相访问.</li>
+<li>pod 之间可以通过固定的Pod子域名互相访问.</li>
 <li>启动 pod 的时候, 按照索引, 从 0 开始. 一个一个启动. 不会同时启动多个. (这是默认行为)</li>
 <li>删除 pod 的时候, 按照索引倒序删除, 从最后一个开始, 一个一个删除. 不会同时删除多个. (这是默认行为)</li>
 <li>删除 pod 的时候, pvc 和 pv 并不会删除.</li>
-<li>Service 必须是 headless .</li>
 </ul>
 <blockquote>
 <p>你可以通过设置statefulset管理策略, 来改变上述默认行为</p>

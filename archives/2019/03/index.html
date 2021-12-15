@@ -724,7 +724,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -757,7 +757,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -768,7 +768,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2420,51 +2420,6 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
-				<h2 class="index-title">
-					docker☞01安装
-				</h2>
-				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-
-仓库
-
-官方 repo: https://download.docker.com/linux/centos/docker-ce.repo
-
-yum-conf
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
 					k8s☞01常见术语概念
@@ -2510,6 +2465,51 @@ control plane 和
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/b7cf7b1f/">
+				<h2 class="index-title">
+					docker☞01安装
+				</h2>
+				<div class="index-brief">
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+仓库
+
+官方 repo: https://download.docker.com/linux/centos/docker-ce.repo
+
+yum-conf
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/docker/">docker</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1a545f72/">
 				<h2 class="index-title">
 					006-kafka基本监控
@@ -2527,48 +2527,6 @@ curl &quot;https://github.com/danielqsj/kafka
 			</a>
                 <div class="article-meta">
 				    <span>2019-03-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/2fb0e26c/">
-				<h2 class="index-title">
-					003-kafka基本认证
-				</h2>
-				<div class="index-brief">
-					kafka的认证是通过java认证技术JAAS实现。
-http://kafka.apache.org/documentation/#security_sasl_plain
-服务端
-开启认证端口
-在kafka的服务端配置中追加：
- # 用户认证
-listeners=SASL_PLAINTEXT://&
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
                     
                             
                                 
@@ -2688,6 +2646,48 @@ bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布�
 
 producer_byte_rate 生产速率，单位是字节/s
 
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2fb0e26c/">
+				<h2 class="index-title">
+					003-kafka基本认证
+				</h2>
+				<div class="index-brief">
+					kafka的认证是通过java认证技术JAAS实现。
+http://kafka.apache.org/documentation/#security_sasl_plain
+服务端
+开启认证端口
+在kafka的服务端配置中追加：
+ # 用户认证
+listeners=SASL_PLAINTEXT://&
 					...
 				</div>
 			</a>

@@ -724,7 +724,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/94518966/">
                      
-										    k8s☞03pod
+										    k8s☞03Pod
                      
 									</a>
 								</li>
@@ -735,7 +735,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3ec72f7e/">
                      
-										    k8s☞04pod生命周期
+										    k8s☞04Pod-init容器
                      
 									</a>
 								</li>
@@ -757,7 +757,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/18e4fa73/">
                      
-										    k8s☞06无状态服务deployment-pod更新
+										    k8s☞06无状态服务deployment
                      
 									</a>
 								</li>
@@ -768,7 +768,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/f6e328b5/">
                      
-										    k8s☞07无状态服务deployment-pod扩缩
+										    k8s☞07自动扩缩
                      
 									</a>
 								</li>
@@ -2422,12 +2422,14 @@ var _hmt = _hmt || [];
 		<div class="index-li">
 			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞07无状态服务deployment-pod扩缩
+					k8s☞07自动扩缩
 				</h2>
 				<div class="index-brief">
-					前言
+					基本
 k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整deployment中的pod数量
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。
+手动缩放
+
 					...
 				</div>
 			</a>
@@ -2503,7 +2505,7 @@ terminated，容器退出
 		<div class="index-li">
 			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞03pod
+					k8s☞03Pod
 				</h2>
 				<div class="index-brief">
 					前言
@@ -2542,16 +2544,13 @@ https://kubernete
 		<div class="index-li">
 			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞04pod生命周期
+					k8s☞04Pod-init容器 - 容器 - k8s - pod
 				</h2>
 				<div class="index-brief">
-					Pod-生命周期
-pod生命周期包含5个状态：
+					使用场景
 
-pending，调度时间和拉取容器镜像时间，容器均处于waiting状态
-running，至少一个容器处于启动、重启、running状态
-failed，pod里的容器全退出，有部分容器以非0状态进入terminated状态
-succeeded，pod
+Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 sed、awk、python 或 dig 这样的工具而去 FROM 一个镜像来生成一个新的镜像。
+Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性
 					...
 				</div>
 			</a>
@@ -2705,51 +2704,6 @@ wget -O kubecm_release.tgz https://github.com/sunny0826/kubecm/releases/downl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
-				<h2 class="index-title">
-					docker☞01安装
-				</h2>
-				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-
-仓库
-
-官方 repo: https://download.docker.com/linux/centos/docker-ce.repo
-
-yum-conf
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/aaf9b7/">
 				<h2 class="index-title">
 					k8s☞01常见术语概念
@@ -2786,6 +2740,51 @@ control plane 和
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/b7cf7b1f/">
+				<h2 class="index-title">
+					docker☞01安装
+				</h2>
+				<div class="index-brief">
+					依赖
+yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+仓库
+
+官方 repo: https://download.docker.com/linux/centos/docker-ce.repo
+
+yum-conf
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/docker/">docker</a>
 										
                                     </span>
                                 

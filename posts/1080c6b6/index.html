@@ -803,17 +803,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -847,7 +836,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2489,108 +2478,66 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
-<p>在使用云服务的时候,我们创建磁盘,需要在存储服务中提交一个请求,里面包含了磁盘类型,磁盘大小.之后,我们再把这个申请的磁盘挂载到所需的计算资源上即可.</p>
+	<h1>基本</h1>
+<p>在使用云服务的时候，我们创建磁盘，需要在存储服务中提交一个请求，里面包含了磁盘类型，磁盘大小.之后，我们再把这个申请的磁盘挂载到所需的计算资源上即可.</p>
 <p>而在k8s中. 当使用存储的时候，我们会涉及到以下主要概念</p>
 <p>构建存储的概念：</p>
 <ul>
-<li>
-<p>volume # 这个概念指的是提供的存储服务，例如云商的云盘（aws-ebs，阿里云-云盘），也可以是nfs/cephfs。</p>
-</li>
-<li>
-<p>pv 或者 storageclass # 这个概念你可以认为是云服务商的存储服务的接口（例如web控制台操作界面）。当然，你需要自己提供接口所需要的存储信息，否则，k8s就不知道应该如何使用 volume。</p>
-</li>
-<li>
-<p>pvc # 这个概念你可以认为是你向云服务商存储接口提交的创建请求。通过 pvc，你就可以拿到一块可用的存储盘了。</p>
-</li>
+<li>volume 声明存储服务，例如公有云的云盘（aws-ebs，阿里云-云盘），也可以是nfs/cephfs。</li>
+<li>pv 声明volume的信息，否则，k8s就不知道如何使用 volume。</li>
 </ul>
 <p>使用存储的概念：</p>
 <ul>
-<li>podtemplate.spec.volumes  # 这个概念你可以认为是云服务商中你将磁盘绑定到计算资源</li>
-<li>podtemplate.spec.containers.volumeMounts  # 这个概念你可以认为是你登陆到云服务商中的计算资源中,并使用mount命令进行实际挂载.</li>
+<li>
+<p>pvc 通过PV声明【期望】的存储。例如期望得到的磁盘大小、访问模式。</p>
+</li>
+<li>
+<p>spec.template.spec.volumes  通过 PVC 或者 CM 创建 pod 所需的卷。如同你在aws中你将EBS绑定到EC2。</p>
+</li>
+<li>
+<p>spec.template.spec.containers.volumeMounts  声明 pod 如何挂载 volumes。如同你登陆到aws的EC2中，并使用mount命令进行实际挂载。</p>
+</li>
 </ul>
-<p>你可能会发现，从一个正常逻辑来说，一个volume如果要在计算资源中使用，它是需要格式化一个文件系统的，但是我上面的概念是直接就挂载成了一个目录。这是因为k8s已经在你通过pv资源帮你创建好了文件系统。当然你也可以通过将pv的模式改为块设备，不过这样一来，程序就需要确认是否可以识别块设备了。我想一般的应用程序是用不上这个类型的。<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode</a></p>
-<p>最后，pv或者storageclass是一个集群范围的对象，pvc则是一个namespace级别的对象</p>
-<h2 id="pv">pv</h2>
-<p>pod 与 pv 与 pvc 之间是强依赖关系。在资源对象被调用的过程中，任何一个删除操作都不会立即执行，而是在生命周期结束之后才会执行。</p>
-<p>分为静态和动态</p>
-<p>静态pv: 需要先创建一定数量的pv, 才能通过pvc申请成功.</p>
-<p>动态pv: 需要先构建供应商.主流的云商存储基本都有供应商, 区别在于是内置了,还是需要自行外部创建.然后再通过pvc去申请.</p>
-<p>内置供应商列表: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p>
-<p>外置供应商部署: <a target="_blank" rel="noopener" href="https://github.com/kubernetes-retired/external-storage">https://github.com/kubernetes-retired/external-storage</a></p>
-<h3 id="静态PV">静态PV</h3>
-<p>静态PV, 用户无法自行通过pvc去申请, 因为存储管理员需要先创建好匹配容量的pv才可以.就如同你想构建一个云服务器，但需要先创建好一个云盘。</p>
-<p>一个pv的例子, 这里以 nfs 为例:</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name:  nas-it-local-pv  # 定义 pv 名字, 会被 pvc 引用
-  namespace: it
-spec:
-  claimRef:
-    name: nas-it-local-pvc
-    namespace: it
-  capacity:
-    storage: 100Gi  # 定义大小
-  accessModes:
-  - ReadWriteMany   # 定义访问模式
-  persistentVolumeReclaimPolicy: Retain   # 定义pvc删除后的策略
-  nfs:
-    path: /mnt/data001/nfs-k8s   # 定义 nfs 共享路径
-    server: 10.200.16.250        # 定义 nfs 服务器地址
-</code></pre>
+<p>你可能会发现，<code>podtemplate.spec.volumes</code>和<code>podtemplate.spec.containers.volumeMounts</code>之间缺少了一个格式化文件系统的过程，这是因为k8s已经在你通过pv资源帮你创建好了文件系统。当然你也可以通过将pv的模式改为块设备，不过这样一来，程序就需要确认是否可以识别块设备了。我想一般的应用程序是用不上这个类型的。<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode</a></p>
+<p>最后，pod 与 pv 与 pvc 之间是一对一强依赖关系。三者之间，在A资源对象【被B调用】的过程中，任何一个删除A资源对象的操作都不会立即执行，而是在【B调用方】生命周期结束之后才会执行。</p>
+<h1>volume卷</h1>
+<p>支持的存储类型</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/volumes/#volume-types">https://kubernetes.io/docs/concepts/storage/volumes/#volume-types</a></p>
+<p>在使用某一个存储服务类型之前，详细的阅读存储服务的限制很有必要。</p>
+<p>存储类型支持的模式:</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes</a></p>
+<ol>
+<li>
+<p><strong>ReadWriteOnce</strong>(单节点挂载读写，单节点内多pod读写)</p>
+</li>
+<li>
+<p><strong>ReadOnlyMany</strong>(多节点挂载只读，多pod只读)</p>
+</li>
+<li>
+<p><strong>ReadWriteMany</strong>(多节点挂载读写，多pod读写)</p>
+</li>
+<li>
+<p><strong>ReadWriteOncePod</strong>(单Pod读写)</p>
+</li>
+</ol>
+<p>⚠️ReadWriteOncePod 是新增，仅支持 csi + k8s 1.22+</p>
+<h2 id="NFS">NFS</h2>
+<p>使用NFS之前，需要先搭建NFS服务端。</p>
+<p>例如云服务已有的NFS服务，或者自行搭建。</p>
+<p>下面是k8s官方给出的自行搭建：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs">https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs</a></p>
+<h2 id="本地">本地</h2>
+<p>local volume 特点：</p>
 <ul>
-<li>
-<p>accessModes 决定了pod可以如何使用pv. 它有三种模式:</p>
-<ol>
-<li>
-<p><strong>ReadWriteOnce</strong>(单pod读写)</p>
-</li>
-<li>
-<p><strong>ReadOnlyMany</strong>(多pod只读)</p>
-</li>
-<li>
-<p><strong>ReadWriteMany</strong>(多pod读写)</p>
-<p>这里是官方列举的各种存储类型支持的模式: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes</a></p>
-</li>
-</ol>
-</li>
-<li>
-<p>persistentVolumeReclaimPolicy 有三种模式:</p>
-<ol>
-<li>
-<p><strong>Retain</strong>(只删pvc)</p>
-</li>
-<li>
-<p><strong>Delete</strong>(同时删除pv和pvc)</p>
-</li>
-<li>
-<p><strong>Recycle</strong>(同时删除pv和pvc,并清空pv存储的资源).</p>
-<p>详情见 <a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a></p>
-</li>
-</ol>
-</li>
+<li>当前只支持静态PV。</li>
+<li>显式的添加节点亲和性，系统通过PV的节点亲和性将Pod调度到本地卷所在节点上。</li>
+<li>建立一个动态PV，并通过设置模式延迟绑定直到Pod调度到本地卷所在节点上。</li>
 </ul>
-<h3 id="静态PV对应的PVC">静态PV对应的PVC</h3>
-<pre><code class="language-yaml">kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: nas-it-local-pvc
-  namespace: it
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 100Gi
-  volumeName: nas-it-local-pv
-</code></pre>
-<h3 id="可能会用到的卷类型：本地">可能会用到的卷类型：本地</h3>
-<p>本地卷是一种静态卷，因为它强依赖具体的node，所以POD无需进行节点亲和性绑定。</p>
+<p>一个例子：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: k8s01-pv-local
+  name: example-pv
 spec:
   capacity:
     storage: 100Gi
@@ -2608,71 +2555,166 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - k8s01
+          - example-node    
+---
+ apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
 </code></pre>
-<h3 id="动态PV">动态PV</h3>
-<p>动态PV, 用户可以自行通过PVC向StroageClass申请资源. 就如同你在构建阿里云的ECS的时候，只需要告知使用多大的磁盘，云服务器创建的时候会自动申请。</p>
-<p>动态PV的构建需要一个新的资源对象StroageClass插件。插件在设计的时候，都会根据volume类型拥有自己的一些特定参数。例如云服务的云盘一般都可以设置请求的磁盘类型。你可以在这里找到各种支持的volume类型以及它们的属性字段：<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p>
-<p>不过，有些volume类型的供应商已经有对应的内置插件，有些则没有。</p>
-<p>以网络存储nfs为例. nfs属于外置供应商，因此没有内置插件。所以需要先构建<strong>nfs-client</strong>插件。</p>
+<h1>PV持久卷</h1>
+<h2 id="状态">状态</h2>
+<pre><code class="language-bash">kubectl get pv -n &lt;ns&gt;
+</code></pre>
+<ul>
+<li>Available（可用）：表示可用状态，还未被任何 PVC 绑定</li>
+<li>Bound（已绑定）：表示 PV 已经被 PVC 绑定</li>
+<li>Released（已释放）：PVC 被删除，但是数据资源还在</li>
+<li>Failed（失败）： 表示该 PV 的自动回收失败</li>
+</ul>
+<h2 id="类型">类型</h2>
+<p>PV分为静态和动态。</p>
+<p>静态pv: 需要先创建一定数量的pv， 然后才能通过pvc对应申请。若pvc无法匹配任意静态pv，则pvc会一直等待下去。</p>
+<p>动态pv: 需要先构建供应商.主流的云商存储基本都有供应商， 区别在于是内置了，还是需要自行外部创建.然后再通过pvc去申请.</p>
+<p>内置供应商列表: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p>
+<p>外置供应商部署: <a target="_blank" rel="noopener" href="https://github.com/kubernetes-retired/external-storage">https://github.com/kubernetes-retired/external-storage</a></p>
+<h2 id="回收策略">回收策略</h2>
+<p><code>spec.persistentVolumeReclaimPolicy</code> 定义 PVC 被删除的时候，集群如何处理PV。</p>
+<p><strong>Retain</strong>  不处理PV。但 PV 不能直接再次服用，因为里面还有之前Pod的数据。复用PV：</p>
+<ul>
+<li>在静态PV下，PV的名字是固定的，因此删除PVC之后，通过删除<code>pv.spec.claimRef.uid</code>解除PV的<code>Released</code>状态，就可以采用原有的PVC配置分配到。</li>
+<li>在动态PV下，PV的名字是动态生成的， 因此删除PVC之后， 当PVC重新申请资源的时候， PV默认将会分配到一个新的资源路径。</li>
+</ul>
+<p><strong>Delete</strong> 同时删除PVC和Volume。只不过Volume是否删除取决于每一个StorageClass中parameters的定义。</p>
+<ul>
+<li>当StorageClass是nfs-client时，开启 <code>parameters.archiveOnDelete=true</code> ，就可以定义不删除而是在nfs中将其数据目录重命名归档。</li>
+<li>当StorageClass是微软/aws/阿里云的云盘的时候，一般默认是删除云盘。从而避免产生大量闲置云盘。</li>
+</ul>
+<p><strong>Recycle</strong> 删除PV。</p>
+<ul>
+<li>当前只有nfs和hostPath支持.</li>
+<li>已废弃。建议通过动态PV+Delete去控制。</li>
+</ul>
+<h2 id="静态PV">静态PV</h2>
+<p>静态PV，必须由管理员用户先创建好pv.就如同你想构建一个云服务器，但需要先创建好一个云盘。</p>
+<p>一个静态pv的例子， 这里以 nfs 为例:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name:  nas-nginx-pv  # pv 名字，会被 pvc 引用
+spec:
+  claimRef:
+    name: nas-nginx-pvc
+    namespace: default
+  capacity:
+    storage: 10Gi  # 定义本持久卷大小
+  accessModes:
+  - ReadWriteMany   # 定义本持久卷访问模式
+  persistentVolumeReclaimPolicy: Retain   # 定义pvc删除后的策略
+  nfs:
+    path: /volume1/k8s  # 定义 nfs 共享路径
+    server: 10.200.10.4        # 定义 nfs 服务器地址
+</code></pre>
+<ul>
+<li>
+<p>claimRef 显式的指定允许绑定的PVC。</p>
+</li>
+<li>
+<p>accessModes 访问模式。</p>
+</li>
+<li>
+<p>persistentVolumeReclaimPolicy 详见<strong>PV回收策略。</strong></p>
+</li>
+</ul>
+<h3 id="静态PV对应的PVC">静态PV对应的PVC</h3>
+<pre><code class="language-yaml">kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nas-nginx-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: nas-nginx-pv
+</code></pre>
+<ul>
+<li>spec.volumeName 显式的指定要绑定的pv</li>
+</ul>
+<h2 id="动态PV">动态PV</h2>
+<p>动态PV目的在于用户可以自行通过PVC申请资源，无需提前通过管理员创建PV。</p>
+<p>动态PV的构建需要一个新的资源对象StroageClass，它通过<code>provisioner</code>指定卷插件，从而对接不同的储存。卷插件其实就是一个存储类型的客户端。</p>
+<p>卷插件都会拥有自己的一些特定参数，从而满足向卷供应商提供创建卷时所需要的信息。</p>
+<p>当前支持的volume类型以及对应的卷插件参数：</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner">https://kubernetes.io/docs/concepts/storage/storage-classes/#provisioner</a></p>
+<p>⚠️ k8s并不提供所有的卷插件。</p>
+<h3 id="基于nfs构建StroageClass">基于nfs构建StroageClass</h3>
+<p>以网络存储nfs为例。nfs属于外置供应商，因此没有内置卷插件。因此需要先创建。创建文档：</p>
 <p><a target="_blank" rel="noopener" href="https://artifacthub.io/packages/helm/ckotzbauer/nfs-client-provisioner">nfs-client-provisioner 1.0.2 · helm/ckotzbauer (artifacthub.io)</a></p>
 <p>⚠️ 需要注意的是，nfs-client正常运行需要两个条件：</p>
 <ul>
-<li><code>yum install nfs-utils -y</code></li>
+<li>所有节点安装nfs-utils。<code>yum install nfs-utils -y</code></li>
 <li>从 k8s 1.20版本开始，编辑 /etc/kubernetes/manifests/kube-apiserver.yaml 添加 <code>- --feature-gates=RemoveSelfLink=false</code></li>
 </ul>
 <p>安装命令：</p>
-<pre><code class="language-yaml">## 国外源
-# helm repo add ckotzbauer https://ckotzbauer.github.io/helm-charts
-# helm repo update
-# helm install nfs-client ckotzbauer/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=true
-## 阿里源
+<pre><code class="language-yaml">#############################################国外源###################################################
+helm repo add ckotzbauer https://ckotzbauer.github.io/helm-charts
+helm repo update
+helm install nfs-client ckotzbauer/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=true
+#############################################阿里源###################################################
 helm repo add apphub https://apphub.aliyuncs.com
 helm repo update
-helm install nfs-client apphub/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=true
+helm install nfs-client apphub/nfs-client-provisioner \
+--set storageClass.name=nfs-client \
+--set nfs.server=10.200.10.4 \
+--set nfs.path=/volume1/k8s \
+--set storageClass.reclaimPolicy=Delete \
+--set storageClass.archiveOnDelete=true \
+--set storageClass.allowVolumeExpansion=true \
+--set storageClass.defaultClass=true
 </code></pre>
-<blockquote>
-<p>nfs.server是nfs服务器地址</p>
-<p>nfs.path是nfs共享目录</p>
-<p>parameters.archiveOnDelete 当回收策略在被执行的时候（<a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a>），pv删除的同时申请的存储资源是否要归档。false就是不归档直接删除。这里归档的意思就是将申请的存储资源的物理路径前加一个archived前缀，即：<code>archived-$&#123;NS_NAME&#125;-$&#123;PVC_NAME&#125;-$&#123;PV_NAME&#125;</code></p>
+<p>上述参数文档：<a target="_blank" rel="noopener" href="https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration">https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration</a></p>
+<ul>
+<li>
+<p>parameters.archiveOnDelete 当回收策略在被执行的时候（<a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a>），pv删除的同时申请的存储资源是否要归档。false就是不归档直接删除。这里归档的意思就是将申请的存储资源的物理路径前加一个archived前缀。最终格式：<code>archived-$&#123;NS_NAME&#125;-$&#123;PVC_NAME&#125;-$&#123;PV_NAME&#125;</code></p>
+</li>
+<li>
 <p>storageClass.allowVolumeExpansion 开启卷扩展。这个选项可以让你动态的调整 pvc 请求的对象大小。</p>
-</blockquote>
-<p>关于nfs-client的各种配置参数,可以查看文档https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration</p>
+</li>
+</ul>
 <p>nfs-client会自动帮你创建一个 StroageClass。</p>
 <pre><code class="language-yaml">kubectl get StorageClass/nfs-client -o yaml
-allowVolumeExpansion: true
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   annotations:
     meta.helm.sh/release-name: nfs-client
     meta.helm.sh/release-namespace: default
+    storageclass.kubernetes.io/is-default-class: &quot;true&quot;
   labels:
     app: nfs-client-provisioner
     app.kubernetes.io/managed-by: Helm
     chart: nfs-client-provisioner-1.2.9
     heritage: Helm
     release: nfs-client
-  managedFields:
-  - apiVersion: storage.k8s.io/v1
   ......
   name: nfs-client
-  resourceVersion: &quot;9314040&quot;
-  selfLink: /apis/storage.k8s.io/v1/storageclasses/nfs-client
-  uid: 3d695640-0cba-4660-9c92-53d870649b2c
-parameters:
-  archiveOnDelete: &quot;false&quot;
 provisioner: cluster.local/nfs-client-nfs-client-provisioner
 reclaimPolicy: Delete
+allowVolumeExpansion: true
+parameters:
+  archiveOnDelete: &quot;true&quot;
 volumeBindingMode: Immediate
 </code></pre>
-<p>你可以通过添加 <code>metadata.annotations.storageclass.kubernetes.io/is-default-class: true</code> 来将此存储类设置为集群默认存储类。这样，当pvc中没有显式的指定存储类的时候，将会用默认存储类。</p>
-<p>在此例子中，你无法添加，不过你可以在创建之前通过 storageClass.defaultClass 选项设置。因为上述例子是通过helm创建的，创建完后存储类配置不可被修改。</p>
 <h3 id="动态PV对应的PVC">动态PV对应的PVC</h3>
 <pre><code class="language-yaml">kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: nas-it-local-pvc
+  name: nas-vsftpd-pvc
 spec:
   storageClassName: nfs-client
   accessModes:
@@ -2681,68 +2723,8 @@ spec:
     requests:
       storage: 100Gi
 </code></pre>
-<p>在这里,我们通过 <code>spec.storageClassName</code>字段来调用名字叫 nfs-client 存储类。</p>
-<h3 id="PV回收策略-persistentVolumeReclaimPolicy">PV回收策略 persistentVolumeReclaimPolicy</h3>
-<p><strong>Retain</strong> 只删除 PVC, PV保留, PV不能被用于其它Pod. 如果想复用存储资源,则需重新构建PV和PVC。假设以aws角度来看，就是EC2删了，web控制台还能看到EBS。</p>
-<ul>
-<li>在静态PV下,PV的名字是固定的,因此删除PVC之后,可以采用原有的PV配置重建PV继而分配到原有的资源.</li>
-<li>在动态PV下,PV的名字是动态生成的, 因此删除PVC之后, 当PVC重新申请资源的时候, PV默认将会分配到一个新的资源路径.</li>
-</ul>
-<p>⭐️对于Retain策略，如果你想精准的将新pvc绑定到某个残留的pv，则可以参照[保留一个静态PV, 并告知pvc强制请求pv](#保留一个静态PV, 并告知pvc强制请求pv)</p>
-<p><strong>Delete</strong> 同时删除PV和PVC. 存储资源是否删除取决于每一个StorageClass中parameters的定义。</p>
-<ul>
-<li>当StorageClass是nfs-client时，开启 <code>parameters.archiveOnDelete=true</code> ，就可以定义不删除而是将其归档。假设以aws角度来看，就是web控制台里的EC2和EBS都没了，但是aws在后台还偷偷的帮你将EBS的里的数据归档保存了。</li>
-<li>当StorageClass是微软/aws/阿里云的云盘的时候，一般默认是删除云盘。从而避免产生大量闲置云盘。</li>
-</ul>
-<p><strong>Recycle</strong> 删除创建的所有对象和存储资源.</p>
-<ul>
-<li>当前只有nfs和hostPath支持.</li>
-</ul>
-<h3 id="存储资源物理层面回收">存储资源物理层面回收</h3>
-<p>k8s官方建议不要使用回收策略 <strong>Recycle</strong>, 因为它无法反悔。k8s建议管理员自己去删除. 例如通过一个pod去删除.pod例子如下:</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: pv-recycler
-  namespace: default
-spec:
-  restartPolicy: Never
-  volumes:
-  - name: vol
-    hostPath:
-      path: /any/path/it/will/be/replaced   # 这里应该填写需要删除的内容根路径. 根路径应该是node本地可以访问的物理资源地址.
-  containers:
-  - name: pv-recycler
-    image: &quot;k8s.gcr.io/busybox&quot;
-    command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;test -e /scrub &amp;&amp; rm -rf /scrub/..?* /scrub/.[!.]* /scrub/*  &amp;&amp; test -z \&quot;$(ls -A /scrub)\&quot; || exit 1&quot;]
-    volumeMounts:
-    - name: vol
-      mountPath: /scrub
-</code></pre>
-<p>上述例子会构建一个 pod，pod会将本地的 /any/path/it/will/be/replaced 路径里的内容都删除掉。</p>
-<h3 id="如何保留一个静态PV-并告知pvc强制请求pv">如何保留一个静态PV, 并告知pvc强制请求pv</h3>
-<p>默认情况下，pvc找静态pv是自动的，例如会自动找大小匹配的pv。这可能有时候不符合我们的需求。例如我们想给一个数据库构建一个固定强依赖的pv。</p>
-<p>此时需要在构建pv的时候，添加 <code>spec.claimRef</code>。例如：</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: foo-pv
-spec:
-  claimRef:
-    name: foo-pvc
-    namespace: foo
-</code></pre>
-<p>这个例子是将 foo-pv 强制保留给 foo-pvc. 也就是说其它 pvc 无法使用 foo-pv。</p>
-<p>之后，我们在 pvc 中添加 <code>spec: volumeName</code> 。例如：</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: foo-pvc
-  namespace: foo
-spec:
-  volumeName: foo-pv
-</code></pre>
-<h3 id="在线扩缩（仅支持动态pv）">在线扩缩（仅支持动态pv）</h3>
+<p>在这里，我们通过 <code>spec.storageClassName</code>显式指定StroageClass。</p>
+<h3 id="在线扩展（仅支持动态pv）">在线扩展（仅支持动态pv）</h3>
 <p>要实现在线调整大小，需要满足下列条件：</p>
 <ol>
 <li>
@@ -2752,45 +2734,46 @@ spec:
 <p>StorageClass的<code>allowVolumeExpansion</code>被开启。这意味着必须是动态pv。</p>
 </li>
 <li>
-<p>文件系统是XFS, Ext3, or Ext4。这个需要StorageClass的支持。一般来说volume属于块设备类型的资源才支持，比如aws的ebs。</p>
+<p>文件系统是XFS， Ext3， or Ext4。这个需要StorageClass的支持。一般来说volume属于块设备类型的资源才支持，比如aws的ebs。</p>
 <blockquote>
 <p>你可以在这里确认StorageClass是否支持fstype属性。<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/storage-classes/#parameters">https://kubernetes.io/docs/concepts/storage/storage-classes/#parameters</a></p>
 </blockquote>
 </li>
 </ol>
-<p>满足上述条件后，你就可以通过 pvc 修改存储大小了。即时 pvc 正在被使用。</p>
+<p>满足上述条件后，你就可以通过修改pvc提升存储大小了。即使 pvc 正在被使用。</p>
 <h3 id="局限性">局限性</h3>
 <p>当一个 pod 同时申请多个 volume 的时候，可能会出现 volume-A 申请成功，volume-B 因物理容量不够申请失败的问题，此时 pod 将卡住。这种情况下，需要手动介入去清理。</p>
-<h3 id="手动介入">手动介入</h3>
+<h3 id="PVC申请失败">PVC申请失败</h3>
 <p>需要我们手动的时候，都是资源申请失败或者不小心删除了PVC之类的。而不管是什么，我们第一目的是数据不丢。</p>
 <p>因此，我们在清理故障对象资源的时候，应该遵循下列步骤：</p>
 <ol>
 <li>将pv的回收策略<code>persistentVolumeReclaimPolicy</code>定义为<code>Retain</code></li>
 <li>删除pvc，这个时候 pv 对象将会保留，但是 pv 状态会变成 Released，这个状态下 pv 无法再被使用</li>
-<li>删除pv对象字段<code>spec.claimRef</code>，从而将pv与pvc解绑，从而使 pv 状态变为 Available</li>
-<li>重建pvc，并将pvc对象字段<code>volumeName</code>设置为pv的名字</li>
+<li>删除pv对象字段<code>spec.claimRef.uid</code>，从而将pv与pvc解绑，从而使 pv 状态变为 Available</li>
+<li>将pvc对象字段<code>volumeName</code>设置为pv的名字，重建pvc</li>
 <li>恢复pv的回收策略。</li>
 </ol>
-<h2 id="PVC如何与POD结合使用">PVC如何与POD结合使用</h2>
-<p>这里以上述例子中的 nfs 卷类型为例。</p>
+<h1>Pod使用PVC</h1>
+<p>上述例子中的 nfs 卷类型为例。</p>
+<p>Deployment配置：</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: nas-it-local-dep
+  name: vsftpd
   namespace: it
   labels:
-    app: nas-it-local
+    app: vsftpd
 spec:
-  serviceName: nas-it-local-vsftpd
+  serviceName: vsftpd
   revisionHistoryLimit: 10
   replicas: 1
   selector:
     matchLabels:
-      app: nas-it-local
+      app: vsftpd
   template:
     metadata:
       labels:
-        app: nas-it-local
+        app: vsftpd
     spec:
       hostNetwork: true
       affinity:
@@ -2801,7 +2784,6 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-  - 容器
                 - k8s01
       containers:
       - name: vsftp
@@ -2820,57 +2802,47 @@ spec:
             memory: &quot;512Mi&quot;
             cpu: &quot;250m&quot;
         volumeMounts:
-        - name: nas-it-local-vol
-          subPath: nas.it.local/data
+        - name: vsftpd-vol
+          subPath: vsftpd/data
           mountPath: /home/vsftpd
-        - name: nas-it-local-vc
+        - name: vsftpd-vc
           subPath: vsftpd.conf
           mountPath: /etc/vsftpd/vsftpd.conf
           readOnly: true
-        - name: nas-it-local-vc
+        - name: vsftpd-vc
           subPath: virtual_users.txt
           mountPath: /etc/vsftpd/virtual_users.txt
           readOnly: true
-        - name: nas-it-local-vc
+        - name: vsftpd-vc
           subPath: admin
           mountPath: /etc/vsftpd/virtual/admin
           readOnly: true
-        - name: nas-it-local-vc
-          subPath: yuangong
-          mountPath: /etc/vsftpd/virtual/yuangong
-          readOnly: true
       volumes:
-      - name: nas-it-local-vol
+      - name: vsftpd-vol
         persistentVolumeClaim:
-          claimName: nas-it-local-pvc
-      - name: nas-it-local-vc
+          claimName: vsftpd-pvc
+      - name: vsftpd-vc
         configMap:
-          name: nas-it-local-cm
+          name: vsftpd-cm
 </code></pre>
 <ol>
 <li>
-<p>创建 <code>volumes：nas-it-local-vol</code>，并绑定 <code>PVC：nas-it-local-pvc</code></p>
-<pre><code class="language-yaml">      volumes:
-      - name: nas-it-local-vol
-        persistentVolumeClaim:
-          claimName: nas-it-local-pvc
-</code></pre>
+<p><code>spec.template.spec.volumes</code>：定义Pod所用的卷</p>
 </li>
 <li>
-<p>创建 <code>volumeMounts</code>挂载 <code>volumes：nas-it-local-vol</code></p>
-<p>这里将 nfs 共享目录中<code>nas.it.local/data</code>里的数据挂载到容器里的 <code>/home/vsftpd</code>路径</p>
-<pre><code class="language-yaml">        volumeMounts:
-        - name: nas-it-local-vol
-          subPath: nas.it.local/data
-          mountPath: /home/vsftpd
-</code></pre>
-<p>⭐️subPath不存在的时候，nfs 共享目录会自动创建。</p>
+<p><code>spec.template.spec.containers.volumeMounts</code>：定义 <code>nas-vsftpd-vol</code>如何挂载</p>
+<p>这里将 nfs 共享目录<code>&lt;nfs_root&gt;/vsftpd/data</code>挂载到容器里的 <code>/home/vsftpd</code>路径。subPath不存在的时候，nfs会自动创建。</p>
+</li>
+<li>
+<p>configMap 参见临时卷</p>
 </li>
 </ol>
-<hr>
-<h2 id="持久卷与临时卷">持久卷与临时卷</h2>
-<p>以上方式都是持久卷方式，k8s还有一种临时卷，用来进行非必须的数据存储。例如缓存/会话一类的。临时卷数据将随着POD生命周期的终止而终止。</p>
-<p>k8s支持的临时卷主要是这两种：</p>
+<p>⚠️ subPath 方式的挂载无法接收数据更新。</p>
+<h1>临时卷</h1>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#types-of-ephemeral-volumes">https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#types-of-ephemeral-volumes</a></p>
+<p>k8s用来进行临时的数据存储或者临时调用数据。例如缓存/会话/密码/配置一类的。</p>
+<p>ℹ️ 他们无需人为的提前创建PVC去绑定，而是直接在Pod中去调用。</p>
+<p>临时卷均通过节点的kubelet自动管理，实现临时卷的PVC将随着POD的删除而自动删除。</p>
 <ul>
 <li>
 <p>emptyDir</p>
@@ -2889,13 +2861,25 @@ spec:
   - name: cache-volume
     emptyDir: &#123;&#125;
 </code></pre>
-<p>emptyDir还支持构建一个内存层缓存，也就是 tmpfs。你可以通过<code>emptyDir.medium: &quot;Memory&quot;</code>来开启。</p>
+<p>emptyDir支持构建一个内存层缓存，也就是 tmpfs。你可以通过<code>emptyDir.medium: &quot;Memory&quot;</code>来开启。</p>
 </li>
 <li>
-<p>generic ephemeral volumes 这一种是更加灵活的emptyDir，可以是网络存储，如果插件支持，则各种持久卷的特性它都有可能支持。当前1.18不支持，从1.19开始支持，1.19也是alpha，默认不开启。</p>
+<p>configMap、secret</p>
+<p>配置卷和密码卷，很重要的类型。当然，这只是ConfigMap和secret对象的其中一种使用方式。</p>
+<p>⚠️ 需要先创建ConfigMap和secret对象，才能在Pod中引用他们。</p>
+</li>
+<li>
+<p>Downward API</p>
+<p>常用来给容器提供Pod信息。</p>
+</li>
+<li>
+<p>generic ephemeral volumes 这一种是更加灵活的emptyDir，可以是网络存储，如果插件支持，则各种持久卷的特性它都有可能支持。从1.19开始支持，1.19也是alpha，默认不开启。</p>
 <p>具体使用看https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#generic-ephemeral-volumes</p>
 </li>
 </ul>
+<h1>Projected Volumes</h1>
+<p>可实现将volumes的所有列表项挂载在Pod同一个位置上。</p>
+<p>详细使用见【k8s☞10应用配置与密码与信息提供】</p>
 
 </div>
 

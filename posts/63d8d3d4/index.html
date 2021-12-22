@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞12守护进程 | 
+		k8s☞12-1守护进程DaemonSet | 
 	 
 	zyh
 	</title>
@@ -803,17 +803,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -847,7 +836,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2420,12 +2409,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞12守护进程
+	k8s☞12-1守护进程DaemonSet
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/63d8d3d4/" class="leancloud_visitors" data-flag-title="k8s☞12守护进程"></span>
+			阅读量:<span id="/posts/63d8d3d4/" class="leancloud_visitors" data-flag-title="k8s☞12-1守护进程DaemonSet"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2490,14 +2479,27 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>DaemonSet 确保指定的node上都存在一份 pod. 常用来构建一些批量代理性质的app. 例如监控节点app, 或者日志节点app</p>
+<p>DaemonSet 确保符合规则的 k8s node 上都存在一份 pod。常用来构建节点常驻性的app. 例如监控节点的app， 或者采集节点日志的app，以及网络app等。</p>
 <h2 id="特点">特点</h2>
 <ul>
-<li>当一个节点添加到集群, 或从集群中删除, 则 pod 会被添加/删除</li>
-<li>当DaemonSet被删除, 则 pod 都会被删除.</li>
-<li>pod模板中的 RestartPolicy 必须是默认值, 也就是 Always.</li>
-<li>创建后.spec.selector 不可修改.</li>
-<li>默认调度在所有符合条件的node上.</li>
+<li>
+<p>调度在所有符合条件的node上。</p>
+</li>
+<li>
+<p>当DaemonSet创建或删除， 则指定节点上的 pod 都会创建或删除。</p>
+</li>
+<li>
+<p>当一个符合DaemonSet规则的节点添加到集群或从集群中删除， 则 pod 会自动被添加/删除。</p>
+</li>
+<li>
+<p>当DaemonSet被删除， 则指定节点上的 pod 都会被删除.</p>
+</li>
+<li>
+<p>pod模板中的 RestartPolicy 必须是默认值， 也就是 Always.</p>
+</li>
+<li>
+<p>创建后.spec.selector 不可修改.</p>
+</li>
 </ul>
 <h2 id="一个例子">一个例子</h2>
 <pre><code class="language-yaml">apiVersion: apps/v1
@@ -2517,8 +2519,7 @@ spec:
         name: fluentd-elasticsearch
     spec:
       tolerations:
-      # this toleration is to have the daemonset runnable on master nodes
-      # remove it if your masters can't run pods
+      # 添加容忍标签，允许将 Pod 调度到附加了 NoSchedule 的 master 主机
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
       containers:
@@ -2545,7 +2546,7 @@ spec:
         hostPath:
           path: /var/lib/docker/containers
 </code></pre>
-<p>这是一个日志采集pod. 它将k8s集群节点的 /var/log 和 /var/lib/docker/containers 挂载到 pod 中. 这样, elasticsearch 就可以获取到k8s集群所有节点的信息了.</p>
+<p>这是一个日志采集pod. 它将k8s集群节点的 /var/log 和 /var/lib/docker/containers 挂载到 pod 中. 这样， elasticsearch 就可以获取到k8s集群所有节点的信息了.</p>
 <h2 id="pod运行在部分node上">pod运行在部分node上</h2>
 <p>你有两种方式处理pod的部分调度.</p>
 <h3 id="通过节点标签-nodeSelector-来选择">通过节点标签(nodeSelector)来选择.</h3>
@@ -2566,7 +2567,7 @@ spec:
     disktype: ssd
 </code></pre>
 <h3 id="通过节点亲和性-nodeAffinity-来选择">通过节点亲和性(nodeAffinity)来选择</h3>
-<p><code>.spec.affinity.nodeAffinity</code> , 它有以下属性: (每一个属性由两部分意思组成)</p>
+<p><code>.spec.affinity.nodeAffinity</code> ， 它有以下属性: (每一个属性由两部分意思组成)</p>
 <p>requiredDuringScheduling<strong>IgnoredDuringExecution</strong><br>
 表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中IgnoreDuringExecution表示pod部署之后运行的时候，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
 <p>requiredDuringScheduling<strong>RequiredDuringExecution</strong><br>
@@ -2602,14 +2603,14 @@ spec:
   - name: with-node-affinity
     image: gcr.io/google_containers/pause:2.0
 </code></pre>
-<p>这个配置的意思是pod<strong>必须被调度</strong><a target="_blank" rel="noopener" href="http://xn--kubernetes-m11qu01s34wc.io/e2e-az-name=e2e-az1%E6%88%96%E8%80%85kubernetes.io/e2e-az-name=e2e-az2">到标签kubernetes.io/e2e-az-name=e2e-az1或者kubernetes.io/e2e-az-name=e2e-az2</a> 的节点。与此同时, 还将在上述条件的基础上, <strong>优先调度</strong>到额外拥有标签为another-node-label-key=another-node-label-value的节点上。</p>
+<p>这个配置的意思是pod<strong>必须被调度</strong><a target="_blank" rel="noopener" href="http://xn--kubernetes-m11qu01s34wc.io/e2e-az-name=e2e-az1%E6%88%96%E8%80%85kubernetes.io/e2e-az-name=e2e-az2">到标签kubernetes.io/e2e-az-name=e2e-az1或者kubernetes.io/e2e-az-name=e2e-az2</a> 的节点。与此同时， 还将在上述条件的基础上， <strong>优先调度</strong>到额外拥有标签为another-node-label-key=another-node-label-value的节点上。</p>
 <h2 id="污点和容忍度Taint-and-toleration">污点和容忍度Taint-and-toleration</h2>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/</a></p>
-<p>k8s通过污点来剔除某些故障节点, 或构建一些专属节点.</p>
+<p>k8s通过污点来剔除某些故障节点， 或构建一些专属节点.</p>
 <p>k8s通过容忍度来确保某些pod可以忽略污点.</p>
-<p>在正常情况下. 没有任何容忍度的pod不会被调度到存在污点的node上. (当出现节点故障时候, 默认会附加一个容忍度, 容忍度失效300秒)</p>
-<p>但DaemonSet却需要忽略这些污点, 以便于pod长存. (例如你构建的监控pod)</p>
-<p>以下是DaemonSet自动附加的容忍度, 它将忽略这些污点. (截至到v1.19)</p>
+<p>在正常情况下. 没有任何容忍度的pod不会被调度到存在污点的node上. (当出现节点故障时候， 默认会附加一个容忍度， 容忍度失效300秒)</p>
+<p>但DaemonSet却需要忽略这些污点， 以便于pod长存. (例如你构建的监控pod)</p>
+<p>以下是DaemonSet自动附加的容忍度， 它将忽略这些污点. (截至到v1.19)</p>
 <pre><code class="language-bash">node.kubernetes.io/not-ready
 node.kubernetes.io/unreachable	
 node.kubernetes.io/disk-pressure	
@@ -2629,14 +2630,14 @@ node.kubernetes.io/network-unavailable
             
               <a href="/posts/4bf29cf0/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞12有状态服务StatefulSet
+                  k8s☞12-2有状态服务StatefulSet
               </a>
             
         </div>
         <div class="item right">
             
               <a href="/posts/ed4c29d5/">
-                k8s☞11-2namespace资源约束
+                k8s☞11-2namespace资源约束LimitRange
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

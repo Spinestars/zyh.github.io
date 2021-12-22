@@ -801,17 +801,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -845,7 +834,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2420,52 +2409,6 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/724fda19/">
-				<h2 class="index-title">
-					ansible☞模板
-				</h2>
-				<div class="index-brief">
-					前言
-当你用ansible进行多机器的配置调整，且调整的东西都一模一样，此时你不会拒绝模板的诱惑。
-ansible的模板是jinja2，所以jinja2的特性，在这里都可以用。
-
-模板中，不要出现任何你觉得模板会忽略的东西，包括但不限于空格
-
-模块 template
-参数：
-
-src 模板文件路径
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/6ce01f58/">
 				<h2 class="index-title">
 					ansible☞playbook-include
@@ -2739,19 +2682,21 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1587f6e8/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					zabbix☞agent和proxy（yum）
+					zabbix ☞ nginx
 				</h2>
 				<div class="index-brief">
 					
-https://repo.zabbix.com/zabbix/
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
 
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
 
-agent 安装
+1，nginx增加配置 server_status.server
 
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -2793,6 +2738,49 @@ agent 安装
 [root@ip-10-230-10-105 zabbix]# pwd
 /etc/zabbix
 [root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1587f6e8/">
+				<h2 class="index-title">
+					zabbix☞agent和proxy（yum）
+				</h2>
+				<div class="index-brief">
+					
+https://repo.zabbix.com/zabbix/
+
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+
+agent 安装
+
 					...
 				</div>
 			</a>

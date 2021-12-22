@@ -801,17 +801,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -845,7 +834,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2668,46 +2657,6 @@ curl &quot;https://github.com/danielqsj/kafka
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/bd4c8d1c/">
-				<h2 class="index-title">
-					002-kafka基本安装
-				</h2>
-				<div class="index-brief">
-					安装
-http://kafka.apache.org/downloads
-下载二进制包
-cd /export &amp;&amp; mkdir src &amp;&amp; cd src
-curl https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/124a3d6d/">
 				<h2 class="index-title">
 					005-kafka基本维护
@@ -2800,10 +2749,52 @@ producer_byte_rate 生产速率，单位是字节/s
 					kafka的认证是通过java认证技术JAAS实现。
 http://kafka.apache.org/documentation/#security_sasl_plain
 服务端
-开启认证端口
-在kafka的服务端配置中追加：
- # 用户认证
-listeners=SASL_PLAINTEXT://&
+添加用户配置
+
+添加用户
+
+# 创建kafka之间通信用户
+bin/kafka-configs.sh --zookeep
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/bd4c8d1c/">
+				<h2 class="index-title">
+					002-kafka基本安装
+				</h2>
+				<div class="index-brief">
+					安装
+http://kafka.apache.org/downloads
+下载二进制包
+cd /export &amp;&amp; mkdir src &amp;&amp; cd src
+curl https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0
 					...
 				</div>
 			</a>

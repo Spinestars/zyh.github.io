@@ -803,17 +803,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -847,7 +836,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2489,32 +2478,33 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
+	<h2 id="基础">基础</h2>
 <h3 id="流程介绍">流程介绍</h3>
 <p>这里是一个认证的一个基本流程：</p>
 <p><img src="/posts/a5ed67a6/image-20201016114248549.png" alt="image-20201016114248549"></p>
 <p>即： kubectl =&gt; 用户认证 =&gt; 用户授权 =&gt; 入口控制 -&gt; 资源对象</p>
 <p>用户认证：检查递交信息包含的证书，用户名。确定是否是正常用户。</p>
-<p>用户授权：给用户授权权限策略，授权方式有多种：ABAC mode, RBAC Mode, and Webhook mode。确定是否有权限。</p>
+<p>用户授权：给用户授权权限策略，授权方式有多种：ABAC mode， RBAC Mode， and Webhook mode。确定是否有权限。</p>
 <p>入口控制器：具有特殊功能的过滤器，他们会把请求拦截下来，如果请求违反了过滤器的配置，则请求会被拒绝。确定是否有更精细的粒度控制。</p>
 <blockquote>
 <p>以上三阶段都是通过插件实现的。当某个阶段的某个插件授权通过后，就不会再需要此阶段的其它插件进行校验。</p>
 </blockquote>
-<h2 id="用户认证方式">用户认证方式</h2>
+<h2 id="用户认证">用户认证</h2>
 <h3 id="令牌认证">令牌认证</h3>
 <p>kubectl 通过提交令牌给用户认证</p>
 <h3 id="TSL认证">TSL认证</h3>
 <p>kubectl 和 Api server 双向认证</p>
 <h3 id="username-password认证">username/password认证</h3>
+<p>一般不用这种方式</p>
 <h2 id="用户类型">用户类型</h2>
 <p>当你从使用者角度来看的时候，k8s把用户分为<code>普通用户</code>和<code>服务用户</code>。普通用户对外（也就是上图里的Human），服务用户对内（也就是上图里的Pod）。</p>
 <p>请记住，k8s并没有普通用户的<strong>实体对象</strong>。因此，只要你递交的用户拥有k8s集群内部CA所签发的证书，那么这个用户就会被rbac子系统认为是有效的。</p>
-<h3 id="普通用户-useraccount">普通用户 useraccount</h3>
-<h4 id="如何创建普通用户">如何创建普通用户</h4>
+<h3 id="普通用户">普通用户</h3>
+<h4 id="创建普通用户">创建普通用户</h4>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#normal-user">https://kubernetes.io/docs/reference/access-authn-authz/certificate-signing-requests/#normal-user</a></p>
 <ol>
 <li>
-<p>创建私钥key, 证书请求csr</p>
+<p>创建私钥key，证书请求文件csr</p>
 <p>创建私钥会让你填写一些属性，这里有两个属性特别重要，分别是指定用户名的属性CN和指定用户组的属性O</p>
 <p>例如创建用户<code>zyh</code>，群组<code>it</code></p>
 <pre><code>openssl genrsa -out zyh.key 2048
@@ -2522,9 +2512,9 @@ openssl req -new -key zyh.key -out zyh.csr -subj &quot;/CN=zyh/O=it&quot;
 </code></pre>
 </li>
 <li>
-<p>构建k8s的CertificateSigningRequest对象</p>
+<p>构建k8s的 CertificateSigningRequest 证书请求对象</p>
 <ul>
-<li>csr文件进行base64编码</li>
+<li>先将csr文件进行base64编码</li>
 </ul>
 <pre><code class="language-bash">RequestStr=`cat zyh.csr | base64 | tr -d &quot;\n&quot;`
 </code></pre>
@@ -2562,7 +2552,7 @@ kubectl certificate approve zyh
 <p>至此，一个普通用户就创建完毕了。但是它没有任何权限，还需要进行授权。</p>
 </li>
 </ol>
-<h4 id="如何使用普通用户">如何使用普通用户</h4>
+<h4 id="使用普通用户">使用普通用户</h4>
 <ol>
 <li>
 <p>添加用户证书到kubectl配置</p>
@@ -2581,16 +2571,46 @@ kubectl certificate approve zyh
 </li>
 </ol>
 <p>用户的有效期，取决于你证书的有效期。</p>
-<h3 id="服务用户-serviceaccount">服务用户 serviceaccount</h3>
+<h3 id="服务用户">服务用户</h3>
+<h4 id="流程">流程</h4>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#service-account-automation">https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#service-account-automation</a></p>
-<p>用于Pod认证</p>
-<h4 id="如何创建服务用户">如何创建服务用户</h4>
+<p>服务用户对象，即ServiceAccount。</p>
+<ul>
+<li>
+<p>每一个namespace的时候都会自动创建一个默认ServiceAccount和默认secret，并且默认ServiceAccount关联默认secret。</p>
+</li>
+<li>
+<p>secret中含有sa认证所需的证书和Token。</p>
+</li>
+<li>
+<p>当Pod创建好之后，secret会将证书和Token挂载到<code>/var/run/secrets/kubernetes.io/serviceaccount/</code>路径下。Pod通过挂载的认证文件合法化。</p>
+</li>
+<li>
+<p>通过RABC机制对sa进行授权，从而使Pod拥有了获取诸多资源的权限。</p>
+</li>
+<li>
+<p>在没有显式指定sa的时候，Pod会调用默认sa。</p>
+</li>
+</ul>
+<p>例如，下面的SA对象通过<code>imagePullSecrets</code>附加了额外的secret授权信息<code>myregistrykey</code>，使得Pod可以拉取镜像。</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: default
+secrets:
+- name: default-token-uudge # 这是默认服务账户的Token
+imagePullSecrets:
+- name: myregistrykey  # 这是Secret对象的key，存储着拉取镜像的用户密码
+</code></pre>
+<h4 id="创建服务用户">创建服务用户</h4>
 <pre><code class="language-bash">kubectl create serviceaccount admin
 </code></pre>
 <blockquote>
-<p>创建完毕后，对应的 secret.namespace 会生成一个新的对象：&lt;sa_name&gt;-token-$RANDOM，用来进行资源对象的认证，请注意这里是认证，不是授权</p>
+<p>创建完毕后，对应的 secret.namespace 会生成一个新的对象：&lt;sa_name&gt;-token-$RANDOM，用来进行资源对象的认证，请注意这里是认证，不是授权。也就是说通过了认证但没权限访问资源。</p>
 </blockquote>
-<h3 id="如何使用">如何使用</h3>
+<h4 id="使用服务用户">使用服务用户</h4>
+<p>Pod通过spec.serviceAccountName显式指定一个SA</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
 metadata:
@@ -2602,29 +2622,58 @@ spec:
   serviceAccountName: &lt;serviceAccount_name&gt;
 </code></pre>
 <h2 id="用户授权">用户授权</h2>
-<h3 id="用户授权方式">用户授权方式</h3>
-<p>RBAC授权机制：基于角色的授权机制.</p>
-<h3 id="授权步骤">授权步骤</h3>
-<p>授权就是给这个用户绑定一个具体的角色。角色代表了一种权限集合。</p>
+<p>通过kubeadm安装的集群，默认就是RBAC授权机制。</p>
+<p>RBAC机制：基于角色的授权方式。</p>
+<p>其意思就是：用户通过扮演某个角色来获取资源。也就是说，用户与角色绑定，角色与权限绑定。</p>
+<h3 id="涉及的对象">涉及的对象</h3>
+<ul>
+<li>角色：包含权限的对象，分为role和clusterrole。
+<ul>
+<li>role只能用于某个命名空间。clusterrole可以用于整个集群。</li>
+</ul>
+</li>
+<li>主题：被授权的对象，可以是 user，group，serviceaccount</li>
+<li>绑定：用于将角色和主题绑定在一起的对象，分为rolebinding和clusterrolebinding</li>
+</ul>
+<h3 id="用法">用法</h3>
 <ol>
 <li>
-<p>创建 role 角色对象资源，创建一个<code>developer</code>角色，权限是拥有 pod 资源的增删改查，且<strong>命名空间是developer</strong></p>
-<pre><code class="language-bash">kubectl create ns developer
-kubectl create role developer --verb=create --verb=get --verb=list --verb=update --verb=delete --resource=pods --namespace=developer
+<p>角色创建。位于 dev 命名空间且拥有 deployments 资源的增删改查的角色 developer</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer
+  namespace: dev
+rules:
+- apiGroups: [&quot;&quot;, &quot;apps&quot;]
+  resources: [&quot;deployments&quot;, &quot;replicasets&quot;, &quot;pods&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;] # 也可以使用['*']
 </code></pre>
 </li>
 <li>
-<p>创建 rolebinding 角色绑定对象资源，且<strong>命名空间是developer</strong></p>
-<pre><code class="language-bash">kubectl create rolebinding developer-binding-zyh --role=developer --user=zyh --namespace=developer
+<p>绑定创建。位于 dev 命名空间的 rolebinding 对象</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: developer-rolebinding
+  namespace: dev
+subjects:
+- kind: User
+  name: zyh
+  apiGroup: &quot;&quot;
+roleRef:
+  kind: Role
+  name: developer
+  apiGroup: rbac.authorization.k8s.io  # 留空字符串也可以，则使用当前的apiGroup
 </code></pre>
 </li>
 <li>
 <p>测试权限</p>
-<pre><code class="language-bash">kubectl get pod -n developer
+<pre><code class="language-bash">kubectl get pod -n dev
 ===
 No resources found in developer namespace.
 
-kubectl get svc -n developer
+kubectl get svc -n dev
 ===
 Error from server (Forbidden): services is forbidden: User &quot;zyh&quot; cannot list resource &quot;services&quot; in API group &quot;&quot; in the namespace &quot;developer&quot;
 </code></pre>
@@ -2633,26 +2682,31 @@ Error from server (Forbidden): services is forbidden: User &quot;zyh&quot; canno
 <p>通过上述创建过程，你可以发现用户创建和用户授权两个阶段是分离的。也就是说，你可以创建多个用户，然后用同一个角色绑定多个用户。</p>
 <h3 id="对象总结">对象总结</h3>
 <p>role 和 rolebinding 是 namespace 级别对象，clusterrole 和 clusterrolebinding 是集群级别对象。</p>
-<p>你可以通过 rolebinding 将 user 和 role 关联起来，实现对一个 user 添加 namespace 级别的 role 权限。</p>
-<p>你可以通过 clusterrolebinding 将 user 和 clusterrole 关联起来，实现对一个 user 添加是集群级别的 clusterrole 权限。</p>
-<p>最特殊的是，你还可以通过 rolebinding 将 user 和 clusterrole 关联起来，实现对一个 user 添加 namespace 级别的 clusterrole 权限。</p>
-<p>这种情况下，因为 clusterrole 是集群级别，因此你可以将多个 namespace 下的 rolebinding 和 user 关联到一个 clusterrole。此时，rolebinding 和 user 拥有的权限将自动被约束在各自的 namespace 下。</p>
+<ol>
+<li>授权某个用户单命名空间或者集群权限。</li>
+</ol>
+<ul>
+<li>
+<p>通过 rolebinding 将 user 和 role 关联起来，实现对一个 user 添加 namespace 级别的 role 权限。</p>
+</li>
+<li>
+<p>通过 clusterrolebinding 将 user 和 clusterrole 关联起来，实现对一个 user 添加是集群级别的 clusterrole 权限。</p>
+</li>
+</ul>
+<ol start="2">
+<li>授权某个用户多个命名空间的权限。</li>
+</ol>
+<ul>
+<li>
+<p>通过 rolebinding 将 user 和 clusterrole 关联起来，实现对一个 user 添加 namespace 级别的 clusterrole 权限。</p>
+<p>因为 clusterrole 是集群级别，所以你可以将多个 namespace 下的 rolebinding 和 user 关联到一个 clusterrole。</p>
+<p>此时，user 拥有的权限将自动被约束在多个 rolebinding 的 namespace 下。</p>
+</li>
+</ul>
 <blockquote>
 <p>当你把 user 替换为 group 的时候，将会授权某个组</p>
 <p>当你把 user 替换为 serviceaccount 的时候，将会授权调用 spec.serviceAccountName 的 pod</p>
 </blockquote>
-<h2 id="请求的实际转化">请求的实际转化</h2>
-<p>客户端对 api server 发起的请求，都会转化为 http 请求</p>
-<p>例如发起一个针对 deployment.default 对象的请求，</p>
-<p>其 request path 是：</p>
-<p>http://<apiserver>:6443/apis/apps/v1/namespaces/default/deployments/my-deployment/</apiserver></p>
-<blockquote>
-<p>这里 /apps/v1 指的是 kubectl api-versions 列出的 versions。</p>
-</blockquote>
-<p>可以针对对象发起的http请求动作是：</p>
-<p>GET/POST/PUT/DELETE</p>
-<p>转化为API的动作是：（即你用kubectl调用的动作）</p>
-<p>get/list/create/update/patch/watch/proxy/redirect/delete/deletecollection</p>
 
 </div>
 

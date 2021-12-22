@@ -801,17 +801,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -845,7 +834,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2422,16 +2411,18 @@ var _hmt = _hmt || [];
 		<div class="index-li">
 			<a href="/posts/63d8d3d4/">
 				<h2 class="index-title">
-					k8s☞12守护进程
+					k8s☞12-1守护进程DaemonSet
 				</h2>
 				<div class="index-brief">
 					前言
-DaemonSet 确保指定的node上都存在一份 pod. 常用来构建一些批量代理性质的app. 例如监控节点app, 或者日志节点app
+DaemonSet 确保符合规则的 k8s node 上都存在一份 pod。常用来构建节点常驻性的app. 例如监控节点的app， 或者采集节点日志的app，以及网络app等。
 特点
 
-当一个节点添加到集群, 或从集群中删除, 则 pod 会被添加/删除
-当DaemonSet被删除, 则 pod 都会被删除.
-pod模板中的 R
+
+调度在所有符合条件的node上。
+
+
+当DaemonSet创建或删除， 则指定节点上的 pod 都会创建或
 					...
 				</div>
 			</a>

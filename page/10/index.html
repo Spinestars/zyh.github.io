@@ -801,17 +801,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -845,7 +834,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2420,51 +2409,6 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/b35b5965/">
-				<h2 class="index-title">
-					zabbix ☞ nginx
-				</h2>
-				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
-
-
-1，nginx增加配置 server_status.server
-
-cat &gt; /usr/local/nginx/
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/6c093771/">
 				<h2 class="index-title">
 					zabbix☞redis
@@ -2527,15 +2471,24 @@ redis_info[&#123;#IP&#12
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8c33f887/">
+			<a href="/posts/f9b08c30/">
 				<h2 class="index-title">
-					监控☞企业微信机器人
+					监控 ☞ 微信预警
 				</h2>
 				<div class="index-brief">
-					shell
-wechatUrl=
-wechatData=
-curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
+					# conf.ini
+[wechat]
+corpid = 
+
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+
+[group]
+it = usera|userb
+
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
 					...
 				</div>
 			</a>
@@ -2556,24 +2509,15 @@ curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f9b08c30/">
+			<a href="/posts/8c33f887/">
 				<h2 class="index-title">
-					监控 ☞ 微信预警
+					监控☞企业微信机器人
 				</h2>
 				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
-
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
-
-[group]
-it = usera|userb
-
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
+					shell
+wechatUrl=
+wechatData=
+curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
 					...
 				</div>
 			</a>
@@ -2802,6 +2746,51 @@ A:在crontab文件最上
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/960fc783/">
+				<h2 class="index-title">
+					ansible☞playbook-tags
+				</h2>
+				<div class="index-brief">
+					tags的定义
+
+tags 可以让你在执行playbook的时候，有选择地执行某些任务，因此 tags 是 tasks 下的关键词
+
+ansible-playbook test.play &lt;--tags-args&gt;
+
+tags的参数
+
+
+–tags=tag_name  执行具有 tag_
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
 										
                                     </span>
                                 

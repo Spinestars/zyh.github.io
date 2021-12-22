@@ -801,17 +801,6 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/4b0e4a5/">
                      
-										    k8s☞09应用配置与密码与信息提供
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/4b0e4a5/">
-                     
 										    k8s☞10应用配置与密码与信息提供
                      
 									</a>
@@ -845,7 +834,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/63d8d3d4/">
                      
-										    k8s☞12-1守护进程
+										    k8s☞12-1守护进程DaemonSet
                      
 									</a>
 								</li>
@@ -2422,17 +2411,12 @@ var _hmt = _hmt || [];
 		<div class="index-li">
 			<a href="/posts/ed4c29d5/">
 				<h2 class="index-title">
-					k8s☞11-2namespace资源约束
+					k8s☞11-2namespace资源约束LimitRange
 				</h2>
 				<div class="index-brief">
-					前言
+					基本
 https://kubernetes.io/docs/concepts/policy/limit-range/
-namespace 资源约束(LimitRange)防止pod的配置超出预期.从而让我们可以更方便的管理资源.
-特点
-
-提供 pod 的默认资源约束.
-限制pod的资源约束.
-Lim
+namespace 资源约束(LimitRange)提供默认的Pod资源约束，并防止命名空间内的Pod资源配置超出管理员允许的预期范围。若超出则不允许创建，从而让我们可以更方便的管理
 					...
 				</div>
 			</a>
@@ -2468,7 +2452,7 @@ Lim
 					k8s☞11-1pod资源约束
 				</h2>
 				<div class="index-brief">
-					前言
+					基本
 https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 资源约束在我们平时使用的时候主要是cpu和内存层面, 以及本地临时存储(emptyDir)
 k8s资源约束分为两种: request(软
@@ -2508,56 +2492,15 @@ k8s资源约束分为两种: request(软
 				</h2>
 				<div class="index-brief">
 					前言
-kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
-所以步骤一般是这样的。
+在Pod中应用配置和密码，我们可以创建配置对象ConfigMap和密码对象Secret。
+而这两种对象的使用有多种方式：
 
-创建secret 和 configmap 对象
+存储卷方式
+环境变量方式
+命令行方式
 
-以文件方式提供
-kubernetes 提供了一种卷类型 projected volum
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/4b0e4a5/">
-				<h2 class="index-title">
-					k8s☞09应用配置与密码与信息提供
-				</h2>
-				<div class="index-brief">
-					前言
-kubernetes 可以以环境变量或者以文件的方式提供信息给容器。这些信息存放在 secret 和 configmap 对象里。
-所以步骤一般是这样的。
-
-创建secret 和 configmap 对象
-
-以文件方式提供
-kubernetes 提供了一种卷类型 projected volum
+非加密ConfigMap
+https://kubernetes.io/docs/concepts/configuration/co
 					...
 				</div>
 			</a>
@@ -2804,6 +2747,49 @@ wget -O kubecm_release.tgz https://github.com/sunny0826/kubecm/releases/downl
 			</a>
                 <div class="article-meta">
 				    <span>2020-08-26</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9602dad/">
+				<h2 class="index-title">
+					k8s☞02安装
+				</h2>
+				<div class="index-brief">
+					前言
+使用 kubeadm 引导集群 | Kubernetes
+结构
+高可用拓扑选项 | Kubernetes
+我们选堆叠结构
+
+不过因为我环境里没有 LB 组件，因此选用 haproxy 来代替，又因为要为 haproxy 做高可用，因此为 haproxy 再外套一层 keepalived。
+如果
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-08-25</span>
                     
                             
                                 

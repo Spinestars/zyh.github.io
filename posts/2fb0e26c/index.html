@@ -713,6 +713,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/c3c9f0f8/">
+                     
+										    k8s☞02-1切换使用runtime-containerd
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/9602dad/">
                      
 										    k8s☞02安装
@@ -2505,8 +2516,15 @@ listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config=org.apache.kafka.com
     password=&quot;broker&quot;;
 </code></pre>
 <p>格式：<code>listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config</code>=<code>listener.name.&lt;protocol&gt;.&lt;sasl_mechanisms&gt;.sasl.jaas.config</code></p>
-<p><code>SASL_PLAINTEXT</code>非SSL的SASL认证端口.</p>
-<p><code>listeners</code>可以支持多端口配置，例如同时开启认证和非认证端口<code>PLAINTEXT://&lt;服务器名&gt;:9092,SASL_PLAINTEXT://&lt;服务器名&gt;:8123</code></p>
+<p><code>listeners</code>可以支持多端口配置，例如同时开启认证和非认证端口，两个端口之间逗号分割。</p>
+<ul>
+<li>
+<p><code>SASL_PLAINTEXT://kafka001:8123</code>非SSL的SASL认证端口.</p>
+</li>
+<li>
+<p><code>PLAINTEXT://&lt;服务器名&gt;:9092</code>非认证端口</p>
+</li>
+</ul>
 <p><code>security.inter.broker.protocol</code> 配置broker之间的通信协议</p>
 <p><code>sasl.enabled.mechanisms</code> 开启访问broker的认证通信机制sasl，以及配置所用的机制算法</p>
 <p><code>sasl.mechanism.inter.broker.protocol</code> 开启broker之间认证通信机制sasl，以及配置所用的机制算法</p>

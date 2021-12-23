@@ -8,6 +8,8 @@
 	<!-- title -->
 	
 	<title>
+	
+		k8s☞02-1切换使用runtime-containerd | 
 	 
 	zyh
 	</title>
@@ -710,7 +712,7 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file">
+								<li class="file active">
 									<a href="/posts/c3c9f0f8/">
                      
 										    k8s☞02-1切换使用runtime-containerd
@@ -2417,445 +2419,288 @@ var _hmt = _hmt || [];
 
 	<!-- 引入正文 -->
 	<div id="content">
-		<div id="index">
+		<h1 id="article-title">
+	k8s☞02-1切换使用runtime-containerd
+</h1>
+<div class="article-meta">
 	
-		<div class="index-li">
-			<a href="/posts/348cba53/">
-				<h2 class="index-title">
-					windows-wsl dns异常
-				</h2>
-				<div class="index-brief">
-					wsl的ubuntu系统中，默认/etc/resolv.conf通过/etc/wsl.conf控制，其wsl的系统通过windows的dns来解析
-如果你发现生成正常，但是就是无法解析，尝试在windows中重置一下网络
-netsh winsock reset
-netsh int ip reset 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-09-23</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/windows/">windows</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
+		<span>
+			阅读量:<span id="/posts/c3c9f0f8/" class="leancloud_visitors" data-flag-title="k8s☞02-1切换使用runtime-containerd"></span>
+		</span>
 	
-		<div class="index-li">
-			<a href="/posts/88eb7b6/">
-				<h2 class="index-title">
-					windows☞win10迁移数据
-				</h2>
-				<div class="index-brief">
-					
+	<span>zyh</span>
+	<span>2020-08-25 18:17:44</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/容器/">容器</a>
+                        </i>
+                      
+                        >
+                      
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/容器/k8s/">k8s</a>
+                        </i>
+                      
+                    </span>
+                
+            
+    
 
-桌面文件备份
+    
+		<span>Tags：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/容器/">容器</a>
+                        </i>
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/k8s/">k8s</a>
+                        </i>
+                    </span>
+                
+            
+    
+		</div>
 
-
-子系统备份
-如果用的子系统是Ubuntu，那么目录是
-C:\Users\&lt;家目录&gt;\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu***
-将整个文件夹备份
-
-
-其它分区数据备份
-
-
-如果有必要，则清理当前电脑的
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-03-13</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/windows/">windows</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/d2fed0bf/">
-				<h2 class="index-title">
-					linux☞利用acme.sh管理免费的ssl证书申请
-				</h2>
-				<div class="index-brief">
-					前言
-申请免费的ssl证书途径有很多，例如阿里云的1年期，或者freessl这种站点。
-如果你想自己部署一个服务来管理并自动更新，则可以使用 acme.sh
-acme.sh 是一个开源程序，托管在github上。
-安装
-https://github.com/acmesh-official/acme.
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-03-09</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/7b3cf3d8/">
-				<h2 class="index-title">
-					linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
-				</h2>
-				<div class="index-brief">
-					原因
-expect 执行的时候，并不会将窗口大小改变的信号传递给远程会话。所以在脚本中添加即可。
-解决
-#!/usr/bin/env expect 
-#trap sigwinch spawned
-trap &#123;
- set rows [stty rows]
- set cols [stty co
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-03-09</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/e4f7ce4c/">
-				<h2 class="index-title">
-					linux☞ubuntu20.04纯命令行网卡配置
-				</h2>
-				<div class="index-brief">
-					前言
-netplan 用于屏蔽各种网络管理器，它可以让你用一份配置，就帮你把网络给配置好，而无需你考虑网络控制器如何使用。
-20.04 已经默认安装了 netplan.
-记录当前网卡标识名
-ip addr show 
-# ===
-1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt;
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-11-16</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/5db0cd07/">
-				<h2 class="index-title">
-					linux☞ssh-MFA自动登陆
-				</h2>
-				<div class="index-brief">
-					前言
-ssh 关联MFA后,安全度增加了很多,但是每次手动输入MFA动态口令比较麻烦.所以记录一下自动交互输入MFA口令
-命令安装
-sudo apt install oathtool gnupg2 expect
-
-
-oathtool 是我们用来生成MFA口令的工具.
-expect 用来编写交互程序
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-06-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/22b82d75/">
-				<h2 class="index-title">
-					windows 包管理工具 scoop
-				</h2>
-				<div class="index-brief">
-					Set-ExecutionPolicy RemoteSigned -scope CurrentUser
-iwr -useb get.scoop.sh | iex
-scoop install aria2
-scoop config aria2-max-connection-per-server 16
-s
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-13</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/windows/">windows</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/cd32aa48/">
-				<h2 class="index-title">
-					linux☞时间
-				</h2>
-				<div class="index-brief">
-					前言
-本文中描述的并不能涵盖所有时间设置命令，只是记录了经常用到的一些。
-时间同步
-sudo yum erase ntp*
-sudo yum -y install chrony
-sudo service chronyd start
-sed -i '1i server 10.200.16.101 pr
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-02-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/a7611bc1/">
-				<h2 class="index-title">
-					linux☞软raid创建
-				</h2>
-				<div class="index-brief">
-					linux ☞ 软 raid 创建
-
-创建
-
-# 磁盘分区
-fdisk /dev/sda
-fdisk /dev/sdb
-# 构建raid0
-# --level raid级别
-# --raid-devices 盘数
-# --chunk 条带深度，决定了数据分割的标准单位大小，数值越小，则数据越分散，性
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-07-01</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/13364d65/">
-				<h2 class="index-title">
-					linux☞centos7重置root密码
-				</h2>
-				<div class="index-brief">
-					
-开机按ECS，进入启动项
-
-
-
-
-按e，编辑第一条
-
-
-将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh
-
-
-
-
-按 ctrl+x，进入系统，并执行 passwd 命令进行修改
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-01-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-	
-	<div id="index-paginator">
-		
-			<span class="page-number current">1</span><a class="page-number" href="/categories/%E7%B3%BB%E7%BB%9F/page/2/">2</a><a class="extend next" rel="next" href="/categories/%E7%B3%BB%E7%BB%9F/page/2/">&gt;</a>
-		
-	</div>
 </div>
 
+<div id="article-content">
+	<h1>基础</h1>
+<blockquote>
+<p>需要注意的是，替换runtime，需要重新下载镜像。这会严重的加大Pod的恢复时间。特别是在国内，一些镜像因为某些不可描述的原因，可能会无法下载成功。</p>
+<p>另外，虽然镜像一样，但是containerd无法去找到docker本地的镜像缓存。至少我还没找到解决方式。。。</p>
+</blockquote>
+<p>配置必要系统环境</p>
+<pre><code class="language-bash">cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+
+# Setup required sysctl params, these persist across reboots.
+cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+# Apply sysctl params without reboot
+sudo sysctl --system
+</code></pre>
+<h1>安装</h1>
+<p>containerd可以从docker源中获取</p>
+<pre><code class="language-bash"># add repo
+yum-config-manager \
+    --add-repo \
+    http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+# install
+yum install containerd.io
+# modify containerd config
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+</code></pre>
+<p>修正配置/etc/containerd/config.toml，更改跟路径</p>
+<pre><code class="language-yaml">root=&quot;&quot;
+</code></pre>
+<p>修正配置/etc/containerd/config.toml，使用 systemd cgroup driver</p>
+<pre><code class="language-bash">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc]
+  ...
+  [plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]
+    SystemdCgroup = true
+</code></pre>
+<p>修正配置/etc/containerd/config.toml，使用国内163镜像源</p>
+<pre><code class="language-yaml">    [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry]
+      [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors]
+        [plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors.&quot;docker.io&quot;]
+          endpoint = [&quot;http://hub-mirror.c.163.com&quot;,&quot;https://registry-1.docker.io&quot;]
+</code></pre>
+<h1>更改runtime</h1>
+<p>当使用kubeadm安装集群的时候：</p>
+<ul>
+<li>kubeadm 会将kubelet的配置写入 /var/lib/kubelet/config.yaml和cm对象</li>
+<li>kubeadm 会将启动参数以环境变量的方式写入/var/lib/kubelet/kubeadm-flags.env</li>
+</ul>
+<p>配置选项可以参考https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration</p>
+<p>启动参数可以参考 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/">https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/</a></p>
+<pre><code class="language-bash"># 手动追加runtime参数到kubelet配置/var/lib/kubelet/kubeadm-flags.env
+--cgroup-driver=systemd --container-runtime=remote --container-runtime-endpoint=unix:///run/containerd/containerd.sock
+</code></pre>
+<h1>安装客户端工具crictl</h1>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/tasks/debug-application-cluster/crictl/">https://kubernetes.io/zh/docs/tasks/debug-application-cluster/crictl/</a></p>
+<pre><code class="language-bash">wget 'https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.22.0/crictl-v1.22.0-linux-amd64.tar.gz'
+
+tar xf crictl-*.tar.gz
+
+cp crictl /usr/local/bin/
+</code></pre>
+<h1>配置客户端工具</h1>
+<pre><code class="language-yaml">runtime-endpoint: unix:///run/containerd/containerd.sock
+image-endpoint: unix:///run/containerd/containerd.sock
+timeout: 10
+debug: true
+</code></pre>
+<p>endpoint的地址根据选用的runtime指定，不出意外应该是下面三个：</p>
+<ul>
+<li>unix:///var/run/dockershim.sock</li>
+<li>unix:///run/containerd/containerd.sock</li>
+<li>unix:///run/crio/crio.sock</li>
+</ul>
+<h1>查看当前所用的镜像版本</h1>
+<pre><code class="language-bash">docker images | grep k8s.gcr.io
+k8s.gcr.io/kube-apiserver:v1.22.4
+k8s.gcr.io/kube-controller-manager:v1.22.4
+k8s.gcr.io/kube-scheduler:v1.22.4
+k8s.gcr.io/kube-proxy:v1.22.4
+k8s.gcr.io/pause:3.5
+k8s.gcr.io/etcd:3.5.0-0
+k8s.gcr.io/coredns/coredns:v1.8.4
+</code></pre>
+<h1>拉取镜像到containerd本地库</h1>
+<p>根据上面的指令填充</p>
+<pre><code class="language-bash">full_version=1.22.4
+cat&gt;crictl-pull-images.sh&lt;&lt;EOF
+#!/bin/bash
+# kubeadm config images list
+images=(
+kube-apiserver:v$&#123;full_version&#125;
+kube-controller-manager:v$&#123;full_version&#125;
+kube-scheduler:v$&#123;full_version&#125;
+kube-proxy:v$&#123;full_version&#125;
+pause:3.5
+etcd:3.5.0-0
+coredns:1.8.4
+)
+for imageName in \$&#123;images[@]&#125;;
+do
+    crictl pull registry.aliyuncs.com/google_containers/\$&#123;imageName&#125;
+    ctr -n k8s.io images tag registry.aliyuncs.com/google_containers/\$&#123;imageName&#125; k8s.gcr.io/\$&#123;imageName&#125;
+done
+EOF
+</code></pre>
+<p>保存先不执行脚本。</p>
+<blockquote>
+<p>ctr -n <a target="_blank" rel="noopener" href="http://k8s.io">k8s.io</a> 指定位于k8s.io命名空间的对象</p>
+</blockquote>
+<h1>逐个更新</h1>
+<p>千万不能docker和containerd同时启动</p>
+<pre><code class="language-bash"># nodeName 
+nodeName=k8s01
+# 驱逐node
+kubectl drain $&#123;nodeName&#125; --ignore-daemonsets
+# 校验是否只有 daemonsets pod
+kubectl get all --all-namespaces -o wide| grep $&#123;nodeName&#125;
+# 关闭kubelet
+systemctl stop kubelet
+# 关闭runtime
+systemctl stop docker &amp;&amp; systemctl disable docker
+# 确保节点上异常的信息，没有
+## 在本文档实施过程中，出现 docker 和 kubelet 关闭的情况下，容器进行依然运行占用端口，导致containerd启动的时候无法正常运行Pod.
+ss -tnalp
+# 启动 containerd
+systemctl start containerd &amp;&amp; systemctl enable containerd &amp;&amp; systemctl stop kubelet
+# 执行拉取容器镜像的脚本
+bash crictl-pull-images.sh
+# 启动 kubelet
+systemctl restart kubelet
+# 恢复 node
+kubectl uncordon $&#123;nodeName&#125;
+</code></pre>
+
+</div>
+
+
+    <div class="post-guide">
+        <div class="item left">
+            
+              <a href="/posts/c15432fa/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  k8s☞kubectl多集群管理
+              </a>
+            
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/9602dad/">
+                k8s☞02安装
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
+        </div>
+    </div>
+
+
+
+	<div id="vcomments"></div>
+
+
+<script>
+	
+		// 评论
+		new Valine({
+			el: '#vcomments',
+			appId: 'Sq2igagqhmGqvs3eHHtcNKiB-gzGzoHsz',
+			appKey: 'cDTpqcpogeQq55SOuBHEXv9W',
+			placeholder: '写点东西吧',
+			path: window.location.pathname,
+			avatar: 'retro',
+			highlight: false,
+      recordIP: true,
+      enableQQ: true,
+			requiredFields: ['nick','mail']
+		})
+	
+	
+    // 显示次数
+		function showTime(Counter) {
+			var query = new AV.Query("Counter");
+			if($(".leancloud_visitors").length > 0){
+				var url = $(".leancloud_visitors").attr('id').trim();
+				// where field
+				query.equalTo("words", url);
+				// count
+				query.count().then(function (number) {
+					// There are number instances of MyClass where words equals url.
+					$(document.getElementById(url)).text(number?  number : '--');
+				}, function (error) {
+					// error is an instance of AVError.
+				});
+			}
+		}
+		// 追加pv
+		function addCount(Counter) {
+			var url = $(".leancloud_visitors").length > 0 ? $(".leancloud_visitors").attr('id').trim() : 'wujun234.github.io';
+			var Counter = AV.Object.extend("Counter");
+			var query = new Counter;
+			query.save({
+				words: url
+			}).then(function (object) {
+			})
+		}
+		$(function () {
+			var Counter = AV.Object.extend("Counter");
+			addCount(Counter);
+			showTime(Counter);
+		});
+	
+</script>
 	</div>
 	<div id="footer">
 	<p>

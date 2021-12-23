@@ -712,6 +712,17 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
+								<li class="file">
+									<a href="/posts/c3c9f0f8/">
+                     
+										    k8s☞02-1切换使用runtime-containerd
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
 								<li class="file active">
 									<a href="/posts/9602dad/">
                      
@@ -2811,7 +2822,7 @@ chmod a+x /etc/keepalived/check_apiserver.sh
 systemctl enable keepalived haproxy
 </code></pre>
 <h2 id="控制平面节点">控制平面节点</h2>
-<h3 id="拉取容器镜像">拉取容器镜像</h3>
+<h3 id="拉取组件镜像">拉取组件镜像</h3>
 <blockquote>
 <p>k8s01，k8s02，k8s03 执行</p>
 </blockquote>
@@ -2870,6 +2881,8 @@ EOF
 <h4 id="采取配置文件安装模式">采取配置文件安装模式</h4>
 <pre><code class="language-bash">kubeadm config print init-defaults &gt; kubeadm.yaml.default
 </code></pre>
+<p>配置文件详细参数介绍</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration">https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/#kubelet-config-k8s-io-v1beta1-KubeletConfiguration</a></p>
 <p>根据生成的默认配置，来动态的调整，因为 k8s 版本变更很快，所以下面的配置不一定是正确的</p>
 <pre><code class="language-bash">cat &gt; kubeadm.yaml &lt;&lt; EOF
 # kubeadm.yaml 将默认的配置进行修改
@@ -2887,7 +2900,7 @@ localAPIEndpoint:
   advertiseAddress: 10.200.16.101  # 改我，改成第一个控制平面节点的物理ip
   bindPort: 6443
 nodeRegistration:
-  criSocket: /var/run/dockershim.sock
+  criSocket: /var/run/dockershim.sock  # 如果是containerd，则改为/run/containerd/containerd.sock
   name: k8s01 # 改我，理论上它会自动获取配置所在节点的 hostname
   taints:
   - effect: NoSchedule
@@ -2917,15 +2930,22 @@ networking:
   dnsDomain: cluster.local
   serviceSubnet: 10.96.0.0/16 # 改我，定义 svc 的网段
   podSubnet: 10.97.0.0/16 # 改我，定义 pod 的网段
---- # 新加我
-apiVersion: kubeproxy.config.k8s.io/v1alpha1 # 新加我
-kind: KubeProxyConfiguration # 新加我
-mode: ipvs  # 新加我
+  
+--- # 追加 KubeProxyConfiguration
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+mode: ipvs
 EOF
-
-# 进行初始化安装
+--- # 追加 KubeletConfiguration
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd
+</code></pre>
+<pre><code class="language-bash"># 进行初始化安装
 kubeadm init --config kubeadm.yaml
 </code></pre>
+<p>init调用配置流程：</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/#workflow-when-using-kubeadm-init">https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/#workflow-when-using-kubeadm-init</a></p>
 <h4 id="配置通过-kubectl-访问集群">配置通过 kubectl 访问集群</h4>
 <pre><code class="language-bash">mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -3352,9 +3372,9 @@ rm -rf $HOME/.kube;
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/c15432fa/">
+              <a href="/posts/c3c9f0f8/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞kubectl多集群管理
+                  k8s☞02-1切换使用runtime-containerd
               </a>
             
         </div>

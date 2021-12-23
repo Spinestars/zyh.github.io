@@ -711,6 +711,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/c3c9f0f8/">
+                     
+										    k8s☞02-1切换使用runtime-containerd
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/9602dad/">
                      
 										    k8s☞02安装
@@ -2772,19 +2783,18 @@ wget -O kubecm_release.tgz https://github.com/sunny0826/kubecm/releases/downl
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/9602dad/">
+			<a href="/posts/c3c9f0f8/">
 				<h2 class="index-title">
-					k8s☞02安装
+					k8s☞02-1切换使用runtime-containerd
 				</h2>
 				<div class="index-brief">
-					前言
-使用 kubeadm 引导集群 | Kubernetes
-结构
-高可用拓扑选项 | Kubernetes
-我们选堆叠结构
+					基础
 
-不过因为我环境里没有 LB 组件，因此选用 haproxy 来代替，又因为要为 haproxy 做高可用，因此为 haproxy 再外套一层 keepalived。
-如果
+需要注意的是，替换runtime，需要重新下载镜像。这会严重的加大Pod的恢复时间。特别是在国内，一些镜像因为某些不可描述的原因，可能会无法下载成功。
+另外，虽然镜像一样，但是containerd无法去找到docker本地的镜像缓存。至少我还没找到解决方式。。。
+
+配置必要系统环境
+cat 
 					...
 				</div>
 			</a>

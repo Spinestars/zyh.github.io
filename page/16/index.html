@@ -561,6 +561,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/5290b79d/">
                      
 										    网络☞S5700配置攻击朔源
@@ -911,7 +922,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍
+										    k8s☞17node污染和pod容忍和亲和性
                      
 									</a>
 								</li>
@@ -2420,6 +2431,51 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/3321a2dc/">
+				<h2 class="index-title">
+					fpm☞安装-编译方式
+				</h2>
+				<div class="index-brief">
+					前言
+用于编译安装php7.1
+目录结构
+根目录：/usr/local/php
+日志目录：/usr/local/php/var/log -&gt; /export/logs/php
+脚本在此
+#!/bin/bash
+# 脚本, 适用于 php 7.1
+basedir=/usr/local/src
+c
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-08-21</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/fpm/">fpm</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/3f38f454/">
 				<h2 class="index-title">
 					gitlab☞安装及备份
@@ -2629,10 +2685,13 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 				</h2>
 				<div class="index-brief">
 					前言
-之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
-后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
-经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
-我是问题
+redis 内存占用爆炸. 所以网上找了一个
+# encoding: utf-8
+&quot;&quot;&quot;
+author: yangyi@youzan.com
+time: 2018/4/26 下午4:34
+func: 获取数据库中没有设置ttl的 key
+&quot;&quot;&
 					...
 				</div>
 			</a>
@@ -2669,13 +2728,10 @@ openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需
 				</h2>
 				<div class="index-brief">
 					前言
-redis 内存占用爆炸. 所以网上找了一个
-# encoding: utf-8
-&quot;&quot;&quot;
-author: yangyi@youzan.com
-time: 2018/4/26 下午4:34
-func: 获取数据库中没有设置ttl的 key
-&quot;&quot;&
+之前安装完redis，启动redis，总会告诉你让你默认修改一些参数，不知其原因，但每次都招办。
+后来遇到一些redis内存使用紧张的时候，从而导致 redis-bgsave 失败，再一次想到了这个问题。
+经过查阅资料，发现官方文档里告诉了原因，在此记录一下。如有不对之处，还请指出。
+我是问题
 					...
 				</div>
 			</a>
@@ -2785,48 +2841,6 @@ long_query_time：要防止在慢速查询日志中记录快速运行的查询�
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/公有云/aws/">aws</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/13364d65/">
-				<h2 class="index-title">
-					linux☞centos7重置root密码
-				</h2>
-				<div class="index-brief">
-					
-开机按ECS，进入启动项
-
-
-
-
-按e，编辑第一条
-
-
-将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh
-
-
-
-
-按 ctrl+x，进入系统，并执行 passwd 命令进行修改
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-01-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
 										
                                     </span>
                                 

@@ -561,6 +561,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/5290b79d/">
                      
 										    网络☞S5700配置攻击朔源
@@ -911,7 +922,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍
+										    k8s☞17node污染和pod容忍和亲和性
                      
 									</a>
 								</li>
@@ -2465,6 +2476,109 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/3d20f83e/">
+				<h2 class="index-title">
+					zabbix☞web监控
+				</h2>
+				<div class="index-brief">
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/6c093771/">
+				<h2 class="index-title">
+					zabbix☞redis
+				</h2>
+				<div class="index-brief">
+					zabbix 模板
+
+自动发现规则
+
+
+
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/8c33f887/">
 				<h2 class="index-title">
 					监控☞企业微信机器人
@@ -2596,48 +2710,6 @@ i
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/65ab632a/">
-				<h2 class="index-title">
-					redis☞安装
-				</h2>
-				<div class="index-brief">
-					docker 安装
-Docker Hub
-redisName=redis
-versionTag=6
-dataPath=/export/docker-data-redis
-mkdir -p $&#123;dataPath&#125;
-# redis.conf 请参考官方默认配置文档，默认配置文档地址：
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/f43dca37/">
 				<h2 class="index-title">
 					ansible☞playbook-过滤器
@@ -2753,38 +2825,6 @@ vars_files # 一次性加载文件内部数据，不支持文件动态修改或�
                 <div class="article-meta">
 				    <span>2020-05-09</span>
                     
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1ddb9d4e/">
-				<h2 class="index-title">
-					问题记录
-				</h2>
-				<div class="index-brief">
-					Q:包管理器安装软件出现
-insserv:  loop involving service xxx at depth 2
-
-A:删除 xxx 服务，如果 xxx 服务已删除，清理 xxx 服务的启动脚本 /etc/init.d/xxx
-
-Q:crontab 如何修改时区
-A:在crontab文件最上
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-08</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/">其它</a>
-										
-                                    </span>
-                                
                             
                     
                 </div>

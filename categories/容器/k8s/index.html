@@ -561,6 +561,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/5290b79d/">
                      
 										    网络☞S5700配置攻击朔源
@@ -911,7 +922,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍
+										    k8s☞17node污染和pod容忍和亲和性
                      
 									</a>
 								</li>
@@ -2422,19 +2433,18 @@ var _hmt = _hmt || [];
 		<div class="index-li">
 			<a href="/posts/932d1f08/">
 				<h2 class="index-title">
-					k8s☞17node污染和pod容忍
+					k8s☞17k8s☞17node污染和pod容忍和亲和性
 				</h2>
 				<div class="index-brief">
-					前言
+					引用
 污点和容忍度 | Kubernetes
 Kubectl Reference Docs (kubernetes.io)
-规则
-pod设定的容忍规则，如果匹配到了绑定在node上的污点规则，则可以被调度到污点节点上，否则不能被调度
+污点/容忍概念
+Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。
+Node的污点规则由两部分组成：污点:污点效果。
 
-容忍规则和污点规则都可以添加多个
 
-node污点命令
-# 查看节
+污点就是键值对，用
 					...
 				</div>
 			</a>
@@ -2757,11 +2767,10 @@ ingress 可以提供负载均衡/SSL管理/虚拟命名主机/path路由. 它的
 稳定的、唯一的网络标识符。
 稳定的、持久的存储。
 有序的、优雅的部署和缩放。
+有序的、优雅的删除和终止。
 有序的、自动的滚动更新。
 
-StatefulSet 就是干这个的.
-一个例子
-apiV
+StatefulSet 就是干
 					...
 				</div>
 			</a>
@@ -2797,7 +2806,7 @@ apiV
 					k8s☞12-1DaemonSet
 				</h2>
 				<div class="index-brief">
-					前言
+					基础
 DaemonSet 确保符合规则的 k8s node 上都存在一份 pod。常用来构建节点常驻性的app. 例如监控节点的app， 或者采集节点日志的app，以及网络app等。
 特点
 

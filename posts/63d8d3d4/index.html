@@ -563,6 +563,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/5290b79d/">
                      
 										    网络☞S5700配置攻击朔源
@@ -913,7 +924,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍
+										    k8s☞17node污染和pod容忍和亲和性
                      
 									</a>
 								</li>
@@ -2489,9 +2500,9 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
+	<h1>基础</h1>
 <p>DaemonSet 确保符合规则的 k8s node 上都存在一份 pod。常用来构建节点常驻性的app. 例如监控节点的app， 或者采集节点日志的app，以及网络app等。</p>
-<h2 id="特点">特点</h2>
+<h1>特点</h1>
 <ul>
 <li>
 <p>调度在所有符合条件的node上。</p>
@@ -2512,7 +2523,7 @@ var _hmt = _hmt || [];
 <p>创建后.spec.selector 不可修改.</p>
 </li>
 </ul>
-<h2 id="一个例子">一个例子</h2>
+<h1>例子</h1>
 <pre><code class="language-yaml">apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -2558,11 +2569,42 @@ spec:
           path: /var/lib/docker/containers
 </code></pre>
 <p>这是一个日志采集pod. 它将k8s集群节点的 /var/log 和 /var/lib/docker/containers 挂载到 pod 中. 这样， elasticsearch 就可以获取到k8s集群所有节点的信息了.</p>
-<h2 id="pod运行在部分node上">pod运行在部分node上</h2>
-<p>你有两种方式处理pod的部分调度.</p>
-<h3 id="通过节点标签-nodeSelector-来选择">通过节点标签(nodeSelector)来选择.</h3>
+<h1>调度</h1>
+<p>默认情况下，DaemonSets的Pod会调度到每一个Node上。</p>
+<p>与调度选择有关的知识，分三类：</p>
+<ul>
+<li>节点污点和Pod容忍度</li>
+<li>节点标签选择器</li>
+<li>节点亲和性</li>
+</ul>
+<h2 id="节点污点和容忍度">节点污点和容忍度</h2>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/</a></p>
+<p>k8s通过污点来剔除某些故障节点或构建一些专属节点，防止Pod调度到存在污点的节点上。</p>
+<p>k8s通过容忍度来确保某些pod可以忽略污点，从而调度到存在污点的节点上。</p>
+<p>在正常情况下. 没有任何容忍度的pod不会被调度到存在污点的node上. (当出现节点故障时候， 默认会附加一个容忍度， 容忍度失效300秒)</p>
+<p>DaemonSet会给Pod自动附加容忍度，从而可以让Pod一直在节点上运行。 (截至到v1.19)。以下是自动附加的容忍度：</p>
+<pre><code class="language-bash">node.kubernetes.io/not-ready
+node.kubernetes.io/unreachable	
+node.kubernetes.io/disk-pressure	
+node.kubernetes.io/memory-pressure	
+node.kubernetes.io/unschedulable	
+node.kubernetes.io/network-unavailable	
+</code></pre>
+<p>上述情况基本保证了DaemonSet的pod不会因各种意外情况导致pod被驱逐.</p>
+<h2 id="通过节点标签-nodeSelector-实现部分调度">通过节点标签(nodeSelector)实现部分调度</h2>
+<p>通过下列命令获知节点标签:</p>
+<pre><code class="language-bash">kubectl describe node k8s01
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=k8s01
+                    kubernetes.io/os=linux
+                    node-role.kubernetes.io/control-plane=
+                    node-role.kubernetes.io/master=
+                    node.kubernetes.io/exclude-from-external-load-balancers=
+</code></pre>
 <p><code>.spec.template.spec.nodeSelector</code>可以让你仅在匹配的node上创建pod.</p>
-<p>例如: 仅在拥有ssd磁盘的节点上构建</p>
+<p>例如: 仅调度到拥有ssd磁盘标签的节点</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
 metadata:
@@ -2577,12 +2619,12 @@ spec:
   nodeSelector:
     disktype: ssd
 </code></pre>
-<h3 id="通过节点亲和性-nodeAffinity-来选择">通过节点亲和性(nodeAffinity)来选择</h3>
-<p><code>.spec.affinity.nodeAffinity</code> ， 它有以下属性: (每一个属性由两部分意思组成)</p>
+<h2 id="通过节点亲和性-nodeAffinity-实现部分调度">通过节点亲和性(nodeAffinity)实现部分调度</h2>
+<p><code>.spec.affinity.nodeAffinity</code> ， 它有以下类型: (每一个类型由两部分意思组成)</p>
 <p>requiredDuringScheduling<strong>IgnoredDuringExecution</strong><br>
-表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中IgnoreDuringExecution表示pod部署之后运行的时候，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
+表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中IgnoreDuringExecution表示pod部署后运行期间，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
 <p>requiredDuringScheduling<strong>RequiredDuringExecution</strong><br>
-表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中RequiredDuringExecution表示pod部署之后运行的时候，如果节点标签发生了变化，不再满足pod指定的条件，则重新选择符合要求的节点。</p>
+表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中RequiredDuringExecution表示pod部署后运行期间，如果节点标签发生了变化，不再满足pod指定的条件，则重新选择符合要求的节点。</p>
 <p>preferredDuringScheduling<strong>IgnoredDuringExecution</strong><br>
 表示优先部署到满足条件的节点上，如果没有满足条件的节点，就忽略这些条件，按照正常逻辑部署。其中IgnoreDuringExecution表示pod部署之后运行的时候，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
 <p>preferredDuringScheduling<strong>RequiredDuringExecution</strong><br>
@@ -2614,23 +2656,8 @@ spec:
   - name: with-node-affinity
     image: gcr.io/google_containers/pause:2.0
 </code></pre>
-<p>这个配置的意思是pod<strong>必须被调度</strong><a target="_blank" rel="noopener" href="http://xn--kubernetes-m11qu01s34wc.io/e2e-az-name=e2e-az1%E6%88%96%E8%80%85kubernetes.io/e2e-az-name=e2e-az2">到标签kubernetes.io/e2e-az-name=e2e-az1或者kubernetes.io/e2e-az-name=e2e-az2</a> 的节点。与此同时， 还将在上述条件的基础上， <strong>优先调度</strong>到额外拥有标签为another-node-label-key=another-node-label-value的节点上。</p>
-<h2 id="污点和容忍度Taint-and-toleration">污点和容忍度Taint-and-toleration</h2>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/</a></p>
-<p>k8s通过污点来剔除某些故障节点， 或构建一些专属节点.</p>
-<p>k8s通过容忍度来确保某些pod可以忽略污点.</p>
-<p>在正常情况下. 没有任何容忍度的pod不会被调度到存在污点的node上. (当出现节点故障时候， 默认会附加一个容忍度， 容忍度失效300秒)</p>
-<p>但DaemonSet却需要忽略这些污点， 以便于pod长存. (例如你构建的监控pod)</p>
-<p>以下是DaemonSet自动附加的容忍度， 它将忽略这些污点. (截至到v1.19)</p>
-<pre><code class="language-bash">node.kubernetes.io/not-ready
-node.kubernetes.io/unreachable	
-node.kubernetes.io/disk-pressure	
-node.kubernetes.io/memory-pressure	
-node.kubernetes.io/unschedulable	
-node.kubernetes.io/network-unavailable	
-</code></pre>
-<p>上述情况基本保证了DaemonSet的pod不会因各种意外情况导致pod被驱逐.</p>
-<h2 id="访问DaemonSet-pod">访问DaemonSet pod</h2>
+<p>这个配置的意思是pod【必须被调度】到拥有标签【<a target="_blank" rel="noopener" href="http://kubernetes.io/e2e-az-name=e2e-az1%E6%88%96kubernetes.io/e2e-az-name=e2e-az2%E3%80%91">kubernetes.io/e2e-az-name=e2e-az1或kubernetes.io/e2e-az-name=e2e-az2】</a> 的节点。与此同时， 还将在上述条件的基础上， <strong>优先调度</strong>到额外拥有标签为another-node-label-key=another-node-label-value的节点上。</p>
+<h1>访问</h1>
 <p>你可以通过构建一个 Headless Service 并通过 endpoint  来访问各个 pod.</p>
 
 </div>

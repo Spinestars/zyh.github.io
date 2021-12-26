@@ -561,6 +561,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/5290b79d/">
                      
 										    网络☞S5700配置攻击朔源
@@ -911,7 +922,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍
+										    k8s☞17node污染和pod容忍和亲和性
                      
 									</a>
 								</li>
@@ -2420,6 +2431,52 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/759b68d8/">
+				<h2 class="index-title">
+					go☞001变量
+				</h2>
+				<div class="index-brief">
+					前言
+变量有两个元数据，一是内存地址，一是内存地址存储的数据。
+
+内存地址也是一串数
+
+声明类型
+部分变量类型:
+int，整型，默认是0
+string，字符串，默认是空
+​	字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示rune ，类似于其它语言的字节类型
+bool，布尔，默
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-02</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1080c6b6/">
 				<h2 class="index-title">
 					k8s☞09存储资源
@@ -2590,11 +2647,10 @@ ingress 可以提供负载均衡/SSL管理/虚拟命名主机/path路由. 它的
 稳定的、唯一的网络标识符。
 稳定的、持久的存储。
 有序的、优雅的部署和缩放。
+有序的、优雅的删除和终止。
 有序的、自动的滚动更新。
 
-StatefulSet 就是干这个的.
-一个例子
-apiV
+StatefulSet 就是干
 					...
 				</div>
 			</a>
@@ -2630,7 +2686,7 @@ apiV
 					k8s☞12-1DaemonSet
 				</h2>
 				<div class="index-brief">
-					前言
+					基础
 DaemonSet 确保符合规则的 k8s node 上都存在一份 pod。常用来构建节点常驻性的app. 例如监控节点的app， 或者采集节点日志的app，以及网络app等。
 特点
 
@@ -2766,46 +2822,6 @@ https://kubernetes.io/docs/concepts/configuration/co
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/d3b80b5f/">
-				<h2 class="index-title">
-					k8s☞08负载均衡service
-				</h2>
-				<div class="index-brief">
-					前言
-在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公/内网发布后端程序。
-k8s设计了一个service对象来实现这一目的.
-k8sIP
-在提
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-16</span>
                     
                             
                                 

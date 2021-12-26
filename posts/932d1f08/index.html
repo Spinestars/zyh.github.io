@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞17node污染和pod容忍 | 
+		k8s☞17k8s☞17node污染和pod容忍和亲和性 | 
 	 
 	zyh
 	</title>
@@ -563,6 +563,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/5290b79d/">
                      
 										    网络☞S5700配置攻击朔源
@@ -913,7 +924,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍
+										    k8s☞17node污染和pod容忍和亲和性
                      
 									</a>
 								</li>
@@ -2420,12 +2431,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞17node污染和pod容忍
+	k8s☞17k8s☞17node污染和pod容忍和亲和性
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/932d1f08/" class="leancloud_visitors" data-flag-title="k8s☞17node污染和pod容忍"></span>
+			阅读量:<span id="/posts/932d1f08/" class="leancloud_visitors" data-flag-title="k8s☞17k8s☞17node污染和pod容忍和亲和性"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2481,42 +2492,64 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
+	<h1>引用</h1>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍度 | Kubernetes</a></p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#taint">Kubectl Reference Docs (kubernetes.io)</a></p>
-<h2 id="规则">规则</h2>
-<p>pod设定的容忍规则，如果匹配到了绑定在node上的污点规则，则可以被调度到污点节点上，否则不能被调度</p>
-<blockquote>
-<p>容忍规则和污点规则都可以添加多个</p>
-</blockquote>
-<h2 id="node污点命令">node污点命令</h2>
-<pre><code class="language-bash"># 查看节点污染信息，若无污染则为 none
-kubectl describe nodes | grep Taints
-Taints:             &lt;none&gt;
-Taints:             node-role.kubernetes.io/master:NoSchedule
-Taints:             &lt;none&gt;
-</code></pre>
-<p>上述例子中：</p>
-<p>KEY是<code>node-role.kubernetes.io/master</code></p>
-<p>VAL没有</p>
-<p>TAINT_EFFECT是<code>NoSchedule</code></p>
+<h1>污点/容忍概念</h1>
+<p>Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。</p>
+<p>Node的污点规则由两部分组成：污点:污点效果。</p>
+<ul>
+<li>
+<p>污点就是键值对，用来描述一种场景。例如网络不通、硬件标识（低性能HDD磁盘）、环境（测试环境）</p>
+</li>
+<li>
+<p>污点效果是判定规则，用来判断是否可以调度到节点上。</p>
+</li>
+</ul>
+<p>Pod上的容忍规则，即Pod告知调度器可以容忍Node上设定的污点规则。</p>
+<p>🍖容忍规则和污点规则都可以添加多个。</p>
+<h1>污点/容忍命令</h1>
+<p>Node的污点规则：</p>
 <pre><code class="language-bash"># 添加污点
 ## 标签对:污染关键词
-kubectl taint nodes &lt;NODE_NAME&gt; KEY_1=VAL_1:TAINT_EFFECT_1 ... KEY_N=VAL_N:TAINT_EFFECT_N
+kubectl taint nodes &lt;node.name&gt; KEY_1=VAL_1:TAINT_EFFECT_1 KEY_N=VAL_N:TAINT_EFFECT_N
 
 # 移除污点
-kubectl taint nodes &lt;NODE_NAME&gt; KEY_1-
+kubectl taint nodes &lt;node.name&gt; KEY_1-
+
+# 查看节点污染信息，若无污染则为 none
+kubectl describe nodes &lt;node.name&gt; | grep Taints
+Taints:             node-role.kubernetes.io/master:NoSchedule
 </code></pre>
-<h3 id="污染关键词-TAINT-EFFECT">污染关键词 TAINT_EFFECT</h3>
-<p>TAINT_EFFECT 包含以下三种状态：</p>
-<p><code>NoSchedule</code> 容忍规则没有匹配到此污点的pod绝对不会被调度拥有此污点的节点</p>
-<blockquote>
-<p>对于 NoSchedule，有一个例外，就是污点添加之前，pod已经在节点上了，则pod会继续运行。</p>
-</blockquote>
-<p><code>PreferNoSchedule</code>容忍规则没有匹配到此污点的pod尽量不会被调度到拥有此污点的节点</p>
-<p><code>NoExecute</code> 容忍规则没有匹配到此污点的pod绝对不会被调度拥有此污点的节点，如果pod已经在污点添加之前就运行了，则会被立即驱逐</p>
-<p>ℹ️ 特殊规则，就是容忍规则里包含了<code>tolerationSeconds</code>，则pod的容忍规则即使完全符合node的污染规则，也仅仅只能在<code>tolerationSeconds</code>宽恕期之内继续运行。</p>
-<h2 id="pod容忍配置">pod容忍配置</h2>
+<p>Pod容忍规则：</p>
+<pre><code class="language-yaml">tolerations:
+- key: &quot;key1&quot;
+  operator: &quot;Equal&quot;
+  value: &quot;value1&quot;
+  effect: &quot;NoSchedule&quot;
+</code></pre>
+<p>operator 可以是Equal等于或者Exists存在。</p>
+<h1>调度逻辑</h1>
+<p>首先，Pod的容忍规则需要完全等同于污点规则，即污点和污点效果都一致才算是匹配成功。但存在特殊情况：</p>
+<ul>
+<li>仅定义了<code>operator:Exists</code>，则表示匹配任意污点规则。</li>
+<li>仅定义了污点，没有定义污点效果，则表示匹配这个污点的所有效果。</li>
+</ul>
+<p>其次，当Node的污点规则有多个的时候，调度器会将Pod的容忍规则与之一一匹配。就如同小学题里那种连线题一样。</p>
+<p>最后，若都可以匹配，则Pod可以调度进去。但只要存在一个不匹配的污点规则，那么调度器就需要依据这个污点规则的污点效果来判断Pod的进/退：</p>
+<ul>
+<li>进：针对还未创建的Pod，是否将Pod调度进去。</li>
+<li>退：针对已经创建的Pod，是否将Pod驱逐滚蛋。</li>
+</ul>
+<h1>污点效果</h1>
+<p>一般情况，若Node存在下列污点效果，调度器的逻辑是：</p>
+<p><code>NoSchedule</code> 表示调度器不可调度【还未创建的】Pod到此节点。</p>
+<p><code>PreferNoSchedule</code>表示尽量不要调度【还未创建的】Pod到此节点。</p>
+<p><code>NoExecute</code> 表示绝不允许调度Pod到此节点，哪怕Pod【已经创建】都会被驱逐。</p>
+<p>针对【NoExecute】，若可以【匹配NoExecute】的Pod里包含了额外的宽恕期规则<code>tolerationSeconds</code>，则Pod【仅可以】在<code>tolerationSeconds</code>宽恕期之内运行。</p>
+<p>🤦‍♂️经测试，即使是污点规则添加之后的Pod，也只可以在<code>tolerationSeconds</code>内运行。因此这个宽恕期不如称之为【可运行时间】。</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions">https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions</a></p>
+<p>例如：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
 metadata:
@@ -2535,42 +2568,116 @@ spec:
     tolerationSeconds: 3600
 </code></pre>
 <p>上述配置表示，当 pod 所在节点被添加了一个<code>example-key:NoExecute</code> 污点的时候，pod 将不会被驱逐，而是可以继续存活3600秒，如果还未到3600秒，污点就被移除，则 pod 驱逐也会停止。</p>
-<pre><code class="language-yaml">tolerations:
-- key: &quot;key1&quot;
-  operator: &quot;Equal&quot;
-  value: &quot;value1&quot;
-  effect: &quot;NoSchedule&quot;
-</code></pre>
-<p>上述pod的容忍配置表示，当 pod 所在节点被添加了一个<code>key1=value1:NoSchedule</code>污点的时候，pod 将不会被驱逐。</p>
-<h2 id="内置的污点">内置的污点</h2>
+<h1>自动污点规则</h1>
 <p>当某种条件为真时，节点控制器会自动给节点添加一个污点。当前内置的污点包括：</p>
 <ul>
-<li><code>node.kubernetes.io/not-ready</code>：节点未准备好。这相当于节点状态 <code>Ready</code> 的值为 “<code>False</code>”。</li>
-<li><code>node.kubernetes.io/unreachable</code>：节点控制器访问不到节点. 这相当于节点状态 <code>Ready</code> 的值为 “<code>Unknown</code>”。</li>
-<li><code>node.kubernetes.io/memory-pressure</code>：节点存在内存压力。</li>
-<li><code>node.kubernetes.io/disk-pressure</code>：节点存在磁盘压力。</li>
-<li><code>node.kubernetes.io/pid-pressure</code>: 节点的 PID 压力。</li>
-<li><code>node.kubernetes.io/network-unavailable</code>：节点网络不可用。</li>
-<li><code>node.kubernetes.io/unschedulable</code>: 节点不可调度。</li>
+<li><code>node.kubernetes.io/not-ready:NoExecute</code>：节点未准备好。这相当于节点状态 <code>Ready</code> 的值为 “<code>False</code>”。</li>
+<li><code>node.kubernetes.io/unreachable:NoExecute</code>：节点控制器访问不到节点. 这相当于节点状态 <code>Ready</code> 的值为 “<code>Unknown</code>”。</li>
+<li><code>node.kubernetes.io/memory-pressure:NoSchedule</code>：节点存在内存压力。</li>
+<li><code>node.kubernetes.io/disk-pressure:NoSchedule</code>：节点存在磁盘压力。</li>
+<li><code>node.kubernetes.io/pid-pressure:NoSchedule</code>: 节点的 PID 压力。</li>
+<li><code>node.kubernetes.io/network-unavailable:NoSchedule</code>：节点网络不可用。</li>
+<li><code>node.kubernetes.io/unschedulable:NoSchedule</code>: 节点不可调度。</li>
 <li><code>node.cloudprovider.kubernetes.io/uninitialized</code>：如果 kubelet 启动时指定了一个 “外部” 云平台驱动， 它将给当前节点添加一个污点将其标志为不可用。在 cloud-controller-manager 的一个控制器初始化这个节点后，kubelet 将删除这个污点。</li>
 </ul>
-<p>从上述状态来看，如果你想让某个pod在出现上述问题（例如节点网络故障）后，依然被调度在当前节点保持1小时，那么你可以添加下列容忍规则：</p>
+<p>在节点被驱逐的时候，节点控制器或者 kubelet 会添加带有 <code>NoExecute</code> 污点效果的相关内置污点。异常恢复的时候，会自动移除污点。</p>
+<blockquote>
+<p>🤷‍♂️关于用<code>kubectl drain</code>执行驱逐的时候，<a target="_blank" rel="noopener" href="http://xn--nodenode-309lrnu35cx15cpfcfz3aulp50vcrk.kubernetes.io/unschedulable:NoSchedule%E3%80%82%E4%BD%86%E5%AE%9E%E9%99%85%E6%95%88%E6%9E%9C%E6%98%AF">node显示的污点只有一个node.kubernetes.io/unschedulable:NoSchedule。但实际效果是</a><code>node.kubernetes.io/unschedulable:NoExecute</code>。即驱逐命令会驱逐掉已存在的Pod。可能<code>kubectl drain</code>会添加内置的特殊污点效果。</p>
+<pre><code class="language-bash">➜   kubectl drain k8s03 --ignore-daemonsets --delete-emptydir-data
+➜   kubectl describe node k8s03 | grep Taints
+Taints:             node.kubernetes.io/unschedulable:NoSchedule
+</code></pre>
+</blockquote>
+<p>如果你想让某个pod在节点出现问题（例如节点网络故障）后，依然被调度在当前节点保持1小时，那么你可以添加下列容忍规则：</p>
 <pre><code class="language-yaml">tolerations:
 - key: &quot;node.kubernetes.io/network-unavailable&quot;
   operator: &quot;Exists&quot;
   effect: &quot;NoExecute&quot;
   tolerationSeconds: 3600
 </code></pre>
-<h2 id="特殊情况">特殊情况</h2>
-<p>DaemonSet 控制器自动为所有守护进程添加如下<code>标签</code>的 <code>NoSchedule</code> 容忍度以防 DaemonSet 崩溃：</p>
-<ul>
-<li><code>node.kubernetes.io/memory-pressure</code></li>
-<li><code>node.kubernetes.io/disk-pressure</code></li>
-<li><code>node.kubernetes.io/pid-pressure</code> (1.14 或更高版本)</li>
-<li><code>node.kubernetes.io/unschedulable</code> (1.10 或更高版本)</li>
-<li><code>node.kubernetes.io/network-unavailable</code> (<em>只适合主机网络配置</em>)</li>
-</ul>
-<p>也就是说守护进程所在节点出现上述问题，从而导致自动添加污点的时候，守护进程也不会被驱逐。</p>
+<h1>自动容忍规则</h1>
+<p>Kubernetes 会自动给 Pod 添加内置污点 <code>node.kubernetes.io/not-ready:NoExecute</code> 的容忍度并配置 <code>tolerationSeconds=300</code>，除非用户提供的 Pod 配置中已经已存在了 key 为 <code>node.kubernetes.io/not-ready</code> 的容忍度。</p>
+<p>Kubernetes 会自动给 Pod 添加内置污点 <code>node.kubernetes.io/unreachable:NoExecute</code> 的容忍度并配置 <code>tolerationSeconds=300</code>，除非用户提供的 Pod 配置中已经已存在了 key 为 <code>node.kubernetes.io/unreachable</code> 的容忍度。</p>
+<p>这意味着在其中一种问题被检测到时 Pod 默认能够继续停留在当前节点运行 5 分钟。</p>
+<p>但是，对于DaemonSet的Pod，则不会配置<code>tolerationSeconds</code>。这意味着，Node出现上述问题后，这类Pod将永久运行不被驱逐。</p>
+<p>DaemonSet的自动附加容忍度：</p>
+<pre><code class="language-yaml">node.kubernetes.io/disk-pressure:NoSchedule op=Exists
+node.kubernetes.io/memory-pressure:NoSchedule op=Exists
+node.kubernetes.io/network-unavailable:NoSchedule op=Exists
+node.kubernetes.io/pid-pressure:NoSchedule op=Exists
+node.kubernetes.io/unschedulable:NoSchedule op=Exists
+
+node.kubernetes.io/not-ready:NoExecute op=Exists
+node.kubernetes.io/unreachable:NoExecute op=Exists
+</code></pre>
+<p>🍖DaemonSet中除了上述自动容忍度，还经常见到万能容忍度<code>:NoSchedule op=Exists 或者 op=Exists</code>。</p>
+<h1>节点亲和性</h1>
+<h2 id="通过Pod节点选择器-nodeSelector-实现部分调度">通过Pod节点选择器(nodeSelector)实现部分调度</h2>
+<p>通过下列命令获知节点标签:</p>
+<pre><code class="language-bash">kubectl describe node k8s01
+Labels:             beta.kubernetes.io/arch=amd64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=amd64
+                    kubernetes.io/hostname=k8s01
+                    kubernetes.io/os=linux
+                    node-role.kubernetes.io/control-plane=
+                    node-role.kubernetes.io/master=
+                    node.kubernetes.io/exclude-from-external-load-balancers=
+</code></pre>
+<p><code>.spec.template.spec.nodeSelector</code>可以让你仅在匹配的node上创建pod.</p>
+<p>例如: 仅调度到拥有ssd磁盘标签的节点</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    disktype: ssd
+</code></pre>
+<h2 id="通过Pod节点亲和性-nodeAffinity-实现部分调度">通过Pod节点亲和性(nodeAffinity)实现部分调度</h2>
+<p><code>pod.spec.affinity.nodeAffinity</code> ， 它有以下类型: (每一个类型由两部分意思组成)</p>
+<p>requiredDuringScheduling<strong>IgnoredDuringExecution</strong><br>
+表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中IgnoreDuringExecution表示pod部署后运行期间，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
+<p>requiredDuringScheduling<strong>RequiredDuringExecution</strong><br>
+表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中RequiredDuringExecution表示pod部署后运行期间，如果节点标签发生了变化，不再满足pod指定的条件，则重新选择符合要求的节点。</p>
+<p>preferredDuringScheduling<strong>IgnoredDuringExecution</strong><br>
+表示优先部署到满足条件的节点上，如果没有满足条件的节点，就忽略这些条件，按照正常逻辑部署。其中IgnoreDuringExecution表示pod部署之后运行的时候，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
+<p>preferredDuringScheduling<strong>RequiredDuringExecution</strong><br>
+表示优先部署到满足条件的节点上，如果没有满足条件的节点，就忽略这些条件，按照正常逻辑部署。其中RequiredDuringExecution表示如果后面节点标签发生了变化，满足了条件，则重新调度到满足条件的节点。</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/e2e-az-name
+            operator: In
+            values:
+            - e2e-az1
+            - e2e-az2
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: another-node-label-key
+            operator: In
+            values:
+            - another-node-label-value
+  containers:
+  - name: with-node-affinity
+    image: gcr.io/google_containers/pause:2.0
+</code></pre>
+<p>这个配置的意思是pod【必须被调度】到拥有标签【<a target="_blank" rel="noopener" href="http://kubernetes.io/e2e-az-name=e2e-az1%E6%88%96kubernetes.io/e2e-az-name=e2e-az2%E3%80%91">kubernetes.io/e2e-az-name=e2e-az1或kubernetes.io/e2e-az-name=e2e-az2】</a> 的节点。与此同时， 还将在上述条件的基础上， <strong>优先调度</strong>到额外拥有标签为another-node-label-key=another-node-label-value的节点上。最后，如果Node在Pod部署之后无法满足上述条件，则Pod不会被重新调度。</p>
 <h2 id="案例">案例</h2>
 <h3 id="专属服务：专属节点">专属服务：专属节点</h3>
 <p>线上服务器组专用</p>
@@ -2589,7 +2696,7 @@ metadata:
 spec:
   affinity:
     nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
+      requiredDuringSchedulingRequiredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
           - key: dedicated
@@ -2607,7 +2714,7 @@ spec:
     imagePullPolicy: IfNotPresent
 </code></pre>
 <p>tolerations 确保了 nginx pod 可以调度到拥有 dedicated=prod:NoSchedule 污点的节点，而 k8s001 拥有此污点。</p>
-<p>affinity.nodeAffinity 节点亲和确保了必须调度到拥有 dedicated=prod 标签的节点，而 k8s001 拥有此标签。</p>
+<p>affinity.nodeAffinity 节点亲和确保了必须调度到拥有 dedicated=prod 标签的节点，而 k8s001 拥有此标签。并且，当节点的dedicated != prod的时候，Pod将会重新调度到满足条件的节点上。</p>
 
 </div>
 
@@ -2615,9 +2722,9 @@ spec:
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/710e3e49/">
+              <a href="/posts/f0c6f6c3/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  helm☞02chart
+                  git☞常用命令
               </a>
             
         </div>

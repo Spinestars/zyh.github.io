@@ -563,6 +563,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/5290b79d/">
                      
 										    网络☞S5700配置攻击朔源
@@ -913,7 +924,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍
+										    k8s☞17node污染和pod容忍和亲和性
                      
 									</a>
 								</li>
@@ -2495,10 +2506,11 @@ var _hmt = _hmt || [];
 <li>稳定的、唯一的网络标识符。</li>
 <li>稳定的、持久的存储。</li>
 <li>有序的、优雅的部署和缩放。</li>
+<li>有序的、优雅的删除和终止。</li>
 <li>有序的、自动的滚动更新。</li>
 </ul>
-<p>StatefulSet 就是干这个的.</p>
-<h2 id="一个例子">一个例子</h2>
+<p>StatefulSet 就是干这个的。不过在实际的项目中，其实我们还是很少会去直接通过 StatefulSet 来部署我们的有状态服务的，除非你自己能够完全能够 hold 住，对于一些特定的服务，我们可能会使用更加高级的 Operator 来部署，比如 etcd-operator、prometheus-operator 等等，这些应用都能够很好的来管理有状态的服务，而不是单纯的使用一个 StatefulSet 来部署一个 Pod 就行，因为对于有状态的应用最重要的还是数据恢复、故障转移等等。</p>
+<h2 id="例子">例子</h2>
 <pre><code class="language-yaml:">apiVersion: v1
 kind: Service
 metadata:
@@ -2547,21 +2559,24 @@ spec:
           storage: 1Gi
 </code></pre>
 <ul>
-<li>StatefulSet.spec.serviceName 设定 svc 名</li>
+<li>svc对象必须先创建</li>
+<li>StatefulSet.spec.serviceName 设定 svc 名称</li>
+<li>StatefulSet.spec.volumeClaimTemplates 自动创建一个PVC，并匹配一个合适的PV</li>
 </ul>
 <h2 id="特点">特点</h2>
 <ul>
-<li>Pod 标识：拥有唯一的有序索引和稳定的网络身份。pod 被部署的时候其名字是按照<code>&lt;statefulset_name&gt;-&lt;index&gt;</code>创建的，例如(web-0, web-1)。这个名字就是他们的hostname，且不管 pod 如何调度，都永不变。</li>
-<li>Service 必须是 headless。StatefulSet 使用 headless 结合Pod标识来构建 Pod 子域名。其Pod子域名格式：<code>$(pod 名称).$(服务名称).$(命名空间).svc.cluster.local</code></li>
+<li>Pod 标识：拥有唯一的有序索引和稳定的网络身份。pod 被部署的时候其名字是按照<code>&lt;statefulset.name&gt;-&lt;index.num&gt;</code>创建的，例如(web-0, web-1)。这个名字就是他们的hostname，且不管 pod 如何调度，都永不变。</li>
+<li>Service 必须是 headless。StatefulSet 使用 headless 结合Pod标识来构建 Pod 子域名。其Pod子域名格式：<code>$(statefulset.name)-$(index.name).$(svc.name).$(ns.name).svc.cluster.local</code></li>
 <li>pod 不管怎么删, pod与pvc之间的关系都不会混乱.</li>
 <li>pod 之间可以通过固定的Pod子域名互相访问.</li>
 <li>启动 pod 的时候, 按照索引, 从 0 开始. 一个一个启动. 不会同时启动多个. (这是默认行为)</li>
 <li>删除 pod 的时候, 按照索引倒序删除, 从最后一个开始, 一个一个删除. 不会同时删除多个. (这是默认行为)</li>
-<li>删除 pod 的时候, pvc 和 pv 并不会删除.</li>
+<li>删除 pod 的时候, pvc 和 pv 并不会删除。且PVC的名称也是有序的。$(<a target="_blank" rel="noopener" href="http://VCT.name">VCT.name</a>)-$(<a target="_blank" rel="noopener" href="http://statefulset.name">statefulset.name</a>)-${index.num}</li>
 </ul>
 <blockquote>
 <p>你可以通过设置statefulset管理策略, 来改变上述默认行为</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy">https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy</a></p>
+<p><code>StatefulSet.spec.podManagementPolicy</code>设定为：Parallel 。就可以并发的创建Pod和删除Pod.</p>
 </blockquote>
 <h2 id="扩展-缩放">扩展/缩放</h2>
 <p>扩展: <code>kubectl scale sts web --replicas=5</code></p>
@@ -2594,7 +2609,7 @@ spec:
 <p>(<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#forced-rollback">https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#forced-rollback</a>)</p>
 <h2 id="阶段更新-staging-an-update">阶段更新(staging an update)</h2>
 <p>有时候我们可能并不想一次更新所有, 此时可以进行阶段更新.</p>
-<p>阶段更新的意思就是通过在索引上设置一个点. 当pod的索引大于等于这个点的时候, 才会更新. (默认点是索引0)</p>
+<p>阶段更新的意思就是通过在索引上设置一个点. 当pod的索引大于等于这个点的时候, 才会更新. (默认点是索引0，即所有Pod都更新)</p>
 <pre><code class="language-bash">kubectl patch statefulset web -p '&#123;&quot;spec&quot;:&#123;&quot;updateStrategy&quot;:&#123;&quot;type&quot;:&quot;RollingUpdate&quot;,&quot;rollingUpdate&quot;:&#123;&quot;partition&quot;:3&#125;&#125;&#125;&#125;'
 </code></pre>
 <p>这个意思是设置索引3为阶段分割点.</p>

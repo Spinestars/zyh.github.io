@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2537,6 +2570,14 @@ kubectl patch pv &lt;pv&gt; -p '&#123;&quot;metadata&quot;:&#123;&quot;finalizer
 <p>已崩溃的pod无法通过<code>kubectl logs</code>查看.</p>
 <pre><code class="language-bash">kubectl get events -n &lt;ns_name&gt; --sort-by='.metadata.createTimestamp''
 </code></pre>
+<h3 id="10-Pod一直处于删除状态">10.Pod一直处于删除状态</h3>
+<p>检查Pod所在节点的kubelet日志，发现出现<code>Error: &quot;UnmountVolume.TearDown failed for volume</code>无法反挂载的错误。</p>
+<p>进一步查看错误后面信息，得知<code>Unmount的Path：/var/lib/kubelet/pods/aa104758-a3a0-4ec3-977b-be9ef8530e5c/volumes/kubernetes.io~projected/kube-api-access-6vltw/</code></p>
+<pre><code class="language-bash">path=/var/lib/kubelet/pods/aa104758-a3a0-4ec3-977b-be9ef8530e5c/volumes/kubernetes.io~projected/kube-api-access-6vltw
+find /proc/*/mounts -exec grep $&#123;path&#125; &#123;&#125; +
+ps -ef | grep &lt;pid 号&gt;
+</code></pre>
+<p>确认占用的进程信息，是否属于处于删除状态的Pod，如果是，kill掉即可.</p>
 
 </div>
 

@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2503,6 +2536,7 @@ tar xf kafka.tgz -C ../ &amp;&amp; cd .. &amp;&amp; mv kafka_* kafka &amp;&amp; 
 <pre><code class="language-bash">hostName=
 hostnamectl set-hostname $&#123;hostName&#125;
 </code></pre>
+<p>添加<code>$int_ip $hostName</code>到<code>/etc/hosts</code></p>
 <h2 id="配置和启动">配置和启动</h2>
 <h3 id="zk">zk</h3>
 <p>一份集群（3节点）模式下的zk配置</p>
@@ -2537,7 +2571,7 @@ echo '3' &gt; /export/kafka/zk_data/myid
 </code></pre>
 <p>启动zk</p>
 <pre><code class="language-bash">cd /export/kafka/
-nohup bin/zookeeper-server-start.sh config/zookeeper.properties &amp;
+nohup bin/zookeeper-server-start.sh config/zookeeper.properties &gt;&gt; zookeeper.nohup &amp;
 </code></pre>
 <h3 id="kafka">kafka</h3>
 <p>一份集群（3节点）模式下的kafka配置</p>
@@ -2568,7 +2602,7 @@ group.initial.rebalance.delay.ms=0
 </code></pre>
 <p>启动</p>
 <pre><code class="language-bash">cd /export/kafka/
-nohup bin/kafka-server-start.sh config/server.properties &amp;
+nohup bin/kafka-server-start.sh config/server.properties &gt;&gt; kafka.nohup &amp;
 </code></pre>
 <p>远程一键启动脚本（需提前ssh信任）</p>
 <p><a target="_blank" rel="noopener" href="http://start-kafka.sh">start-kafka.sh</a></p>

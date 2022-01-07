@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2473,7 +2506,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/helm/">helm</a>
                         </i>
                     </span>
                 
@@ -2481,7 +2514,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/helm/">helm</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -2495,42 +2528,190 @@ var _hmt = _hmt || [];
 	<h2 id="前言">前言</h2>
 <p>helm： k8s的包管理器，这里是v3版本</p>
 <p>大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release</p>
-<p>chart仓库：存储chart程序包，不包含程序，是一个资源描述/模板 ，是一个http服务器</p>
-<p>helm：是客户端</p>
+<p>chart仓库：存储chart程序包，不包含程序，是一个资源描述/模板 ，是一个http服务器。</p>
+<p>helm：本地客户端</p>
 <p>config：提供chart包所需的变量，构建特定的chart包配置，对应chart包里的values.yaml文件</p>
-<p>Release：特定的chart包的实例化对象，部署于目标集群上的一个实例</p>
-<p>因此，当chart更新后，helm可以自动滚动更新对应的Release实例</p>
+<p>Release：特定的chart包的本地实例化对象，部署于目标集群上的一个实例</p>
+<p>当chart更新后，helm可以滚动更新对应的Release实例</p>
 <h2 id="部署">部署</h2>
 <h3 id="下载Helm包">下载Helm包</h3>
 <p><a target="_blank" rel="noopener" href="https://helm.sh/zh/docs/intro/install/">Helm | 安装Helm</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/helm/helm/releases">Releases · helm/helm (github.com)</a></p>
 <p>Helm包是一个二进制程序，直接解压就可以用，将解压后的 helm 文件放置在 /usr/bin/ 下即可</p>
 <p>你也可以通过脚本一键安装最新版本的helm: <code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash</code></p>
-<h3 id></h3>
+<h2 id="添加源">添加源</h2>
+<p>添加微软家的源，并命名为 stable</p>
+<pre><code class="language-bash">helm repo add stable http://mirror.azure.cn/kubernetes/charts/
+</code></pre>
+<p>列出已有的源</p>
+<pre><code class="language-bash">helm repo list
+</code></pre>
+<p>查询stable源包含的包</p>
+<pre><code class="language-bash">helm search repo stable
+</code></pre>
 <h2 id="常用命令">常用命令</h2>
 <h3 id="release命令-v3版本">release命令(v3版本)</h3>
 <ul>
-<li>install <code>helm install &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code> <code>helm install myelk elastic/elasticsearch --namespace elk -f values.yaml</code></li>
-<li>delete</li>
-<li>upgrade：更新release版本 <code>helm install &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li>
-<li>rollback：回滚release版本</li>
-<li>list</li>
-<li>history：获取release历史版本</li>
-<li>status：获取release状态信息</li>
+<li>
+<p>install</p>
+<ul>
+<li><code>helm install &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li>
+<li><code>helm install myelk elastic/elasticsearch --namespace elk -f values.yaml</code></li>
+</ul>
+<blockquote>
+<p>相同的包，不同的实例，之间是不相干独立管理的。</p>
+</blockquote>
+</li>
+<li>
+<p>delete</p>
+<ul>
+<li>
+<pre><code class="language-bash">helm uninstall &lt;release_name&gt; &lt;flag&gt;
+</code></pre>
+</li>
+</ul>
+<blockquote>
+<p>flag 如果指定–keep-history，则属于标记删除，依然可以查到状态。在这种情况下，你可以通过 helm rollback 恢复</p>
+</blockquote>
+</li>
+<li>
+<p>upgrade：更新release版本，更新release配置</p>
+<ul>
+<li><code>helm upgrade &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li>
+<li>chart_name 通过search命令查找</li>
+<li>flag:
+<ul>
+<li>–recreate-pods 重建所有Pod.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>rollback：回滚release版本</p>
+</li>
+<li>
+<p>list</p>
+</li>
+<li>
+<p>history：获取release历史版本</p>
+</li>
+<li>
+<p>status：获取release状态信息</p>
+</li>
+<li>
+<p>get：获取release已设置的值。</p>
+<ul>
+<li>
+<pre><code class="language-bash">helm get values &lt;release-name&gt;
+</code></pre>
+</li>
+</ul>
+</li>
 </ul>
 <h3 id="chart命令-v3版本">chart命令(v3版本)</h3>
 <ul>
-<li>create 创建一个chart，将包含一些必要的文件</li>
-<li>fetch 下载并解压，如果你需要安装前，自定义配置，例如values.yaml</li>
-<li>get 下载</li>
-<li>inspect</li>
-<li>package 打包一个chart
+<li>
+<p>search 通过一个关键词查找一个chat。</p>
+<ul>
+<li><code>helm search repo metallb</code></li>
+</ul>
+</li>
+<li>
+<p>create 创建一个chart，将包含一些必要的文件</p>
+</li>
+<li>
+<p>fetch 下载压缩包但不安装。常用来安装前自定义配置，例如values.yaml</p>
+</li>
+<li>
+<p>get 下载</p>
+</li>
+<li>
+<p>inspect</p>
+</li>
+<li>
+<p>package 打包一个chart</p>
 <ul>
 <li><code>helm package &lt;chart根目录&gt;</code></li>
 </ul>
 </li>
-<li>verify 验证一个chart</li>
+<li>
+<p>verify 验证一个chart</p>
+</li>
 </ul>
+<h2 id="定制化">定制化</h2>
+<p>就是通过定制化包的<code>values.yaml</code></p>
+<p>通过下列命令导出包所支持的所有参数:</p>
+<pre><code class="language-bash">helm show value &lt;pkg.name&gt;
+</code></pre>
+<pre><code class="language-bash">➜   helm show values apphub/nginx  | grep -v '#' | grep -v '^$'
+image:
+  registry: docker.io
+  repository: bitnami/nginx
+  tag: 1.16.1-debian-10-r0
+  pullPolicy: IfNotPresent
+replicaCount: 1
+podAnnotations: &#123;&#125;
+affinity: &#123;&#125;
+nodeSelector: &#123;&#125;
+tolerations: &#123;&#125;
+resources:
+  limits: &#123;&#125;
+  requests: &#123;&#125;
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 6
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  timeoutSeconds: 3
+  periodSeconds: 5
+service:
+  type: LoadBalancer
+  port: 80
+  httpsPort: 443
+  nodePorts:
+    http: &quot;&quot;
+    https: &quot;&quot;
+  annotations: &#123;&#125;
+  externalTrafficPolicy: Cluster
+ingress:
+  enabled: false
+  certManager: false
+  hostname: example.local
+  annotations: &#123;&#125;
+  tls:
+    - hosts:
+        - example.local
+      secretName: example.local-tls
+  secrets:
+metrics:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/nginx-exporter
+    tag: 0.5.0-debian-10-r0
+    pullPolicy: IfNotPresent
+  podAnnotations:
+    prometheus.io/scrape: &quot;true&quot;
+    prometheus.io/port: &quot;9113&quot;
+  service:
+    port: 9113
+    annotations:
+      prometheus.io/scrape: &quot;true&quot;
+      prometheus.io/port: &quot;&#123;&#123; .Values.metrics.service.port &#125;&#125;&quot;
+  resources:
+    limits: &#123;&#125;
+    requests: &#123;&#125;
+  serviceMonitor:
+    enabled: false
+</code></pre>
+<p>可以看到配置并非是k8s的标准格式。</p>
 
 </div>
 
@@ -2538,16 +2719,16 @@ var _hmt = _hmt || [];
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/710e3e49/">
+              <a href="/posts/4d69fc4a/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  helm☞02chart
+                  k8s☞17-2调度之亲和性和反亲和性
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/6178b477/">
-                prometheus☞04mysql监控
+              <a href="/posts/710e3e49/">
+                helm☞02chart
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

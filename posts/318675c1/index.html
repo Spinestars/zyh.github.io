@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2489,7 +2522,7 @@ var _hmt = _hmt || [];
 <ol>
 <li>函数A中还有一个函数B，并且函数A返回了函数B</li>
 <li>函数B调用了函数A的形参</li>
-<li>main函数里变量C调用函数A</li>
+<li>main函数里调用函数A</li>
 </ol>
 <h2 id="基本原理">基本原理</h2>
 <p>正常情况下，函数被调用执行完毕后，函数的形参将被释放回收。</p>
@@ -2502,6 +2535,7 @@ var _hmt = _hmt || [];
 
 import &quot;fmt&quot;
 
+// 返回func(y int) int 函数
 func fca(x int) func(y int) int&#123;
     return func(y int) int &#123;
         x+=y
@@ -2510,12 +2544,12 @@ func fca(x int) func(y int) int&#123;
 &#125;
 func fcb(startNum,step,time int) &#123;
     fmt.Printf(&quot;初始数(startNum)：%d, 步长(step)%d, 迈步次数(time)：%d\n&quot;,startNum, step, time)
-    fmt.Printf(&quot;nextNum被赋值，从而等同于函数func(y int) int&#123;&#125;, 此时func中引用了形参x:1\n&quot;)
     nextNum := fca(startNum)
+    fmt.Printf(&quot;nextNum被赋值，即nextNum等函数func(y int) int&#123;&#125;, 此时func中引用了形参x:1\n&quot;)
     for i:=1;i&lt;=time;i++ &#123;
         fmt.Printf(&quot;执行nextNum(step) &#123;x+=y&#125;, 返回x:%d\n&quot;,nextNum(step))
         if i == 3 &#123;
-            fmt.Printf(&quot;nextNum释放，系统回收x, 从新赋值函数func(y int) int&#123;&#125;,\n&quot;)
+            fmt.Printf(&quot;重新赋值nextNum，导致nextNum释放，进而释放变量x，x重新被赋值为startNum。\n&quot;)
             nextNum = fca(startNum)
         &#125;
     &#125;
@@ -2525,11 +2559,11 @@ func main()&#123;
 &#125;
 ===
 初始数(startNum)：1, 步长(step)2, 迈步次数(time)：5
-nextNum被赋值，从而等同于函数func(y int) int&#123;&#125;, 此时func中引用了形参x:1
+nextNum被赋值，即nextNum等函数func(y int) int&#123;&#125;, 此时func中引用了形参x:1
 执行nextNum(step) &#123;x+=y&#125;, 返回x:3
 执行nextNum(step) &#123;x+=y&#125;, 返回x:5
 执行nextNum(step) &#123;x+=y&#125;, 返回x:7
-nextNum释放，系统回收x, 从新赋值函数func(y int) int&#123;&#125;,
+重新赋值nextNum，导致nextNum释放，进而释放变量x，x重新被赋值为startNum。
 执行nextNum(step) &#123;x+=y&#125;, 返回x:3
 执行nextNum(step) &#123;x+=y&#125;, 返回x:5
 </code></pre>

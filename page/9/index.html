@@ -922,7 +922,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1022,6 +1033,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2431,6 +2464,87 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/ac6b3b36/">
+				<h2 class="index-title">
+					jdk☞安装和配置
+				</h2>
+				<div class="index-brief">
+					前言
+oracle jdk 现在是商业产品了, 所以线上最好还是用 openjdk.
+源安装
+https://adoptopenjdk.net/installation.html#linux-pkg
+rhel之类的，搜索【RPM installation on Centos, RHEL, or Fe
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-06-01</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/java/">java</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/58a1c0c7/">
+				<h2 class="index-title">
+					nginx☞fcgi中alias的使用
+				</h2>
+				<div class="index-brief">
+					前言
+众所周知, nginx 在配置静态资源的时候, root 和 alias 分别是两种指定资源路径的方式.
+如果：
+​	url 是 http://xxx.com/god/a.jpg，且 location 匹配的是 /god/.
+则：
+​	当用 root 定位资源路径时, root 配置的值=域名
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-27</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/nginx/">nginx</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/720afd15/">
 				<h2 class="index-title">
 					ansible☞角色
@@ -2738,90 +2852,6 @@ mkdir -p $&#123;dataPath&#125;
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/数据库/redis/">redis</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/421d605e/">
-				<h2 class="index-title">
-					日志☞logrotate安装
-				</h2>
-				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
-
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1587f6e8/">
-				<h2 class="index-title">
-					zabbix☞agent和proxy（yum）
-				</h2>
-				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
-
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
-
-agent 安装
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

@@ -922,7 +922,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1022,6 +1033,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2431,6 +2464,83 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/4235ddf4/">
+				<h2 class="index-title">
+					ansible☞常用模块-文本文件操作
+				</h2>
+				<div class="index-brief">
+					var 定义
+
+通过变量，修改playbook
+可直接写入 playbook， 也可以写入文件，然后 playbook 通过 vars_files 引用
+关键词:
+
+vars
+vars_files # 一次性加载文件内部数据，不支持文件动态修改或添加新变量
+
+
+简例
+---
+- hosts: loc
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-10</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3988a5f2/">
+				<h2 class="index-title">
+					linux☞输出个性化开机状态
+				</h2>
+				<div class="index-brief">
+					前沿
+觉得默认的登陆不够给力，无法忽悠机器，用wower的话来说，就是先祖忽悠着你
+效果图在此
+
+脚本在此
+
+将脚本放置到 /etc/profile.d/status.sh
+
+#!/bin/bash
+# Author: zyh
+# 需先安装 toilet 和 cowsay 命令
+# yum inst
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-09</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1ddb9d4e/">
 				<h2 class="index-title">
 					问题记录
@@ -2780,93 +2890,6 @@ special_time : @reboot @yearly @monthly @weekly @dail
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/b0929188/">
-				<h2 class="index-title">
-					ansible☞playbook-handle
-				</h2>
-				<div class="index-brief">
-					功能
-用一个短路判断来说，就是两者是串联关系，handlers 用来处理任务后续
-tasks &amp;&amp; handlers
-tasks &amp;&amp; handlers - listen （handlers 组）
-handlers 的 playbook 样本
----
-- hosts:
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-28</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/2c2d50a0/">
-				<h2 class="index-title">
-					redis☞备份
-				</h2>
-				<div class="index-brief">
-					前言
-本文主要记录 redis 的两种数据磁盘固化方式。
-涉及到相关参数，简单的命令操作等。
-rdb
-
-通过fork一个子进程来存储某一时刻redis数据(bgsave方式)。rdb持久化是默认方式。
-特点：
-
-
-小幅度丢失数据(取决于save或者bgsave命令的执行周期)，这里我们不说save，
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-27</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 

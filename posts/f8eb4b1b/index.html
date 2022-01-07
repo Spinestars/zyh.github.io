@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2486,37 +2519,42 @@ var _hmt = _hmt || [];
 <div id="article-content">
 	<h2 id="前言">前言</h2>
 <p>一个函数是没有所有者的。</p>
-<p>当一个函数有了接收的人后，它就叫<code>方法</code></p>
+<p>但当一个函数有了所属对象后，则称之为<code>方法</code></p>
 <p>在python中，一个类（接收者）定义方法，直接在类里写方法即可，只不过有一个<code>self</code>指向了它本身。</p>
-<p>在go中，没有这个<code>self</code>，因此定义方法需要指出谁是<code>接收者</code></p>
+<p>在go中，没有这个<code>self</code>，因此定义方法需要指出<code>所属者</code>是谁。</p>
 <h2 id="定义">定义</h2>
-<pre><code class="language-go">func (&lt;接收者&gt; &lt;接收者类型&gt;) 函数名() 函数返回类型&#123;
+<pre><code class="language-go">func (&lt;所属者&gt; &lt;所属者类型&gt;) 函数名() 函数返回类型&#123;
     ...
 &#125;
 </code></pre>
-<p>上面可以看出，方法和函数定义的区别，就是<code>函数名</code>前面添加了一个<code>(接收者 接收者类型)</code></p>
+<p>上面可以看出，方法和函数定义的区别，就是<code>函数名</code>前面添加了一个<code>(所属者 所属者类型)</code></p>
 <h2 id="例子">例子</h2>
 <pre><code class="language-go">package main
 
 import &quot;fmt&quot;
 
+// 定义所属者人类
 type person struct &#123;
     name string
 &#125;
 
+// 定义人类的方法 change 
 func (self person) change()&#123;
     self.name = &quot;凡尔赛.&quot;+self.name
     fmt.Printf(&quot;你的新名字可能变成了：%s\n&quot;, self.name)
 &#125;
 
+// 主函数
 func main()&#123;
+    // 声明人类变量 p
     p := person&#123;name:&quot;张三&quot;&#125;
+    // 调用 change 方法
     p.change()
     fmt.Printf(&quot;你的新名字变更失败，它依然是：%s\n&quot;, p.name)
 &#125;
 </code></pre>
 <p>上面的例子，有一个现象，就是<code>change()</code>并不能变更<code>person.name</code></p>
-<p>因为方法的接收者是<code>值</code>接收者，所以<code>p.change()</code>其实是将p复制了一份传递给了方法的<code>self</code>.那么p和self的<code>内存地址</code>不一样，修改<code>self.name</code>当然就没有意义了。</p>
+<p>因为方法的所属者是<code>值</code>类型，所以<code>p.change()</code>其实是将p复制了一份传递给了方法的<code>self</code>变量。那么p和self的<code>内存地址</code>不一样，修改<code>self.name</code>当然就没有意义了。</p>
 <p>那么将方法的接收者变更为指针，就没得问题了。</p>
 <pre><code class="language-go">func (self *person) change()&#123;
     self.name = &quot;凡尔赛.&quot;+self.name

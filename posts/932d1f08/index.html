@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞17k8s☞17node污染和pod容忍和亲和性 | 
+		k8s☞17-1调度之node污染和pod容忍 | 
 	 
 	zyh
 	</title>
@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2431,12 +2464,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞17k8s☞17node污染和pod容忍和亲和性
+	k8s☞17-1调度之node污染和pod容忍
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/932d1f08/" class="leancloud_visitors" data-flag-title="k8s☞17k8s☞17node污染和pod容忍和亲和性"></span>
+			阅读量:<span id="/posts/932d1f08/" class="leancloud_visitors" data-flag-title="k8s☞17-1调度之node污染和pod容忍"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2493,8 +2526,8 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h1>引用</h1>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍度 | Kubernetes</a></p>
-<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#taint">Kubectl Reference Docs (kubernetes.io)</a></p>
+<p>概念文档：<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍度 | Kubernetes</a></p>
+<p>命令文档：<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#taint">Kubectl Reference Docs (kubernetes.io)</a></p>
 <h1>污点/容忍概念</h1>
 <p>Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。</p>
 <p>Node的污点规则由两部分组成：污点:污点效果。</p>
@@ -2611,110 +2644,6 @@ node.kubernetes.io/not-ready:NoExecute op=Exists
 node.kubernetes.io/unreachable:NoExecute op=Exists
 </code></pre>
 <p>🍖DaemonSet中除了上述自动容忍度，还经常见到万能容忍度<code>:NoSchedule op=Exists 或者 op=Exists</code>。</p>
-<h1>节点亲和性</h1>
-<h2 id="通过Pod节点选择器-nodeSelector-实现部分调度">通过Pod节点选择器(nodeSelector)实现部分调度</h2>
-<p>通过下列命令获知节点标签:</p>
-<pre><code class="language-bash">kubectl describe node k8s01
-Labels:             beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/os=linux
-                    kubernetes.io/arch=amd64
-                    kubernetes.io/hostname=k8s01
-                    kubernetes.io/os=linux
-                    node-role.kubernetes.io/control-plane=
-                    node-role.kubernetes.io/master=
-                    node.kubernetes.io/exclude-from-external-load-balancers=
-</code></pre>
-<p><code>.spec.template.spec.nodeSelector</code>可以让你仅在匹配的node上创建pod.</p>
-<p>例如: 仅调度到拥有ssd磁盘标签的节点</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-  labels:
-    env: test
-spec:
-  containers:
-  - name: nginx
-    image: nginx
-    imagePullPolicy: IfNotPresent
-  nodeSelector:
-    disktype: ssd
-</code></pre>
-<h2 id="通过Pod节点亲和性-nodeAffinity-实现部分调度">通过Pod节点亲和性(nodeAffinity)实现部分调度</h2>
-<p><code>pod.spec.affinity.nodeAffinity</code> ， 它有以下类型: (每一个类型由两部分意思组成)</p>
-<p>requiredDuringScheduling<strong>IgnoredDuringExecution</strong><br>
-表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中IgnoreDuringExecution表示pod部署后运行期间，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
-<p>requiredDuringScheduling<strong>RequiredDuringExecution</strong><br>
-表示pod必须部署到满足条件的节点上，如果没有满足条件的节点，就不停重试。其中RequiredDuringExecution表示pod部署后运行期间，如果节点标签发生了变化，不再满足pod指定的条件，则重新选择符合要求的节点。</p>
-<p>preferredDuringScheduling<strong>IgnoredDuringExecution</strong><br>
-表示优先部署到满足条件的节点上，如果没有满足条件的节点，就忽略这些条件，按照正常逻辑部署。其中IgnoreDuringExecution表示pod部署之后运行的时候，如果节点标签发生了变化，不再满足pod指定的条件，pod也会继续运行。</p>
-<p>preferredDuringScheduling<strong>RequiredDuringExecution</strong><br>
-表示优先部署到满足条件的节点上，如果没有满足条件的节点，就忽略这些条件，按照正常逻辑部署。其中RequiredDuringExecution表示如果后面节点标签发生了变化，满足了条件，则重新调度到满足条件的节点。</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: with-node-affinity
-spec:
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/e2e-az-name
-            operator: In
-            values:
-            - e2e-az1
-            - e2e-az2
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 1
-        preference:
-          matchExpressions:
-          - key: another-node-label-key
-            operator: In
-            values:
-            - another-node-label-value
-  containers:
-  - name: with-node-affinity
-    image: gcr.io/google_containers/pause:2.0
-</code></pre>
-<p>这个配置的意思是pod【必须被调度】到拥有标签【<a target="_blank" rel="noopener" href="http://kubernetes.io/e2e-az-name=e2e-az1%E6%88%96kubernetes.io/e2e-az-name=e2e-az2%E3%80%91">kubernetes.io/e2e-az-name=e2e-az1或kubernetes.io/e2e-az-name=e2e-az2】</a> 的节点。与此同时， 还将在上述条件的基础上， <strong>优先调度</strong>到额外拥有标签为another-node-label-key=another-node-label-value的节点上。最后，如果Node在Pod部署之后无法满足上述条件，则Pod不会被重新调度。</p>
-<h2 id="案例">案例</h2>
-<h3 id="专属服务：专属节点">专属服务：专属节点</h3>
-<p>线上服务器组专用</p>
-<pre><code class="language-bash"># 添加污点
-## 仅允许拥有 dedicated=&lt;groupName&gt;:NoSchedule 容忍规则的 pod 可以被调度到此节点
-kubectl taint nodes k8s001 dedicated=prod:NoSchedule
-# 添加标签
-kubectl label nodes k8s001 dedicated=prod
-</code></pre>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-  labels:
-    dedicated: prod
-spec:
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingRequiredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: dedicated
-            operator: In
-            values: 
-            - prod
-  tolerations:
-  - key: &quot;dedicated&quot;
-    operator: &quot;Equal&quot;
-    value: &quot;prod&quot;
-    effect: &quot;NoSchedule&quot;
-  containers:
-  - name: nginx
-    image: nginx
-    imagePullPolicy: IfNotPresent
-</code></pre>
-<p>tolerations 确保了 nginx pod 可以调度到拥有 dedicated=prod:NoSchedule 污点的节点，而 k8s001 拥有此污点。</p>
-<p>affinity.nodeAffinity 节点亲和确保了必须调度到拥有 dedicated=prod 标签的节点，而 k8s001 拥有此标签。并且，当节点的dedicated != prod的时候，Pod将会重新调度到满足条件的节点上。</p>
 
 </div>
 
@@ -2722,16 +2651,16 @@ spec:
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/f0c6f6c3/">
+              <a href="/posts/3511df2/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  git☞常用命令
+                  k8s☞18日志收集系统
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/3511df2/">
-                k8s☞18日志收集系统
+              <a href="/posts/6178b477/">
+                prometheus☞04mysql监控
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

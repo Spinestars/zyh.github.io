@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2473,7 +2506,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/helm/">helm</a>
                         </i>
                     </span>
                 
@@ -2481,7 +2514,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/helm/">helm</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -2494,12 +2527,43 @@ var _hmt = _hmt || [];
 <div id="article-content">
 	<h2 id="前言">前言</h2>
 <p><a target="_blank" rel="noopener" href="https://helm.sh/docs/chart_template_guide/getting_started/">Helm | Getting Started</a></p>
-<p>chart包构建</p>
+<p>chart包目录结构：</p>
+<pre><code class="language-bash">wordpress/
+  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
+  values.yaml         # 必选：chart 的默认配置 values
+  charts/             # 必选：包含该 chart 依赖的所有 chart 的目录
+  crds/               # 必选：Custom Resource Definitions
+  templates/          # 必选：模板目录，与 values 结合使用时，将渲染生成 Kubernetes 资源清单文件
+  LICENSE             # 可选：包含 chart 的 license 的文本文件
+  README.md           # 可选：一个可读性高的 README 文件
+  values.schema.json  # 可选: 一个作用在 values.yaml 文件上的 JSON 模式
+  templates/NOTES.txt # 可选: 包含简短使用的文本文件
+</code></pre>
 <h2 id="创建框架">创建框架</h2>
 <p>helm create &lt;chart包名&gt;</p>
 <h2 id="必要文件">必要文件</h2>
 <h3 id="Chart-yaml">Chart.yaml</h3>
 <p>Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为subcharts）</p>
+<p>一份nginx的Chat.yaml示例：</p>
+<pre><code class="language-bash">apiVersion: v1                                                                                         appVersion: 1.16.1
+description: Chart for the nginx server
+engine: gotpl
+home: http://www.nginx.org
+icon: https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.png
+keywords:
+- nginx
+- http
+- web
+- www
+- reverse proxy
+maintainers:
+- email: containers@bitnami.com
+  name: Bitnami
+name: nginx
+sources:
+- https://github.com/bitnami/bitnami-docker-nginx
+version: 5.1.5
+</code></pre>
 <h3 id="Templates目录">Templates目录</h3>
 <p>包含以<code>.yaml</code>结尾的模板文件和以<code>.txt</code>结尾的NOTES.txt文件</p>
 <h4 id="NOTES-txt">NOTES.txt</h4>
@@ -2522,16 +2586,16 @@ helm lint .
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/3511df2/">
+              <a href="/posts/51015304/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞18日志收集系统
+                  helm☞01入门
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/51015304/">
-                helm☞01入门
+              <a href="/posts/3511df2/">
+                k8s☞18日志收集系统
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

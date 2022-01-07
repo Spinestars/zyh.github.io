@@ -922,7 +922,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1022,6 +1033,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2431,19 +2464,15 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/710e3e49/">
+			<a href="/posts/51015304/">
 				<h2 class="index-title">
-					helm☞02chart
+					helm☞01入门
 				</h2>
 				<div class="index-brief">
 					前言
-Helm | Getting Started
-chart包构建
-创建框架
-helm create &lt;chart包名&gt;
-必要文件
-Chart.yaml
-Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为sub
+helm： k8s的包管理器，这里是v3版本
+大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
+chart仓库：存储chart程序包，不包含程序，是一个
 					...
 				</div>
 			</a>
@@ -2474,15 +2503,18 @@ Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/51015304/">
+			<a href="/posts/710e3e49/">
 				<h2 class="index-title">
-					helm☞01入门
+					helm☞02chart
 				</h2>
 				<div class="index-brief">
 					前言
-helm： k8s的包管理器，这里是v3版本
-大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
-chart仓库：存储chart程序包，不包含程序，是一个
+Helm | Getting Started
+chart包目录结构：
+wordpress/
+  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
+  values.yaml         # 必选：chart 的默认配置 values
+  cha
 					...
 				</div>
 			</a>

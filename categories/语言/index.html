@@ -922,7 +922,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1022,6 +1033,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2787,11 +2820,11 @@ import &quot;fmt&q
 				<div class="index-brief">
 					前言
 一个函数是没有所有者的。
-当一个函数有了接收的人后，它就叫方法
+但当一个函数有了所属对象后，则称之为方法
 在python中，一个类（接收者）定义方法，直接在类里写方法即可，只不过有一个self指向了它本身。
-在go中，没有这个self，因此定义方法需要指出谁是接收者
+在go中，没有这个self，因此定义方法需要指出所属者是谁。
 定义
-func (&lt;接收者&gt; &lt;接收者类型&gt;
+func (&lt;所属者&gt; &lt;所属者类型&
 					...
 				</div>
 			</a>
@@ -2832,12 +2865,12 @@ func (&lt;接收者&gt; &lt;接收者类型&gt;
 
 函数A中还有一个函数B，并且函数A返回了函数B
 函数B调用了函数A的形参
-main函数里变量C调用函数A
+main函数里调用函数A
 
 基本原理
 正常情况下，函数被调用执行完毕后，函数的形参将被释放回收。
 但当函数是一个闭包后，这里假设是函数A。
-此时C=函数A, 而函数A返还函数B，因此C=函数B，函
+此时C=函数A, 而函数A返还函数B，因此C=函数B，函数A已
 					...
 				</div>
 			</a>

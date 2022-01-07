@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2676,18 +2709,32 @@ spec:
 <p>⚠️ k8s并不提供所有的卷插件。</p>
 <h3 id="基于nfs构建StroageClass">基于nfs构建StroageClass</h3>
 <p>以网络存储nfs为例。nfs属于外置供应商，因此没有内置卷插件。因此需要先创建。创建文档：</p>
-<p><a target="_blank" rel="noopener" href="https://artifacthub.io/packages/helm/ckotzbauer/nfs-client-provisioner">nfs-client-provisioner 1.0.2 · helm/ckotzbauer (artifacthub.io)</a></p>
-<p>⚠️ 需要注意的是，nfs-client正常运行需要两个条件：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/master/charts/nfs-subdir-external-provisioner/README.md">https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/master/charts/nfs-subdir-external-provisioner/README.md</a></p>
+<p>⚠️ 需要注意的是，nfs-client正常运行条件：</p>
 <ul>
 <li>所有节点安装nfs-utils。<code>yum install nfs-utils -y</code></li>
-<li>从 k8s 1.20版本开始，编辑 /etc/kubernetes/manifests/kube-apiserver.yaml 添加 <code>- --feature-gates=RemoveSelfLink=false</code></li>
 </ul>
 <p>安装命令：</p>
+<ul>
+<li>国外源</li>
+</ul>
 <pre><code class="language-yaml">#############################################国外源###################################################
-helm repo add ckotzbauer https://ckotzbauer.github.io/helm-charts
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
 helm repo update
-helm install nfs-client ckotzbauer/nfs-client-provisioner --set storageClass.name=nfs-client --set nfs.server=10.200.10.4 --set nfs.path=/volume1/k8s --set storageClass.reclaimPolicy=Delete --set storageClass.archiveOnDelete=true --set storageClass.allowVolumeExpansion=true --set storageClass.defaultClass=true
-#############################################阿里源###################################################
+helm search repo --max-col-width 200 | grep nfs
+helm install nfs-client nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+         --set storageClass.name=nfs-client \
+         --set nfs.server=10.200.10.4 \
+         --set nfs.path=/volume1/k8s \
+         --set storageClass.reclaimPolicy=Delete \
+         --set storageClass.archiveOnDelete=true \
+         --set storageClass.allowVolumeExpansion=true \
+         --set storageClass.defaultClass=true
+</code></pre>
+<ul>
+<li>阿里源(版本可能陈旧)</li>
+</ul>
+<pre><code class="language-bash">#############################################阿里源###################################################
 helm repo add apphub https://apphub.aliyuncs.com
 helm repo update
 helm install nfs-client apphub/nfs-client-provisioner \
@@ -2699,17 +2746,20 @@ helm install nfs-client apphub/nfs-client-provisioner \
 --set storageClass.allowVolumeExpansion=true \
 --set storageClass.defaultClass=true
 </code></pre>
-<p>上述参数文档：<a target="_blank" rel="noopener" href="https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration">https://github.com/helm/charts/tree/master/stable/nfs-client-provisioner#configuration</a></p>
 <ul>
 <li>
 <p>parameters.archiveOnDelete 当回收策略在被执行的时候（<a href="#persistentVolumeReclaimPolicy">persistentVolumeReclaimPolicy</a>），pv删除的同时申请的存储资源是否要归档。false就是不归档直接删除。这里归档的意思就是将申请的存储资源的物理路径前加一个archived前缀。最终格式：<code>archived-$&#123;NS_NAME&#125;-$&#123;PVC_NAME&#125;-$&#123;PV_NAME&#125;</code></p>
 </li>
 <li>
 <p>storageClass.allowVolumeExpansion 开启卷扩展。这个选项可以让你动态的调整 pvc 请求的对象大小。</p>
+<blockquote>
+<p>其实这个参数没用，因为k8s目前不支持nfs动态扩展。</p>
+</blockquote>
 </li>
 </ul>
 <p>nfs-client会自动帮你创建一个 StroageClass。</p>
 <pre><code class="language-yaml">kubectl get StorageClass/nfs-client -o yaml
+allowVolumeExpansion: true
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -2717,19 +2767,19 @@ metadata:
     meta.helm.sh/release-name: nfs-client
     meta.helm.sh/release-namespace: default
     storageclass.kubernetes.io/is-default-class: &quot;true&quot;
+  creationTimestamp: &quot;2021-12-27T06:25:24Z&quot;
   labels:
-    app: nfs-client-provisioner
+    app: nfs-subdir-external-provisioner
     app.kubernetes.io/managed-by: Helm
-    chart: nfs-client-provisioner-1.2.9
+    chart: nfs-subdir-external-provisioner-4.0.14
     heritage: Helm
     release: nfs-client
   ......
   name: nfs-client
-provisioner: cluster.local/nfs-client-nfs-client-provisioner
-reclaimPolicy: Delete
-allowVolumeExpansion: true
 parameters:
   archiveOnDelete: &quot;true&quot;
+provisioner: cluster.local/nfs-client-nfs-subdir-external-provisioner
+reclaimPolicy: Delete
 volumeBindingMode: Immediate
 </code></pre>
 <h3 id="动态PV对应的PVC">动态PV对应的PVC</h3>
@@ -2746,14 +2796,40 @@ spec:
       storage: 100Gi
 </code></pre>
 <p>在这里，我们通过 <code>spec.storageClassName</code>显式指定StroageClass。</p>
+<h3 id="Pod中的PVC模板">Pod中的PVC模板</h3>
+<p>PVC模板可以动态的创建PVC，然后PVC再通过StorageClass动态创建PV。</p>
+<p>💥 volumeClaimTemplates 不支持 Deployment.spec</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: app-demo
+spec:
+...
+    spec:
+      containers:
+...
+        volumeMounts:
+        - name: appdata
+          mountPath: /app/data
+  volumeClaimTemplates:
+  - metadata:
+      name: appdata  # appdata 即 volumeMounts.name
+    spec:
+      accessModes: [ &quot;ReadWriteOnce&quot; ]
+      resources:
+        requests:
+          storage: 1Gi
+</code></pre>
 <h3 id="在线扩展（仅支持动态pv）">在线扩展（仅支持动态pv）</h3>
-<p>要实现在线调整大小，需要满足下列条件：</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/#expanding-persistent-volumes-claims">https://kubernetes.io/docs/concepts/storage/persistent-volumes/#expanding-persistent-volumes-claims</a> 文档中列举了支持扩展的存储类。</p>
+<p>💔NFS是不被支持的。</p>
+<p>另外，还需要满足下列条件：</p>
 <ol>
 <li>
 <p>feature-gates的<code>ExpandInUsePersistentVolumes</code>被开启。它在1.15版本以后默认开启。</p>
 </li>
 <li>
-<p>StorageClass的<code>allowVolumeExpansion</code>被开启。这意味着必须是动态pv。</p>
+<p>StorageClass的<code>allowVolumeExpansion</code>被开启。</p>
 </li>
 <li>
 <p>文件系统是XFS， Ext3， or Ext4。这个需要StorageClass的支持。一般来说volume属于块设备类型的资源才支持，比如aws的ebs。</p>

@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2515,7 +2548,7 @@ bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-
 </ol>
 <pre><code class="language-bash">bin/kafka-configs.sh --zookeeper localhost:2181 --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name elk
 </code></pre>
-<h2 id="追加kafka配置-认证信息">追加kafka配置:认证信息</h2>
+<h2 id="追加kafka配置-认证端口">追加kafka配置:认证端口</h2>
 <p>添加broker之间的认证信息和认证端口配置到<code>config/server.properties</code></p>
 <pre><code class="language-properties"># 用户认证
 listeners=SASL_PLAINTEXT://kafka001:8123
@@ -2540,8 +2573,16 @@ listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config=org.apache.kafka.com
 <p><code>sasl.enabled.mechanisms</code> 开启访问broker的认证通信机制sasl，以及配置所用的机制算法</p>
 <p><code>sasl.mechanism.inter.broker.protocol</code> 开启broker之间认证通信机制sasl，以及配置所用的机制算法</p>
 <p>ℹ️相对于<a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_sasl_plain">SASL/PLAIN</a>算法将用户数据放在本地，<a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法将用户数据存放在zk。因此<a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法可以动态的增删用户.</p>
-<h2 id="授权">授权</h2>
+<h2 id="授权ACL">授权ACL</h2>
 <p><a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_authz">http://kafka.apache.org/documentation/#security_authz</a></p>
+<ol>
+<li>ACL规则是针对<code>topic</code>或者<code>消费者组ID</code>添加规则</li>
+<li>规则由<code>principal</code>+<code>host</code>+<code>operation</code>+<code>permissionType</code>组成</li>
+</ol>
+<p><code>principal</code>就是User或者Group</p>
+<p><code>host</code>是允许的主机</p>
+<p><code>operation</code>是允许的操作</p>
+<p><code>permissionType</code>允许或拒绝</p>
 <h3 id="追加kafka配置：默认ACL规则">追加kafka配置：默认ACL规则</h3>
 <p>默认情况下，如果不做限制，任何用户都是超级权限。因此默认我们需要开启ACL级别的限制</p>
 <pre><code class="language-properties"># ACL默认规则
@@ -2549,7 +2590,7 @@ listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config=org.apache.kafka.com
 authorizer.class.name=kafka.security.authorizer.AclAuthorizer
 # 设置超级账号，如果是多个需要分号分割，例如：User:admin;User:root
 super.users=User:broker
-# 如果没有ACL规则，则不允许任何用户
+# false 的意思是：如果topic没有ACL规则，则任何用户无法访问topic。
 allow.everyone.if.no.acl.found=false
 </code></pre>
 <p>上述配置默认情况下仅允许<code>broker</code>用户无需任何ACL规则就拥有所有权限。</p>
@@ -2582,7 +2623,7 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
   username=&quot;broker&quot; \
   password=&quot;broker&quot;;
 </code></pre>
-<h3 id="授权用户只写">授权用户只写</h3>
+<h3 id="绑定写入权限">绑定写入权限</h3>
 <pre><code class="language-bash">bin/kafka-acls.sh \
 --bootstrap-server kafka1:8123 \
 --command-config config/my.tools.properties \
@@ -2592,20 +2633,23 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
 --resource-pattern-type prefixed \
 --topic zz.it.elk.
 </code></pre>
-<p>授权用户<code>elk</code>只写权限</p>
-<h3 id="授权用户只读">授权用户只读</h3>
+<p>针对<code>zz.it.elk.</code>开头的 topic 添加用户<code>elk</code>只写权限</p>
+<h3 id="绑定只读权限">绑定只读权限</h3>
 <pre><code class="language-bash">bin/kafka-acls.sh \
 --bootstrap-server kafka1:8123 \
 --command-config config/my.tools.properties \
 --add \
---allow-principal User:elk \
+--allow-principal User:* \
 --group logstash \
 --consumer \
 --resource-pattern-type prefixed \
 --topic zz.it.elk.
 </code></pre>
-<p>授权用户<code>elk</code>只读权限，但调用此用户的消费者必须隶属于消费者组<code>logstash</code></p>
-<h3 id="授权给谁了">授权给谁了</h3>
+<p>针对<code>zz.it.elk.</code>开头的 topic，添加消费者组必须是<code>logstash</code>的只读权限，但无需用户认证。</p>
+<blockquote>
+<p>即可以使用非认证端口9092+消费者组<code>logstash</code>去消费<code>zz.it.elk.</code>开头的 topic</p>
+</blockquote>
+<h3 id="列出ACL规则">列出ACL规则</h3>
 <p>列出所有授权规则</p>
 <blockquote>
 <p>可以通过追加 --principal User:elk 列出某个认证用户使用的规则.</p>
@@ -2624,7 +2668,7 @@ Current ACLs for resource `ResourcePattern(resourceType=GROUP, name=logstash, pa
         (principal=User:elk, host=*, operation=READ, permissionType=ALLOW)
 </code></pre>
 <blockquote>
-<p>resource 就是 ACL 授权后绑定的对象。而删除ACL是针对 resource 的，而不是针对用户的</p>
+<p>resource 就是 ACL 绑定的对象。ACL是针对 resource 的，不是针对用户的</p>
 </blockquote>
 <h3 id="删除授权">删除授权</h3>
 <p>针对 resource 删除 ACL 规则。</p>
@@ -2657,7 +2701,7 @@ sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule require
 </code></pre>
 <h2 id="测试">测试</h2>
 <pre><code class="language-bash"># 创建主题
-bin/kafka-topics.sh --bootstrap-server kafka1:8123 --create --replication-factor 3 --partitions 8 --topic zz.it.elk.syslog --command-config config/my.tools.properties
+bin/kafka-topics.sh --bootstrap-server kafka1:8123 --command-config config/my.tools.properties --create --replication-factor 3 --partitions 8 --topic zz.it.elk.syslog
 </code></pre>
 <pre><code class="language-bash"># 生产连接broker
 bin/kafka-console-producer.sh --bootstrap-server kafka1:8123 --producer.config config/my.producer.properties  --topic zz.it.elk.syslog

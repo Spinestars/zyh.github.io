@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2582,7 +2615,8 @@ immutable: true
         configMap:
           name: cm-demo
 </code></pre>
-<p>非subPath方式</p>
+<p>上述subPath方式，虽然可以挂载一个单一配置对象到具体的文件，但是这种方式配置对象更新不会同步到容器中。</p>
+<h3 id="仅部分key同步到挂载点">仅部分key同步到挂载点</h3>
 <pre><code class="language-yaml">      volumeMounts:
       - name: config
         mountPath: &quot;/config&quot;  # ConfigMap对象key的文件根路径。
@@ -2604,6 +2638,7 @@ immutable: true
 <li>然后通过 spec.containers.volumeMounts 挂载临时卷。</li>
 <li>这种方式下ConfigMap更新后，pod内挂载的也会同时更新。（更新速度并不是立马就能响应，也是轮询更新），而且仅限于没有使用subPath的方式。</li>
 </ul>
+<p>💢需要注意的是，挂载点需要防止容器目录里原有的文件被清除。</p>
 <h3 id="环境变量">环境变量</h3>
 <ul>
 <li>通过在 spec.containers.env 中定义. 例子中， DATA1 是环境变量名， DATA1的值通过valueFrom定义.最终，你可以在容器中使用环境变量DATA1和DATA2</li>

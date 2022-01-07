@@ -922,7 +922,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1022,6 +1033,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2431,6 +2464,88 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/56da51f2/">
+				<h2 class="index-title">
+					日志☞03ELK基本使用-logstash组件02-插件介绍
+				</h2>
+				<div class="index-brief">
+					简介
+logstash的主要功能就是转换数据。
+官方将一些主流的插件分为了四类并进行了介绍。
+https://www.elastic.co/guide/en/logstash/7.15/transformation.html
+核心操作
+ℹ️ 以下各种插件并非全部功能，具体可以查看官方文档.
+date
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-12-15</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/ELK/">ELK</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f73d84da/">
+				<h2 class="index-title">
+					日志☞02ELK基本使用-logstash组件01-安装
+				</h2>
+				<div class="index-brief">
+					简介
+logstash 使用inputs接收创建数据，filters过滤修改数据，outputs输出数据。三种动作均通过插件实现。
+其中，inputs和outputs支持将codecs编码器作为自身的一部分。
+inputs
+inputs支持多个插件类型，为了缓解自身压力，一般我们通过beats插件，
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-12-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/">日志</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/日志/ELK/">ELK</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/3475106c/">
 				<h2 class="index-title">
 					日志☞01ELK基本使用-beats组件
@@ -2755,90 +2870,6 @@ curl &quot;https://github.com/danielqsj/kafka
 			</a>
                 <div class="article-meta">
 				    <span>2019-03-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/124a3d6d/">
-				<h2 class="index-title">
-					005-kafka基本维护
-				</h2>
-				<div class="index-brief">
-					分区重新分配工具
-bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布，包括增加副本，迁移副本等。
-此工具有三大选项：
-
-–generate：创建分配计划，用户通过指定topic列表和broker列表来生成指定topic列表的【分区重新分配计划】。
-–ex
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/14fdb3fd/">
-				<h2 class="index-title">
-					004-kafka用户配额
-				</h2>
-				<div class="index-brief">
-					简要
-配额可以应用于认证用户（user）、客户端ID（client.id）
-配额信息存储在zk中，认证用户的配额信息位于/config/users，客户端ID的配额信息位于/config/clients
-主要说下网络限速。
-添加配额
-
-producer_byte_rate 生产速率，单位是字节/s
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
                     
                             
                                 

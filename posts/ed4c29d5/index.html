@@ -924,7 +924,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1024,6 +1035,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2513,8 +2546,9 @@ var _hmt = _hmt || [];
 <p>namespace 资源约束(LimitRange)提供默认的Pod资源约束，并防止命名空间内的Pod资源配置超出管理员允许的预期范围。若超出则不允许创建，从而让我们可以更方便的管理资源.</p>
 <h2 id="特点">特点</h2>
 <ul>
-<li>提供 pod 的默认资源约束.</li>
-<li>限制pod的资源约束.</li>
+<li>提供 pod 的默认 request 约束.</li>
+<li>提供 pod 的默认 limit 约束.</li>
+<li>提供默认的 pvc.</li>
 <li>LimitRange配置策略的构建和变更仅影响之后的pod创建。已创建Pod不受影响。</li>
 </ul>
 <h3 id="写法">写法</h3>
@@ -2547,9 +2581,9 @@ spec:
 </code></pre>
 <p>上述的意思基本遵循：</p>
 <ul>
-<li>不设置Pod约束，则Pod约束limit走default，Pod约束request走defaultRequest</li>
-<li>设置Pod约束，则Pod约束不能低于min，不能大于max</li>
-<li>在继承上述条件的基础下，若只设置Pod约束limit，则此时Pod约束request不走defaultRequest，直接等同于Pod约束limit</li>
+<li>不设置Pod约束，则Pod约束limit级走default，Pod约束request级走defaultRequest</li>
+<li>设置Pod约束，则Pod约束不能低于min，不能大于max，且request级不能大于limit级.</li>
+<li>在继承上述条件的基础下，若Pod只设置了limit约束，则Pod的request约束直接等同于Pod的limit约束</li>
 </ul>
 <p>上述例子为 default 命名空间加了一个资源策略.效果如下:</p>
 <ul>

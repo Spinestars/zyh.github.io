@@ -922,7 +922,18 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/932d1f08/">
                      
-										    k8s☞17node污染和pod容忍和亲和性
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
                      
 									</a>
 								</li>
@@ -1022,6 +1033,28 @@ var _hmt = _hmt || [];
 									<a href="/posts/c83ca575/">
                      
 										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
                      
 									</a>
 								</li>
@@ -2431,6 +2464,90 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/124a3d6d/">
+				<h2 class="index-title">
+					005-kafka基本维护
+				</h2>
+				<div class="index-brief">
+					分区重新分配工具
+bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布，包括增加副本，迁移副本等。
+此工具有三大选项：
+
+–generate：创建分配计划，用户通过指定topic列表和broker列表来生成指定topic列表的【分区重新分配计划】。
+–ex
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/14fdb3fd/">
+				<h2 class="index-title">
+					004-kafka用户配额
+				</h2>
+				<div class="index-brief">
+					简要
+配额可以应用于认证用户（user）、客户端ID（client.id）
+配额信息存储在zk中，认证用户的配额信息位于/config/users，客户端ID的配额信息位于/config/clients
+主要说下网络限速。
+添加配额
+
+producer_byte_rate 生产速率，单位是字节/s
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-03</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/2fb0e26c/">
 				<h2 class="index-title">
 					003-kafka基本认证
@@ -2754,87 +2871,6 @@ curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/其他/git/">git</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/a38d0013/">
-				<h2 class="index-title">
-					gitlab☞大版本迁移
-				</h2>
-				<div class="index-brief">
-					前言
-
-现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。
-
-正文
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-09-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其他/">其他</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其他/git/">git</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/78ceb386/">
-				<h2 class="index-title">
-					nginx ☞ 泛域名_变量截取
-				</h2>
-				<div class="index-brief">
-					server &#123;
-    listen       80;
-    listen       [::]:80;
-    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;
-    root /export/webapps/apple.
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2018-09-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
 										
                                     </span>
                                 

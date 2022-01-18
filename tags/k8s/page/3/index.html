@@ -2526,16 +2526,16 @@ k8sIP
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/18e4fa73/">
+			<a href="/posts/f6e328b5/">
 				<h2 class="index-title">
-					k8s☞06无状态服务deployment
+					k8s☞07自动扩缩
 				</h2>
 				<div class="index-brief">
 					基本
-Deployment控制器用来管理无状态应用，通过Deployment控制器创建ReplicaSet，ReplicaSet控制Pod副本集。
-任何时候，都不应该直接去创建ReplicaSet控制器，应始终使用Deployment控制器。
-例子
-API语法：https://kubernetes.
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。
+手动缩放
+
 					...
 				</div>
 			</a>
@@ -2566,16 +2566,16 @@ API语法：https://kubernetes.
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/f6e328b5/">
+			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
-					k8s☞07自动扩缩
+					k8s☞06无状态服务deployment
 				</h2>
 				<div class="index-brief">
 					基本
-k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
-k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。
-手动缩放
-
+Deployment控制器用来管理无状态应用，通过Deployment控制器创建ReplicaSet，ReplicaSet控制Pod副本集。
+任何时候，都不应该直接去创建ReplicaSet控制器，应始终使用Deployment控制器。
+例子
+API语法：https://kubernetes.
 					...
 				</div>
 			</a>

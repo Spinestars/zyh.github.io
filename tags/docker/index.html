@@ -2486,18 +2486,25 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/604e367f/">
+			<a href="/posts/634b48fb/">
 				<h2 class="index-title">
-					docker☞非root用户执行程序
+					docker-常用的指令
 				</h2>
 				<div class="index-brief">
-					前言
-容器内以root用户运行，则就可以看到挂载点内root用户的文件，这并不安全。
-但同时，容器里的用户需要与宿主机里的用户，拥有相同的ID，否则容器里的用户无法拥有足够的权限访问挂载点
-创建宿主机用户
-对应容器里的用户
-groupadd --gid 60000 test
-useradd --ui
+					基本
+记录一些常用的指令
+列表
+1. 查看镜像环境变量
+docker run -it --rm [image_name] env
+
+2. 删除
+删除所有dangling的镜像
+docker image prune
+
+删除所有没有被引用的本地卷
+docker volume prune
+
+删除所有停止的
 					...
 				</div>
 			</a>
@@ -2528,25 +2535,18 @@ useradd --ui
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/634b48fb/">
+			<a href="/posts/604e367f/">
 				<h2 class="index-title">
-					docker-常用的指令
+					docker☞非root用户执行程序
 				</h2>
 				<div class="index-brief">
-					基本
-记录一些常用的指令
-列表
-1. 查看镜像环境变量
-docker run -it --rm [image_name] env
-
-2. 删除
-删除所有dangling的镜像
-docker image prune
-
-删除所有没有被引用的本地卷
-docker volume prune
-
-删除所有停止的
+					前言
+容器内以root用户运行，则就可以看到挂载点内root用户的文件，这并不安全。
+但同时，容器里的用户需要与宿主机里的用户，拥有相同的ID，否则容器里的用户无法拥有足够的权限访问挂载点
+创建宿主机用户
+对应容器里的用户
+groupadd --gid 60000 test
+useradd --ui
 					...
 				</div>
 			</a>
@@ -2661,17 +2661,15 @@ https://github.com/jenkinsci/docker/blob/master/README.md
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/d8390732/">
+			<a href="/posts/41bf4066/">
 				<h2 class="index-title">
-					05ELK基本使用-kibana
+					04ELK基本使用-elasticsearch
 				</h2>
 				<div class="index-brief">
-					安装
-https://www.elastic.co/guide/en/kibana/current/targz.html
-appName=kibana
-esVersion=7.15.1
-cd /export/src
-curl &quot;https://mirrors.huaweicloud.com
+					准备
+https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html
+# elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准
+sysctl -a | egr
 					...
 				</div>
 			</a>
@@ -2702,15 +2700,17 @@ curl &quot;https://mirrors.huaweicloud.com
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/41bf4066/">
+			<a href="/posts/d8390732/">
 				<h2 class="index-title">
-					04ELK基本使用-elasticsearch
+					05ELK基本使用-kibana
 				</h2>
 				<div class="index-brief">
-					准备
-https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html
-# elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准
-sysctl -a | egr
+					安装
+https://www.elastic.co/guide/en/kibana/current/targz.html
+appName=kibana
+esVersion=7.15.1
+cd /export/src
+curl &quot;https://mirrors.huaweicloud.com
 					...
 				</div>
 			</a>

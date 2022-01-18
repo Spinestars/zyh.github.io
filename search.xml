@@ -226,11 +226,11 @@
     
     
     <entry>
-      <title>docker☞非root用户执行程序</title>
-      <link href="posts/604e367f/"/>
-      <url>posts/604e367f/</url>
+      <title>docker-常用的指令</title>
+      <link href="posts/634b48fb/"/>
+      <url>posts/634b48fb/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>容器内以root用户运行，则就可以看到挂载点内root用户的文件，这并不安全。</p><p>但同时，容器里的用户需要与宿主机里的用户，拥有相同的ID，否则容器里的用户无法拥有足够的权限访问挂载点</p><h2 id="创建宿主机用户">创建宿主机用户</h2><p>对应容器里的用户</p><pre><code class="language-bash">groupadd --gid 60000 testuseradd --uid 60000 -g test --no-create-home test</code></pre><h2 id="容器使用方式">容器使用方式</h2><pre><code class="language-bash">FROM busybox:latestADD 1.txt /app/WORKDIR /appRUN addgroup --gid 60000 test &amp;&amp; adduser -u 60000 -G test -D -H testUSER test；；</code></pre>]]></content>
+        <content type="html"><![CDATA[<h1>基本</h1><p>记录一些常用的指令</p><h1>列表</h1><h2 id="1-查看镜像环境变量">1. 查看镜像环境变量</h2><pre><code>docker run -it --rm [image_name] env</code></pre><h2 id="2-删除">2. 删除</h2><h3 id="删除所有dangling的镜像">删除所有dangling的镜像</h3><pre><code class="language-bash">docker image prune</code></pre><h3 id="删除所有没有被引用的本地卷">删除所有没有被引用的本地卷</h3><pre><code class="language-bash">docker volume prune</code></pre><h3 id="删除所有停止的容器">删除所有停止的容器</h3><pre><code class="language-bash">docker container prune</code></pre><h3 id="清空所有-未使用-未运行-的docker资源对象，包括容器、卷、网络、镜像">清空所有[未使用/未运行]的docker资源对象，包括容器、卷、网络、镜像</h3><pre><code class="language-bash">docker system prune --all --force --volumes</code></pre><h3 id="清空所有的docker资源对象，包括容器、卷、网络、镜像">清空所有的docker资源对象，包括容器、卷、网络、镜像</h3><p>👻这是极度可怕的指令，仅当你要初始化docker的时候才应该使用。</p><pre><code class="language-bash">docker container stop $(docker container ls -a -q) &amp;&amp; docker system prune --all --force --volumes</code></pre><h2 id="3-it-rm启动的容器，如何临时退出">3. <code>-it --rm</code>启动的容器，如何临时退出</h2><p>下述指令可以让你临时退出容器，而不会触发<code>--rm</code></p><pre><code class="language-bash">ctrl+P+q</code></pre><p>你可以通过 exec 从新进入容器，不过在此之后，你通过exit退出容器，也不会触发<code>--rm</code></p><p>只有执行<code>docker stop [container_name]</code>才会触发删除操作。</p>]]></content>
       
       
       <categories>
@@ -255,11 +255,11 @@
     
     
     <entry>
-      <title>docker-常用的指令</title>
-      <link href="posts/634b48fb/"/>
-      <url>posts/634b48fb/</url>
+      <title>docker☞非root用户执行程序</title>
+      <link href="posts/604e367f/"/>
+      <url>posts/604e367f/</url>
       
-        <content type="html"><![CDATA[<h1>基本</h1><p>记录一些常用的指令</p><h1>列表</h1><h2 id="1-查看镜像环境变量">1. 查看镜像环境变量</h2><pre><code>docker run -it --rm [image_name] env</code></pre><h2 id="2-删除">2. 删除</h2><h3 id="删除所有dangling的镜像">删除所有dangling的镜像</h3><pre><code class="language-bash">docker image prune</code></pre><h3 id="删除所有没有被引用的本地卷">删除所有没有被引用的本地卷</h3><pre><code class="language-bash">docker volume prune</code></pre><h3 id="删除所有停止的容器">删除所有停止的容器</h3><pre><code class="language-bash">docker container prune</code></pre><h3 id="清空所有-未使用-未运行-的docker资源对象，包括容器、卷、网络、镜像">清空所有[未使用/未运行]的docker资源对象，包括容器、卷、网络、镜像</h3><pre><code class="language-bash">docker system prune --all --force --volumes</code></pre><h3 id="清空所有的docker资源对象，包括容器、卷、网络、镜像">清空所有的docker资源对象，包括容器、卷、网络、镜像</h3><p>👻这是极度可怕的指令，仅当你要初始化docker的时候才应该使用。</p><pre><code class="language-bash">docker container stop $(docker container ls -a -q) &amp;&amp; docker system prune --all --force --volumes</code></pre><h2 id="3-it-rm启动的容器，如何临时退出">3. <code>-it --rm</code>启动的容器，如何临时退出</h2><p>下述指令可以让你临时退出容器，而不会触发<code>--rm</code></p><pre><code class="language-bash">ctrl+P+q</code></pre><p>你可以通过 exec 从新进入容器，不过在此之后，你通过exit退出容器，也不会触发<code>--rm</code></p><p>只有执行<code>docker stop [container_name]</code>才会触发删除操作。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>容器内以root用户运行，则就可以看到挂载点内root用户的文件，这并不安全。</p><p>但同时，容器里的用户需要与宿主机里的用户，拥有相同的ID，否则容器里的用户无法拥有足够的权限访问挂载点</p><h2 id="创建宿主机用户">创建宿主机用户</h2><p>对应容器里的用户</p><pre><code class="language-bash">groupadd --gid 60000 testuseradd --uid 60000 -g test --no-create-home test</code></pre><h2 id="容器使用方式">容器使用方式</h2><pre><code class="language-bash">FROM busybox:latestADD 1.txt /app/WORKDIR /appRUN addgroup --gid 60000 test &amp;&amp; adduser -u 60000 -G test -D -H testUSER test；；</code></pre>]]></content>
       
       
       <categories>
@@ -383,9 +383,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -452,35 +452,6 @@
     
     
     <entry>
-      <title>k8s☞17-1调度之node污染和pod容忍</title>
-      <link href="posts/932d1f08/"/>
-      <url>posts/932d1f08/</url>
-      
-        <content type="html"><![CDATA[<h1>引用</h1><p>概念文档：<a href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍度 | Kubernetes</a></p><p>命令文档：<a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#taint">Kubectl Reference Docs (kubernetes.io)</a></p><h1>污点/容忍概念</h1><p>Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。</p><p>Node的污点规则由两部分组成：污点:污点效果。</p><ul><li><p>污点就是键值对，用来描述一种场景。例如网络不通、硬件标识（低性能HDD磁盘）、环境（测试环境）</p></li><li><p>污点效果是判定规则，用来判断是否可以调度到节点上。</p></li></ul><p>Pod上的容忍规则，即Pod告知调度器可以容忍Node上设定的污点规则。</p><p>🍖容忍规则和污点规则都可以添加多个。</p><h1>污点/容忍命令</h1><p>Node的污点规则：</p><pre><code class="language-bash"># 添加污点## 标签对:污染关键词kubectl taint nodes &lt;node.name&gt; KEY_1=VAL_1:TAINT_EFFECT_1 KEY_N=VAL_N:TAINT_EFFECT_N# 移除污点kubectl taint nodes &lt;node.name&gt; KEY_1-# 查看节点污染信息，若无污染则为 nonekubectl describe nodes &lt;node.name&gt; | grep TaintsTaints:             node-role.kubernetes.io/master:NoSchedule</code></pre><p>Pod容忍规则：</p><pre><code class="language-yaml">tolerations:- key: &quot;key1&quot;  operator: &quot;Equal&quot;  value: &quot;value1&quot;  effect: &quot;NoSchedule&quot;</code></pre><p>operator 可以是Equal等于或者Exists存在。</p><h1>调度逻辑</h1><p>首先，Pod的容忍规则需要完全等同于污点规则，即污点和污点效果都一致才算是匹配成功。但存在特殊情况：</p><ul><li>仅定义了<code>operator:Exists</code>，则表示匹配任意污点规则。</li><li>仅定义了污点，没有定义污点效果，则表示匹配这个污点的所有效果。</li></ul><p>其次，当Node的污点规则有多个的时候，调度器会将Pod的容忍规则与之一一匹配。就如同小学题里那种连线题一样。</p><p>最后，若都可以匹配，则Pod可以调度进去。但只要存在一个不匹配的污点规则，那么调度器就需要依据这个污点规则的污点效果来判断Pod的进/退：</p><ul><li>进：针对还未创建的Pod，是否将Pod调度进去。</li><li>退：针对已经创建的Pod，是否将Pod驱逐滚蛋。</li></ul><h1>污点效果</h1><p>一般情况，若Node存在下列污点效果，调度器的逻辑是：</p><p><code>NoSchedule</code> 表示调度器不可调度【还未创建的】Pod到此节点。</p><p><code>PreferNoSchedule</code>表示尽量不要调度【还未创建的】Pod到此节点。</p><p><code>NoExecute</code> 表示绝不允许调度Pod到此节点，哪怕Pod【已经创建】都会被驱逐。</p><p>针对【NoExecute】，若可以【匹配NoExecute】的Pod里包含了额外的宽恕期规则<code>tolerationSeconds</code>，则Pod【仅可以】在<code>tolerationSeconds</code>宽恕期之内运行。</p><p>🤦‍♂️经测试，即使是污点规则添加之后的Pod，也只可以在<code>tolerationSeconds</code>内运行。因此这个宽恕期不如称之为【可运行时间】。</p><p><a href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions">https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions</a></p><p>例如：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: nginx  labels:    env: testspec:  containers:  - name: nginx    image: nginx    imagePullPolicy: IfNotPresent  tolerations:  - key: &quot;example-key&quot;    operator: &quot;Exists&quot;    effect: &quot;NoExecute&quot;    tolerationSeconds: 3600</code></pre><p>上述配置表示，当 pod 所在节点被添加了一个<code>example-key:NoExecute</code> 污点的时候，pod 将不会被驱逐，而是可以继续存活3600秒，如果还未到3600秒，污点就被移除，则 pod 驱逐也会停止。</p><h1>自动污点规则</h1><p>当某种条件为真时，节点控制器会自动给节点添加一个污点。当前内置的污点包括：</p><ul><li><code>node.kubernetes.io/not-ready:NoExecute</code>：节点未准备好。这相当于节点状态 <code>Ready</code> 的值为 “<code>False</code>”。</li><li><code>node.kubernetes.io/unreachable:NoExecute</code>：节点控制器访问不到节点. 这相当于节点状态 <code>Ready</code> 的值为 “<code>Unknown</code>”。</li><li><code>node.kubernetes.io/memory-pressure:NoSchedule</code>：节点存在内存压力。</li><li><code>node.kubernetes.io/disk-pressure:NoSchedule</code>：节点存在磁盘压力。</li><li><code>node.kubernetes.io/pid-pressure:NoSchedule</code>: 节点的 PID 压力。</li><li><code>node.kubernetes.io/network-unavailable:NoSchedule</code>：节点网络不可用。</li><li><code>node.kubernetes.io/unschedulable:NoSchedule</code>: 节点不可调度。</li><li><code>node.cloudprovider.kubernetes.io/uninitialized</code>：如果 kubelet 启动时指定了一个 “外部” 云平台驱动， 它将给当前节点添加一个污点将其标志为不可用。在 cloud-controller-manager 的一个控制器初始化这个节点后，kubelet 将删除这个污点。</li></ul><p>在节点被驱逐的时候，节点控制器或者 kubelet 会添加带有 <code>NoExecute</code> 污点效果的相关内置污点。异常恢复的时候，会自动移除污点。</p><blockquote><p>🤷‍♂️关于用<code>kubectl drain</code>执行驱逐的时候，<a href="http://xn--nodenode-309lrnu35cx15cpfcfz3aulp50vcrk.kubernetes.io/unschedulable:NoSchedule%E3%80%82%E4%BD%86%E5%AE%9E%E9%99%85%E6%95%88%E6%9E%9C%E6%98%AF">node显示的污点只有一个node.kubernetes.io/unschedulable:NoSchedule。但实际效果是</a><code>node.kubernetes.io/unschedulable:NoExecute</code>。即驱逐命令会驱逐掉已存在的Pod。可能<code>kubectl drain</code>会添加内置的特殊污点效果。</p><pre><code class="language-bash">➜   kubectl drain k8s03 --ignore-daemonsets --delete-emptydir-data➜   kubectl describe node k8s03 | grep TaintsTaints:             node.kubernetes.io/unschedulable:NoSchedule</code></pre></blockquote><p>如果你想让某个pod在节点出现问题（例如节点网络故障）后，依然被调度在当前节点保持1小时，那么你可以添加下列容忍规则：</p><pre><code class="language-yaml">tolerations:- key: &quot;node.kubernetes.io/network-unavailable&quot;  operator: &quot;Exists&quot;  effect: &quot;NoExecute&quot;  tolerationSeconds: 3600</code></pre><h1>自动容忍规则</h1><p>Kubernetes 会自动给 Pod 添加内置污点 <code>node.kubernetes.io/not-ready:NoExecute</code> 的容忍度并配置 <code>tolerationSeconds=300</code>，除非用户提供的 Pod 配置中已经已存在了 key 为 <code>node.kubernetes.io/not-ready</code> 的容忍度。</p><p>Kubernetes 会自动给 Pod 添加内置污点 <code>node.kubernetes.io/unreachable:NoExecute</code> 的容忍度并配置 <code>tolerationSeconds=300</code>，除非用户提供的 Pod 配置中已经已存在了 key 为 <code>node.kubernetes.io/unreachable</code> 的容忍度。</p><p>这意味着在其中一种问题被检测到时 Pod 默认能够继续停留在当前节点运行 5 分钟。</p><p>但是，对于DaemonSet的Pod，则不会配置<code>tolerationSeconds</code>。这意味着，Node出现上述问题后，这类Pod将永久运行不被驱逐。</p><p>DaemonSet的自动附加容忍度：</p><pre><code class="language-yaml">node.kubernetes.io/disk-pressure:NoSchedule op=Existsnode.kubernetes.io/memory-pressure:NoSchedule op=Existsnode.kubernetes.io/network-unavailable:NoSchedule op=Existsnode.kubernetes.io/pid-pressure:NoSchedule op=Existsnode.kubernetes.io/unschedulable:NoSchedule op=Existsnode.kubernetes.io/not-ready:NoExecute op=Existsnode.kubernetes.io/unreachable:NoExecute op=Exists</code></pre><p>🍖DaemonSet中除了上述自动容忍度，还经常见到万能容忍度<code>:NoSchedule op=Exists 或者 op=Exists</code>。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
-            
-            <tag> k8s </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>k8s☞18日志系统</title>
       <link href="posts/451721ed/"/>
       <url>posts/451721ed/</url>
@@ -499,9 +470,38 @@
       
         <tags>
             
+            <tag> k8s </tag>
+            
             <tag> 容器 </tag>
             
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞17-1调度之node污染和pod容忍</title>
+      <link href="posts/932d1f08/"/>
+      <url>posts/932d1f08/</url>
+      
+        <content type="html"><![CDATA[<h1>引用</h1><p>概念文档：<a href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/">污点和容忍度 | Kubernetes</a></p><p>命令文档：<a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#taint">Kubectl Reference Docs (kubernetes.io)</a></p><h1>污点/容忍概念</h1><p>Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。</p><p>Node的污点规则由两部分组成：污点:污点效果。</p><ul><li><p>污点就是键值对，用来描述一种场景。例如网络不通、硬件标识（低性能HDD磁盘）、环境（测试环境）</p></li><li><p>污点效果是判定规则，用来判断是否可以调度到节点上。</p></li></ul><p>Pod上的容忍规则，即Pod告知调度器可以容忍Node上设定的污点规则。</p><p>🍖容忍规则和污点规则都可以添加多个。</p><h1>污点/容忍命令</h1><p>Node的污点规则：</p><pre><code class="language-bash"># 添加污点## 标签对:污染关键词kubectl taint nodes &lt;node.name&gt; KEY_1=VAL_1:TAINT_EFFECT_1 KEY_N=VAL_N:TAINT_EFFECT_N# 移除污点kubectl taint nodes &lt;node.name&gt; KEY_1-# 查看节点污染信息，若无污染则为 nonekubectl describe nodes &lt;node.name&gt; | grep TaintsTaints:             node-role.kubernetes.io/master:NoSchedule</code></pre><p>Pod容忍规则：</p><pre><code class="language-yaml">tolerations:- key: &quot;key1&quot;  operator: &quot;Equal&quot;  value: &quot;value1&quot;  effect: &quot;NoSchedule&quot;</code></pre><p>operator 可以是Equal等于或者Exists存在。</p><h1>调度逻辑</h1><p>首先，Pod的容忍规则需要完全等同于污点规则，即污点和污点效果都一致才算是匹配成功。但存在特殊情况：</p><ul><li>仅定义了<code>operator:Exists</code>，则表示匹配任意污点规则。</li><li>仅定义了污点，没有定义污点效果，则表示匹配这个污点的所有效果。</li></ul><p>其次，当Node的污点规则有多个的时候，调度器会将Pod的容忍规则与之一一匹配。就如同小学题里那种连线题一样。</p><p>最后，若都可以匹配，则Pod可以调度进去。但只要存在一个不匹配的污点规则，那么调度器就需要依据这个污点规则的污点效果来判断Pod的进/退：</p><ul><li>进：针对还未创建的Pod，是否将Pod调度进去。</li><li>退：针对已经创建的Pod，是否将Pod驱逐滚蛋。</li></ul><h1>污点效果</h1><p>一般情况，若Node存在下列污点效果，调度器的逻辑是：</p><p><code>NoSchedule</code> 表示调度器不可调度【还未创建的】Pod到此节点。</p><p><code>PreferNoSchedule</code>表示尽量不要调度【还未创建的】Pod到此节点。</p><p><code>NoExecute</code> 表示绝不允许调度Pod到此节点，哪怕Pod【已经创建】都会被驱逐。</p><p>针对【NoExecute】，若可以【匹配NoExecute】的Pod里包含了额外的宽恕期规则<code>tolerationSeconds</code>，则Pod【仅可以】在<code>tolerationSeconds</code>宽恕期之内运行。</p><p>🤦‍♂️经测试，即使是污点规则添加之后的Pod，也只可以在<code>tolerationSeconds</code>内运行。因此这个宽恕期不如称之为【可运行时间】。</p><p><a href="https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions">https://kubernetes.io/zh/docs/concepts/scheduling-eviction/taint-and-toleration/#taint-based-evictions</a></p><p>例如：</p><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: nginx  labels:    env: testspec:  containers:  - name: nginx    image: nginx    imagePullPolicy: IfNotPresent  tolerations:  - key: &quot;example-key&quot;    operator: &quot;Exists&quot;    effect: &quot;NoExecute&quot;    tolerationSeconds: 3600</code></pre><p>上述配置表示，当 pod 所在节点被添加了一个<code>example-key:NoExecute</code> 污点的时候，pod 将不会被驱逐，而是可以继续存活3600秒，如果还未到3600秒，污点就被移除，则 pod 驱逐也会停止。</p><h1>自动污点规则</h1><p>当某种条件为真时，节点控制器会自动给节点添加一个污点。当前内置的污点包括：</p><ul><li><code>node.kubernetes.io/not-ready:NoExecute</code>：节点未准备好。这相当于节点状态 <code>Ready</code> 的值为 “<code>False</code>”。</li><li><code>node.kubernetes.io/unreachable:NoExecute</code>：节点控制器访问不到节点. 这相当于节点状态 <code>Ready</code> 的值为 “<code>Unknown</code>”。</li><li><code>node.kubernetes.io/memory-pressure:NoSchedule</code>：节点存在内存压力。</li><li><code>node.kubernetes.io/disk-pressure:NoSchedule</code>：节点存在磁盘压力。</li><li><code>node.kubernetes.io/pid-pressure:NoSchedule</code>: 节点的 PID 压力。</li><li><code>node.kubernetes.io/network-unavailable:NoSchedule</code>：节点网络不可用。</li><li><code>node.kubernetes.io/unschedulable:NoSchedule</code>: 节点不可调度。</li><li><code>node.cloudprovider.kubernetes.io/uninitialized</code>：如果 kubelet 启动时指定了一个 “外部” 云平台驱动， 它将给当前节点添加一个污点将其标志为不可用。在 cloud-controller-manager 的一个控制器初始化这个节点后，kubelet 将删除这个污点。</li></ul><p>在节点被驱逐的时候，节点控制器或者 kubelet 会添加带有 <code>NoExecute</code> 污点效果的相关内置污点。异常恢复的时候，会自动移除污点。</p><blockquote><p>🤷‍♂️关于用<code>kubectl drain</code>执行驱逐的时候，<a href="http://xn--nodenode-309lrnu35cx15cpfcfz3aulp50vcrk.kubernetes.io/unschedulable:NoSchedule%E3%80%82%E4%BD%86%E5%AE%9E%E9%99%85%E6%95%88%E6%9E%9C%E6%98%AF">node显示的污点只有一个node.kubernetes.io/unschedulable:NoSchedule。但实际效果是</a><code>node.kubernetes.io/unschedulable:NoExecute</code>。即驱逐命令会驱逐掉已存在的Pod。可能<code>kubectl drain</code>会添加内置的特殊污点效果。</p><pre><code class="language-bash">➜   kubectl drain k8s03 --ignore-daemonsets --delete-emptydir-data➜   kubectl describe node k8s03 | grep TaintsTaints:             node.kubernetes.io/unschedulable:NoSchedule</code></pre></blockquote><p>如果你想让某个pod在节点出现问题（例如节点网络故障）后，依然被调度在当前节点保持1小时，那么你可以添加下列容忍规则：</p><pre><code class="language-yaml">tolerations:- key: &quot;node.kubernetes.io/network-unavailable&quot;  operator: &quot;Exists&quot;  effect: &quot;NoExecute&quot;  tolerationSeconds: 3600</code></pre><h1>自动容忍规则</h1><p>Kubernetes 会自动给 Pod 添加内置污点 <code>node.kubernetes.io/not-ready:NoExecute</code> 的容忍度并配置 <code>tolerationSeconds=300</code>，除非用户提供的 Pod 配置中已经已存在了 key 为 <code>node.kubernetes.io/not-ready</code> 的容忍度。</p><p>Kubernetes 会自动给 Pod 添加内置污点 <code>node.kubernetes.io/unreachable:NoExecute</code> 的容忍度并配置 <code>tolerationSeconds=300</code>，除非用户提供的 Pod 配置中已经已存在了 key 为 <code>node.kubernetes.io/unreachable</code> 的容忍度。</p><p>这意味着在其中一种问题被检测到时 Pod 默认能够继续停留在当前节点运行 5 分钟。</p><p>但是，对于DaemonSet的Pod，则不会配置<code>tolerationSeconds</code>。这意味着，Node出现上述问题后，这类Pod将永久运行不被驱逐。</p><p>DaemonSet的自动附加容忍度：</p><pre><code class="language-yaml">node.kubernetes.io/disk-pressure:NoSchedule op=Existsnode.kubernetes.io/memory-pressure:NoSchedule op=Existsnode.kubernetes.io/network-unavailable:NoSchedule op=Existsnode.kubernetes.io/pid-pressure:NoSchedule op=Existsnode.kubernetes.io/unschedulable:NoSchedule op=Existsnode.kubernetes.io/not-ready:NoExecute op=Existsnode.kubernetes.io/unreachable:NoExecute op=Exists</code></pre><p>🍖DaemonSet中除了上述自动容忍度，还经常见到万能容忍度<code>:NoSchedule op=Exists 或者 op=Exists</code>。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -539,35 +539,6 @@
     
     
     <entry>
-      <title>prometheus☞06rabbitmq监控</title>
-      <link href="posts/7fd13722/"/>
-      <url>posts/7fd13722/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#rabbitmq">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://www.rabbitmq.com/prometheus.html">Monitoring with Prometheus &amp; Grafana — RabbitMQ</a></p><p><a href="https://grafana.com/grafana/dashboards/10991">RabbitMQ-Overview dashboard for Grafana | Grafana Labs</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">rabbitmq-plugins enable rabbitmq_prometheusrabbitmqctl -q set_cluster_name test@rabbitmq</code></pre><p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p><p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'rabbitmq-001'    static_configs:      - targets: ['&lt;rabbitmq地址&gt;:15692'] </code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:      - alert: RabbitmqNodeDown        expr: sum(rabbitmq_build_info) &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node down (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Less than 3 nodes running in RabbitMQ cluster\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNodeNotDistributed        expr: erlang_vm_dist_node_state &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node not distributed (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Distribution link state is not 'up'\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqInstancesDifferentVersions        expr: count(count(rabbitmq_build_info) by (rabbitmq_version)) &gt; 1        for: 1h        labels:          severity: warning        annotations:          summary: Rabbitmq instances different versions (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Running different version of Rabbitmq in the same cluster, can lead to failure.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqMemoryHigh        expr: rabbitmq_process_resident_memory_bytes / rabbitmq_resident_memory_limit_bytes * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq memory high (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of allocated RAM\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqFileDescriptorsUsage        expr: rabbitmq_process_open_fds / rabbitmq_process_max_fds * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq file descriptors usage (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of file descriptors\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchUnack        expr: sum(rabbitmq_queue_messages_unacked) BY (queue) &gt; 1000        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq too much unack (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Too much unacknowledged messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchConnections        expr: rabbitmq_connections &gt; 1000        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq too much connections (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;The total connections of a node is too high\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNoQueueConsumer        expr: rabbitmq_queue_consumers &lt; 1        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq no queue consumer (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has less than 1 consumer\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqUnroutableMessages        expr: increase(rabbitmq_channel_messages_unroutable_returned_total[1m]) &gt; 0 or increase(rabbitmq_channel_messages_unroutable_dropped_total[1m]) &gt; 0        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq unroutable messages (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has unroutable messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/10991">https://grafana.com/grafana/dashboards/10991</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> prometheus </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> rabbitmq </tag>
-            
-            <tag> prometheus </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>prometheus☞04redis监控</title>
       <link href="posts/978d0c1d/"/>
       <url>posts/978d0c1d/</url>
@@ -587,6 +558,35 @@
         <tags>
             
             <tag> redis </tag>
+            
+            <tag> prometheus </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>prometheus☞06rabbitmq监控</title>
+      <link href="posts/7fd13722/"/>
+      <url>posts/7fd13722/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#rabbitmq">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://www.rabbitmq.com/prometheus.html">Monitoring with Prometheus &amp; Grafana — RabbitMQ</a></p><p><a href="https://grafana.com/grafana/dashboards/10991">RabbitMQ-Overview dashboard for Grafana | Grafana Labs</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">rabbitmq-plugins enable rabbitmq_prometheusrabbitmqctl -q set_cluster_name test@rabbitmq</code></pre><p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p><p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'rabbitmq-001'    static_configs:      - targets: ['&lt;rabbitmq地址&gt;:15692'] </code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:      - alert: RabbitmqNodeDown        expr: sum(rabbitmq_build_info) &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node down (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Less than 3 nodes running in RabbitMQ cluster\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNodeNotDistributed        expr: erlang_vm_dist_node_state &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node not distributed (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Distribution link state is not 'up'\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqInstancesDifferentVersions        expr: count(count(rabbitmq_build_info) by (rabbitmq_version)) &gt; 1        for: 1h        labels:          severity: warning        annotations:          summary: Rabbitmq instances different versions (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Running different version of Rabbitmq in the same cluster, can lead to failure.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqMemoryHigh        expr: rabbitmq_process_resident_memory_bytes / rabbitmq_resident_memory_limit_bytes * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq memory high (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of allocated RAM\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqFileDescriptorsUsage        expr: rabbitmq_process_open_fds / rabbitmq_process_max_fds * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq file descriptors usage (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of file descriptors\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchUnack        expr: sum(rabbitmq_queue_messages_unacked) BY (queue) &gt; 1000        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq too much unack (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Too much unacknowledged messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchConnections        expr: rabbitmq_connections &gt; 1000        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq too much connections (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;The total connections of a node is too high\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNoQueueConsumer        expr: rabbitmq_queue_consumers &lt; 1        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq no queue consumer (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has less than 1 consumer\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqUnroutableMessages        expr: increase(rabbitmq_channel_messages_unroutable_returned_total[1m]) &gt; 0 or increase(rabbitmq_channel_messages_unroutable_dropped_total[1m]) &gt; 0        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq unroutable messages (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has unroutable messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/10991">https://grafana.com/grafana/dashboards/10991</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> prometheus </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> rabbitmq </tag>
             
             <tag> prometheus </tag>
             
@@ -1183,9 +1183,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> kubeadm </tag>
             
@@ -1216,9 +1216,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> 证书 </tag>
             
@@ -1247,9 +1247,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> authorization </tag>
             
@@ -1422,33 +1422,6 @@
     
     
     <entry>
-      <title>go☞005函数</title>
-      <link href="posts/98f86e16/"/>
-      <url>posts/98f86e16/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>如果有参数，则需提供参数类型</p><p>如果有返回值，则需提供返回值类型</p><h2 id="结构">结构</h2><pre><code class="language-go">func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;    ...    return rtn_value&#125;</code></pre><h2 id="函数参数">函数参数</h2><p>函数参数是形参，调用函数并传递给函数的参数是实参，形参和实参类型要<code>一致</code></p><p>函数参数（形参）仅在函数体内生效</p><p>在函数没有被调用的时候，函数参数（形参）不会分配内存单元</p><p>当函数参数（形参）接收了一个实参<code>内存值</code>的时候，函数体内的<code>函数参数</code>将和<code>实参</code>没有任何关联</p><p>当函数参数（形参）接收了一个实参<code>内存地址</code>的时候，函数体内的<code>&amp;函数参数</code>将受到<code>实参</code>影响</p><h3 id="参数个数">参数个数</h3><p>参数可以有多个，只需要在形参类型前添加<code>...</code></p><pre><code class="language-go">package mainimport &quot;fmt&quot;func main()&#123;    print(1,2,3,4,5)&#125;func print (a ...int) &#123;    for _,v := range a&#123;        fmt.Println(v)    &#125;&#125;</code></pre><blockquote><p><code>_</code> 表示接收无用的值</p></blockquote><h2 id="用例">用例</h2><pre><code class="language-go">package mainimport &quot;fmt&quot;func fcLen(yp *string) int &#123;    fmt.Printf(&quot;传递的形参是：%p,%s&quot;,yp, *yp) // %p标识指针变量    return len(*yp)&#125;func main()&#123;    a := &quot;abc&quot;    b := fcLen(&amp;a)    fmt.Println(b)                                            &#125;</code></pre><h2 id="递归函数">递归函数</h2><p>递归函数在嵌套的时候，需要一个退出条件，从而防止死循环</p><p>例如</p><pre><code class="language-go">func jiecheng(i int)int &#123;    if i &gt; 1 &#123;        result = i * jiecheng(i-1)        return result    &#125;    return 1&#125;</code></pre><h2 id="特殊函数">特殊函数</h2><p>make()用于chan、map以及切片创建</p><p>new(<type>)用于创建一个指向type内存地址的指针</type></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 语言 </category>
-          
-          <category> go </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> go </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>go☞004条件语句</title>
       <link href="posts/8a6b5455/"/>
       <url>posts/8a6b5455/</url>
@@ -1476,11 +1449,11 @@
     
     
     <entry>
-      <title>go☞002常量</title>
-      <link href="posts/8c3e952e/"/>
-      <url>posts/8c3e952e/</url>
+      <title>go☞005函数</title>
+      <link href="posts/98f86e16/"/>
+      <url>posts/98f86e16/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常量只有一个元数据，就是内存地址存储的数据。</p><p>常量声明的同时必须赋值</p><h2 id="声明和赋值">声明和赋值</h2><blockquote><p>不能省略 const 关键词，省略了就没法判断是常量还是变量了</p></blockquote><h3 id="单类型">单类型</h3><pre><code class="language-go">const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="多类型">多类型</h3><p>根据变量值，自动判断变量类型</p><pre><code class="language-go">const &lt;常量1&gt;, &lt;常量2&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="单类型和多类型混合">单类型和多类型混合</h3><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt; &lt;类型2&gt; = &lt;常量2的值&gt;)</code></pre><p>上述写法中，如果常量2和常量1一样，则可以直接写常量2，省略其余。</p><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt;,&lt;常量22&gt;)</code></pre><p>需要注意的是，前两两行声明的常量数量需要对齐一致。</p><p>⚠️常量声明赋值的时候，常量的值只能是<code>string</code>,<code>int</code>,<code>bool</code>类型，如果你的值是<code>函数</code>返回，则这个<code>函数</code>必须是<code>内置函数</code></p><p>例如：</p><pre><code class="language-go">package mainimport &quot;fmt&quot;func rtnlen(p string) (int) &#123;    return len(p)&#125;var (    code03 = &quot;abc&quot;    code04 = rtnlen(code03)    // 这里不会报错，因为变量没有 “必须为内置函数” 这个限制)const (    code06 = &quot;abc&quot;    code05 = rtnlen(code06)    // 这里会报错，因为 rtnlen() 不是内置函数，将其更换为 len() 就不会报错)func main()&#123;    fmt.Println(code05)    fmt.Println(code03, code04)&#125;</code></pre><h2 id="特殊常量iota">特殊常量iota</h2><p>有一个内置的特殊常量iota，每声明一个常量，它会+1，初始值是0</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>如果有参数，则需提供参数类型</p><p>如果有返回值，则需提供返回值类型</p><h2 id="结构">结构</h2><pre><code class="language-go">func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;    ...    return rtn_value&#125;</code></pre><h2 id="函数参数">函数参数</h2><p>函数参数是形参，调用函数并传递给函数的参数是实参，形参和实参类型要<code>一致</code></p><p>函数参数（形参）仅在函数体内生效</p><p>在函数没有被调用的时候，函数参数（形参）不会分配内存单元</p><p>当函数参数（形参）接收了一个实参<code>内存值</code>的时候，函数体内的<code>函数参数</code>将和<code>实参</code>没有任何关联</p><p>当函数参数（形参）接收了一个实参<code>内存地址</code>的时候，函数体内的<code>&amp;函数参数</code>将受到<code>实参</code>影响</p><h3 id="参数个数">参数个数</h3><p>参数可以有多个，只需要在形参类型前添加<code>...</code></p><pre><code class="language-go">package mainimport &quot;fmt&quot;func main()&#123;    print(1,2,3,4,5)&#125;func print (a ...int) &#123;    for _,v := range a&#123;        fmt.Println(v)    &#125;&#125;</code></pre><blockquote><p><code>_</code> 表示接收无用的值</p></blockquote><h2 id="用例">用例</h2><pre><code class="language-go">package mainimport &quot;fmt&quot;func fcLen(yp *string) int &#123;    fmt.Printf(&quot;传递的形参是：%p,%s&quot;,yp, *yp) // %p标识指针变量    return len(*yp)&#125;func main()&#123;    a := &quot;abc&quot;    b := fcLen(&amp;a)    fmt.Println(b)                                            &#125;</code></pre><h2 id="递归函数">递归函数</h2><p>递归函数在嵌套的时候，需要一个退出条件，从而防止死循环</p><p>例如</p><pre><code class="language-go">func jiecheng(i int)int &#123;    if i &gt; 1 &#123;        result = i * jiecheng(i-1)        return result    &#125;    return 1&#125;</code></pre><h2 id="特殊函数">特殊函数</h2><p>make()用于chan、map以及切片创建</p><p>new(<type>)用于创建一个指向type内存地址的指针</type></p>]]></content>
       
       
       <categories>
@@ -1508,6 +1481,33 @@
       <url>posts/1a034363/</url>
       
         <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常见的运算符就不说了，学过数学的都会。</p><h2 id="逻辑运算符">逻辑运算符</h2><p><code>A &amp;&amp; B</code> A和B都为真，则真</p><p><code>A || B</code> A和B任意为真，则为真</p><p><code>!A</code> A为真，则为假</p><p>当上述条件为真时，则执行下一步代码</p><h2 id="位运算符">位运算符</h2><p>将整数转为二进制后进行运算</p><p>二进制数：0为假，1为真</p><p>例如：</p><pre><code class="language-go">a,b := 2,4</code></pre><p>若<code>c := a &amp; b</code>按位与，按照<code>位数</code>分别进行<code>与</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 0 0 0</code></pre><p>因此，最终 c = 0</p><p>若<code>c := a | b</code>按位或，按照<code>位数</code>分别进行<code>或</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a ^ b</code>按位异或，按照<code>位数</code>分别进行<code>异或</code>运算</p><p>异或：相同为0，不同为1</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a &amp;^ b</code>，</p><p>则c等于将a中ab都为1的位写为0后的新a</p><pre><code>a： 0 1 0b： 1 0 0c： 0 1 0  # a中没有ab都为1的位，因此c的值依然是a</code></pre><p>若<code>c := a&lt;&lt;b</code>左移运算，即<code>a*2的b次方</code>。c等于32</p><p>若<code>c := a&gt;&gt;b</code>右移运算，即<code>a/2的b次方</code>，c等于0</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 语言 </category>
+          
+          <category> go </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> go </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>go☞002常量</title>
+      <link href="posts/8c3e952e/"/>
+      <url>posts/8c3e952e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常量只有一个元数据，就是内存地址存储的数据。</p><p>常量声明的同时必须赋值</p><h2 id="声明和赋值">声明和赋值</h2><blockquote><p>不能省略 const 关键词，省略了就没法判断是常量还是变量了</p></blockquote><h3 id="单类型">单类型</h3><pre><code class="language-go">const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="多类型">多类型</h3><p>根据变量值，自动判断变量类型</p><pre><code class="language-go">const &lt;常量1&gt;, &lt;常量2&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="单类型和多类型混合">单类型和多类型混合</h3><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt; &lt;类型2&gt; = &lt;常量2的值&gt;)</code></pre><p>上述写法中，如果常量2和常量1一样，则可以直接写常量2，省略其余。</p><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt;,&lt;常量22&gt;)</code></pre><p>需要注意的是，前两两行声明的常量数量需要对齐一致。</p><p>⚠️常量声明赋值的时候，常量的值只能是<code>string</code>,<code>int</code>,<code>bool</code>类型，如果你的值是<code>函数</code>返回，则这个<code>函数</code>必须是<code>内置函数</code></p><p>例如：</p><pre><code class="language-go">package mainimport &quot;fmt&quot;func rtnlen(p string) (int) &#123;    return len(p)&#125;var (    code03 = &quot;abc&quot;    code04 = rtnlen(code03)    // 这里不会报错，因为变量没有 “必须为内置函数” 这个限制)const (    code06 = &quot;abc&quot;    code05 = rtnlen(code06)    // 这里会报错，因为 rtnlen() 不是内置函数，将其更换为 len() 就不会报错)func main()&#123;    fmt.Println(code05)    fmt.Println(code03, code04)&#125;</code></pre><h2 id="特殊常量iota">特殊常量iota</h2><p>有一个内置的特殊常量iota，每声明一个常量，它会+1，初始值是0</p>]]></content>
       
       
       <categories>
@@ -1575,9 +1575,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> storage </tag>
             
@@ -1660,9 +1660,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ingress </tag>
             
@@ -1691,9 +1691,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> StatefulSet </tag>
             
@@ -1722,9 +1722,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> DaemonSet </tag>
             
@@ -1753,13 +1753,13 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
             
-            <tag> 资源约束 </tag>
+            <tag> 容器 </tag>
             
             <tag> namespace </tag>
+            
+            <tag> 资源约束 </tag>
             
         </tags>
       
@@ -1786,9 +1786,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -1819,9 +1819,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ConfigMap </tag>
             
@@ -1852,42 +1852,11 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> service </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞06无状态服务deployment</title>
-      <link href="posts/18e4fa73/"/>
-      <url>posts/18e4fa73/</url>
-      
-        <content type="html"><![CDATA[<h1>基本</h1><p>Deployment控制器用来管理无状态应用，通过Deployment控制器创建ReplicaSet，ReplicaSet控制Pod副本集。</p><p>任何时候，都不应该直接去创建ReplicaSet控制器，应始终使用Deployment控制器。</p><h1>例子</h1><p>API语法：<a href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/</a></p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      imagePullSecrets:      - name: apps-ro-token      containers:      - name: nginx        image: nginx:v1.20.1        command:        - nginx        args:        - -g        - &quot;daemon off;&quot;        ports:        - containerPort: 80</code></pre><blockquote><p><code>spec.selector</code>：Deployment通过它控制Pod，与Pod<code>spec.template.metadata.labels</code>一致。</p><p><code>metadata</code>： 这里会定义name，labels，namespace，annotations。</p></blockquote><p>⚠️Deployment的<code>spec.selector</code>选择的标签应该是全局唯一，这样可以避免多个Deployment出现冲突出现不可预知的问题。</p><p>ℹ️ 其中 annotations （注解）很特殊，k8s通过注解中的<code>key</code>来确认要关联的额外服务信息。</p><p>例如在阿里云的k8s服务中，你可以添加镜像快照注解信息，从而让 pod 无需从镜像仓库下载启动，而是直接通过快照加速启动。</p><h1>更新</h1><p>Deployment的默认策略大致如下</p><p>更新规则：</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换</li></ul><p>回滚规则：</p><ul><li>回滚到任何一个之前的版本</li></ul><blockquote><p>Deployment只会针对<code>spec.template</code>更新Pod</p></blockquote><h2 id="初始版本">初始版本</h2><p>创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-deployment-1.14.2.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  minReadySeconds: 3  revisionHistoryLimit: 10  strategy:    type: RollingUpdate    rollingUpdate:      maxUnavailable: 30%      maxSurge: 30%  template:    metadata:      labels:        app: nginx        version: v1.14.2      annotations:        kubernetes.io/change-cause: &quot;version: v1.14.2&quot;    spec:      containers:      - name: nginx        image: nginx:1.14.2        lifecycle:          postStart:            exec:              command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is v1.14.2 &gt; /usr/share/nginx/html/index.html&quot;]        command:        - nginx        args:        - -g        - &quot;daemon off;&quot;        ports:        - containerPort: 80</code></pre><p><a href="http://spec.template.metadata.annotations.kubernetes.io/change-cause">spec.template.metadata.annotations.kubernetes.io/change-cause</a> 通过注解添加变更说明</p><h2 id="更新策略">更新策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: RollingUpdate # 定义变更策略. 除了 RollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的同时，就关多少个老的</p></blockquote><h3 id="通过命令添加-删除变更说明">通过命令添加/删除变更说明</h3><ul><li>添加</li></ul><pre><code class="language-bash">kubectl annotate deployment/nginx-deployment kubernetes.io/change-cause=&quot;first&quot;</code></pre><ul><li>删除(命令最后一个减号)</li></ul><pre><code class="language-bash">kubectl annotate deployment/nginx-deployment &lt;注解key&gt;-</code></pre><ul><li>执行kubectl命令的同时将命令写入<code>CHANGE-CAUSE</code></li></ul><pre><code class="language-bash">kubectl xxx --record</code></pre><h2 id="版本历史">版本历史</h2><pre><code class="language-bash">➜   kubectl rollout history deployment/nginx-deploymentdeployment.apps/nginx-deploymentREVISION  CHANGE-CAUSE1         version: v1.14.2</code></pre><h2 id="暂停发布">暂停发布</h2><p>此操作不会影响pod的运行，仅仅是阻断deployment实施更新。</p><p>如果更新之前就暂停，则你可以多次更新，这些更新在【恢复发布】之前不会被应用，也不会记录在【历史版本】中。</p><p>如果更新期间执行暂停，则更新会处于等待状态，已更新的不会回滚。</p><pre><code class="language-yaml">kubectl rollout pause deployment/nginx-deployment</code></pre><h2 id="更新版本">更新版本</h2><p>发布版本1.20.1</p><pre><code>sed 's@1.14.2@1.20.1@g' nginx-deployment-1.14.2.yaml &gt; nginx-deployment-1.20.1.yamlkubectl apply -f nginx-deployment-1.20.1.yaml</code></pre><h2 id="恢复发布">恢复发布</h2><pre><code class="language-yaml">kubectl rollout resume deployment/nginx-deployment</code></pre><p>启用恢复后，则暂停期间启用的所有更新将开始发挥作用，并且只会将更新的最终版本写入【历史版本】</p><pre><code class="language-bash">➜   kubectl rollout history deployment/nginx-deploymentdeployment.apps/nginx-deploymentREVISION  CHANGE-CAUSE1         version: v1.14.22         version: v1.20.1</code></pre><p>更新过程和结果查看，可运行：</p><pre><code class="language-bash">kubectl rollout status deployment/nginx-deployment</code></pre><p>更深层的rs状态查看，可运行：</p><pre><code class="language-bash">kubectl get rs -l app=nginx -l version=v1.20.1kubectl get pod -l app=nginx -l version=v1.20.1</code></pre><blockquote><p>-l 是调用标签过滤</p></blockquote><p>你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-deployment --revision=&lt;num&gt;</code></pre><h2 id="回滚版本">回滚版本</h2><p>我们选择将nginx版本回滚到第一个版本。被回滚的版本会从版本库里移动到最新位置。</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-deployment --to-revision=1➜   kubectl rollout history deployment/nginx-deploymentdeployment.apps/nginx-deploymentREVISION  CHANGE-CAUSE2         version: v1.20.13         version: v1.14.2</code></pre><blockquote><p>如果不指定版本，则回滚到上一个版本。</p></blockquote><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history deployment/&lt;&gt; # 查看对象历史kubectl rollout undo deployment/&lt;&gt; --to-revision=&lt;&gt; # 对象版本回退kubectl rollout status deployment/&lt;&gt;# 展示执行状态kubectl rollout pause deployment/&lt;&gt; # 暂停此次版本操作行为kubectl rollout resume deployment/&lt;&gt; # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre><p>更新过程：</p><ul><li>创建新的replicaset</li><li>将新的replicaset扩展</li><li>将旧的replicaset缩容</li><li>新的replicaset对应的pod已就绪或可用</li></ul><p>另外，可以通过判断<code>kubectl rollout status deployment/&lt;&gt;</code>命令执行结果，$? 状态为 0，则说明 deployment 处于 complete。</p><h1>金丝雀发布</h1><p>金丝雀发布的逻辑：</p><ul><li>开新Pod，不关老Pod，即确保可用的Pod数不低于预期数。</li><li>待新 Pod 创建后，立即暂停发布。</li><li>新 Pod Ready 后，部分流量经过新 Pod。</li><li>若新 Pod 通过验证，则恢复发布。</li><li>若新 Pod 没有通过验证，则恢复发布并立即执行回滚操作。</li></ul><p>操作步骤：</p><ol><li>调整新版本Deployment更新策略</li></ol><ul><li><p><code>minReadySeconds</code>设置为3，添加执行【暂停发布命令】的缓冲时间，避免新Pod被Deployment认为可用的同时删除旧Pod。</p></li><li><p><code>maxUnavailable</code>设置为0，避免更新中，可用Pod低于预期值。</p></li><li><p><code>maxSurge</code>的值就是验证新版本的Pod（”金丝雀“）数量。</p></li></ul><ol start="2"><li>启动更新，并立即暂停发布</li></ol><pre><code class="language-bash">kubectl apply -f new-nginx-deployment.yaml &amp;&amp; kubectl rollout pause deployment/nginx-deployment</code></pre><ol start="3"><li>若新 Pod 没有通过验证，则恢复发布并立即回滚。</li></ol><pre><code class="language-bash">kubectl rollout resume deployment/nginx-deployment &amp;&amp; kubectl rollout undo deployment/nginx-deployment</code></pre><blockquote><p>这个过程不会重建老版本Pod，只会通过新版本rs删除新版本Pod</p></blockquote><ol start="4"><li>若新 Pod 通过验证，则恢复发布</li></ol><pre><code class="language-bash">kubectl rollout resume deployment/nginx-deployment</code></pre><p>整个更新过程，若顺利，效果如下所示：</p><p><img src="/posts/18e4fa73/image-20211215163355711.png" alt="image-20211215163355711"></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 容器 </tag>
-            
-            <tag> k8s </tag>
-            
-            <tag> deployment </tag>
             
         </tags>
       
@@ -1914,9 +1883,40 @@
       
         <tags>
             
+            <tag> k8s </tag>
+            
             <tag> 容器 </tag>
             
+            <tag> deployment </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞06无状态服务deployment</title>
+      <link href="posts/18e4fa73/"/>
+      <url>posts/18e4fa73/</url>
+      
+        <content type="html"><![CDATA[<h1>基本</h1><p>Deployment控制器用来管理无状态应用，通过Deployment控制器创建ReplicaSet，ReplicaSet控制Pod副本集。</p><p>任何时候，都不应该直接去创建ReplicaSet控制器，应始终使用Deployment控制器。</p><h1>例子</h1><p>API语法：<a href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/</a></p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  template:    metadata:      labels:        app: nginx    spec:      imagePullSecrets:      - name: apps-ro-token      containers:      - name: nginx        image: nginx:v1.20.1        command:        - nginx        args:        - -g        - &quot;daemon off;&quot;        ports:        - containerPort: 80</code></pre><blockquote><p><code>spec.selector</code>：Deployment通过它控制Pod，与Pod<code>spec.template.metadata.labels</code>一致。</p><p><code>metadata</code>： 这里会定义name，labels，namespace，annotations。</p></blockquote><p>⚠️Deployment的<code>spec.selector</code>选择的标签应该是全局唯一，这样可以避免多个Deployment出现冲突出现不可预知的问题。</p><p>ℹ️ 其中 annotations （注解）很特殊，k8s通过注解中的<code>key</code>来确认要关联的额外服务信息。</p><p>例如在阿里云的k8s服务中，你可以添加镜像快照注解信息，从而让 pod 无需从镜像仓库下载启动，而是直接通过快照加速启动。</p><h1>更新</h1><p>Deployment的默认策略大致如下</p><p>更新规则：</p><ul><li>先扩展一部分新版本</li><li>删除一部分老版本</li><li>重复上述行为,直至所有老版本被替换</li></ul><p>回滚规则：</p><ul><li>回滚到任何一个之前的版本</li></ul><blockquote><p>Deployment只会针对<code>spec.template</code>更新Pod</p></blockquote><h2 id="初始版本">初始版本</h2><p>创建一个nginx的deployment</p><pre><code class="language-bash">kubectl apply -f nginx-deployment-1.14.2.yaml===apiVersion: apps/v1kind: Deploymentmetadata:  name: nginx-deployment  labels:    app: nginxspec:  replicas: 3  selector:    matchLabels:      app: nginx  minReadySeconds: 3  revisionHistoryLimit: 10  strategy:    type: RollingUpdate    rollingUpdate:      maxUnavailable: 30%      maxSurge: 30%  template:    metadata:      labels:        app: nginx        version: v1.14.2      annotations:        kubernetes.io/change-cause: &quot;version: v1.14.2&quot;    spec:      containers:      - name: nginx        image: nginx:1.14.2        lifecycle:          postStart:            exec:              command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;echo This is v1.14.2 &gt; /usr/share/nginx/html/index.html&quot;]        command:        - nginx        args:        - -g        - &quot;daemon off;&quot;        ports:        - containerPort: 80</code></pre><p><a href="http://spec.template.metadata.annotations.kubernetes.io/change-cause">spec.template.metadata.annotations.kubernetes.io/change-cause</a> 通过注解添加变更说明</p><h2 id="更新策略">更新策略</h2><p>deployment 的 .spec 中可以添加一些策略.</p><pre><code class="language-bash">spec:    minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0  revisionHistoryLimit: 10 # 最大版本保留次数. 默认10   strategy:    type: RollingUpdate # 定义变更策略. 除了 RollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.    rollingUpdate:      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字</code></pre><blockquote><p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的同时，就关多少个老的</p></blockquote><h3 id="通过命令添加-删除变更说明">通过命令添加/删除变更说明</h3><ul><li>添加</li></ul><pre><code class="language-bash">kubectl annotate deployment/nginx-deployment kubernetes.io/change-cause=&quot;first&quot;</code></pre><ul><li>删除(命令最后一个减号)</li></ul><pre><code class="language-bash">kubectl annotate deployment/nginx-deployment &lt;注解key&gt;-</code></pre><ul><li>执行kubectl命令的同时将命令写入<code>CHANGE-CAUSE</code></li></ul><pre><code class="language-bash">kubectl xxx --record</code></pre><h2 id="版本历史">版本历史</h2><pre><code class="language-bash">➜   kubectl rollout history deployment/nginx-deploymentdeployment.apps/nginx-deploymentREVISION  CHANGE-CAUSE1         version: v1.14.2</code></pre><h2 id="暂停发布">暂停发布</h2><p>此操作不会影响pod的运行，仅仅是阻断deployment实施更新。</p><p>如果更新之前就暂停，则你可以多次更新，这些更新在【恢复发布】之前不会被应用，也不会记录在【历史版本】中。</p><p>如果更新期间执行暂停，则更新会处于等待状态，已更新的不会回滚。</p><pre><code class="language-yaml">kubectl rollout pause deployment/nginx-deployment</code></pre><h2 id="更新版本">更新版本</h2><p>发布版本1.20.1</p><pre><code>sed 's@1.14.2@1.20.1@g' nginx-deployment-1.14.2.yaml &gt; nginx-deployment-1.20.1.yamlkubectl apply -f nginx-deployment-1.20.1.yaml</code></pre><h2 id="恢复发布">恢复发布</h2><pre><code class="language-yaml">kubectl rollout resume deployment/nginx-deployment</code></pre><p>启用恢复后，则暂停期间启用的所有更新将开始发挥作用，并且只会将更新的最终版本写入【历史版本】</p><pre><code class="language-bash">➜   kubectl rollout history deployment/nginx-deploymentdeployment.apps/nginx-deploymentREVISION  CHANGE-CAUSE1         version: v1.14.22         version: v1.20.1</code></pre><p>更新过程和结果查看，可运行：</p><pre><code class="language-bash">kubectl rollout status deployment/nginx-deployment</code></pre><p>更深层的rs状态查看，可运行：</p><pre><code class="language-bash">kubectl get rs -l app=nginx -l version=v1.20.1kubectl get pod -l app=nginx -l version=v1.20.1</code></pre><blockquote><p>-l 是调用标签过滤</p></blockquote><p>你可以通过追加版本号来看具体的版本内容</p><pre><code class="language-bash">kubectl rollout history deployment/nginx-deployment --revision=&lt;num&gt;</code></pre><h2 id="回滚版本">回滚版本</h2><p>我们选择将nginx版本回滚到第一个版本。被回滚的版本会从版本库里移动到最新位置。</p><pre><code class="language-bash">kubectl rollout undo deployment/nginx-deployment --to-revision=1➜   kubectl rollout history deployment/nginx-deploymentdeployment.apps/nginx-deploymentREVISION  CHANGE-CAUSE2         version: v1.20.13         version: v1.14.2</code></pre><blockquote><p>如果不指定版本，则回滚到上一个版本。</p></blockquote><h2 id="小结">小结</h2><pre><code class="language-bash">kubectl rollout history deployment/&lt;&gt; # 查看对象历史kubectl rollout undo deployment/&lt;&gt; --to-revision=&lt;&gt; # 对象版本回退kubectl rollout status deployment/&lt;&gt;# 展示执行状态kubectl rollout pause deployment/&lt;&gt; # 暂停此次版本操作行为kubectl rollout resume deployment/&lt;&gt; # 恢复此次版本操作行为kubectl set image # 修改镜像配置kubectl annotate # 添加一个注释</code></pre><p>更新过程：</p><ul><li>创建新的replicaset</li><li>将新的replicaset扩展</li><li>将旧的replicaset缩容</li><li>新的replicaset对应的pod已就绪或可用</li></ul><p>另外，可以通过判断<code>kubectl rollout status deployment/&lt;&gt;</code>命令执行结果，$? 状态为 0，则说明 deployment 处于 complete。</p><h1>金丝雀发布</h1><p>金丝雀发布的逻辑：</p><ul><li>开新Pod，不关老Pod，即确保可用的Pod数不低于预期数。</li><li>待新 Pod 创建后，立即暂停发布。</li><li>新 Pod Ready 后，部分流量经过新 Pod。</li><li>若新 Pod 通过验证，则恢复发布。</li><li>若新 Pod 没有通过验证，则恢复发布并立即执行回滚操作。</li></ul><p>操作步骤：</p><ol><li>调整新版本Deployment更新策略</li></ol><ul><li><p><code>minReadySeconds</code>设置为3，添加执行【暂停发布命令】的缓冲时间，避免新Pod被Deployment认为可用的同时删除旧Pod。</p></li><li><p><code>maxUnavailable</code>设置为0，避免更新中，可用Pod低于预期值。</p></li><li><p><code>maxSurge</code>的值就是验证新版本的Pod（”金丝雀“）数量。</p></li></ul><ol start="2"><li>启动更新，并立即暂停发布</li></ol><pre><code class="language-bash">kubectl apply -f new-nginx-deployment.yaml &amp;&amp; kubectl rollout pause deployment/nginx-deployment</code></pre><ol start="3"><li>若新 Pod 没有通过验证，则恢复发布并立即回滚。</li></ol><pre><code class="language-bash">kubectl rollout resume deployment/nginx-deployment &amp;&amp; kubectl rollout undo deployment/nginx-deployment</code></pre><blockquote><p>这个过程不会重建老版本Pod，只会通过新版本rs删除新版本Pod</p></blockquote><ol start="4"><li>若新 Pod 通过验证，则恢复发布</li></ol><pre><code class="language-bash">kubectl rollout resume deployment/nginx-deployment</code></pre><p>整个更新过程，若顺利，效果如下所示：</p><p><img src="/posts/18e4fa73/image-20211215163355711.png" alt="image-20211215163355711"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> deployment </tag>
             
@@ -1972,9 +1972,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -2074,6 +2074,27 @@
     
     
     <entry>
+      <title>k8s☞04Pod-init容器 - 容器 - k8s - pod</title>
+      <link href="posts/3ec72f7e/"/>
+      <url>posts/3ec72f7e/</url>
+      
+        <content type="html"><![CDATA[<h1>使用场景</h1><ul><li>Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 <code>sed</code>、<code>awk</code>、<code>python</code> 或 <code>dig</code> 这样的工具而去 <code>FROM</code> 一个镜像来生成一个新的镜像。</li><li>Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性降低。</li><li>应用镜像的创建者和部署者可以各自独立工作，而没有必要联合构建一个单独的应用镜像。</li><li>Init 容器能以不同于 Pod 内应用容器的文件系统视图运行。因此，Init 容器可以访问应用容器不能访问的 <a href="https://kubernetes.io/zh/docs/concepts/configuration/secret/">Secret</a> 的权限。</li><li>由于 Init 容器必须在应用容器启动之前运行完成，因此 Init 容器 提供了一种机制来阻塞或延迟应用容器的启动，直到满足了一组先决条件。 一旦前置条件满足，Pod 内的所有的应用容器会并行启动。</li></ul><h1>示例</h1><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: myapp-pod  labels:    app: myappspec:  containers:  - name: myapp-container    image: busybox:1.28    command: ['sh', '-c', 'echo The app is running! &amp;&amp; sleep 3600']  initContainers:  - name: init-myservice    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done&quot;]  - name: init-mydb    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done&quot;]</code></pre><p>通过添加init容器，等待svc对象创建，延迟启动应用容器。</p><h1>行为</h1><p>init容器按照Pod.spec.initContainers中定义的顺序启动。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>k8s☞03Pod</title>
       <link href="posts/94518966/"/>
       <url>posts/94518966/</url>
@@ -2092,34 +2113,13 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞04Pod-init容器 - 容器 - k8s - pod</title>
-      <link href="posts/3ec72f7e/"/>
-      <url>posts/3ec72f7e/</url>
-      
-        <content type="html"><![CDATA[<h1>使用场景</h1><ul><li>Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 <code>sed</code>、<code>awk</code>、<code>python</code> 或 <code>dig</code> 这样的工具而去 <code>FROM</code> 一个镜像来生成一个新的镜像。</li><li>Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性降低。</li><li>应用镜像的创建者和部署者可以各自独立工作，而没有必要联合构建一个单独的应用镜像。</li><li>Init 容器能以不同于 Pod 内应用容器的文件系统视图运行。因此，Init 容器可以访问应用容器不能访问的 <a href="https://kubernetes.io/zh/docs/concepts/configuration/secret/">Secret</a> 的权限。</li><li>由于 Init 容器必须在应用容器启动之前运行完成，因此 Init 容器 提供了一种机制来阻塞或延迟应用容器的启动，直到满足了一组先决条件。 一旦前置条件满足，Pod 内的所有的应用容器会并行启动。</li></ul><h1>示例</h1><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: myapp-pod  labels:    app: myappspec:  containers:  - name: myapp-container    image: busybox:1.28    command: ['sh', '-c', 'echo The app is running! &amp;&amp; sleep 3600']  initContainers:  - name: init-myservice    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done&quot;]  - name: init-mydb    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done&quot;]</code></pre><p>通过添加init容器，等待svc对象创建，延迟启动应用容器。</p><h1>行为</h1><p>init容器按照Pod.spec.initContainers中定义的顺序启动。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
       
     </entry>
     
@@ -2144,9 +2144,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2173,9 +2173,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2202,9 +2202,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2231,9 +2231,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2655,64 +2655,6 @@
     
     
     <entry>
-      <title>zabbix☞web监控</title>
-      <link href="posts/3d20f83e/"/>
-      <url>posts/3d20f83e/</url>
-      
-        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞redis</title>
-      <link href="posts/6c093771/"/>
-      <url>posts/6c093771/</url>
-      
-        <content type="html"><![CDATA[<h2 id="zabbix-模板">zabbix 模板</h2><ol><li>自动发现规则</li></ol><p><img src="/posts/6c093771/image-20200520152740815.png" alt="image-20200520152740815"></p><ol start="2"><li><p>过滤器</p><p><img src="/posts/6c093771/image-20200520152922570.png" alt="image-20200520152922570"></p></li><li><p>监控项原型</p><table><thead><tr><th>名称</th><th>键值</th><th>间隔</th><th>历史记录</th><th>趋势</th><th>类型</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,connected_clients]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; maxmemory[redis配置的内存上限]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,maxmemory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; mem_fragmentation_ratio[内存碎片率]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis_instantaneous_ops_per_sec[每秒执行的命令个数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,instantaneous_ops_per_sec]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis 存活状态</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; rejected_connections[被拒绝的客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,rejected_connections]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys[redis-master sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys_children[redis-children sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user[redis-master user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user_children[redis-children user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory[redis层面已使用内存-不含碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_pct[操作系统层面已使用内存百分比]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_peak[操作系统层面已使用内存历史峰值-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_peak]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_rss[操作系统层面已使用内存-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_rss]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr></tbody></table></li><li><p>触发器原型</p><table><thead><tr><th>严重性</th><th>名称</th><th>表达式</th></tr></thead><tbody><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  内存碎片化超过50%, 剩余可用内存低于30%</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&gt;1.5  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  可用内存低, 存在使用交换分区</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&lt;1  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  操作系统层面内存占用百分比过高</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>灾难</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis 端口无法访问</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist].last()&#125;&lt;&gt;1</code></td></tr></tbody></table></li><li><p>图形原型，就不详细写了，这里只列出我自己的分类</p><table><thead><tr><th>名称</th><th>宽</th><th>高</th><th>图形类别</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 连接数监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 其他监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis qps 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis mem 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis cpu 监控</code></td><td>900</td><td>200</td><td>正常</td></tr></tbody></table></li></ol><h2 id="脚本">脚本</h2><p>脚本会生成自动发现进程脚本和redis检测脚本</p><p>zabbix的redis配置路径：ZabbixEtc</p><p>zabbix的脚本路径：ZabbixShell</p><p>redis的cli命令路径：RedisCli</p><p>自动发现脚本：ip_port_discovery.sh</p><ul><li>bash ip_port_discovery.sh 进程名或者端口</li></ul><p>redis检测脚本：redis_info.sh</p><ul><li>bash redis_info.sh ip port item</li></ul><pre><code class="language-redis">ZabbixEtc=/etc/zabbix/zabbix_agentd.dZabbixShell=/etc/zabbix/shellRedisCli='docker exec -t redis redis-cli'[[ -d $&#123;ZabbixShell&#125; ]] || mkdir -p $&#123;ZabbixShell&#125;[[ -z $&#123;ZabbixEtc&#125; ]] &amp;&amp; [[ -z $&#123;ZabbixShell&#125; ]] || [[ -z $&#123;RedisCli&#125; ]] &amp;&amp; exitcat&gt;$&#123;ZabbixEtc&#125;/redis.conf&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFcat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashRedisCli=HOST=$1PORT=$2REDIS_INFO=&quot;$RedisCli -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$RedisCli -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i 's#RedisCli=#RedisCli=\&quot;'&quot;$&#123;RedisCli&#125;&quot;'\&quot;#' $&#123;ZabbixShell&#125;/redis_info.shecho '------------------------------------我是 zabbix 监控信息----------------------------------'echo '编辑 visudo，添加如下信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '若redis运行在docker中，执行如下命令'echo 'usermod -a -G docker zabbix'</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>zabbix☞agent和proxy（yum）</title>
       <link href="posts/1587f6e8/"/>
       <url>posts/1587f6e8/</url>
@@ -2771,6 +2713,91 @@
     
     
     <entry>
+      <title>zabbix☞web监控</title>
+      <link href="posts/3d20f83e/"/>
+      <url>posts/3d20f83e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞redis</title>
+      <link href="posts/6c093771/"/>
+      <url>posts/6c093771/</url>
+      
+        <content type="html"><![CDATA[<h2 id="zabbix-模板">zabbix 模板</h2><ol><li>自动发现规则</li></ol><p><img src="/posts/6c093771/image-20200520152740815.png" alt="image-20200520152740815"></p><ol start="2"><li><p>过滤器</p><p><img src="/posts/6c093771/image-20200520152922570.png" alt="image-20200520152922570"></p></li><li><p>监控项原型</p><table><thead><tr><th>名称</th><th>键值</th><th>间隔</th><th>历史记录</th><th>趋势</th><th>类型</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,connected_clients]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; maxmemory[redis配置的内存上限]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,maxmemory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; mem_fragmentation_ratio[内存碎片率]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis_instantaneous_ops_per_sec[每秒执行的命令个数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,instantaneous_ops_per_sec]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis 存活状态</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; rejected_connections[被拒绝的客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,rejected_connections]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys[redis-master sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys_children[redis-children sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user[redis-master user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user_children[redis-children user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory[redis层面已使用内存-不含碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_pct[操作系统层面已使用内存百分比]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_peak[操作系统层面已使用内存历史峰值-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_peak]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_rss[操作系统层面已使用内存-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_rss]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr></tbody></table></li><li><p>触发器原型</p><table><thead><tr><th>严重性</th><th>名称</th><th>表达式</th></tr></thead><tbody><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  内存碎片化超过50%, 剩余可用内存低于30%</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&gt;1.5  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  可用内存低, 存在使用交换分区</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&lt;1  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  操作系统层面内存占用百分比过高</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>灾难</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis 端口无法访问</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist].last()&#125;&lt;&gt;1</code></td></tr></tbody></table></li><li><p>图形原型，就不详细写了，这里只列出我自己的分类</p><table><thead><tr><th>名称</th><th>宽</th><th>高</th><th>图形类别</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 连接数监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 其他监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis qps 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis mem 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis cpu 监控</code></td><td>900</td><td>200</td><td>正常</td></tr></tbody></table></li></ol><h2 id="脚本">脚本</h2><p>脚本会生成自动发现进程脚本和redis检测脚本</p><p>zabbix的redis配置路径：ZabbixEtc</p><p>zabbix的脚本路径：ZabbixShell</p><p>redis的cli命令路径：RedisCli</p><p>自动发现脚本：ip_port_discovery.sh</p><ul><li>bash ip_port_discovery.sh 进程名或者端口</li></ul><p>redis检测脚本：redis_info.sh</p><ul><li>bash redis_info.sh ip port item</li></ul><pre><code class="language-redis">ZabbixEtc=/etc/zabbix/zabbix_agentd.dZabbixShell=/etc/zabbix/shellRedisCli='docker exec -t redis redis-cli'[[ -d $&#123;ZabbixShell&#125; ]] || mkdir -p $&#123;ZabbixShell&#125;[[ -z $&#123;ZabbixEtc&#125; ]] &amp;&amp; [[ -z $&#123;ZabbixShell&#125; ]] || [[ -z $&#123;RedisCli&#125; ]] &amp;&amp; exitcat&gt;$&#123;ZabbixEtc&#125;/redis.conf&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFcat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashRedisCli=HOST=$1PORT=$2REDIS_INFO=&quot;$RedisCli -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$RedisCli -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i 's#RedisCli=#RedisCli=\&quot;'&quot;$&#123;RedisCli&#125;&quot;'\&quot;#' $&#123;ZabbixShell&#125;/redis_info.shecho '------------------------------------我是 zabbix 监控信息----------------------------------'echo '编辑 visudo，添加如下信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '若redis运行在docker中，执行如下命令'echo 'usermod -a -G docker zabbix'</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> redis </tag>
+            
+            <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>监控 ☞ 邮件预警</title>
+      <link href="posts/f8f9b4d0/"/>
+      <url>posts/f8f9b4d0/</url>
+      
+        <content type="html"><![CDATA[<pre><code class="language-bash"># $1 收件人# $2 主题# $3 内容smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxxsendUserEmail='it@abc.com'sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码/usr/local/bin/sendEmail -f $&#123;sendUserEmail&#125; -t $1 -u &quot;$2&quot; -m &quot;$3&quot; -s $&#123;smtpServer&#125; -xu $&#123;sendUserEmail&#125; -xp $&#123;sendUserPassword&#125; -o message-charset=utf-8</code></pre><pre><code class="language-python">#!/usr/bin/python#coding:utf-8# by zyh# python sendmail.py '收件人邮箱地址'  '主题' '邮件内容' '抄送邮箱地址' '附件绝对路径'import smtplibfrom email.header import Headerfrom email.mime.text import MIMETextfrom email.mime.multipart import MIMEMultipartimport sysreload(sys)sys.setdefaultencoding('utf8')mail_host = 'smtp服务器地址'  # 例如 smtp.gmail.com:587mail_user = '发件人邮箱'      # 例如 it@gmail.commail_pass = '发件人密码'def send_mail(*args):    argsNum=len(args[0])    if argsNum == 4:        filename,to_list, subject, content=args[0]    elif argsNum == 5:        filename,to_list, subject, content, cc_list=args[0]    elif argsNum == 6:        filename,to_list, subject, content, cc_list, subfile=args[0]    me = mail_user+&quot;&lt;&quot;+mail_user+&quot;&gt;&quot;    #初始化邮件对象 msg    msg = MIMEMultipart()    msg['From'] = me    msg['to'] = to_list    emailList=to_list    # 主题    msg['Subject'] = Header(subject, 'utf-8').encode()    # 内容    msg.attach(MIMEText(content, 'plain', 'utf-8'))    # 抄送    if 'cc_list' in vars():        msg['Cc'] = cc_list        emailstring = to_list+','+cc_list        emailList=emailstring.split(&quot;,&quot;)    # 附件    if 'subfile' in vars():        att1 = MIMEText(open((&quot;%s&quot;%subfile),'rb').read(), 'base64', 'utf8')        att1[&quot;Content-Type&quot;] = 'text/plain'        att1[&quot;Content-Disposition&quot;] = 'attachment; filename='+subfile.split('/')[-1] # 这里的filename可以任意写，写什么名字，邮件中显示什么名字        msg.attach(att1)    # 发送    try:        print &quot;start sendmail&quot;        s = smtplib.SMTP(mail_host)        print &quot;connect mail server suesscc&quot;        s.starttls()        s.login(mail_user,mail_pass)        print &quot;login mail server suesscc&quot;        s.sendmail(me,emailList,msg.as_string())        s.close()        return True    except Exception,e:        print &quot;%s\t%s&quot;%(to_list,str(e))        return Falseif __name__ == &quot;__main__&quot;:    if len(sys.argv) &lt; 4:        exit()    send_mail(sys.argv)</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 监控 </tag>
+            
+            <tag> 邮件 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>监控☞企业微信机器人</title>
       <link href="posts/8c33f887/"/>
       <url>posts/8c33f887/</url>
@@ -2817,33 +2844,6 @@
             <tag> 监控 </tag>
             
             <tag> 企业微信 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控 ☞ 邮件预警</title>
-      <link href="posts/f8f9b4d0/"/>
-      <url>posts/f8f9b4d0/</url>
-      
-        <content type="html"><![CDATA[<pre><code class="language-bash"># $1 收件人# $2 主题# $3 内容smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxxsendUserEmail='it@abc.com'sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码/usr/local/bin/sendEmail -f $&#123;sendUserEmail&#125; -t $1 -u &quot;$2&quot; -m &quot;$3&quot; -s $&#123;smtpServer&#125; -xu $&#123;sendUserEmail&#125; -xp $&#123;sendUserPassword&#125; -o message-charset=utf-8</code></pre><pre><code class="language-python">#!/usr/bin/python#coding:utf-8# by zyh# python sendmail.py '收件人邮箱地址'  '主题' '邮件内容' '抄送邮箱地址' '附件绝对路径'import smtplibfrom email.header import Headerfrom email.mime.text import MIMETextfrom email.mime.multipart import MIMEMultipartimport sysreload(sys)sys.setdefaultencoding('utf8')mail_host = 'smtp服务器地址'  # 例如 smtp.gmail.com:587mail_user = '发件人邮箱'      # 例如 it@gmail.commail_pass = '发件人密码'def send_mail(*args):    argsNum=len(args[0])    if argsNum == 4:        filename,to_list, subject, content=args[0]    elif argsNum == 5:        filename,to_list, subject, content, cc_list=args[0]    elif argsNum == 6:        filename,to_list, subject, content, cc_list, subfile=args[0]    me = mail_user+&quot;&lt;&quot;+mail_user+&quot;&gt;&quot;    #初始化邮件对象 msg    msg = MIMEMultipart()    msg['From'] = me    msg['to'] = to_list    emailList=to_list    # 主题    msg['Subject'] = Header(subject, 'utf-8').encode()    # 内容    msg.attach(MIMEText(content, 'plain', 'utf-8'))    # 抄送    if 'cc_list' in vars():        msg['Cc'] = cc_list        emailstring = to_list+','+cc_list        emailList=emailstring.split(&quot;,&quot;)    # 附件    if 'subfile' in vars():        att1 = MIMEText(open((&quot;%s&quot;%subfile),'rb').read(), 'base64', 'utf8')        att1[&quot;Content-Type&quot;] = 'text/plain'        att1[&quot;Content-Disposition&quot;] = 'attachment; filename='+subfile.split('/')[-1] # 这里的filename可以任意写，写什么名字，邮件中显示什么名字        msg.attach(att1)    # 发送    try:        print &quot;start sendmail&quot;        s = smtplib.SMTP(mail_host)        print &quot;connect mail server suesscc&quot;        s.starttls()        s.login(mail_user,mail_pass)        print &quot;login mail server suesscc&quot;        s.sendmail(me,emailList,msg.as_string())        s.close()        return True    except Exception,e:        print &quot;%s\t%s&quot;%(to_list,str(e))        return Falseif __name__ == &quot;__main__&quot;:    if len(sys.argv) &lt; 4:        exit()    send_mail(sys.argv)</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 邮件 </tag>
             
         </tags>
       
@@ -3593,35 +3593,6 @@
     
     
     <entry>
-      <title>python☞json</title>
-      <link href="posts/876c5852/"/>
-      <url>posts/876c5852/</url>
-      
-        <content type="html"><![CDATA[<h2 id="Json与python之间类型关系">Json与python之间类型关系</h2><table><thead><tr><th><strong>JSON类型</strong></th><th><strong>python类型</strong></th></tr></thead><tbody><tr><td><strong>{}</strong></td><td><strong>dict</strong></td></tr><tr><td><strong>[]</strong></td><td><strong>list</strong></td></tr><tr><td><strong>“string”</strong></td><td><strong>str</strong></td></tr><tr><td><strong>“123456”</strong></td><td><strong>int或float</strong></td></tr><tr><td><strong>true/false</strong></td><td><strong>True/False</strong></td></tr><tr><td><strong>null</strong></td><td><strong>None</strong></td></tr></tbody></table><h2 id="序列化">序列化</h2><pre><code class="language-python">import jsonjson.dumps(python_dict)  # 将py类型转为json字符串类型</code></pre><h2 id="反序列化">反序列化</h2><pre><code class="language-python">import jsonjson.loads(json_str)  # 将json字符串类型转为py类型</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 语言 </category>
-          
-          <category> python </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> python </tag>
-            
-            <tag> json </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>django☞验证码</title>
       <link href="posts/d60c38c/"/>
       <url>posts/d60c38c/</url>
@@ -3643,6 +3614,35 @@
             <tag> python </tag>
             
             <tag> django </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>python☞json</title>
+      <link href="posts/876c5852/"/>
+      <url>posts/876c5852/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Json与python之间类型关系">Json与python之间类型关系</h2><table><thead><tr><th><strong>JSON类型</strong></th><th><strong>python类型</strong></th></tr></thead><tbody><tr><td><strong>{}</strong></td><td><strong>dict</strong></td></tr><tr><td><strong>[]</strong></td><td><strong>list</strong></td></tr><tr><td><strong>“string”</strong></td><td><strong>str</strong></td></tr><tr><td><strong>“123456”</strong></td><td><strong>int或float</strong></td></tr><tr><td><strong>true/false</strong></td><td><strong>True/False</strong></td></tr><tr><td><strong>null</strong></td><td><strong>None</strong></td></tr></tbody></table><h2 id="序列化">序列化</h2><pre><code class="language-python">import jsonjson.dumps(python_dict)  # 将py类型转为json字符串类型</code></pre><h2 id="反序列化">反序列化</h2><pre><code class="language-python">import jsonjson.loads(json_str)  # 将json字符串类型转为py类型</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 语言 </category>
+          
+          <category> python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> python </tag>
+            
+            <tag> json </tag>
             
         </tags>
       
@@ -3680,11 +3680,11 @@
     
     
     <entry>
-      <title>05ELK基本使用-kibana</title>
-      <link href="posts/d8390732/"/>
-      <url>posts/d8390732/</url>
+      <title>04ELK基本使用-elasticsearch</title>
+      <link href="posts/41bf4066/"/>
+      <url>posts/41bf4066/</url>
       
-        <content type="html"><![CDATA[<h2 id="安装">安装</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/targz.html">https://www.elastic.co/guide/en/kibana/current/targz.html</a></p><pre><code class="language-bash">appName=kibanaesVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/$&#123;appName&#125;/$&#123;esVersion&#125;/$&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o $&#123;appName&#125;.tgztar xf $&#123;appName&#125;.tgzmv $&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64 ../$&#123;appName&#125; &amp;&amp; cd ..useradd -U $&#123;appName&#125;chown -R $&#123;appName&#125;:$&#123;appName&#125; /export/$&#123;appName&#125;cd /export/$&#123;appName&#125;</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/settings.html">https://www.elastic.co/guide/en/kibana/current/settings.html</a></p><pre><code class="language-yaml">cp /export/kibana/config/kibana.yml /export/kibana/config/kibana.yml.defaultcat &gt; /export/kibana/config/kibana.yml &lt;&lt; EOFserver.name: kibanaserver.host: 0.0.0.0server.port: 5601elasticsearch.hosts: [&quot;http://hadoop001:9200&quot;,&quot;http://hadoop002:9200&quot;,&quot;http://hadoop003:9200&quot;]xpack.monitoring.ui.container.elasticsearch.enabled: truei18n.locale: zh-CNEOF</code></pre><pre><code class="language-bash">bin/kibana-encryption-keys generate# 将输出的 `Settings` 配置追加到 kibana.ymlxpack.encryptedSavedObjects.encryptionKey: 40233b82c57c14127363xpack.reporting.encryptionKey: f5550ba4b241b820bxpack.security.encryptionKey: 9732d0b256555b</code></pre><h2 id="系统用户-可选">系统用户(可选)</h2><p>仅当ES开启安全配置后需要.</p><p>追加下列配置到<code>kibana.yml</code>，kibana通过kibana_system用户访问elasticsearch执行后台任务.</p><pre><code class="language-bash">elasticsearch.username: &quot;kibana_system&quot;</code></pre><p>执行下列命令,将密码加密存放.</p><pre><code class="language-bash">./bin/kibana-keystore create./bin/kibana-keystore add elasticsearch.password=&gt;输入ES安全配置期间，生成的`kibana_system`密码</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">su - kibanacd /export/kibananohup ./bin/kibana &amp;</code></pre><p>ℹ️如果启用安全设置和用户配置，则kibana的web访问需要<code>elastic</code>用户权限.</p><h2 id="用户权限管理">用户权限管理</h2><p><a href="https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html">https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html</a></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="准备">准备</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html</a></p><pre><code class="language-bash"># elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准sysctl -a | egrep &quot;(vm.max_map_count|net.ipv4.tcp_retries2)&quot;  # 查看是否过小, 如果过小执行下一条echo 'vm.max_map_count=262144' &gt;&gt; /etc/sysctl.confecho 'net.ipv4.tcp_retries2=5' &gt;&gt; /etc/sysctl.confsysctl -p## https://www.elastic.co/guide/en/elasticsearch/reference/7.15/setting-system-settings.htmlcat &gt;&gt; /etc/security/limits.conf &lt;&lt; EOF  *           soft   nofile       102400  *           hard   nofile       102400  *           soft   nproc        102400  *           hard   nproc        102400  *           soft  memlock      unlimited  *           hard  memlock      unlimitedEOF## 关闭swap 同时应该在 /etc/fstab 中取消 swap 的挂载sudo swapoff -a</code></pre><h2 id="安装">安装</h2><p><a href="https://mirrors.huaweicloud.com/elasticsearch/">https://mirrors.huaweicloud.com/elasticsearch/</a></p><pre><code>esVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/elasticsearch/$&#123;esVersion&#125;/elasticsearch-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o es.tgztar xf es.tgzmv elasticsearch-$&#123;esVersion&#125; ../elasticsearchuseradd -U elasticsearchchown -R elasticsearch:elasticsearch /export/elasticsearchsu - elasticsearchcd /export/elasticsearch</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html</a></p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html</a></p><h3 id="角色">角色</h3><p>角色介绍的官方文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles">https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles</a></p><p>elasticsearch 可以通过<code>node.roles: [xxx]</code>来设定节点角色。如果不设置<code>node.roles</code>，则默认节点拥有所有角色。</p><p>角色可分为：master、data和data_xxx系列、ingest、ml、remote_cluster_client、transform。</p><p>💢在一个集群中，master和data是必须的角色。</p><h3 id="一份通用节点配置">一份通用节点配置</h3><p>配置中<code>discovery.seed_hosts</code>替换成所有节点的hostname</p><pre><code class="language-bash">cp config/elasticsearch.yml config/elasticsearch.yml.defaulthostName=`hostname`cat &gt; /export/elasticsearch/config/elasticsearch.yml &lt;&lt; EOFcluster.name: es-clusterdiscovery.seed_hosts: xxx1,xxx2,xxx3node.name: $&#123;hostName&#125;#node.master: true#node.data: falsehttp.port: 9200network.host: 0.0.0.0http.cors.enabled: truehttp.cors.allow-origin: &quot;*&quot;bootstrap.memory_lock: truexpack.security.enabled: truexpack.security.transport.ssl.enabled: truexpack.security.transport.ssl.verification_mode: certificate xpack.security.transport.ssl.client_authentication: requiredxpack.security.transport.ssl.keystore.path: elastic-certificates.p12xpack.security.transport.ssl.truststore.path: elastic-certificates.p12resource.reload.interval.high: 5sEOF</code></pre><p>ℹ️<code>xpack.security.transport.ssl.keystore.path、xpack.security.transport.ssl.truststore.path</code>指定的文件名与下面启用TLS中的默认文件名一致。</p><p>💁 如果是单节点，则应该加入<code>discovery.type: single-node</code>，并删除<code>discovery.seed_hosts</code>。</p><h2 id="启用TLS">启用TLS</h2><p>当启用了<code>xpack.security.enabled: true</code>后，多节点生产模式集群必须启用TLS，否则无法启动集群。</p><p>创建CA证书和节点证书</p><pre><code class="language-bash">./bin/elasticsearch-certutil ca=&gt;回车，接受默认文件名 elastic-stack-ca.p12=&gt;输入CA证书密码./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12=&gt;输入CA证书密码=&gt;回车，接受默认文件名 elastic-certificates.p12=&gt;输入节点证书密码（可选）</code></pre><p>将生成的<code>elastic-certificates.p12</code>复制到每一个节点的<code>config</code>目录中，并确保授权<code>600</code></p><p>💔我添加了节点证书密码后，ES校验证书失败，不知原因。</p><p>💢如果节点证书开启了密码，则需要存在ES中，通过下列命令存储，会存放在<code>config/elasticsearch.keystore</code></p><pre><code class="language-bash">./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password=&gt;输入节点证书密码./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password=&gt;输入节点证书密码</code></pre><h2 id="启动、关闭">启动、关闭</h2><h3 id="启动">启动</h3><p>ES默认会自动调整JVM参数，非必要情况下无需调整.</p><p>命令中<code>-Ecluster.initial_master_nodes</code>替换成所有节点的hostname</p><pre><code class="language-bash">## export ES_JAVA_OPTS=&quot;$ES_JAVA_OPTS xxx&quot;export ES_TMPDIR=&quot;/export/elasticsearch/tmp&quot;mkdir -p /export/elasticsearch/tmpsu - elasticsearchcd /export/elasticsearch &amp;&amp; ./bin/elasticsearch -d -p es.pid -Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code></pre><p>💢<code>-Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code> 仅当首次启动的时候需要添加。当集群成功启动后，应删除此配置。重启集群、新节点入集群都不应该加入此配置。</p><h3 id="关闭">关闭</h3><pre><code class="language-bash">su - elasticsearchcd /export/elasticsearch &amp;&amp; pkill -F es.pid</code></pre><h2 id="内置用户密码生成">内置用户密码生成</h2><p>通过设置用户密码后，kibana就需要配置<code>elastic</code>账户来访问web.<code>elastic</code>是超级用户.</p><ol><li>需要es启动状态</li><li>当你通过<code>bin/elasticsearch-setup-passwords</code>设置了<code>elastic</code>用户密码后，你将无法再次运行<code>bin/elasticsearch-setup-passwords</code></li></ol><pre><code class="language-bash">./bin/elasticsearch-setup-passwords autoChanged password for user apm_systemPASSWORD apm_system = hpYNFwXxubBoAK910LVNChanged password for user kibana_systemPASSWORD kibana_system = ZQQz8FpPeyElvrOLdMSeChanged password for user kibanaPASSWORD kibana = ZQQz8FpPeyElvrOLdMSeChanged password for user logstash_systemPASSWORD logstash_system = LeWxPOQp6u0yZ6ELkJxlChanged password for user beats_systemPASSWORD beats_system = olPcjTe7dKbI1EqYG9D7Changed password for user remote_monitoring_userPASSWORD remote_monitoring_user = 0VxbZ0GjZk5aUcQhs2pEChanged password for user elasticPASSWORD elastic = rMknnbJxRh5qWDGVZQ2R</code></pre><p>在这之后，你可以通过kibana从而方便的进行图形化用户管理.</p><p>关于内置用户对应的权限，可以看相关内置角色的权限范围：</p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html</a></p><h2 id="备份集群">备份集群</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html</a></p><h2 id="问题点">问题点</h2><ol><li>如果磁盘不够用，则因添加新节点，而不是添加新磁盘路径</li><li><code>cluster.name</code>是集群的唯一标识，任何不一致的<code>cluster.name</code>节点无法加入集群</li><li><code>node.name</code>是节点的唯一标识名，默认取值主机名</li><li><code>network.host</code>的设置是ES判断开发模式和生产模式的依据，默认值是回环地址，ES将认为是开发模式。</li><li>没有<code>data</code>角色的节点如果在启动时在磁盘上找到任何分片数据将拒绝启动，而没有角色<code>master</code>和<code>data</code>角色的节点如果在启动时磁盘上有任何索引元数据将拒绝启动。</li></ol>]]></content>
       
       
       <categories>
@@ -3711,11 +3711,11 @@
     
     
     <entry>
-      <title>04ELK基本使用-elasticsearch</title>
-      <link href="posts/41bf4066/"/>
-      <url>posts/41bf4066/</url>
+      <title>05ELK基本使用-kibana</title>
+      <link href="posts/d8390732/"/>
+      <url>posts/d8390732/</url>
       
-        <content type="html"><![CDATA[<h2 id="准备">准备</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html</a></p><pre><code class="language-bash"># elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准sysctl -a | egrep &quot;(vm.max_map_count|net.ipv4.tcp_retries2)&quot;  # 查看是否过小, 如果过小执行下一条echo 'vm.max_map_count=262144' &gt;&gt; /etc/sysctl.confecho 'net.ipv4.tcp_retries2=5' &gt;&gt; /etc/sysctl.confsysctl -p## https://www.elastic.co/guide/en/elasticsearch/reference/7.15/setting-system-settings.htmlcat &gt;&gt; /etc/security/limits.conf &lt;&lt; EOF  *           soft   nofile       102400  *           hard   nofile       102400  *           soft   nproc        102400  *           hard   nproc        102400  *           soft  memlock      unlimited  *           hard  memlock      unlimitedEOF## 关闭swap 同时应该在 /etc/fstab 中取消 swap 的挂载sudo swapoff -a</code></pre><h2 id="安装">安装</h2><p><a href="https://mirrors.huaweicloud.com/elasticsearch/">https://mirrors.huaweicloud.com/elasticsearch/</a></p><pre><code>esVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/elasticsearch/$&#123;esVersion&#125;/elasticsearch-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o es.tgztar xf es.tgzmv elasticsearch-$&#123;esVersion&#125; ../elasticsearchuseradd -U elasticsearchchown -R elasticsearch:elasticsearch /export/elasticsearchsu - elasticsearchcd /export/elasticsearch</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html</a></p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html</a></p><h3 id="角色">角色</h3><p>角色介绍的官方文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles">https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles</a></p><p>elasticsearch 可以通过<code>node.roles: [xxx]</code>来设定节点角色。如果不设置<code>node.roles</code>，则默认节点拥有所有角色。</p><p>角色可分为：master、data和data_xxx系列、ingest、ml、remote_cluster_client、transform。</p><p>💢在一个集群中，master和data是必须的角色。</p><h3 id="一份通用节点配置">一份通用节点配置</h3><p>配置中<code>discovery.seed_hosts</code>替换成所有节点的hostname</p><pre><code class="language-bash">cp config/elasticsearch.yml config/elasticsearch.yml.defaulthostName=`hostname`cat &gt; /export/elasticsearch/config/elasticsearch.yml &lt;&lt; EOFcluster.name: es-clusterdiscovery.seed_hosts: xxx1,xxx2,xxx3node.name: $&#123;hostName&#125;#node.master: true#node.data: falsehttp.port: 9200network.host: 0.0.0.0http.cors.enabled: truehttp.cors.allow-origin: &quot;*&quot;bootstrap.memory_lock: truexpack.security.enabled: truexpack.security.transport.ssl.enabled: truexpack.security.transport.ssl.verification_mode: certificate xpack.security.transport.ssl.client_authentication: requiredxpack.security.transport.ssl.keystore.path: elastic-certificates.p12xpack.security.transport.ssl.truststore.path: elastic-certificates.p12resource.reload.interval.high: 5sEOF</code></pre><p>ℹ️<code>xpack.security.transport.ssl.keystore.path、xpack.security.transport.ssl.truststore.path</code>指定的文件名与下面启用TLS中的默认文件名一致。</p><p>💁 如果是单节点，则应该加入<code>discovery.type: single-node</code>，并删除<code>discovery.seed_hosts</code>。</p><h2 id="启用TLS">启用TLS</h2><p>当启用了<code>xpack.security.enabled: true</code>后，多节点生产模式集群必须启用TLS，否则无法启动集群。</p><p>创建CA证书和节点证书</p><pre><code class="language-bash">./bin/elasticsearch-certutil ca=&gt;回车，接受默认文件名 elastic-stack-ca.p12=&gt;输入CA证书密码./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12=&gt;输入CA证书密码=&gt;回车，接受默认文件名 elastic-certificates.p12=&gt;输入节点证书密码（可选）</code></pre><p>将生成的<code>elastic-certificates.p12</code>复制到每一个节点的<code>config</code>目录中，并确保授权<code>600</code></p><p>💔我添加了节点证书密码后，ES校验证书失败，不知原因。</p><p>💢如果节点证书开启了密码，则需要存在ES中，通过下列命令存储，会存放在<code>config/elasticsearch.keystore</code></p><pre><code class="language-bash">./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password=&gt;输入节点证书密码./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password=&gt;输入节点证书密码</code></pre><h2 id="启动、关闭">启动、关闭</h2><h3 id="启动">启动</h3><p>ES默认会自动调整JVM参数，非必要情况下无需调整.</p><p>命令中<code>-Ecluster.initial_master_nodes</code>替换成所有节点的hostname</p><pre><code class="language-bash">## export ES_JAVA_OPTS=&quot;$ES_JAVA_OPTS xxx&quot;export ES_TMPDIR=&quot;/export/elasticsearch/tmp&quot;mkdir -p /export/elasticsearch/tmpsu - elasticsearchcd /export/elasticsearch &amp;&amp; ./bin/elasticsearch -d -p es.pid -Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code></pre><p>💢<code>-Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code> 仅当首次启动的时候需要添加。当集群成功启动后，应删除此配置。重启集群、新节点入集群都不应该加入此配置。</p><h3 id="关闭">关闭</h3><pre><code class="language-bash">su - elasticsearchcd /export/elasticsearch &amp;&amp; pkill -F es.pid</code></pre><h2 id="内置用户密码生成">内置用户密码生成</h2><p>通过设置用户密码后，kibana就需要配置<code>elastic</code>账户来访问web.<code>elastic</code>是超级用户.</p><ol><li>需要es启动状态</li><li>当你通过<code>bin/elasticsearch-setup-passwords</code>设置了<code>elastic</code>用户密码后，你将无法再次运行<code>bin/elasticsearch-setup-passwords</code></li></ol><pre><code class="language-bash">./bin/elasticsearch-setup-passwords autoChanged password for user apm_systemPASSWORD apm_system = hpYNFwXxubBoAK910LVNChanged password for user kibana_systemPASSWORD kibana_system = ZQQz8FpPeyElvrOLdMSeChanged password for user kibanaPASSWORD kibana = ZQQz8FpPeyElvrOLdMSeChanged password for user logstash_systemPASSWORD logstash_system = LeWxPOQp6u0yZ6ELkJxlChanged password for user beats_systemPASSWORD beats_system = olPcjTe7dKbI1EqYG9D7Changed password for user remote_monitoring_userPASSWORD remote_monitoring_user = 0VxbZ0GjZk5aUcQhs2pEChanged password for user elasticPASSWORD elastic = rMknnbJxRh5qWDGVZQ2R</code></pre><p>在这之后，你可以通过kibana从而方便的进行图形化用户管理.</p><p>关于内置用户对应的权限，可以看相关内置角色的权限范围：</p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html</a></p><h2 id="备份集群">备份集群</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html</a></p><h2 id="问题点">问题点</h2><ol><li>如果磁盘不够用，则因添加新节点，而不是添加新磁盘路径</li><li><code>cluster.name</code>是集群的唯一标识，任何不一致的<code>cluster.name</code>节点无法加入集群</li><li><code>node.name</code>是节点的唯一标识名，默认取值主机名</li><li><code>network.host</code>的设置是ES判断开发模式和生产模式的依据，默认值是回环地址，ES将认为是开发模式。</li><li>没有<code>data</code>角色的节点如果在启动时在磁盘上找到任何分片数据将拒绝启动，而没有角色<code>master</code>和<code>data</code>角色的节点如果在启动时磁盘上有任何索引元数据将拒绝启动。</li></ol>]]></content>
+        <content type="html"><![CDATA[<h2 id="安装">安装</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/targz.html">https://www.elastic.co/guide/en/kibana/current/targz.html</a></p><pre><code class="language-bash">appName=kibanaesVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/$&#123;appName&#125;/$&#123;esVersion&#125;/$&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o $&#123;appName&#125;.tgztar xf $&#123;appName&#125;.tgzmv $&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64 ../$&#123;appName&#125; &amp;&amp; cd ..useradd -U $&#123;appName&#125;chown -R $&#123;appName&#125;:$&#123;appName&#125; /export/$&#123;appName&#125;cd /export/$&#123;appName&#125;</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/settings.html">https://www.elastic.co/guide/en/kibana/current/settings.html</a></p><pre><code class="language-yaml">cp /export/kibana/config/kibana.yml /export/kibana/config/kibana.yml.defaultcat &gt; /export/kibana/config/kibana.yml &lt;&lt; EOFserver.name: kibanaserver.host: 0.0.0.0server.port: 5601elasticsearch.hosts: [&quot;http://hadoop001:9200&quot;,&quot;http://hadoop002:9200&quot;,&quot;http://hadoop003:9200&quot;]xpack.monitoring.ui.container.elasticsearch.enabled: truei18n.locale: zh-CNEOF</code></pre><pre><code class="language-bash">bin/kibana-encryption-keys generate# 将输出的 `Settings` 配置追加到 kibana.ymlxpack.encryptedSavedObjects.encryptionKey: 40233b82c57c14127363xpack.reporting.encryptionKey: f5550ba4b241b820bxpack.security.encryptionKey: 9732d0b256555b</code></pre><h2 id="系统用户-可选">系统用户(可选)</h2><p>仅当ES开启安全配置后需要.</p><p>追加下列配置到<code>kibana.yml</code>，kibana通过kibana_system用户访问elasticsearch执行后台任务.</p><pre><code class="language-bash">elasticsearch.username: &quot;kibana_system&quot;</code></pre><p>执行下列命令,将密码加密存放.</p><pre><code class="language-bash">./bin/kibana-keystore create./bin/kibana-keystore add elasticsearch.password=&gt;输入ES安全配置期间，生成的`kibana_system`密码</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">su - kibanacd /export/kibananohup ./bin/kibana &amp;</code></pre><p>ℹ️如果启用安全设置和用户配置，则kibana的web访问需要<code>elastic</code>用户权限.</p><h2 id="用户权限管理">用户权限管理</h2><p><a href="https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html">https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html</a></p>]]></content>
       
       
       <categories>
@@ -3998,9 +3998,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -4320,33 +4320,6 @@
     
     
     <entry>
-      <title>gitlab☞大版本迁移</title>
-      <link href="posts/a38d0013/"/>
-      <url>posts/a38d0013/</url>
-      
-        <content type="html"><![CDATA[<h1>前言</h1><ul><li>现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。</li></ul><h1>正文</h1><ul><li><p>Token变量定义[Token不同版本获取方式不一样，但是总归都是从web用户界面能直接拿到的], Token需要是最大权限用户，且拥有所有的项目权限</p><pre><code>export OldToken=su2GwpNeVQexport NewToken=yTVZTPeussexport OldDomain=git.a.comexport NewDomain=git.b.com</code></pre><blockquote><p>gitlab 不同版本的 api 版本不一样，本文档是从 7 迁移到 11，所以 api 版本也是从 v3 到 v4<br>gitlab 的 api 默认一次最多获取100条信息，所以需要进行分页获取<br>per_page 每页信息条数 page 页数<br>所以信息太多的自行分页即可</p></blockquote></li><li><p>迁移用户</p><blockquote><p>下面代码，并不迁移用户的公钥信息</p></blockquote><pre><code>mkdir create_user &amp;&amp; cd create_user;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/users?per_page=100&amp;page=$i&quot; | jq '.[] |.name, .username, .state, .email, .can_create_group, .can_create_project' | sed 'N;N;N;N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; users.list;while read name username state email can_create_group can_create_project;do    curl --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; --data &quot;name=$name&amp;username=$username&amp;password=$&#123;username&#125;@123456&amp;state=$state&amp;email=$email&amp;can_create_group=$can_create_group&amp;can_create_project=$can_create_project&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users&quot;done &lt; users.listcd ..</code></pre></li><li><p>创建项目组</p><pre><code>mkdir create_group &amp;&amp; cd create_group;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/groups?per_page=100&amp;page=$i&quot; | jq '.[] |.name, .path' | sed 'N;s#\n# #;s#&quot;##g';done &gt; group.list;echo 'repo repo' &gt;&gt; group.list;cat group.list | while read name path;do curl --request POST --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; --data &quot;name=$name&amp;path=$path&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups&quot;;donecd ..</code></pre></li><li><p>创建项目到对应组</p><pre><code>mkdir create_project &amp;&amp; cd create_project;</code></pre><pre><code>for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.name, .namespace.name, .description' | sed 'N;N;s#\n#\t#g;s# #-#g;s#&quot;##g';done  &gt;&gt; project.list;mv  project.list project.list.tmp;cat project.list.tmp | sort | uniq &gt; project.list;rm -rf project.list.tmp;</code></pre><pre><code># 这里 pre_page 不起作用for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups?page=$i&quot; | jq '.[] | .id, .name' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; group.id</code></pre><pre><code>cat project.list | while read projectname groupname des;do    newgroupid=`egrep &quot;\b$&#123;groupname&#125;\b&quot; ./group.id | awk '&#123;print $1&#125;'`    curl --request POST --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot;  --data &quot;name=$&#123;projectname&#125;&amp;namespace_id=$&#123;newgroupid&#125;&amp;description=$des&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/projects&quot;donecd ..</code></pre></li><li><p>添加用户到组</p><pre><code>mkdir add_user_group &amp;&amp; cd add_user_group;</code></pre><pre><code>for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/groups?page=$i&quot; | jq '.[] | .id, .name' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; group.old.id;cp ../create_project/group.id ./group.new.id;#curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups&amp;page=1&quot; | jq '.[] | .id, .name' | sed 'N;s#\n# #g;s#&quot;##g' &gt;&gt; group.new.id;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot;  | jq '.[] | .id,.username' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; new_user.id;</code></pre><pre><code>cat ./group.old.id | while read groupid groupname;do    curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; http://$&#123;OldDomain&#125;/api/v3/groups/$&#123;groupid&#125;/members | jq '.[] | .id, .username, .access_level' |sed 'N;N;s#\n# #g;s#&quot;##g' | while read nameid username level;do        newid=`egrep &quot;\b$&#123;username&#125;\b&quot; ./new_user.id| awk '&#123;print $1&#125;'`        newgid=`egrep &quot;\b$&#123;groupname&#125;\b&quot; ./group.new.id|awk '&#123;print $1&#125;'`curl --request POST --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; --data &quot;user_id=$&#123;newid&#125;&amp;access_level=$&#123;level&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/groups/$&#123;newgid&#125;/members    donedonecd ..</code></pre></li><li><p>添加用户到项目</p><pre><code>mkdir add_user_project &amp;&amp; cd add_user_project;</code></pre><pre><code>for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.id, .name, .namespace.name' | sed 'N;N;s#\n# #g;s#&quot;##g';done  &gt;&gt; project.old.id;mv  project.old.id project.old.id.tmp;cat project.old.id.tmp | sort | uniq &gt; project.old.id;rm -rf project.old.id.tmp;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.id, .name, .namespace.name' | sed 'N;N;s#\n# #g;s#&quot;##g';done  &gt;&gt; project.new.id;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot;  | jq '.[] | .id,.username' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; new_user.id;</code></pre><pre><code>cat ./project.old.id | while read projectid projectname groupname;do    curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; http://$&#123;OldDomain&#125;/api/v3/projects/$&#123;projectid&#125;/members | jq '.[] | .id, .username, .access_level' |sed 'N;N;s#\n# #g;s#&quot;##g' | while read nameid username level;do        newid=`egrep &quot;\b$&#123;username&#125;\b&quot; ./new_user.id| awk '&#123;print $1&#125;'`        newpid=`egrep &quot;\b$&#123;projectname&#125; $&#123;groupname&#125;\b&quot; ./project.new.id|awk '&#123;print $1&#125;'`        #echo &quot;$projectid $projectname $groupname $username &gt; $newpid $projectname $groupname&quot;curl --request POST --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; --data &quot;user_id=$&#123;newid&#125;&amp;access_level=$&#123;level&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/projects/$&#123;newpid&#125;/members    donedonecd ..</code></pre></li><li><p>代码迁移</p><pre><code>mkdir sync_code &amp;&amp; cd sync_code;#for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.name, .namespace.name, .description' | sed 'N;N;s#\n#\t#g;s# #-#g;s#&quot;##g';done  &gt;&gt; project.list;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot; | jq '.[] |.path_with_namespace' | sed 's#&quot;##g';done &gt;&gt; project.path;</code></pre><pre><code># 将本代码框的代码保存到 start.sh 并执行(确保sync_code_base变量路径准确)num=1sync_code_base=/export/sync/sync_codenohup while read line;do     echo &quot;$num: -------------------------$line-------------------------&quot; &gt;&gt; $&#123;sync_code_base&#125;/sync.log    [[ -d $&#123;line%%/*&#125; ]] || mkdir $&#123;line%%/*&#125;    cd $&#123;line%%/*&#125;    git clone --mirror git@$&#123;OldDomain&#125;:$&#123;line&#125;.git &gt;&gt; $&#123;sync_code_base&#125;/sync.log 2&gt;&amp;1 || echo &quot;clone:$line&quot; &gt;&gt; $&#123;sync_code_base&#125;/clone_error.log    cd $&#123;line##*/&#125;.git    git remote set-url origin git@$&#123;NewDomain&#125;:$&#123;line&#125;.git    git push -f origin &gt;&gt; $&#123;sync_code_base&#125;/sync.log 2&gt;&amp;1 || echo &quot;sync:$line&quot; &gt;&gt; $&#123;sync_code_base&#125;/sync_error.log    cd /export/sync/sync_code    let num++done &lt; $&#123;sync_code_base&#125;/project.path &amp;</code></pre><pre><code>cd ..</code></pre></li><li><p>初始化新用户密码</p><pre><code>mkdir init_password; cd init_password;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot; |  jq '.[] |.id, .name, .username' |  sed 'N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; user.id;cat user.id | while read id name nameuser;do  curl --request PUT --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; --data &quot;password=$&#123;nameuser&#125;@123&quot; http://$&#123;NewDomain&#125;/api/v4/users/$&#123;id&#125;;donecd ..</code></pre></li><li><p>同步用户公钥信息</p><pre><code>mkdir sync_user_pub &amp;&amp; cd sync_user_pub;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/users?per_page=100&amp;page=$i&quot;  |  jq '.[] |.id, .name, .username' |  sed 'N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; old_users.id;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot;  |  jq '.[] |.id, .name, .username' |  sed 'N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; new_users.id;cat old_users.id | while read old_current_id name username;do    new_current_id=`grep $username new_users.id | awk '&#123;print $1&#125;'`    curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; http://$&#123;OldDomain&#125;/api/v3/users/$&#123;old_current_id&#125;/keys | jq '.[]|.title,.key' | sed 'N;s/\n/\t/;s/&quot;//g' | while read  current_title current_key;do        curl --request POST --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; --data-urlencode &quot;title=$&#123;current_title&#125;&quot; --data-urlencode &quot;key=$&#123;current_key&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users/$&#123;new_current_id&#125;/keys&quot;    donedone</code></pre></li><li><p>如果出现push故障，则删除新服务器的项目, 并重新push</p><pre><code>sync_code_base=/export/sync/sync_codecd $&#123;sync_code_base&#125;# 准备好 delete.path 文件，内部一行一个 project.path_with_namespacefor i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/projects?per_page=100&amp;page=$i&quot; | jq '.[]|.id, .path_with_namespace'| sed 'N;s#\n#\t#g;s# #-#g;s#&quot;##g';done &gt; project-path-id.allwhile read line;do grep $line project-path-id.all ;done &lt; delete.path &gt; delete.path.idwhile read id path;do curl -s --request DELETE --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/projects/$&#123;id&#125;;sleep 5;cd $&#123;path&#125;.git;git push -f origin ;cd $&#123;sync_code_base&#125;;done &lt; delete.path.id</code></pre></li><li><p>删除新服务器的项目组</p><pre><code>mkdir delete_group &amp;&amp; cd delete_group;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups?per_page=100&amp;page=$i&quot; | jq '.[] | .id';done &gt;&gt; group.id;cat group.id | while read id;do curl -s --request DELETE --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/groups/$&#123;id&#125;;done;</code></pre></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 其他 </category>
-          
-          <category> git </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> gitlab </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>nginx ☞ 泛域名_变量截取</title>
       <link href="posts/78ceb386/"/>
       <url>posts/78ceb386/</url>
@@ -4366,6 +4339,33 @@
         <tags>
             
             <tag> nginx </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>gitlab☞大版本迁移</title>
+      <link href="posts/a38d0013/"/>
+      <url>posts/a38d0013/</url>
+      
+        <content type="html"><![CDATA[<h1>前言</h1><ul><li>现在 gitlab 官方包升级很容易，直接 yum 之类的就可以，之所以有这篇文章，是因为我要从 v7 升级到 v11, 数据库也从 mysql 转变为了 pgsql;而且 v7 当时用的是 bitnami 安装的。所以无奈之下，就准备用 api 进行迁移，因而遗漏之处是肯定有的。</li></ul><h1>正文</h1><ul><li><p>Token变量定义[Token不同版本获取方式不一样，但是总归都是从web用户界面能直接拿到的], Token需要是最大权限用户，且拥有所有的项目权限</p><pre><code>export OldToken=su2GwpNeVQexport NewToken=yTVZTPeussexport OldDomain=git.a.comexport NewDomain=git.b.com</code></pre><blockquote><p>gitlab 不同版本的 api 版本不一样，本文档是从 7 迁移到 11，所以 api 版本也是从 v3 到 v4<br>gitlab 的 api 默认一次最多获取100条信息，所以需要进行分页获取<br>per_page 每页信息条数 page 页数<br>所以信息太多的自行分页即可</p></blockquote></li><li><p>迁移用户</p><blockquote><p>下面代码，并不迁移用户的公钥信息</p></blockquote><pre><code>mkdir create_user &amp;&amp; cd create_user;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/users?per_page=100&amp;page=$i&quot; | jq '.[] |.name, .username, .state, .email, .can_create_group, .can_create_project' | sed 'N;N;N;N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; users.list;while read name username state email can_create_group can_create_project;do    curl --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; --data &quot;name=$name&amp;username=$username&amp;password=$&#123;username&#125;@123456&amp;state=$state&amp;email=$email&amp;can_create_group=$can_create_group&amp;can_create_project=$can_create_project&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users&quot;done &lt; users.listcd ..</code></pre></li><li><p>创建项目组</p><pre><code>mkdir create_group &amp;&amp; cd create_group;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/groups?per_page=100&amp;page=$i&quot; | jq '.[] |.name, .path' | sed 'N;s#\n# #;s#&quot;##g';done &gt; group.list;echo 'repo repo' &gt;&gt; group.list;cat group.list | while read name path;do curl --request POST --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; --data &quot;name=$name&amp;path=$path&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups&quot;;donecd ..</code></pre></li><li><p>创建项目到对应组</p><pre><code>mkdir create_project &amp;&amp; cd create_project;</code></pre><pre><code>for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.name, .namespace.name, .description' | sed 'N;N;s#\n#\t#g;s# #-#g;s#&quot;##g';done  &gt;&gt; project.list;mv  project.list project.list.tmp;cat project.list.tmp | sort | uniq &gt; project.list;rm -rf project.list.tmp;</code></pre><pre><code># 这里 pre_page 不起作用for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups?page=$i&quot; | jq '.[] | .id, .name' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; group.id</code></pre><pre><code>cat project.list | while read projectname groupname des;do    newgroupid=`egrep &quot;\b$&#123;groupname&#125;\b&quot; ./group.id | awk '&#123;print $1&#125;'`    curl --request POST --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot;  --data &quot;name=$&#123;projectname&#125;&amp;namespace_id=$&#123;newgroupid&#125;&amp;description=$des&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/projects&quot;donecd ..</code></pre></li><li><p>添加用户到组</p><pre><code>mkdir add_user_group &amp;&amp; cd add_user_group;</code></pre><pre><code>for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/groups?page=$i&quot; | jq '.[] | .id, .name' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; group.old.id;cp ../create_project/group.id ./group.new.id;#curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups&amp;page=1&quot; | jq '.[] | .id, .name' | sed 'N;s#\n# #g;s#&quot;##g' &gt;&gt; group.new.id;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot;  | jq '.[] | .id,.username' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; new_user.id;</code></pre><pre><code>cat ./group.old.id | while read groupid groupname;do    curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; http://$&#123;OldDomain&#125;/api/v3/groups/$&#123;groupid&#125;/members | jq '.[] | .id, .username, .access_level' |sed 'N;N;s#\n# #g;s#&quot;##g' | while read nameid username level;do        newid=`egrep &quot;\b$&#123;username&#125;\b&quot; ./new_user.id| awk '&#123;print $1&#125;'`        newgid=`egrep &quot;\b$&#123;groupname&#125;\b&quot; ./group.new.id|awk '&#123;print $1&#125;'`curl --request POST --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; --data &quot;user_id=$&#123;newid&#125;&amp;access_level=$&#123;level&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/groups/$&#123;newgid&#125;/members    donedonecd ..</code></pre></li><li><p>添加用户到项目</p><pre><code>mkdir add_user_project &amp;&amp; cd add_user_project;</code></pre><pre><code>for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.id, .name, .namespace.name' | sed 'N;N;s#\n# #g;s#&quot;##g';done  &gt;&gt; project.old.id;mv  project.old.id project.old.id.tmp;cat project.old.id.tmp | sort | uniq &gt; project.old.id;rm -rf project.old.id.tmp;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.id, .name, .namespace.name' | sed 'N;N;s#\n# #g;s#&quot;##g';done  &gt;&gt; project.new.id;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot;  | jq '.[] | .id,.username' | sed 'N;s#\n# #g;s#&quot;##g';done &gt;&gt; new_user.id;</code></pre><pre><code>cat ./project.old.id | while read projectid projectname groupname;do    curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; http://$&#123;OldDomain&#125;/api/v3/projects/$&#123;projectid&#125;/members | jq '.[] | .id, .username, .access_level' |sed 'N;N;s#\n# #g;s#&quot;##g' | while read nameid username level;do        newid=`egrep &quot;\b$&#123;username&#125;\b&quot; ./new_user.id| awk '&#123;print $1&#125;'`        newpid=`egrep &quot;\b$&#123;projectname&#125; $&#123;groupname&#125;\b&quot; ./project.new.id|awk '&#123;print $1&#125;'`        #echo &quot;$projectid $projectname $groupname $username &gt; $newpid $projectname $groupname&quot;curl --request POST --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; --data &quot;user_id=$&#123;newid&#125;&amp;access_level=$&#123;level&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/projects/$&#123;newpid&#125;/members    donedonecd ..</code></pre></li><li><p>代码迁移</p><pre><code>mkdir sync_code &amp;&amp; cd sync_code;#for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot;  | jq '.[] |.name, .namespace.name, .description' | sed 'N;N;s#\n#\t#g;s# #-#g;s#&quot;##g';done  &gt;&gt; project.list;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/projects?per_page=100&amp;page=$i&quot; | jq '.[] |.path_with_namespace' | sed 's#&quot;##g';done &gt;&gt; project.path;</code></pre><pre><code># 将本代码框的代码保存到 start.sh 并执行(确保sync_code_base变量路径准确)num=1sync_code_base=/export/sync/sync_codenohup while read line;do     echo &quot;$num: -------------------------$line-------------------------&quot; &gt;&gt; $&#123;sync_code_base&#125;/sync.log    [[ -d $&#123;line%%/*&#125; ]] || mkdir $&#123;line%%/*&#125;    cd $&#123;line%%/*&#125;    git clone --mirror git@$&#123;OldDomain&#125;:$&#123;line&#125;.git &gt;&gt; $&#123;sync_code_base&#125;/sync.log 2&gt;&amp;1 || echo &quot;clone:$line&quot; &gt;&gt; $&#123;sync_code_base&#125;/clone_error.log    cd $&#123;line##*/&#125;.git    git remote set-url origin git@$&#123;NewDomain&#125;:$&#123;line&#125;.git    git push -f origin &gt;&gt; $&#123;sync_code_base&#125;/sync.log 2&gt;&amp;1 || echo &quot;sync:$line&quot; &gt;&gt; $&#123;sync_code_base&#125;/sync_error.log    cd /export/sync/sync_code    let num++done &lt; $&#123;sync_code_base&#125;/project.path &amp;</code></pre><pre><code>cd ..</code></pre></li><li><p>初始化新用户密码</p><pre><code>mkdir init_password; cd init_password;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot; |  jq '.[] |.id, .name, .username' |  sed 'N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; user.id;cat user.id | while read id name nameuser;do  curl --request PUT --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; --data &quot;password=$&#123;nameuser&#125;@123&quot; http://$&#123;NewDomain&#125;/api/v4/users/$&#123;id&#125;;donecd ..</code></pre></li><li><p>同步用户公钥信息</p><pre><code>mkdir sync_user_pub &amp;&amp; cd sync_user_pub;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; &quot;http://$&#123;OldDomain&#125;/api/v3/users?per_page=100&amp;page=$i&quot;  |  jq '.[] |.id, .name, .username' |  sed 'N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; old_users.id;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users?per_page=100&amp;page=$i&quot;  |  jq '.[] |.id, .name, .username' |  sed 'N;N;s#\n# #g;s#&quot;##g';done &gt;&gt; new_users.id;cat old_users.id | while read old_current_id name username;do    new_current_id=`grep $username new_users.id | awk '&#123;print $1&#125;'`    curl -s --header &quot;PRIVATE-TOKEN: $&#123;OldToken&#125;&quot; http://$&#123;OldDomain&#125;/api/v3/users/$&#123;old_current_id&#125;/keys | jq '.[]|.title,.key' | sed 'N;s/\n/\t/;s/&quot;//g' | while read  current_title current_key;do        curl --request POST --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; --data-urlencode &quot;title=$&#123;current_title&#125;&quot; --data-urlencode &quot;key=$&#123;current_key&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/users/$&#123;new_current_id&#125;/keys&quot;    donedone</code></pre></li><li><p>如果出现push故障，则删除新服务器的项目, 并重新push</p><pre><code>sync_code_base=/export/sync/sync_codecd $&#123;sync_code_base&#125;# 准备好 delete.path 文件，内部一行一个 project.path_with_namespacefor i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/projects?per_page=100&amp;page=$i&quot; | jq '.[]|.id, .path_with_namespace'| sed 'N;s#\n#\t#g;s# #-#g;s#&quot;##g';done &gt; project-path-id.allwhile read line;do grep $line project-path-id.all ;done &lt; delete.path &gt; delete.path.idwhile read id path;do curl -s --request DELETE --header &quot;PRIVATE-TOKEN:$&#123;NewToken&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/projects/$&#123;id&#125;;sleep 5;cd $&#123;path&#125;.git;git push -f origin ;cd $&#123;sync_code_base&#125;;done &lt; delete.path.id</code></pre></li><li><p>删除新服务器的项目组</p><pre><code>mkdir delete_group &amp;&amp; cd delete_group;for i in `seq 1 15`;do curl -s --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; &quot;http://$&#123;NewDomain&#125;/api/v4/groups?per_page=100&amp;page=$i&quot; | jq '.[] | .id';done &gt;&gt; group.id;cat group.id | while read id;do curl -s --request DELETE --header &quot;PRIVATE-TOKEN: $&#123;NewToken&#125;&quot; http://$&#123;NewDomain&#125;/api/v4/groups/$&#123;id&#125;;done;</code></pre></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 其他 </category>
+          
+          <category> git </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> gitlab </tag>
             
         </tags>
       

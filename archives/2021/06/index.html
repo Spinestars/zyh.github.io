@@ -2613,17 +2613,17 @@ wordpress/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/932d1f08/">
+			<a href="/posts/451721ed/">
 				<h2 class="index-title">
-					k8s☞17-1调度之node污染和pod容忍
+					k8s☞18日志系统
 				</h2>
 				<div class="index-brief">
-					引用
-概念文档：污点和容忍度 | Kubernetes
-命令文档：Kubectl Reference Docs (kubernetes.io)
-污点/容忍概念
-Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。
-Node的污点规则由两部分组成：污点:污点效果。
+					前言
+k8s的集群日志收集结构，一般分为下面几种：
+
+集群模式，节点级收集器，节点级收集器收集
+边车容器模式，边车容器只负责将日志流式传输到stdout和stderr，节点级收集器进行收集
+边车容器模式，边车容器直接从应用程序那收集日志，边车级收集器进行收集
 
 
 					...
@@ -2656,17 +2656,17 @@ Node的污点规则由两部分组成：污点:污点效果。
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/451721ed/">
+			<a href="/posts/932d1f08/">
 				<h2 class="index-title">
-					k8s☞18日志系统
+					k8s☞17-1调度之node污染和pod容忍
 				</h2>
 				<div class="index-brief">
-					前言
-k8s的集群日志收集结构，一般分为下面几种：
-
-集群模式，节点级收集器，节点级收集器收集
-边车容器模式，边车容器只负责将日志流式传输到stdout和stderr，节点级收集器进行收集
-边车容器模式，边车容器直接从应用程序那收集日志，边车级收集器进行收集
+					引用
+概念文档：污点和容忍度 | Kubernetes
+命令文档：Kubectl Reference Docs (kubernetes.io)
+污点/容忍概念
+Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。
+Node的污点规则由两部分组成：污点:污点效果。
 
 
 					...
@@ -2738,15 +2738,14 @@ prom/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/7fd13722/">
+			<a href="/posts/978d0c1d/">
 				<h2 class="index-title">
-					prometheus☞06rabbitmq监控
+					prometheus☞04redis监控
 				</h2>
 				<div class="index-brief">
 					前言
 Awesome Prometheus alerts | Collection of alerting rules (grep.to)
-Monitoring with Prometheus &amp; Grafana — RabbitMQ
-RabbitMQ-Overview dashboard 
+oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis 
 					...
 				</div>
 			</a>
@@ -2777,14 +2776,15 @@ RabbitMQ-Overview dashboard
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/978d0c1d/">
+			<a href="/posts/7fd13722/">
 				<h2 class="index-title">
-					prometheus☞04redis监控
+					prometheus☞06rabbitmq监控
 				</h2>
 				<div class="index-brief">
 					前言
 Awesome Prometheus alerts | Collection of alerting rules (grep.to)
-oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis 
+Monitoring with Prometheus &amp; Grafana — RabbitMQ
+RabbitMQ-Overview dashboard 
 					...
 				</div>
 			</a>

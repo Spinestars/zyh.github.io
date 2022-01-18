@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		k8s☞18日志收集系统 | 
+		k8s☞18日志系统 | 
 	 
 	zyh
 	</title>
@@ -625,6 +625,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -711,6 +722,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -880,7 +902,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -944,9 +966,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file active">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1200,17 +1233,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1760,7 +1782,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2464,12 +2486,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	k8s☞18日志收集系统
+	k8s☞18日志系统
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/3511df2/" class="leancloud_visitors" data-flag-title="k8s☞18日志收集系统"></span>
+			阅读量:<span id="/posts/451721ed/" class="leancloud_visitors" data-flag-title="k8s☞18日志系统"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2506,7 +2528,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/容器/">容器</a>
+                        <a href="/tags/k8s/">k8s</a>
                         </i>
                     </span>
                 
@@ -2514,7 +2536,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/k8s/">k8s</a>
+                        <a href="/tags/容器/">容器</a>
                         </i>
                     </span>
                 
@@ -2526,6 +2548,12 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
+<p>k8s的集群日志收集结构，一般分为下面几种：</p>
+<ol>
+<li>集群模式，节点级收集器，节点级收集器收集</li>
+<li>边车容器模式，边车容器只负责将日志流式传输到stdout和stderr，节点级收集器进行收集</li>
+<li>边车容器模式，边车容器直接从应用程序那收集日志，边车级收集器进行收集</li>
+</ol>
 
 </div>
 
@@ -2533,16 +2561,16 @@ var _hmt = _hmt || [];
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/710e3e49/">
+              <a href="/posts/932d1f08/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  helm☞02chart
+                  k8s☞17-1调度之node污染和pod容忍
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/932d1f08/">
-                k8s☞17-1调度之node污染和pod容忍
+              <a href="/posts/6178b477/">
+                prometheus☞04mysql监控
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

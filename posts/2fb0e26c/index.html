@@ -625,6 +625,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -711,6 +722,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -880,7 +902,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -944,9 +966,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1200,17 +1233,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1760,7 +1782,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2532,21 +2554,17 @@ var _hmt = _hmt || [];
 <ol>
 <li>添加用户</li>
 </ol>
-<pre><code class="language-bash"># 创建kafka之间通信用户
-bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=broker]' --entity-type users --entity-name broker
-# 创建客户端访问kafka的用户
-bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=123456]' --entity-type users --entity-name elk
+<pre><code class="language-bash"># 创建超级用户
+bin/kafka-configs.sh --zookeeper kafka001:2181 --alter --add-config 'SCRAM-SHA-256=[password=broker]' --entity-type users --entity-name broker
 </code></pre>
-<p>⚠️<code>broker</code>用户用于brokers之间通信，此用户必须在kafka启动之前创建。</p>
 <ol start="2">
-<li>列出当前用户列表</li>
+<li>超管客户端配置<code>config/my.tools.properties</code></li>
 </ol>
-<pre><code class="language-bash">bin/kafka-configs.sh --zookeeper localhost:2181 --describe --entity-type users --entity-name elk
-</code></pre>
-<ol start="3">
-<li>删除用户</li>
-</ol>
-<pre><code class="language-bash">bin/kafka-configs.sh --zookeeper localhost:2181 --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name elk
+<pre><code class="language-properties">security.protocol=SASL_PLAINTEXT
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
+  username=&quot;broker&quot; \
+  password=&quot;broker&quot;;
 </code></pre>
 <h2 id="追加kafka配置-认证端口">追加kafka配置:认证端口</h2>
 <p>添加broker之间的认证信息和认证端口配置到<code>config/server.properties</code></p>
@@ -2573,6 +2591,22 @@ listener.name.sasl_plaintext.scram-sha-256.sasl.jaas.config=org.apache.kafka.com
 <p><code>sasl.enabled.mechanisms</code> 开启访问broker的认证通信机制sasl，以及配置所用的机制算法</p>
 <p><code>sasl.mechanism.inter.broker.protocol</code> 开启broker之间认证通信机制sasl，以及配置所用的机制算法</p>
 <p>ℹ️相对于<a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_sasl_plain">SASL/PLAIN</a>算法将用户数据放在本地，<a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法将用户数据存放在zk。因此<a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_sasl_scram">SASL/SCRAM</a>算法可以动态的增删用户.</p>
+<ol start="3">
+<li>创建客户端访问kafka的用户</li>
+</ol>
+<pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka001:8123  --command-config config/my.tools.properties --alter --add-config 'SCRAM-SHA-256=[password=123456]' --entity-type users --entity-name elk
+</code></pre>
+<p>⚠️<code>broker</code>用户用于brokers之间通信，此用户必须在kafka启动之前创建。</p>
+<ol start="4">
+<li>列出当前某个用户配置</li>
+</ol>
+<pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka001:8123  --command-config config/my.tools.properties --describe --entity-type users --entity-name elk
+</code></pre>
+<ol start="5">
+<li>删除用户</li>
+</ol>
+<pre><code class="language-bash">bin/kafka-configs.sh --bootstrap-server kafka001:8123  --command-config config/my.tools.properties --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name elk
+</code></pre>
 <h2 id="授权ACL">授权ACL</h2>
 <p><a target="_blank" rel="noopener" href="http://kafka.apache.org/documentation/#security_authz">http://kafka.apache.org/documentation/#security_authz</a></p>
 <ol>
@@ -2615,14 +2649,6 @@ allow.everyone.if.no.acl.found=false
 <p>–resource-pattern-type 匹配类型，常用的有前缀匹配 prefixed</p>
 <p>–topic 以字符串匹配的主题</p>
 <p>–command-config 指定管理员配置文件</p>
-<h3 id="超管客户端配置">超管客户端配置</h3>
-<p>超管客户端配置<code>config/my.tools.properties</code></p>
-<pre><code class="language-properties">security.protocol=SASL_PLAINTEXT
-sasl.mechanism=SCRAM-SHA-256
-sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
-  username=&quot;broker&quot; \
-  password=&quot;broker&quot;;
-</code></pre>
 <h3 id="绑定写入权限">绑定写入权限</h3>
 <pre><code class="language-bash">bin/kafka-acls.sh \
 --bootstrap-server kafka1:8123 \

@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2464,6 +2486,86 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/d3b80b5f/">
+				<h2 class="index-title">
+					k8s☞08负载均衡service
+				</h2>
+				<div class="index-brief">
+					前言
+在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公/内网发布后端程序。
+k8s设计了一个service对象来实现这一目的.
+k8sIP
+在提
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-16</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f6e328b5/">
+				<h2 class="index-title">
+					k8s☞07自动扩缩
+				</h2>
+				<div class="index-brief">
+					基本
+k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。
+k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。
+手动缩放
+
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/18e4fa73/">
 				<h2 class="index-title">
 					k8s☞06无状态服务deployment
@@ -2547,15 +2649,15 @@ terminated，容器退出
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/94518966/">
+			<a href="/posts/3ec72f7e/">
 				<h2 class="index-title">
-					k8s☞03Pod
+					k8s☞04Pod-init容器 - 容器 - k8s - pod
 				</h2>
 				<div class="index-brief">
-					前言
-pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器， 可以类比为ecs/ec2上的app程序.
-你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP，你会更有这种感觉.
-https://kubernete
+					使用场景
+
+Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 sed、awk、python 或 dig 这样的工具而去 FROM 一个镜像来生成一个新的镜像。
+Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性
 					...
 				</div>
 			</a>
@@ -2586,15 +2688,15 @@ https://kubernete
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3ec72f7e/">
+			<a href="/posts/94518966/">
 				<h2 class="index-title">
-					k8s☞04Pod-init容器 - 容器 - k8s - pod
+					k8s☞03Pod
 				</h2>
 				<div class="index-brief">
-					使用场景
-
-Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 sed、awk、python 或 dig 这样的工具而去 FROM 一个镜像来生成一个新的镜像。
-Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性
+					前言
+pod 可以说是 k8s 的基础单元. 我觉得可以类比云环境的ecs/ec2这一类的基本计算单元.而 pod 上运行的容器， 可以类比为ecs/ec2上的app程序.
+你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP，你会更有这种感觉.
+https://kubernete
 					...
 				</div>
 			</a>
@@ -2789,100 +2891,10 @@ cat
                 </div>
 		</div>	
 	
-		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
-				<h2 class="index-title">
-					docker☞01安装
-				</h2>
-				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-
-仓库
-
-官方 repo: https://download.docker.com/linux/centos/docker-ce.repo
-
-yum-conf
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/aaf9b7/">
-				<h2 class="index-title">
-					k8s☞01常见术语概念
-				</h2>
-				<div class="index-brief">
-					前言
-Kubernetes 组件 | Kubernetes
-词汇表 | Kubernetes
-结构图
-
-
-
-Control Plane 是 k8s 的 master 节点，负责协调集群中的所有活动，例如调度应用程序、维护应用程序的所需状态、扩展应用程序和滚动更新。
-
-control plane 和 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/categories/%E5%AE%B9%E5%99%A8/page/2/">&lt;</a><a class="page-number" href="/categories/%E5%AE%B9%E5%99%A8/">1</a><a class="page-number" href="/categories/%E5%AE%B9%E5%99%A8/page/2/">2</a><span class="page-number current">3</span>
+			<a class="extend prev" rel="prev" href="/categories/%E5%AE%B9%E5%99%A8/page/2/">&lt;</a><a class="page-number" href="/categories/%E5%AE%B9%E5%99%A8/">1</a><a class="page-number" href="/categories/%E5%AE%B9%E5%99%A8/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/categories/%E5%AE%B9%E5%99%A8/page/4/">4</a><a class="extend next" rel="next" href="/categories/%E5%AE%B9%E5%99%A8/page/4/">&gt;</a>
 		
 	</div>
 </div>

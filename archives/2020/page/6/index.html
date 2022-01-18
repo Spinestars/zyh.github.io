@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2783,38 +2805,21 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					zabbix☞redis
+					zabbix ☞ nginx
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
 
 
+1，nginx增加配置 server_status.server
 
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -2845,19 +2850,17 @@ redis_info[&#123;#IP&#12
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1587f6e8/">
+			<a href="/posts/3d20f83e/">
 				<h2 class="index-title">
-					zabbix☞agent和proxy（yum）
+					zabbix☞web监控
 				</h2>
 				<div class="index-brief">
-					
-https://repo.zabbix.com/zabbix/
-
-导入 zabbix 源
-rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
-
-agent 安装
-
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 					...
 				</div>
 			</a>

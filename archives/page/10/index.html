@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2464,6 +2486,92 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/445cf088/">
+				<h2 class="index-title">
+					nginx☞日志切割脚本
+				</h2>
+				<div class="index-brief">
+					前言
+本脚本用于将 nginx 日志进行时间周期切割，并 lzo 压缩，最终上传到 s3。
+脚本分为三个函数，切割函数，压缩上传函数，删除函数，需要执行哪个，就填写相对应变量。
+详情可以看脚本注释。
+
+请务必执行前，确认安装了 lzop 和 jq 命令 ，且机器是 aws EC2
+
+脚本在此
+#!/
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/">web</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/web/nginx/">nginx</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/65ab632a/">
+				<h2 class="index-title">
+					redis☞安装
+				</h2>
+				<div class="index-brief">
+					docker 安装
+Docker Hub
+redisName=redis
+versionTag=6
+dataPath=/export/docker-data-redis
+mkdir -p $&#123;dataPath&#125;
+# redis.conf 请参考官方默认配置文档，默认配置文档地址：
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/redis/">redis</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/421d605e/">
 				<h2 class="index-title">
 					日志☞logrotate安装
@@ -2505,38 +2613,62 @@ logrotate 版本更新
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6c093771/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					zabbix☞redis
+					zabbix ☞ nginx
 				</h2>
 				<div class="index-brief">
-					zabbix 模板
-
-自动发现规则
-
-
-
-
-过滤器
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
 
 
+1，nginx增加配置 server_status.server
 
-监控项原型
-
-
-
-名称
-键值
-间隔
-历史记录
-趋势
-类型
-
-
-
-
-&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
-redis_info[&#123;#IP&#12
+cat &gt; /usr/local/nginx/
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3d20f83e/">
+				<h2 class="index-title">
+					zabbix☞web监控
+				</h2>
+				<div class="index-brief">
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
 					...
 				</div>
 			</a>
@@ -2610,62 +2742,38 @@ agent 安装
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/6c093771/">
 				<h2 class="index-title">
-					zabbix☞web监控
+					zabbix☞redis
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/b35b5965/">
-				<h2 class="index-title">
-					zabbix ☞ nginx
-				</h2>
-				<div class="index-brief">
-					
-确保相关目录地址如下：
-/etc/zabbix/shell
-/etc/zabbix/zabbix_agentd.d
-/usr/local/nginx/conf/server
+					zabbix 模板
+
+自动发现规则
 
 
-1，nginx增加配置 server_status.server
 
-cat &gt; /usr/local/nginx/
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
 					...
 				</div>
 			</a>
@@ -2705,38 +2813,6 @@ cat &gt; /usr/local/nginx/
 wechatUrl=
 wechatData=
 curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/1fac36d/">
-				<h2 class="index-title">
-					监控 ☞ 远程磁盘检测
-				</h2>
-				<div class="index-brief">
-					#!/bin/bash 
-# 文件名：disklog.sh 
-# 用途：监视远程系统的磁盘使用情况 
-BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
-cd $BaseDir
-logfile=&quot;disk.log&quot; 
-i
 					...
 				</div>
 			</a>
@@ -2818,50 +2894,6 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f43dca37/">
-				<h2 class="index-title">
-					ansible☞playbook-过滤器
-				</h2>
-				<div class="index-brief">
-					前言
-不管是过滤器，lookup，query，with_xxx，很多都是获取我们想要的信息。
-过滤器
-
-https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html
-
-
-处理变量值，从而获取想要的信息.
-过滤器本身
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
 										
                                     </span>
                                 

@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2464,6 +2486,88 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/63d8d3d4/">
+				<h2 class="index-title">
+					k8s☞12-1DaemonSet
+				</h2>
+				<div class="index-brief">
+					基础
+DaemonSet 确保符合规则的 k8s node 上都存在一份 pod。常用来构建节点常驻性的app. 例如监控节点的app， 或者采集节点日志的app，以及网络app等。
+特点
+
+
+调度在所有符合条件的node上。
+
+
+当DaemonSet创建或删除， 则指定节点上的 pod 都会创建或
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-20</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/ed4c29d5/">
+				<h2 class="index-title">
+					k8s☞11-2namespace资源约束LimitRange
+				</h2>
+				<div class="index-brief">
+					基本
+https://kubernetes.io/docs/concepts/policy/limit-range/
+namespace 资源约束(LimitRange)提供默认的Pod资源约束，并防止命名空间内的Pod资源配置超出管理员允许的预期范围。若超出则不允许创建，从而让我们可以更方便的管理
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-09-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/64fa9c84/">
 				<h2 class="index-title">
 					k8s☞11-1pod资源约束
@@ -2791,94 +2895,6 @@ terminated，容器退出
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/25f36846/">
-				<h2 class="index-title">
-					zabbix☞容器搭建
-				</h2>
-				<div class="index-brief">
-					创建网络
-docker network create -d bridge zbnet
-
-mysql
-mkdir -p /export/docker-data-mysql/&#123;config,logs,data&#125;
-docker run --name mysql57 \
--p 3306:
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-30</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/c83ca575/">
-				<h2 class="index-title">
-					mysql☞离线迁移脚本
-				</h2>
-				<div class="index-brief">
-					databases=&quot;&quot;
-
-
-mysqltonew()&#123;
-    olddatabasehost=
-    olddatabaseport=
-    olddatabase=$1
-    oldUserName=
-    oldpassword=
-
-    newdat
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-08-29</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/mysql/">mysql</a>
 										
                                     </span>
                                 

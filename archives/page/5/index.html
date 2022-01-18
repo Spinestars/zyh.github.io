@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2464,6 +2486,74 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/7c44c2e8/">
+				<h2 class="index-title">
+					web☞服务器承载能力计算
+				</h2>
+				<div class="index-brief">
+					前言
+我们在评估一个系统需要多少个服务器来支撑的时候，一般会涉及到多个点。
+
+pv
+qps
+并发
+平均响应时间
+
+如果你已经搜索过相关站点，你会看到一个公式：并发=qps*平均响应时间
+说实话，这个公式很蛋疼，猛地一看让人一脸懵逼。这里我按照我的方式来说一下。
+首先将公式变形， QPS = 工作进程
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-31</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/7538d100/">
+				<h2 class="index-title">
+					k8s☞16kubeadm集群升级
+				</h2>
+				<div class="index-brief">
+					前言
+https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+⚠️ 务必先看此页面，因为不能跨多个版本升级。需要根据当前版本一步一步升级。
+分为两部分，升级核心节点和升级工作节点.
+升级控制平面节点 C
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/55da993d/">
 				<h2 class="index-title">
 					k8s☞15证书管理
@@ -2778,95 +2868,6 @@ main函数里调用函数A
 			</a>
                 <div class="article-meta">
 				    <span>2020-10-06</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/8a6b5455/">
-				<h2 class="index-title">
-					go☞004条件语句
-				</h2>
-				<div class="index-brief">
-					前言
-常见的if就不说了
-switch
-case后面的值匹配了变量，就执行对应代码，否则执行default代码
-switch 变量/常量 &#123;
-    case 值1:
-        ...
-    case 值2, 值3:
-        ...
-    default:
-       
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/98f86e16/">
-				<h2 class="index-title">
-					go☞005函数
-				</h2>
-				<div class="index-brief">
-					前言
-如果有参数，则需提供参数类型
-如果有返回值，则需提供返回值类型
-结构
-func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
-    ...
-    return rtn_value
-&#125
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-04</span>
                     
                             
                                 

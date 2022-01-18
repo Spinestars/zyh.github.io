@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2510,45 +2532,6 @@ spec:
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/51015304/">
-				<h2 class="index-title">
-					helm☞01入门
-				</h2>
-				<div class="index-brief">
-					前言
-helm： k8s的包管理器，这里是v3版本
-大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
-chart仓库：存储chart程序包，不包含程序，是一个
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-06-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/helm/">helm</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/710e3e49/">
 				<h2 class="index-title">
 					helm☞02chart
@@ -2591,12 +2574,57 @@ wordpress/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3511df2/">
+			<a href="/posts/51015304/">
 				<h2 class="index-title">
-					k8s☞18日志收集系统
+					helm☞01入门
 				</h2>
 				<div class="index-brief">
 					前言
+helm： k8s的包管理器，这里是v3版本
+大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
+chart仓库：存储chart程序包，不包含程序，是一个
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-06-17</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/helm/">helm</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/932d1f08/">
+				<h2 class="index-title">
+					k8s☞17-1调度之node污染和pod容忍
+				</h2>
+				<div class="index-brief">
+					引用
+概念文档：污点和容忍度 | Kubernetes
+命令文档：Kubectl Reference Docs (kubernetes.io)
+污点/容忍概念
+Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。
+Node的污点规则由两部分组成：污点:污点效果。
+
 
 					...
 				</div>
@@ -2628,17 +2656,17 @@ wordpress/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/932d1f08/">
+			<a href="/posts/451721ed/">
 				<h2 class="index-title">
-					k8s☞17-1调度之node污染和pod容忍
+					k8s☞18日志系统
 				</h2>
 				<div class="index-brief">
-					引用
-概念文档：污点和容忍度 | Kubernetes
-命令文档：Kubectl Reference Docs (kubernetes.io)
-污点/容忍概念
-Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。
-Node的污点规则由两部分组成：污点:污点效果。
+					前言
+k8s的集群日志收集结构，一般分为下面几种：
+
+集群模式，节点级收集器，节点级收集器收集
+边车容器模式，边车容器只负责将日志流式传输到stdout和stderr，节点级收集器进行收集
+边车容器模式，边车容器直接从应用程序那收集日志，边车级收集器进行收集
 
 
 					...
@@ -2710,6 +2738,44 @@ prom/
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/978d0c1d/">
+				<h2 class="index-title">
+					prometheus☞04redis监控
+				</h2>
+				<div class="index-brief">
+					前言
+Awesome Prometheus alerts | Collection of alerting rules (grep.to)
+oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis 
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-06-15</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/prometheus/">prometheus</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/7fd13722/">
 				<h2 class="index-title">
 					prometheus☞06rabbitmq监控
@@ -2749,44 +2815,6 @@ RabbitMQ-Overview dashboard
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/978d0c1d/">
-				<h2 class="index-title">
-					prometheus☞04redis监控
-				</h2>
-				<div class="index-brief">
-					前言
-Awesome Prometheus alerts | Collection of alerting rules (grep.to)
-oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-06-15</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/prometheus/">prometheus</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/6df9bb76/">
 				<h2 class="index-title">
 					aliyuncli☞安装和基本调用
@@ -2794,9 +2822,9 @@ oliver006/redis_exporter: Prometheus Exporter for Redis Metrics. Supports Redis
 				<div class="index-brief">
 					前言
 aliyun cli指令还不是太完善，并不是完全支持所有的阿里云产品，对标的是awscli
-因此，建议时刻关注 aliyun-cli/CHANGELOG.md at master · aliyun/aliyun-cli (github.com) 产品变化页面。
+因此，建议时刻关注 https://github.com/aliyun/aliyun-cli/releases 产品变化页面。
 安装
-wget 'https:/
+wget 'https://aliyuncli.alicdn.com
 					...
 				</div>
 			</a>

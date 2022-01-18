@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2464,6 +2486,46 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/7538d100/">
+				<h2 class="index-title">
+					k8s☞16kubeadm集群升级
+				</h2>
+				<div class="index-brief">
+					前言
+https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+⚠️ 务必先看此页面，因为不能跨多个版本升级。需要根据当前版本一步一步升级。
+分为两部分，升级核心节点和升级工作节点.
+升级控制平面节点 C
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-19</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/">容器</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/容器/k8s/">k8s</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/55da993d/">
 				<h2 class="index-title">
 					k8s☞15证书管理
@@ -2589,12 +2651,13 @@ volume 声明存储服务，例如公有云的云盘（aws-ebs，
 		<div class="index-li">
 			<a href="/posts/7627a41d/">
 				<h2 class="index-title">
-					k8s☞13高级版负载均衡ingress
+					k8s☞13高级版负载均衡ingress控制器
 				</h2>
 				<div class="index-brief">
-					前言
-ingress 可以提供负载均衡/SSL管理/虚拟命名主机/path路由. 它的目的是增加7层流量分发等负载功能. 你可以通过 Ingress 将请求转发到各个 Service 对象.
-但是ingress本身并不是规则的执行者. 它只是记录规则, 规则执行者由ingress-controlle
+					基本
+svc的NodePort解决了4层的对外服务提供。但7层的功能svc无法解决。例如https。
+ingress controller 可以将多个域名转发到service，提供负载均衡/SSL管理/虚拟命名主机/path路由。
+ingress controller 负责实现功能，不过配置规则由i
 					...
 				</div>
 			</a>
@@ -2811,46 +2874,6 @@ https://kubernetes.io/docs/concepts/configuration/co
 			</a>
                 <div class="article-meta">
 				    <span>2020-09-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/d3b80b5f/">
-				<h2 class="index-title">
-					k8s☞08负载均衡service
-				</h2>
-				<div class="index-brief">
-					前言
-在实际业务中,因业务压力问题,经常会有多个后端服务副本,它们共同承担请求.我们使用云服务的时候,可以购买阿里云的slb或者aws的elb/alb等负载均衡器向这些后端副本分发流量. 并通过这些负载均衡向公/内网发布后端程序。
-k8s设计了一个service对象来实现这一目的.
-k8sIP
-在提
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-16</span>
                     
                             
                                 

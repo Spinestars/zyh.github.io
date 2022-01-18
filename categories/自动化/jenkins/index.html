@@ -623,6 +623,17 @@ var _hmt = _hmt || [];
 									
 							<ul>
 								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/b7cf7b1f/">
                      
 										    docker☞01安装
@@ -709,6 +720,17 @@ var _hmt = _hmt || [];
 										k8s
 									</a>
 									
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s-20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 							<ul>
 								<li class="file">
 									<a href="/posts/aaf9b7/">
@@ -878,7 +900,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/7627a41d/">
                      
-										    k8s☞13高级版负载均衡ingress
+										    k8s☞13高级版负载均衡ingress控制器
                      
 									</a>
 								</li>
@@ -942,9 +964,20 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/3511df2/">
+									<a href="/posts/451721ed/">
                      
 										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
                      
 									</a>
 								</li>
@@ -1198,17 +1231,6 @@ var _hmt = _hmt || [];
 									<a href="/posts/d8390732/">
                      
 										    日志☞05ELK基本使用-kibana
-                     
-									</a>
-								</li>
-								<div class="article-toc" style="display: none;"></div>
-							</ul>
-			
-							<ul>
-								<li class="file">
-									<a href="/posts/95177ce7/">
-                     
-										    日志☞EFK简单部署-k8s
                      
 									</a>
 								</li>
@@ -1758,7 +1780,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/348cba53/">
                      
-										    windows-wsl dns异常
+										    windows-wsl问题点
                      
 									</a>
 								</li>
@@ -2505,21 +2527,15 @@ jenkinsfile 有声明和脚本两种方式，声明式官方比较推荐。当�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/e4df8a4f/">
+			<a href="/posts/3b5cd3e1/">
 				<h2 class="index-title">
-					jenkins☞003共享库
+					jenkins☞动态agent
 				</h2>
 				<div class="index-brief">
-					结构
-- src
-  - org
-    - devops
-      - tools.groovy // org.devops.tools (class)
-- vars
-- resources
-  - org
-    - devops
-      - bar.json // org.devops.
+					流程
+jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
+凭证信息
+通过 kube config 里的加密信息获
 					...
 				</div>
 			</a>
@@ -2550,15 +2566,21 @@ jenkinsfile 有声明和脚本两种方式，声明式官方比较推荐。当�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3b5cd3e1/">
+			<a href="/posts/e4df8a4f/">
 				<h2 class="index-title">
-					jenkins☞动态agent
+					jenkins☞003共享库
 				</h2>
 				<div class="index-brief">
-					流程
-jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
-凭证信息
-通过 kube config 里的加密信息获
+					结构
+- src
+  - org
+    - devops
+      - tools.groovy // org.devops.tools (class)
+- vars
+- resources
+  - org
+    - devops
+      - bar.json // org.devops.
 					...
 				</div>
 			</a>

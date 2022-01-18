@@ -227,7 +227,7 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/445cf088/">
+									<a href="/posts/9fb0f3a1/">
                      
 										    nginx☞日志切割
                      
@@ -249,7 +249,7 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/445cf088/">
+									<a href="/posts/6332ca50/">
                      
 										    nginx☞问题集
                      
@@ -2486,9 +2486,9 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/445cf088/">
+			<a href="/posts/9fb0f3a1/">
 				<h2 class="index-title">
-					nginx☞日志切割脚本
+					nginx☞日志切割
 				</h2>
 				<div class="index-brief">
 					前言
@@ -2572,17 +2572,18 @@ mkdir -p $&#123;dataPath&#125;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/421d605e/">
+			<a href="/posts/1fac36d/">
 				<h2 class="index-title">
-					日志☞logrotate安装
+					监控 ☞ 远程磁盘检测
 				</h2>
 				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
-
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
+					#!/bin/bash 
+# 文件名：disklog.sh 
+# 用途：监视远程系统的磁盘使用情况 
+BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`
+cd $BaseDir
+logfile=&quot;disk.log&quot; 
+i
 					...
 				</div>
 			</a>
@@ -2593,7 +2594,105 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
+                                        <a href="/categories/监控/">监控</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/f9b08c30/">
+				<h2 class="index-title">
+					监控 ☞ 微信预警
+				</h2>
+				<div class="index-brief">
+					# conf.ini
+[wechat]
+corpid = 
+
+[app]
+it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
+
+[group]
+it = usera|userb
+
+#!/usr/bin/env python3
+
+&quot;&quot;&quot
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/8c33f887/">
+				<h2 class="index-title">
+					监控☞企业微信机器人
+				</h2>
+				<div class="index-brief">
+					shell
+wechatUrl=
+wechatData=
+curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3d20f83e/">
+				<h2 class="index-title">
+					zabbix☞web监控
+				</h2>
+				<div class="index-brief">
+					1. 构建 zabbix_agentd 端配置
+选择一个主机用于发起监控
+# 目录结构
+[root@ip-10-230-10-105 zabbix]# pwd
+/etc/zabbix
+[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
 										
 											>
 										
@@ -2603,7 +2702,7 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -2701,17 +2800,18 @@ cat &gt; /usr/local/nginx/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3d20f83e/">
+			<a href="/posts/f8f9b4d0/">
 				<h2 class="index-title">
-					zabbix☞web监控
+					监控 ☞ 邮件预警
 				</h2>
 				<div class="index-brief">
-					1. 构建 zabbix_agentd 端配置
-选择一个主机用于发起监控
-# 目录结构
-[root@ip-10-230-10-105 zabbix]# pwd
-/etc/zabbix
-[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;
+					# $1 收件人
+# $2 主题
+# $3 内容
+smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
+sendUserEmail='it@abc.com'
+sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
+/usr/
 					...
 				</div>
 			</a>
@@ -2723,16 +2823,6 @@ cat &gt; /usr/local/nginx/
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -2795,105 +2885,6 @@ redis_info[&#123;#IP&#12
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/zabbix/">zabbix</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
-				<h2 class="index-title">
-					监控 ☞ 邮件预警
-				</h2>
-				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/8c33f887/">
-				<h2 class="index-title">
-					监控☞企业微信机器人
-				</h2>
-				<div class="index-brief">
-					shell
-wechatUrl=
-wechatData=
-curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f9b08c30/">
-				<h2 class="index-title">
-					监控 ☞ 微信预警
-				</h2>
-				<div class="index-brief">
-					# conf.ini
-[wechat]
-corpid = 
-
-[app]
-it = &lt;app_agent_id&gt;:&lt;app_secret&gt;
-
-[group]
-it = usera|userb
-
-#!/usr/bin/env python3
-
-&quot;&quot;&quot
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
 										
                                     </span>
                                 

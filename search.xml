@@ -168,11 +168,11 @@
     
     
     <entry>
-      <title>k8s☞20网络</title>
+      <title>k8s☞20网络cni</title>
       <link href="posts/68c615a7/"/>
       <url>posts/68c615a7/</url>
       
-        <content type="html"><![CDATA[<h1>P</h1><p>kubernetes 中的 ip 已 pod 为单位分配，一个 pod 内部所有的容器共享网络命名空间。</p><h1>CNI</h1><p>cni 提供了容器的插件化网络方案，即定义容器网络操作和配置的规范，并通过插件实现规范。</p><p>cni 自身仅关注容器和网络对象。当容器创建的时候，cni就会创建网络，当容器销毁的时候，cni就会删除网络。</p><p>cni 插件分为两部分：</p><ul><li>cni插件：负责配置网络</li><li>ipam插件：负责分配IP地址</li></ul><h1>网络策略</h1><p>network policy 可以对 pod 间的网络通信进行限制以及准入控制，从而控制可以访问 pod 的客户端。</p><p>network controller 通过 cni 插件实现用户定义的 network policy。</p>]]></content>
+        <content type="html"><![CDATA[<h1>IP</h1><p>kubernetes 中的 ip 以 pod 为单位分配，一个 pod 内部所有的容器共享网络命名空间。</p><h1>CNI</h1><p>cni 提供了容器的插件化网络方案，即定义容器网络操作和配置的规范，并通过插件实现规范。</p><p>cni 自身仅关注容器和网络对象。当容器创建的时候，cni就会创建网络，当容器销毁的时候，cni就会删除网络。</p><p>cni 插件分为两部分：</p><ul><li>cni插件：负责配置网络</li><li>ipam插件：负责分配IP地址</li></ul><h1>网络策略</h1><p>network policy 可以对 pod 间的网络通信进行限制以及准入控制，从而控制可以访问 pod 的客户端。</p><p>network controller 通过 cni 插件实现用户定义的 network policy。</p><h1>待续</h1>]]></content>
       
       
       <categories>
@@ -226,11 +226,11 @@
     
     
     <entry>
-      <title>docker-常用的指令</title>
-      <link href="posts/634b48fb/"/>
-      <url>posts/634b48fb/</url>
+      <title>docker☞非root用户执行程序</title>
+      <link href="posts/604e367f/"/>
+      <url>posts/604e367f/</url>
       
-        <content type="html"><![CDATA[<h1>基本</h1><p>记录一些常用的指令</p><h1>列表</h1><h2 id="1-查看镜像环境变量">1. 查看镜像环境变量</h2><pre><code>docker run -it --rm [image_name] env</code></pre><h2 id="2-删除">2. 删除</h2><h3 id="删除所有dangling的镜像">删除所有dangling的镜像</h3><pre><code class="language-bash">docker image prune</code></pre><h3 id="删除所有没有被引用的本地卷">删除所有没有被引用的本地卷</h3><pre><code class="language-bash">docker volume prune</code></pre><h3 id="删除所有停止的容器">删除所有停止的容器</h3><pre><code class="language-bash">docker container prune</code></pre><h3 id="清空所有-未使用-未运行-的docker资源对象，包括容器、卷、网络、镜像">清空所有[未使用/未运行]的docker资源对象，包括容器、卷、网络、镜像</h3><pre><code class="language-bash">docker system prune --all --force --volumes</code></pre><h3 id="清空所有的docker资源对象，包括容器、卷、网络、镜像">清空所有的docker资源对象，包括容器、卷、网络、镜像</h3><p>👻这是极度可怕的指令，仅当你要初始化docker的时候才应该使用。</p><pre><code class="language-bash">docker container stop $(docker container ls -a -q) &amp;&amp; docker system prune --all --force --volumes</code></pre><h2 id="3-it-rm启动的容器，如何临时退出">3. <code>-it --rm</code>启动的容器，如何临时退出</h2><p>下述指令可以让你临时退出容器，而不会触发<code>--rm</code></p><pre><code class="language-bash">ctrl+P+q</code></pre><p>你可以通过 exec 从新进入容器，不过在此之后，你通过exit退出容器，也不会触发<code>--rm</code></p><p>只有执行<code>docker stop [container_name]</code>才会触发删除操作。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>容器内以root用户运行，则就可以看到挂载点内root用户的文件，这并不安全。</p><p>但同时，容器里的用户需要与宿主机里的用户，拥有相同的ID，否则容器里的用户无法拥有足够的权限访问挂载点</p><h2 id="创建宿主机用户">创建宿主机用户</h2><p>对应容器里的用户</p><pre><code class="language-bash">groupadd --gid 60000 testuseradd --uid 60000 -g test --no-create-home test</code></pre><h2 id="容器使用方式">容器使用方式</h2><pre><code class="language-bash">FROM busybox:latestADD 1.txt /app/WORKDIR /appRUN addgroup --gid 60000 test &amp;&amp; adduser -u 60000 -G test -D -H testUSER test；；</code></pre>]]></content>
       
       
       <categories>
@@ -255,11 +255,11 @@
     
     
     <entry>
-      <title>docker☞非root用户执行程序</title>
-      <link href="posts/604e367f/"/>
-      <url>posts/604e367f/</url>
+      <title>docker-常用的指令</title>
+      <link href="posts/634b48fb/"/>
+      <url>posts/634b48fb/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>容器内以root用户运行，则就可以看到挂载点内root用户的文件，这并不安全。</p><p>但同时，容器里的用户需要与宿主机里的用户，拥有相同的ID，否则容器里的用户无法拥有足够的权限访问挂载点</p><h2 id="创建宿主机用户">创建宿主机用户</h2><p>对应容器里的用户</p><pre><code class="language-bash">groupadd --gid 60000 testuseradd --uid 60000 -g test --no-create-home test</code></pre><h2 id="容器使用方式">容器使用方式</h2><pre><code class="language-bash">FROM busybox:latestADD 1.txt /app/WORKDIR /appRUN addgroup --gid 60000 test &amp;&amp; adduser -u 60000 -G test -D -H testUSER test；；</code></pre>]]></content>
+        <content type="html"><![CDATA[<h1>基本</h1><p>记录一些常用的指令</p><h1>列表</h1><h2 id="1-查看镜像环境变量">1. 查看镜像环境变量</h2><pre><code>docker run -it --rm [image_name] env</code></pre><h2 id="2-删除">2. 删除</h2><h3 id="删除所有dangling的镜像">删除所有dangling的镜像</h3><pre><code class="language-bash">docker image prune</code></pre><h3 id="删除所有没有被引用的本地卷">删除所有没有被引用的本地卷</h3><pre><code class="language-bash">docker volume prune</code></pre><h3 id="删除所有停止的容器">删除所有停止的容器</h3><pre><code class="language-bash">docker container prune</code></pre><h3 id="清空所有-未使用-未运行-的docker资源对象，包括容器、卷、网络、镜像">清空所有[未使用/未运行]的docker资源对象，包括容器、卷、网络、镜像</h3><pre><code class="language-bash">docker system prune --all --force --volumes</code></pre><h3 id="清空所有的docker资源对象，包括容器、卷、网络、镜像">清空所有的docker资源对象，包括容器、卷、网络、镜像</h3><p>👻这是极度可怕的指令，仅当你要初始化docker的时候才应该使用。</p><pre><code class="language-bash">docker container stop $(docker container ls -a -q) &amp;&amp; docker system prune --all --force --volumes</code></pre><h2 id="3-it-rm启动的容器，如何临时退出">3. <code>-it --rm</code>启动的容器，如何临时退出</h2><p>下述指令可以让你临时退出容器，而不会触发<code>--rm</code></p><pre><code class="language-bash">ctrl+P+q</code></pre><p>你可以通过 exec 从新进入容器，不过在此之后，你通过exit退出容器，也不会触发<code>--rm</code></p><p>只有执行<code>docker stop [container_name]</code>才会触发删除操作。</p>]]></content>
       
       
       <categories>
@@ -383,9 +383,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -394,11 +394,11 @@
     
     
     <entry>
-      <title>helm☞02chart</title>
-      <link href="posts/710e3e49/"/>
-      <url>posts/710e3e49/</url>
+      <title>helm☞01入门</title>
+      <link href="posts/51015304/"/>
+      <url>posts/51015304/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://helm.sh/docs/chart_template_guide/getting_started/">Helm | Getting Started</a></p><p>chart包目录结构：</p><pre><code class="language-bash">wordpress/  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件  values.yaml         # 必选：chart 的默认配置 values  charts/             # 必选：包含该 chart 依赖的所有 chart 的目录  crds/               # 必选：Custom Resource Definitions  templates/          # 必选：模板目录，与 values 结合使用时，将渲染生成 Kubernetes 资源清单文件  LICENSE             # 可选：包含 chart 的 license 的文本文件  README.md           # 可选：一个可读性高的 README 文件  values.schema.json  # 可选: 一个作用在 values.yaml 文件上的 JSON 模式  templates/NOTES.txt # 可选: 包含简短使用的文本文件</code></pre><h2 id="创建框架">创建框架</h2><p>helm create &lt;chart包名&gt;</p><h2 id="必要文件">必要文件</h2><h3 id="Chart-yaml">Chart.yaml</h3><p>Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为subcharts）</p><p>一份nginx的Chat.yaml示例：</p><pre><code class="language-bash">apiVersion: v1                                                                                         appVersion: 1.16.1description: Chart for the nginx serverengine: gotplhome: http://www.nginx.orgicon: https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.pngkeywords:- nginx- http- web- www- reverse proxymaintainers:- email: containers@bitnami.com  name: Bitnaminame: nginxsources:- https://github.com/bitnami/bitnami-docker-nginxversion: 5.1.5</code></pre><h3 id="Templates目录">Templates目录</h3><p>包含以<code>.yaml</code>结尾的模板文件和以<code>.txt</code>结尾的NOTES.txt文件</p><h4 id="NOTES-txt">NOTES.txt</h4><p>Release安装过程中的输出文本</p><p>Release命令<code>helm status</code>信息</p><h4 id="模板文件">模板文件</h4><blockquote><p>go模板语法</p></blockquote><p><code>&#123;&#123; template "myapp.fullname" &#125;&#125;</code> 引用模板信息，这里的<code>myapp.fullname</code>即chart的名</p><p><code>&#123;&#123; .Values.replicaCount &#125;&#125;</code> 表示 Values.yaml 文件里的顶级 key: replicaCount</p><h2 id="验证">验证</h2><pre><code class="language-bash"># chart 根路径helm lint .</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>helm： k8s的包管理器，这里是v3版本</p><p>大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release</p><p>chart仓库：存储chart程序包，不包含程序，是一个资源描述/模板 ，是一个http服务器。</p><p>helm：本地客户端</p><p>config：提供chart包所需的变量，构建特定的chart包配置，对应chart包里的values.yaml文件</p><p>Release：特定的chart包的本地实例化对象，部署于目标集群上的一个实例</p><p>当chart更新后，helm可以滚动更新对应的Release实例</p><h2 id="部署">部署</h2><h3 id="下载Helm包">下载Helm包</h3><p><a href="https://helm.sh/zh/docs/intro/install/">Helm | 安装Helm</a></p><p><a href="https://github.com/helm/helm/releases">Releases · helm/helm (github.com)</a></p><p>Helm包是一个二进制程序，直接解压就可以用，将解压后的 helm 文件放置在 /usr/bin/ 下即可</p><p>你也可以通过脚本一键安装最新版本的helm: <code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash</code></p><h2 id="添加源">添加源</h2><p>添加微软家的源，并命名为 stable</p><pre><code class="language-bash">helm repo add stable http://mirror.azure.cn/kubernetes/charts/</code></pre><p>列出已有的源</p><pre><code class="language-bash">helm repo list</code></pre><p>查询stable源包含的包</p><pre><code class="language-bash">helm search repo stable</code></pre><h2 id="常用命令">常用命令</h2><h3 id="release命令-v3版本">release命令(v3版本)</h3><ul><li><p>install</p><ul><li><code>helm install &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li><code>helm install myelk elastic/elasticsearch --namespace elk -f values.yaml</code></li></ul><blockquote><p>相同的包，不同的实例，之间是不相干独立管理的。</p></blockquote></li><li><p>delete</p><ul><li><pre><code class="language-bash">helm uninstall &lt;release_name&gt; &lt;flag&gt;</code></pre></li></ul><blockquote><p>flag 如果指定–keep-history，则属于标记删除，依然可以查到状态。在这种情况下，你可以通过 helm rollback 恢复</p></blockquote></li><li><p>upgrade：更新release版本，更新release配置</p><ul><li><code>helm upgrade &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li>chart_name 通过search命令查找</li><li>flag:<ul><li>–recreate-pods 重建所有Pod.</li></ul></li></ul></li><li><p>rollback：回滚release版本</p></li><li><p>list</p></li><li><p>history：获取release历史版本</p></li><li><p>status：获取release状态信息</p></li><li><p>get：获取release已设置的值。</p><ul><li><pre><code class="language-bash">helm get values &lt;release-name&gt;</code></pre></li></ul></li></ul><h3 id="chart命令-v3版本">chart命令(v3版本)</h3><ul><li><p>search 通过一个关键词查找一个chat。</p><ul><li><code>helm search repo metallb</code></li></ul></li><li><p>create 创建一个chart，将包含一些必要的文件</p></li><li><p>fetch 下载压缩包但不安装。常用来安装前自定义配置，例如values.yaml</p></li><li><p>get 下载</p></li><li><p>inspect</p></li><li><p>package 打包一个chart</p><ul><li><code>helm package &lt;chart根目录&gt;</code></li></ul></li><li><p>verify 验证一个chart</p></li></ul><h2 id="定制化">定制化</h2><p>就是通过定制化包的<code>values.yaml</code></p><p>通过下列命令导出包所支持的所有参数:</p><pre><code class="language-bash">helm show value &lt;pkg.name&gt;</code></pre><pre><code class="language-bash">➜   helm show values apphub/nginx  | grep -v '#' | grep -v '^$'image:  registry: docker.io  repository: bitnami/nginx  tag: 1.16.1-debian-10-r0  pullPolicy: IfNotPresentreplicaCount: 1podAnnotations: &#123;&#125;affinity: &#123;&#125;nodeSelector: &#123;&#125;tolerations: &#123;&#125;resources:  limits: &#123;&#125;  requests: &#123;&#125;livenessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 30  timeoutSeconds: 5  failureThreshold: 6readinessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 5  timeoutSeconds: 3  periodSeconds: 5service:  type: LoadBalancer  port: 80  httpsPort: 443  nodePorts:    http: &quot;&quot;    https: &quot;&quot;  annotations: &#123;&#125;  externalTrafficPolicy: Clusteringress:  enabled: false  certManager: false  hostname: example.local  annotations: &#123;&#125;  tls:    - hosts:        - example.local      secretName: example.local-tls  secrets:metrics:  enabled: false  image:    registry: docker.io    repository: bitnami/nginx-exporter    tag: 0.5.0-debian-10-r0    pullPolicy: IfNotPresent  podAnnotations:    prometheus.io/scrape: &quot;true&quot;    prometheus.io/port: &quot;9113&quot;  service:    port: 9113    annotations:      prometheus.io/scrape: &quot;true&quot;      prometheus.io/port: &quot;&#123;&#123; .Values.metrics.service.port &#125;&#125;&quot;  resources:    limits: &#123;&#125;    requests: &#123;&#125;  serviceMonitor:    enabled: false</code></pre><p>可以看到配置并非是k8s的标准格式。</p>]]></content>
       
       
       <categories>
@@ -423,11 +423,11 @@
     
     
     <entry>
-      <title>helm☞01入门</title>
-      <link href="posts/51015304/"/>
-      <url>posts/51015304/</url>
+      <title>helm☞02chart</title>
+      <link href="posts/710e3e49/"/>
+      <url>posts/710e3e49/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>helm： k8s的包管理器，这里是v3版本</p><p>大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release</p><p>chart仓库：存储chart程序包，不包含程序，是一个资源描述/模板 ，是一个http服务器。</p><p>helm：本地客户端</p><p>config：提供chart包所需的变量，构建特定的chart包配置，对应chart包里的values.yaml文件</p><p>Release：特定的chart包的本地实例化对象，部署于目标集群上的一个实例</p><p>当chart更新后，helm可以滚动更新对应的Release实例</p><h2 id="部署">部署</h2><h3 id="下载Helm包">下载Helm包</h3><p><a href="https://helm.sh/zh/docs/intro/install/">Helm | 安装Helm</a></p><p><a href="https://github.com/helm/helm/releases">Releases · helm/helm (github.com)</a></p><p>Helm包是一个二进制程序，直接解压就可以用，将解压后的 helm 文件放置在 /usr/bin/ 下即可</p><p>你也可以通过脚本一键安装最新版本的helm: <code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash</code></p><h2 id="添加源">添加源</h2><p>添加微软家的源，并命名为 stable</p><pre><code class="language-bash">helm repo add stable http://mirror.azure.cn/kubernetes/charts/</code></pre><p>列出已有的源</p><pre><code class="language-bash">helm repo list</code></pre><p>查询stable源包含的包</p><pre><code class="language-bash">helm search repo stable</code></pre><h2 id="常用命令">常用命令</h2><h3 id="release命令-v3版本">release命令(v3版本)</h3><ul><li><p>install</p><ul><li><code>helm install &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li><code>helm install myelk elastic/elasticsearch --namespace elk -f values.yaml</code></li></ul><blockquote><p>相同的包，不同的实例，之间是不相干独立管理的。</p></blockquote></li><li><p>delete</p><ul><li><pre><code class="language-bash">helm uninstall &lt;release_name&gt; &lt;flag&gt;</code></pre></li></ul><blockquote><p>flag 如果指定–keep-history，则属于标记删除，依然可以查到状态。在这种情况下，你可以通过 helm rollback 恢复</p></blockquote></li><li><p>upgrade：更新release版本，更新release配置</p><ul><li><code>helm upgrade &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li>chart_name 通过search命令查找</li><li>flag:<ul><li>–recreate-pods 重建所有Pod.</li></ul></li></ul></li><li><p>rollback：回滚release版本</p></li><li><p>list</p></li><li><p>history：获取release历史版本</p></li><li><p>status：获取release状态信息</p></li><li><p>get：获取release已设置的值。</p><ul><li><pre><code class="language-bash">helm get values &lt;release-name&gt;</code></pre></li></ul></li></ul><h3 id="chart命令-v3版本">chart命令(v3版本)</h3><ul><li><p>search 通过一个关键词查找一个chat。</p><ul><li><code>helm search repo metallb</code></li></ul></li><li><p>create 创建一个chart，将包含一些必要的文件</p></li><li><p>fetch 下载压缩包但不安装。常用来安装前自定义配置，例如values.yaml</p></li><li><p>get 下载</p></li><li><p>inspect</p></li><li><p>package 打包一个chart</p><ul><li><code>helm package &lt;chart根目录&gt;</code></li></ul></li><li><p>verify 验证一个chart</p></li></ul><h2 id="定制化">定制化</h2><p>就是通过定制化包的<code>values.yaml</code></p><p>通过下列命令导出包所支持的所有参数:</p><pre><code class="language-bash">helm show value &lt;pkg.name&gt;</code></pre><pre><code class="language-bash">➜   helm show values apphub/nginx  | grep -v '#' | grep -v '^$'image:  registry: docker.io  repository: bitnami/nginx  tag: 1.16.1-debian-10-r0  pullPolicy: IfNotPresentreplicaCount: 1podAnnotations: &#123;&#125;affinity: &#123;&#125;nodeSelector: &#123;&#125;tolerations: &#123;&#125;resources:  limits: &#123;&#125;  requests: &#123;&#125;livenessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 30  timeoutSeconds: 5  failureThreshold: 6readinessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 5  timeoutSeconds: 3  periodSeconds: 5service:  type: LoadBalancer  port: 80  httpsPort: 443  nodePorts:    http: &quot;&quot;    https: &quot;&quot;  annotations: &#123;&#125;  externalTrafficPolicy: Clusteringress:  enabled: false  certManager: false  hostname: example.local  annotations: &#123;&#125;  tls:    - hosts:        - example.local      secretName: example.local-tls  secrets:metrics:  enabled: false  image:    registry: docker.io    repository: bitnami/nginx-exporter    tag: 0.5.0-debian-10-r0    pullPolicy: IfNotPresent  podAnnotations:    prometheus.io/scrape: &quot;true&quot;    prometheus.io/port: &quot;9113&quot;  service:    port: 9113    annotations:      prometheus.io/scrape: &quot;true&quot;      prometheus.io/port: &quot;&#123;&#123; .Values.metrics.service.port &#125;&#125;&quot;  resources:    limits: &#123;&#125;    requests: &#123;&#125;  serviceMonitor:    enabled: false</code></pre><p>可以看到配置并非是k8s的标准格式。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://helm.sh/docs/chart_template_guide/getting_started/">Helm | Getting Started</a></p><p>chart包目录结构：</p><pre><code class="language-bash">wordpress/  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件  values.yaml         # 必选：chart 的默认配置 values  charts/             # 必选：包含该 chart 依赖的所有 chart 的目录  crds/               # 必选：Custom Resource Definitions  templates/          # 必选：模板目录，与 values 结合使用时，将渲染生成 Kubernetes 资源清单文件  LICENSE             # 可选：包含 chart 的 license 的文本文件  README.md           # 可选：一个可读性高的 README 文件  values.schema.json  # 可选: 一个作用在 values.yaml 文件上的 JSON 模式  templates/NOTES.txt # 可选: 包含简短使用的文本文件</code></pre><h2 id="创建框架">创建框架</h2><p>helm create &lt;chart包名&gt;</p><h2 id="必要文件">必要文件</h2><h3 id="Chart-yaml">Chart.yaml</h3><p>Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为subcharts）</p><p>一份nginx的Chat.yaml示例：</p><pre><code class="language-bash">apiVersion: v1                                                                                         appVersion: 1.16.1description: Chart for the nginx serverengine: gotplhome: http://www.nginx.orgicon: https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.pngkeywords:- nginx- http- web- www- reverse proxymaintainers:- email: containers@bitnami.com  name: Bitnaminame: nginxsources:- https://github.com/bitnami/bitnami-docker-nginxversion: 5.1.5</code></pre><h3 id="Templates目录">Templates目录</h3><p>包含以<code>.yaml</code>结尾的模板文件和以<code>.txt</code>结尾的NOTES.txt文件</p><h4 id="NOTES-txt">NOTES.txt</h4><p>Release安装过程中的输出文本</p><p>Release命令<code>helm status</code>信息</p><h4 id="模板文件">模板文件</h4><blockquote><p>go模板语法</p></blockquote><p><code>&#123;&#123; template "myapp.fullname" &#125;&#125;</code> 引用模板信息，这里的<code>myapp.fullname</code>即chart的名</p><p><code>&#123;&#123; .Values.replicaCount &#125;&#125;</code> 表示 Values.yaml 文件里的顶级 key: replicaCount</p><h2 id="验证">验证</h2><pre><code class="language-bash"># chart 根路径helm lint .</code></pre>]]></content>
       
       
       <categories>
@@ -470,9 +470,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -499,9 +499,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -539,6 +539,35 @@
     
     
     <entry>
+      <title>prometheus☞06rabbitmq监控</title>
+      <link href="posts/7fd13722/"/>
+      <url>posts/7fd13722/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#rabbitmq">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://www.rabbitmq.com/prometheus.html">Monitoring with Prometheus &amp; Grafana — RabbitMQ</a></p><p><a href="https://grafana.com/grafana/dashboards/10991">RabbitMQ-Overview dashboard for Grafana | Grafana Labs</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">rabbitmq-plugins enable rabbitmq_prometheusrabbitmqctl -q set_cluster_name test@rabbitmq</code></pre><p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p><p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'rabbitmq-001'    static_configs:      - targets: ['&lt;rabbitmq地址&gt;:15692'] </code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:      - alert: RabbitmqNodeDown        expr: sum(rabbitmq_build_info) &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node down (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Less than 3 nodes running in RabbitMQ cluster\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNodeNotDistributed        expr: erlang_vm_dist_node_state &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node not distributed (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Distribution link state is not 'up'\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqInstancesDifferentVersions        expr: count(count(rabbitmq_build_info) by (rabbitmq_version)) &gt; 1        for: 1h        labels:          severity: warning        annotations:          summary: Rabbitmq instances different versions (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Running different version of Rabbitmq in the same cluster, can lead to failure.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqMemoryHigh        expr: rabbitmq_process_resident_memory_bytes / rabbitmq_resident_memory_limit_bytes * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq memory high (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of allocated RAM\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqFileDescriptorsUsage        expr: rabbitmq_process_open_fds / rabbitmq_process_max_fds * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq file descriptors usage (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of file descriptors\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchUnack        expr: sum(rabbitmq_queue_messages_unacked) BY (queue) &gt; 1000        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq too much unack (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Too much unacknowledged messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchConnections        expr: rabbitmq_connections &gt; 1000        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq too much connections (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;The total connections of a node is too high\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNoQueueConsumer        expr: rabbitmq_queue_consumers &lt; 1        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq no queue consumer (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has less than 1 consumer\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqUnroutableMessages        expr: increase(rabbitmq_channel_messages_unroutable_returned_total[1m]) &gt; 0 or increase(rabbitmq_channel_messages_unroutable_dropped_total[1m]) &gt; 0        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq unroutable messages (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has unroutable messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/10991">https://grafana.com/grafana/dashboards/10991</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> prometheus </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> rabbitmq </tag>
+            
+            <tag> prometheus </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>prometheus☞04redis监控</title>
       <link href="posts/978d0c1d/"/>
       <url>posts/978d0c1d/</url>
@@ -560,35 +589,6 @@
             <tag> redis </tag>
             
             <tag> prometheus </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>prometheus☞06rabbitmq监控</title>
-      <link href="posts/7fd13722/"/>
-      <url>posts/7fd13722/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#rabbitmq">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://www.rabbitmq.com/prometheus.html">Monitoring with Prometheus &amp; Grafana — RabbitMQ</a></p><p><a href="https://grafana.com/grafana/dashboards/10991">RabbitMQ-Overview dashboard for Grafana | Grafana Labs</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">rabbitmq-plugins enable rabbitmq_prometheusrabbitmqctl -q set_cluster_name test@rabbitmq</code></pre><p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p><p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'rabbitmq-001'    static_configs:      - targets: ['&lt;rabbitmq地址&gt;:15692'] </code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:      - alert: RabbitmqNodeDown        expr: sum(rabbitmq_build_info) &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node down (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Less than 3 nodes running in RabbitMQ cluster\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNodeNotDistributed        expr: erlang_vm_dist_node_state &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node not distributed (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Distribution link state is not 'up'\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqInstancesDifferentVersions        expr: count(count(rabbitmq_build_info) by (rabbitmq_version)) &gt; 1        for: 1h        labels:          severity: warning        annotations:          summary: Rabbitmq instances different versions (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Running different version of Rabbitmq in the same cluster, can lead to failure.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqMemoryHigh        expr: rabbitmq_process_resident_memory_bytes / rabbitmq_resident_memory_limit_bytes * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq memory high (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of allocated RAM\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqFileDescriptorsUsage        expr: rabbitmq_process_open_fds / rabbitmq_process_max_fds * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq file descriptors usage (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of file descriptors\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchUnack        expr: sum(rabbitmq_queue_messages_unacked) BY (queue) &gt; 1000        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq too much unack (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Too much unacknowledged messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchConnections        expr: rabbitmq_connections &gt; 1000        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq too much connections (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;The total connections of a node is too high\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNoQueueConsumer        expr: rabbitmq_queue_consumers &lt; 1        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq no queue consumer (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has less than 1 consumer\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqUnroutableMessages        expr: increase(rabbitmq_channel_messages_unroutable_returned_total[1m]) &gt; 0 or increase(rabbitmq_channel_messages_unroutable_dropped_total[1m]) &gt; 0        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq unroutable messages (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has unroutable messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/10991">https://grafana.com/grafana/dashboards/10991</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> prometheus </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> prometheus </tag>
-            
-            <tag> rabbitmq </tag>
             
         </tags>
       
@@ -945,6 +945,33 @@
     
     
     <entry>
+      <title>jenkins☞003共享库</title>
+      <link href="posts/e4df8a4f/"/>
+      <url>posts/e4df8a4f/</url>
+      
+        <content type="html"><![CDATA[<h2 id="结构">结构</h2><pre><code class="language-groovy">- src  - org    - devops      - tools.groovy // org.devops.tools (class)- vars- resources  - org    - devops      - bar.json // org.devops.bar (static data)</code></pre><h2 id="写法">写法</h2><p>org.devops.tools</p><pre><code class="language-groovy">package org.devops//格式化输出def PrintMes(value,color)&#123;    colors = ['red'  : &quot;\033[40;31m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot;,           'blue'  : &quot;\033[47;34m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot;,           'green' : &quot;\033[40;32m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot; ]    ansiColor('xterm') &#123;        println(colors[color])    &#125;&#125;</code></pre><h2 id="关联pipeline-libraries">关联pipeline libraries</h2><p>jenkins 系统管理-系统配置-Global Pipeline Libraries</p><p><img src="/posts/e4df8a4f/image-20211102114354246.png" alt="image-20211102114354246"></p><h2 id="调用pipeline-libraries">调用pipeline libraries</h2><p>jenkins工程的pipeline代码开头添加，即jenkinsfile文件中</p><pre><code class="language-groovy">pipeline &#123;    @Library('jenkinslib') _  //导入lib库, 'jenkinslib' 名就是上一步里Global Pipeline Libraries配置的名    def tools = new org.devops.tools()  //加载tools    agent &#123;        ...    &#125;    stages &#123;        stage(&quot;第一个阶段&quot;) &#123;            steps &#123;                tool.PrintMes(&quot;第一个步骤&quot;,&quot;green&quot;)            &#125;        &#125;    &#125;    post &#123;        ...    &#125;&#125;</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 自动化 </category>
+          
+          <category> jenkins </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> jenkins </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>jenkins☞动态agent</title>
       <link href="posts/3b5cd3e1/"/>
       <url>posts/3b5cd3e1/</url>
@@ -964,33 +991,6 @@
         <tags>
             
             <tag> k8s </tag>
-            
-            <tag> jenkins </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>jenkins☞003共享库</title>
-      <link href="posts/e4df8a4f/"/>
-      <url>posts/e4df8a4f/</url>
-      
-        <content type="html"><![CDATA[<h2 id="结构">结构</h2><pre><code class="language-groovy">- src  - org    - devops      - tools.groovy // org.devops.tools (class)- vars- resources  - org    - devops      - bar.json // org.devops.bar (static data)</code></pre><h2 id="写法">写法</h2><p>org.devops.tools</p><pre><code class="language-groovy">package org.devops//格式化输出def PrintMes(value,color)&#123;    colors = ['red'  : &quot;\033[40;31m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot;,           'blue'  : &quot;\033[47;34m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot;,           'green' : &quot;\033[40;32m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot; ]    ansiColor('xterm') &#123;        println(colors[color])    &#125;&#125;</code></pre><h2 id="关联pipeline-libraries">关联pipeline libraries</h2><p>jenkins 系统管理-系统配置-Global Pipeline Libraries</p><p><img src="/posts/e4df8a4f/image-20211102114354246.png" alt="image-20211102114354246"></p><h2 id="调用pipeline-libraries">调用pipeline libraries</h2><p>jenkins工程的pipeline代码开头添加，即jenkinsfile文件中</p><pre><code class="language-groovy">pipeline &#123;    @Library('jenkinslib') _  //导入lib库, 'jenkinslib' 名就是上一步里Global Pipeline Libraries配置的名    def tools = new org.devops.tools()  //加载tools    agent &#123;        ...    &#125;    stages &#123;        stage(&quot;第一个阶段&quot;) &#123;            steps &#123;                tool.PrintMes(&quot;第一个步骤&quot;,&quot;green&quot;)            &#125;        &#125;    &#125;    post &#123;        ...    &#125;&#125;</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 自动化 </category>
-          
-          <category> jenkins </category>
-          
-      </categories>
-      
-      
-        <tags>
             
             <tag> jenkins </tag>
             
@@ -1183,9 +1183,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> kubeadm </tag>
             
@@ -1216,9 +1216,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> 证书 </tag>
             
@@ -1247,9 +1247,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> authorization </tag>
             
@@ -1476,11 +1476,11 @@
     
     
     <entry>
-      <title>go☞003运算符</title>
-      <link href="posts/1a034363/"/>
-      <url>posts/1a034363/</url>
+      <title>go☞002常量</title>
+      <link href="posts/8c3e952e/"/>
+      <url>posts/8c3e952e/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常见的运算符就不说了，学过数学的都会。</p><h2 id="逻辑运算符">逻辑运算符</h2><p><code>A &amp;&amp; B</code> A和B都为真，则真</p><p><code>A || B</code> A和B任意为真，则为真</p><p><code>!A</code> A为真，则为假</p><p>当上述条件为真时，则执行下一步代码</p><h2 id="位运算符">位运算符</h2><p>将整数转为二进制后进行运算</p><p>二进制数：0为假，1为真</p><p>例如：</p><pre><code class="language-go">a,b := 2,4</code></pre><p>若<code>c := a &amp; b</code>按位与，按照<code>位数</code>分别进行<code>与</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 0 0 0</code></pre><p>因此，最终 c = 0</p><p>若<code>c := a | b</code>按位或，按照<code>位数</code>分别进行<code>或</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a ^ b</code>按位异或，按照<code>位数</code>分别进行<code>异或</code>运算</p><p>异或：相同为0，不同为1</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a &amp;^ b</code>，</p><p>则c等于将a中ab都为1的位写为0后的新a</p><pre><code>a： 0 1 0b： 1 0 0c： 0 1 0  # a中没有ab都为1的位，因此c的值依然是a</code></pre><p>若<code>c := a&lt;&lt;b</code>左移运算，即<code>a*2的b次方</code>。c等于32</p><p>若<code>c := a&gt;&gt;b</code>右移运算，即<code>a/2的b次方</code>，c等于0</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常量只有一个元数据，就是内存地址存储的数据。</p><p>常量声明的同时必须赋值</p><h2 id="声明和赋值">声明和赋值</h2><blockquote><p>不能省略 const 关键词，省略了就没法判断是常量还是变量了</p></blockquote><h3 id="单类型">单类型</h3><pre><code class="language-go">const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="多类型">多类型</h3><p>根据变量值，自动判断变量类型</p><pre><code class="language-go">const &lt;常量1&gt;, &lt;常量2&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="单类型和多类型混合">单类型和多类型混合</h3><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt; &lt;类型2&gt; = &lt;常量2的值&gt;)</code></pre><p>上述写法中，如果常量2和常量1一样，则可以直接写常量2，省略其余。</p><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt;,&lt;常量22&gt;)</code></pre><p>需要注意的是，前两两行声明的常量数量需要对齐一致。</p><p>⚠️常量声明赋值的时候，常量的值只能是<code>string</code>,<code>int</code>,<code>bool</code>类型，如果你的值是<code>函数</code>返回，则这个<code>函数</code>必须是<code>内置函数</code></p><p>例如：</p><pre><code class="language-go">package mainimport &quot;fmt&quot;func rtnlen(p string) (int) &#123;    return len(p)&#125;var (    code03 = &quot;abc&quot;    code04 = rtnlen(code03)    // 这里不会报错，因为变量没有 “必须为内置函数” 这个限制)const (    code06 = &quot;abc&quot;    code05 = rtnlen(code06)    // 这里会报错，因为 rtnlen() 不是内置函数，将其更换为 len() 就不会报错)func main()&#123;    fmt.Println(code05)    fmt.Println(code03, code04)&#125;</code></pre><h2 id="特殊常量iota">特殊常量iota</h2><p>有一个内置的特殊常量iota，每声明一个常量，它会+1，初始值是0</p>]]></content>
       
       
       <categories>
@@ -1503,11 +1503,11 @@
     
     
     <entry>
-      <title>go☞002常量</title>
-      <link href="posts/8c3e952e/"/>
-      <url>posts/8c3e952e/</url>
+      <title>go☞003运算符</title>
+      <link href="posts/1a034363/"/>
+      <url>posts/1a034363/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常量只有一个元数据，就是内存地址存储的数据。</p><p>常量声明的同时必须赋值</p><h2 id="声明和赋值">声明和赋值</h2><blockquote><p>不能省略 const 关键词，省略了就没法判断是常量还是变量了</p></blockquote><h3 id="单类型">单类型</h3><pre><code class="language-go">const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="多类型">多类型</h3><p>根据变量值，自动判断变量类型</p><pre><code class="language-go">const &lt;常量1&gt;, &lt;常量2&gt; = &lt;常量1的值&gt;, &lt;常量2的值&gt;</code></pre><h3 id="单类型和多类型混合">单类型和多类型混合</h3><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt; &lt;类型2&gt; = &lt;常量2的值&gt;)</code></pre><p>上述写法中，如果常量2和常量1一样，则可以直接写常量2，省略其余。</p><pre><code class="language-go">const (    &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;    &lt;常量2&gt;,&lt;常量22&gt;)</code></pre><p>需要注意的是，前两两行声明的常量数量需要对齐一致。</p><p>⚠️常量声明赋值的时候，常量的值只能是<code>string</code>,<code>int</code>,<code>bool</code>类型，如果你的值是<code>函数</code>返回，则这个<code>函数</code>必须是<code>内置函数</code></p><p>例如：</p><pre><code class="language-go">package mainimport &quot;fmt&quot;func rtnlen(p string) (int) &#123;    return len(p)&#125;var (    code03 = &quot;abc&quot;    code04 = rtnlen(code03)    // 这里不会报错，因为变量没有 “必须为内置函数” 这个限制)const (    code06 = &quot;abc&quot;    code05 = rtnlen(code06)    // 这里会报错，因为 rtnlen() 不是内置函数，将其更换为 len() 就不会报错)func main()&#123;    fmt.Println(code05)    fmt.Println(code03, code04)&#125;</code></pre><h2 id="特殊常量iota">特殊常量iota</h2><p>有一个内置的特殊常量iota，每声明一个常量，它会+1，初始值是0</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>常见的运算符就不说了，学过数学的都会。</p><h2 id="逻辑运算符">逻辑运算符</h2><p><code>A &amp;&amp; B</code> A和B都为真，则真</p><p><code>A || B</code> A和B任意为真，则为真</p><p><code>!A</code> A为真，则为假</p><p>当上述条件为真时，则执行下一步代码</p><h2 id="位运算符">位运算符</h2><p>将整数转为二进制后进行运算</p><p>二进制数：0为假，1为真</p><p>例如：</p><pre><code class="language-go">a,b := 2,4</code></pre><p>若<code>c := a &amp; b</code>按位与，按照<code>位数</code>分别进行<code>与</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 0 0 0</code></pre><p>因此，最终 c = 0</p><p>若<code>c := a | b</code>按位或，按照<code>位数</code>分别进行<code>或</code>运算</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a ^ b</code>按位异或，按照<code>位数</code>分别进行<code>异或</code>运算</p><p>异或：相同为0，不同为1</p><pre><code>a： 0 1 0b： 1 0 0c： 1 1 0</code></pre><p>因此，最终 c = 6</p><p>若<code>c := a &amp;^ b</code>，</p><p>则c等于将a中ab都为1的位写为0后的新a</p><pre><code>a： 0 1 0b： 1 0 0c： 0 1 0  # a中没有ab都为1的位，因此c的值依然是a</code></pre><p>若<code>c := a&lt;&lt;b</code>左移运算，即<code>a*2的b次方</code>。c等于32</p><p>若<code>c := a&gt;&gt;b</code>右移运算，即<code>a/2的b次方</code>，c等于0</p>]]></content>
       
       
       <categories>
@@ -1575,9 +1575,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> storage </tag>
             
@@ -1660,9 +1660,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> ingress </tag>
             
@@ -1691,9 +1691,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> StatefulSet </tag>
             
@@ -1722,9 +1722,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> DaemonSet </tag>
             
@@ -1753,9 +1753,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> 资源约束 </tag>
             
@@ -1786,9 +1786,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -1819,9 +1819,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> ConfigMap </tag>
             
@@ -1852,42 +1852,11 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> service </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>k8s☞07自动扩缩</title>
-      <link href="posts/f6e328b5/"/>
-      <url>posts/f6e328b5/</url>
-      
-        <content type="html"><![CDATA[<h1>基本</h1><p>k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。</p><p>k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。</p><h1>手动缩放</h1><p>就是指定一个副本数量</p><pre><code class="language-yaml">kubectl scale deployment.v1.apps/nginx-dep --replicas=10</code></pre><h1>自动缩放</h1><p>自动缩放基于hpa对象资源，hpa需要监控服务，毕竟没有监控指标，就无法根据指标进行自动缩放。</p><h2 id="添加监控服务-metrics-server">添加监控服务 metrics-server</h2><p><a href="https://github.com/kubernetes-sigs/metrics-server">https://github.com/kubernetes-sigs/metrics-server</a></p><p>metrics 服务器可以通过资源度量值 API 对外提供度量数据，Horizontal Pod Autoscaler 正是根据此 API 来获取度量数据.如果没有此服务,HPA将无法工作.</p><pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</code></pre><p>默认 metrics-server 的 deployment 无法直接使用, 我们需要添加几个参数,  来禁止 ca 认证和开通 dns</p><p>在 deployment.spec.template.spec.containers 中新加入下列配置:</p><pre><code class="language-yaml">        command:          - /metrics-server          - --kubelet-insecure-tls          - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname</code></pre><pre><code class="language-bash">kubectl apply -f components.yaml</code></pre><h2 id="创建测试用例">创建测试用例</h2><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/</a></p><p>hpa-test.yaml</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: php-apachespec:  selector:    matchLabels:      run: php-apache  replicas: 1  template:    metadata:      labels:        run: php-apache    spec:      containers:      - name: php-apache        image: k8s.gcr.io/hpa-example        ports:        - containerPort: 80        resources:          limits:            cpu: 500m          requests:            cpu: 200m---apiVersion: v1kind: Servicemetadata:  name: php-apache  labels:    run: php-apachespec:  ports:  - port: 80  selector:    run: php-apache</code></pre><blockquote><p>Service 类型通过<code>spec.selector</code>选择pod</p></blockquote><h2 id="基于CPU指标开启">基于CPU指标开启</h2><p>命令方式:</p><pre><code class="language-bash">kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=5</code></pre><p>声明方式:</p><pre><code class="language-yaml">apiVersion: autoscaling/v1kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 5  targetCPUUtilizationPercentage: 50</code></pre><blockquote><p>这里的意思是, cpu 阈值50%, 最小pod数1, 最大pod数5. hpa会将所有pod的平均cpu利用率维持在50%, 并且pod数量在1~5的范围内波动</p></blockquote><p>⚠️只允许拥有一个规则</p><p>查看当前cpu使用率</p><pre><code class="language-bash">➜   kubectl get hpa --watchNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          57m</code></pre><p>⚠️如果<code>TARGETS</code>显示<code>unknown</code>没有获取到Deployment的资源利用率，则说明Deployment中没有添加对应的资源限制。</p><p>通过busybox以死循环方式访问web服务，快速增加测试服务的cpu使用率</p><pre><code class="language-bash">kubectl run -it --rm load-generator --image=busybox /bin/shwhile true; do wget -q -O- http://php-apache; done=== 会输出大量OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!</code></pre><p>在经过一段时间等待后(不会超过1分钟, 默认监控抓取数据间隔时间是1分钟),我们可以看到 pod 数量发生变化</p><pre><code class="language-bash">➜   kubectl get hpa --watchNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60mNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60mNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61mNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61m➜   kubectl get deployment/php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           68m</code></pre><p>现在,关闭客户端请求,等待1分钟以上.再次看hpa, 这时候cpu利用率已经下降</p><pre><code class="language-bash">➜   kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   11%/50%   1         5         5          64m</code></pre><p>再看pod数量,它应该已经开始缩减。</p><blockquote><p>缩减并不是在cpu使用率下降之后就立即执行,而是内部有一个算法.它避免因立即执行从而导致资源出现反复波动.</p></blockquote><pre><code class="language-bash">➜   kubectl get deployment php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           70m➜   kubectl describe deployment/php-apacheName:                   php-apacheNamespace:              defaultCreationTimestamp:      Wed, 16 Sep 2020 10:22:32 +0800Labels:                 &lt;none&gt;Annotations:            deployment.kubernetes.io/revision: 1Selector:               run=php-apacheReplicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailableStrategyType:           RollingUpdateMinReadySeconds:        0RollingUpdateStrategy:  25% max unavailable, 25% max surgePod Template:  Labels:  run=php-apache  Containers:   php-apache:    Image:      k8s.gcr.io/hpa-example    Port:       80/TCP    Host Port:  0/TCP    Limits:      cpu:  500m    Requests:      cpu:        200m    Environment:  &lt;none&gt;    Mounts:       &lt;none&gt;  Volumes:        &lt;none&gt;Conditions:  Type           Status  Reason  ----           ------  ------  Progressing    True    NewReplicaSetAvailable  Available      True    MinimumReplicasAvailableOldReplicaSets:  &lt;none&gt;NewReplicaSet:   php-apache-5c4f475bf5 (1/1 replicas created)Events:  Type    Reason             Age    From                   Message  ----    ------             ----   ----                   -------  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 5  Normal  ScalingReplicaSet  6m50s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  4m49s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 1</code></pre><hr><h1>常用的也就上面的基于CPU指标</h1><h2 id="基于其它非资源类型的指标">基于其它非资源类型的指标</h2><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a></p><p>当前hpa的api版本是autoscaling/v1，它只能抓取cpu指标。</p><p>如果你想抓取内存指标(当前也只支持内存)和非资源类型指标,那么需要将版本变更为autoscaling/v2。</p><p>autoscaling/v2版本的配置有了一些变化,且可能随时会有新的变化.</p><p><a href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/#HorizontalPodAutoscalerSpec">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/#HorizontalPodAutoscalerSpec</a></p><pre><code class="language-yaml">apiVersion: autoscaling/v2kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 10  metrics:  - type: Resource    resource:      name: cpu      target:        type: AverageUtilization        averageUtilization: 50  - type: Pods    pods:      metric:        name: packets-per-second      target:        type: AverageValue        averageValue: 1k  - type: Object    object:      metric:        name: requests-per-second      describedObject:        apiVersion: networking.k8s.io/v1beta1        kind: Ingress        name: main-route      target:        kind: Value        value: 10k</code></pre><p>上面的例子意思是：</p><ol><li>保持每个pod的cpu使用率不超过50%，并且每秒能承受1000个数据包。</li><li>所有位于ingress后面的pod，每秒能处理10000个请求。</li></ol><blockquote><p>请注意：</p><ol><li>指标字段targetCPUUtilizationPercentage被metrics数组代替，metrics数组包含了多种度量指标。</li><li>指标分为：直接资源类 Resource，Pod类 Pods，第三类 Object，非k8s对象类 External，容器资源类 ContainerResource</li><li>指标分类：<ol><li>name 指定指标标识名</li><li>target.type 指定指标【值】类型，例如<code>AverageValue</code>表示平均值，即每一个pod都需要满足此指标值</li></ol></li></ol></blockquote><p>⚠️关于<code>Resource</code>类型，要么是cpu，要么是memory，两者应二选一。</p><h2 id="基于标签的k8s对象指标">基于标签的k8s对象指标</h2><pre><code class="language-yaml">- type: Object  object:    metric:      name: `http_requests`      selector: `verb=GET`    target:      type: AverageValue      averageValue: 30</code></pre><blockquote><p>从监控系统里获取标签verb=GET的值</p></blockquote><p>上述例子的意思是，确保每一个pod都能满足标签为verb=GET的http请求数量。</p><h2 id="基于非k8s对象指标">基于非k8s对象指标</h2><pre><code class="language-yaml">- type: External  external:    metric:      name: queue_messages_ready      selector: &quot;queue=worker_tasks&quot;    target:      type: AverageValue      averageValue: 30</code></pre><p>当类型变为External的时候，就可以指定监控系统里存储的其它监控指标。</p><p>例如，监控系统从消息队列服务里拿到了消息数量的指标，并附加queue=worker_tasks。那么就可以和上述例子一样，根据消息数量指标进行缩放。</p><h1>度量</h1><p>hpa和度量指标API里的数据均使用k8s中称为量纲的特殊整数表示。</p><p>量纲的意思就是：</p><ul><li>数字太小就加上后缀单位m，例如1.5写成1500m。</li><li>数字刚好就是整数显示。</li><li>数字大就加上后缀单位，比如k，M。</li><li>总之没有小数。</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> k8s </tag>
-            
-            <tag> 容器 </tag>
-            
-            <tag> deployment </tag>
             
         </tags>
       
@@ -1914,9 +1883,40 @@
       
         <tags>
             
+            <tag> 容器 </tag>
+            
             <tag> k8s </tag>
             
+            <tag> deployment </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞07自动扩缩</title>
+      <link href="posts/f6e328b5/"/>
+      <url>posts/f6e328b5/</url>
+      
+        <content type="html"><![CDATA[<h1>基本</h1><p>k8s的pod缩放功能,和aws的auto scaling功能是一回事。虽然可能没有aws的auto scaling功能强大。</p><p>k8s的pod自动缩放功能称之为HPA(Horizontal Pod Autoscaler)，它可以基于设定的cpu阈值，来自动调整控制器中的pod数量。</p><h1>手动缩放</h1><p>就是指定一个副本数量</p><pre><code class="language-yaml">kubectl scale deployment.v1.apps/nginx-dep --replicas=10</code></pre><h1>自动缩放</h1><p>自动缩放基于hpa对象资源，hpa需要监控服务，毕竟没有监控指标，就无法根据指标进行自动缩放。</p><h2 id="添加监控服务-metrics-server">添加监控服务 metrics-server</h2><p><a href="https://github.com/kubernetes-sigs/metrics-server">https://github.com/kubernetes-sigs/metrics-server</a></p><p>metrics 服务器可以通过资源度量值 API 对外提供度量数据，Horizontal Pod Autoscaler 正是根据此 API 来获取度量数据.如果没有此服务,HPA将无法工作.</p><pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</code></pre><p>默认 metrics-server 的 deployment 无法直接使用, 我们需要添加几个参数,  来禁止 ca 认证和开通 dns</p><p>在 deployment.spec.template.spec.containers 中新加入下列配置:</p><pre><code class="language-yaml">        command:          - /metrics-server          - --kubelet-insecure-tls          - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname</code></pre><pre><code class="language-bash">kubectl apply -f components.yaml</code></pre><h2 id="创建测试用例">创建测试用例</h2><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/</a></p><p>hpa-test.yaml</p><pre><code class="language-yaml">apiVersion: apps/v1kind: Deploymentmetadata:  name: php-apachespec:  selector:    matchLabels:      run: php-apache  replicas: 1  template:    metadata:      labels:        run: php-apache    spec:      containers:      - name: php-apache        image: k8s.gcr.io/hpa-example        ports:        - containerPort: 80        resources:          limits:            cpu: 500m          requests:            cpu: 200m---apiVersion: v1kind: Servicemetadata:  name: php-apache  labels:    run: php-apachespec:  ports:  - port: 80  selector:    run: php-apache</code></pre><blockquote><p>Service 类型通过<code>spec.selector</code>选择pod</p></blockquote><h2 id="基于CPU指标开启">基于CPU指标开启</h2><p>命令方式:</p><pre><code class="language-bash">kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=5</code></pre><p>声明方式:</p><pre><code class="language-yaml">apiVersion: autoscaling/v1kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 5  targetCPUUtilizationPercentage: 50</code></pre><blockquote><p>这里的意思是, cpu 阈值50%, 最小pod数1, 最大pod数5. hpa会将所有pod的平均cpu利用率维持在50%, 并且pod数量在1~5的范围内波动</p></blockquote><p>⚠️只允许拥有一个规则</p><p>查看当前cpu使用率</p><pre><code class="language-bash">➜   kubectl get hpa --watchNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          57m</code></pre><p>⚠️如果<code>TARGETS</code>显示<code>unknown</code>没有获取到Deployment的资源利用率，则说明Deployment中没有添加对应的资源限制。</p><p>通过busybox以死循环方式访问web服务，快速增加测试服务的cpu使用率</p><pre><code class="language-bash">kubectl run -it --rm load-generator --image=busybox /bin/shwhile true; do wget -q -O- http://php-apache; done=== 会输出大量OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!OK!</code></pre><p>在经过一段时间等待后(不会超过1分钟, 默认监控抓取数据间隔时间是1分钟),我们可以看到 pod 数量发生变化</p><pre><code class="language-bash">➜   kubectl get hpa --watchNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60mNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   0%/50%    1         5         1          60mNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61mNAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   250%/50%   1         5         1          61m➜   kubectl get deployment/php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           68m</code></pre><p>现在,关闭客户端请求,等待1分钟以上.再次看hpa, 这时候cpu利用率已经下降</p><pre><code class="language-bash">➜   kubectl get hpaNAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGEphp-apache   Deployment/php-apache   11%/50%   1         5         5          64m</code></pre><p>再看pod数量,它应该已经开始缩减。</p><blockquote><p>缩减并不是在cpu使用率下降之后就立即执行,而是内部有一个算法.它避免因立即执行从而导致资源出现反复波动.</p></blockquote><pre><code class="language-bash">➜   kubectl get deployment php-apacheNAME         READY   UP-TO-DATE   AVAILABLE   AGEphp-apache   5/5     5            5           70m➜   kubectl describe deployment/php-apacheName:                   php-apacheNamespace:              defaultCreationTimestamp:      Wed, 16 Sep 2020 10:22:32 +0800Labels:                 &lt;none&gt;Annotations:            deployment.kubernetes.io/revision: 1Selector:               run=php-apacheReplicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailableStrategyType:           RollingUpdateMinReadySeconds:        0RollingUpdateStrategy:  25% max unavailable, 25% max surgePod Template:  Labels:  run=php-apache  Containers:   php-apache:    Image:      k8s.gcr.io/hpa-example    Port:       80/TCP    Host Port:  0/TCP    Limits:      cpu:  500m    Requests:      cpu:        200m    Environment:  &lt;none&gt;    Mounts:       &lt;none&gt;  Volumes:        &lt;none&gt;Conditions:  Type           Status  Reason  ----           ------  ------  Progressing    True    NewReplicaSetAvailable  Available      True    MinimumReplicasAvailableOldReplicaSets:  &lt;none&gt;NewReplicaSet:   php-apache-5c4f475bf5 (1/1 replicas created)Events:  Type    Reason             Age    From                   Message  ----    ------             ----   ----                   -------  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  14m    deployment-controller  Scaled up replica set php-apache-5c4f475bf5 to 5  Normal  ScalingReplicaSet  6m50s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 4  Normal  ScalingReplicaSet  4m49s  deployment-controller  Scaled down replica set php-apache-5c4f475bf5 to 1</code></pre><hr><h1>常用的也就上面的基于CPU指标</h1><h2 id="基于其它非资源类型的指标">基于其它非资源类型的指标</h2><p><a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics</a></p><p>当前hpa的api版本是autoscaling/v1，它只能抓取cpu指标。</p><p>如果你想抓取内存指标(当前也只支持内存)和非资源类型指标,那么需要将版本变更为autoscaling/v2。</p><p>autoscaling/v2版本的配置有了一些变化,且可能随时会有新的变化.</p><p><a href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/#HorizontalPodAutoscalerSpec">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/horizontal-pod-autoscaler-v2/#HorizontalPodAutoscalerSpec</a></p><pre><code class="language-yaml">apiVersion: autoscaling/v2kind: HorizontalPodAutoscalermetadata:  name: php-apachespec:  scaleTargetRef:    apiVersion: apps/v1    kind: Deployment    name: php-apache  minReplicas: 1  maxReplicas: 10  metrics:  - type: Resource    resource:      name: cpu      target:        type: AverageUtilization        averageUtilization: 50  - type: Pods    pods:      metric:        name: packets-per-second      target:        type: AverageValue        averageValue: 1k  - type: Object    object:      metric:        name: requests-per-second      describedObject:        apiVersion: networking.k8s.io/v1beta1        kind: Ingress        name: main-route      target:        kind: Value        value: 10k</code></pre><p>上面的例子意思是：</p><ol><li>保持每个pod的cpu使用率不超过50%，并且每秒能承受1000个数据包。</li><li>所有位于ingress后面的pod，每秒能处理10000个请求。</li></ol><blockquote><p>请注意：</p><ol><li>指标字段targetCPUUtilizationPercentage被metrics数组代替，metrics数组包含了多种度量指标。</li><li>指标分为：直接资源类 Resource，Pod类 Pods，第三类 Object，非k8s对象类 External，容器资源类 ContainerResource</li><li>指标分类：<ol><li>name 指定指标标识名</li><li>target.type 指定指标【值】类型，例如<code>AverageValue</code>表示平均值，即每一个pod都需要满足此指标值</li></ol></li></ol></blockquote><p>⚠️关于<code>Resource</code>类型，要么是cpu，要么是memory，两者应二选一。</p><h2 id="基于标签的k8s对象指标">基于标签的k8s对象指标</h2><pre><code class="language-yaml">- type: Object  object:    metric:      name: `http_requests`      selector: `verb=GET`    target:      type: AverageValue      averageValue: 30</code></pre><blockquote><p>从监控系统里获取标签verb=GET的值</p></blockquote><p>上述例子的意思是，确保每一个pod都能满足标签为verb=GET的http请求数量。</p><h2 id="基于非k8s对象指标">基于非k8s对象指标</h2><pre><code class="language-yaml">- type: External  external:    metric:      name: queue_messages_ready      selector: &quot;queue=worker_tasks&quot;    target:      type: AverageValue      averageValue: 30</code></pre><p>当类型变为External的时候，就可以指定监控系统里存储的其它监控指标。</p><p>例如，监控系统从消息队列服务里拿到了消息数量的指标，并附加queue=worker_tasks。那么就可以和上述例子一样，根据消息数量指标进行缩放。</p><h1>度量</h1><p>hpa和度量指标API里的数据均使用k8s中称为量纲的特殊整数表示。</p><p>量纲的意思就是：</p><ul><li>数字太小就加上后缀单位m，例如1.5写成1500m。</li><li>数字刚好就是整数显示。</li><li>数字大就加上后缀单位，比如k，M。</li><li>总之没有小数。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> deployment </tag>
             
@@ -1972,9 +1972,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
@@ -2074,27 +2074,6 @@
     
     
     <entry>
-      <title>k8s☞04Pod-init容器 - 容器 - k8s - pod</title>
-      <link href="posts/3ec72f7e/"/>
-      <url>posts/3ec72f7e/</url>
-      
-        <content type="html"><![CDATA[<h1>使用场景</h1><ul><li>Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 <code>sed</code>、<code>awk</code>、<code>python</code> 或 <code>dig</code> 这样的工具而去 <code>FROM</code> 一个镜像来生成一个新的镜像。</li><li>Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性降低。</li><li>应用镜像的创建者和部署者可以各自独立工作，而没有必要联合构建一个单独的应用镜像。</li><li>Init 容器能以不同于 Pod 内应用容器的文件系统视图运行。因此，Init 容器可以访问应用容器不能访问的 <a href="https://kubernetes.io/zh/docs/concepts/configuration/secret/">Secret</a> 的权限。</li><li>由于 Init 容器必须在应用容器启动之前运行完成，因此 Init 容器 提供了一种机制来阻塞或延迟应用容器的启动，直到满足了一组先决条件。 一旦前置条件满足，Pod 内的所有的应用容器会并行启动。</li></ul><h1>示例</h1><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: myapp-pod  labels:    app: myappspec:  containers:  - name: myapp-container    image: busybox:1.28    command: ['sh', '-c', 'echo The app is running! &amp;&amp; sleep 3600']  initContainers:  - name: init-myservice    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done&quot;]  - name: init-mydb    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done&quot;]</code></pre><p>通过添加init容器，等待svc对象创建，延迟启动应用容器。</p><h1>行为</h1><p>init容器按照Pod.spec.initContainers中定义的顺序启动。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 容器 </category>
-          
-          <category> k8s </category>
-          
-      </categories>
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>k8s☞03Pod</title>
       <link href="posts/94518966/"/>
       <url>posts/94518966/</url>
@@ -2113,13 +2092,34 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
             <tag> pod </tag>
             
         </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>k8s☞04Pod-init容器 - 容器 - k8s - pod</title>
+      <link href="posts/3ec72f7e/"/>
+      <url>posts/3ec72f7e/</url>
+      
+        <content type="html"><![CDATA[<h1>使用场景</h1><ul><li>Init 容器可以包含一些安装过程中应用容器中不存在的实用工具或个性化代码。 例如，没有必要仅为了在安装过程中使用类似 <code>sed</code>、<code>awk</code>、<code>python</code> 或 <code>dig</code> 这样的工具而去 <code>FROM</code> 一个镜像来生成一个新的镜像。</li><li>Init 容器可以安全地运行这些工具，避免这些工具导致应用镜像的安全性降低。</li><li>应用镜像的创建者和部署者可以各自独立工作，而没有必要联合构建一个单独的应用镜像。</li><li>Init 容器能以不同于 Pod 内应用容器的文件系统视图运行。因此，Init 容器可以访问应用容器不能访问的 <a href="https://kubernetes.io/zh/docs/concepts/configuration/secret/">Secret</a> 的权限。</li><li>由于 Init 容器必须在应用容器启动之前运行完成，因此 Init 容器 提供了一种机制来阻塞或延迟应用容器的启动，直到满足了一组先决条件。 一旦前置条件满足，Pod 内的所有的应用容器会并行启动。</li></ul><h1>示例</h1><pre><code class="language-yaml">apiVersion: v1kind: Podmetadata:  name: myapp-pod  labels:    app: myappspec:  containers:  - name: myapp-container    image: busybox:1.28    command: ['sh', '-c', 'echo The app is running! &amp;&amp; sleep 3600']  initContainers:  - name: init-myservice    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done&quot;]  - name: init-mydb    image: busybox:1.28    command: ['sh', '-c', &quot;until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done&quot;]</code></pre><p>通过添加init容器，等待svc对象创建，延迟启动应用容器。</p><h1>行为</h1><p>init容器按照Pod.spec.initContainers中定义的顺序启动。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 容器 </category>
+          
+          <category> k8s </category>
+          
+      </categories>
+      
       
     </entry>
     
@@ -2144,9 +2144,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -2173,9 +2173,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -2202,9 +2202,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -2231,9 +2231,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -2655,69 +2655,11 @@
     
     
     <entry>
-      <title>zabbix ☞ nginx</title>
-      <link href="posts/b35b5965/"/>
-      <url>posts/b35b5965/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>zabbix☞web监控</title>
       <link href="posts/3d20f83e/"/>
       <url>posts/3d20f83e/</url>
       
         <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zabbix </tag>
-            
-            <tag> 监控 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞agent和proxy（yum）</title>
-      <link href="posts/1587f6e8/"/>
-      <url>posts/1587f6e8/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
       
       
       <categories>
@@ -2763,6 +2705,64 @@
             <tag> redis </tag>
             
             <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞agent和proxy（yum）</title>
+      <link href="posts/1587f6e8/"/>
+      <url>posts/1587f6e8/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix ☞ nginx</title>
+      <link href="posts/b35b5965/"/>
+      <url>posts/b35b5965/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
             
         </tags>
       
@@ -3087,11 +3087,11 @@
     
     
     <entry>
-      <title>django☞管理静态文件</title>
-      <link href="posts/6a4df400/"/>
-      <url>posts/6a4df400/</url>
+      <title>django☞记忆点</title>
+      <link href="posts/3f8b5448/"/>
+      <url>posts/3f8b5448/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://docs.djangoproject.com/zh-hans/3.1/howto/static-files/">管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)</a></p><p><a href="https://docs.djangoproject.com/zh-hans/3.1/ref/views/">内置视图 | Django 文档 | Django (djangoproject.com)</a></p><h2 id="通用设置">通用设置</h2><p>项目.settings.py中</p><pre><code class="language-python">STATIC_URL = '/static/'if DEBUG:    STATICFILES_DIRS = [        BASE_DIR / &quot;static&quot;,    ]else:    STATIC_ROOT = BASE_DIR / &quot;static&quot;MEDIA_URL = '/media/'MEDIA_ROOT = BASE_DIR / &quot;media</code></pre><h2 id="DEBUG开启">DEBUG开启</h2><p>无需其它改动</p><h2 id="DEBUG关闭">DEBUG关闭</h2><p>项目.urls.py中</p><pre><code class="language-python">from django.views.static import servefrom django.urls import path, include, re_pathfrom . import settingsif not settings.DEBUG:    urlpatterns += [        re_path(r'^media/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.MEDIA_ROOT,        &#125;),        re_path(r'^static/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.STATIC_ROOT,        &#125;),    ]</code></pre><h2 id="部署静态文件">部署静态文件</h2><pre><code class="language-bash">python manage.py collectstatic --noinput</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="git文件">.git文件</h2><pre><code class="language-bash"># Django #*.log*.pot*.pyc__pycache__mediastatic# Backup files #*.bak# other.vscode.gitdblog</code></pre><h2 id="Dockerfile">Dockerfile</h2><pre><code class="language-bash">FROM python:3.8-alpineLABEL maintainer=&quot;aaa103439@hotmail.com&quot;WORKDIR /app COPY . /appRUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories &amp;&amp; \    apk update &amp;&amp; \    apk add gcc musl-dev jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev libffi-dev openssl-dev &amp;&amp; \    pip install --upgrade pip &amp;&amp; pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/CMD [&quot;sh&quot;,&quot;/app/start.sh&quot;]</code></pre><h2 id="生成-settings-SECRET-KEY">生成 settings.SECRET_KEY</h2><pre><code class="language-python">#!/usr/bin/env python# coding=utf-8from django.core.management.utils import  get_random_secret_keyprint(&quot;务必妥善保管好此密码&quot;)print(get_random_secret_key())</code></pre><h2 id="调用-fontawesome-free-图标库">调用 fontawesome-free 图标库</h2><pre><code class="language-bash">pip install fontawesome-free</code></pre><p><code>settings.INSTALLED_APPS</code> 中加入<code>fontawesome-free</code></p><h2 id="外键">外键</h2><p>外键，顾名思义不是自己的字段，而是引用其它表的字段。</p><blockquote><p>外键不是通过字段名定义的，而是通过【外键约束】定义</p></blockquote><p>外键可以实现一对多、多对多和一对一的关系。</p><p>外键既可以通过数据库来约束，也可以不设置约束，仅依靠应用程序的逻辑来保证。</p><p>学生表【student】有主键【sid】，成绩表也有主键【sid】, 学生表和成绩表是1对1的关系</p><p><img src="/posts/3f8b5448/image-20210716114155366.png" alt="image-20210716114155366"></p><p>如果没有【外键约束】的规则建立，则两个表在数据库看来是没有关系的，即：要保持两个表的关系，则需要应用程序去保证逻辑正确，也就是说，应用程序不能插入相同学号的数据到表里。</p><p>若应用程序不想去维持，则就需要数据库【外键约束】去维持。</p><p>在没有django的时候，你需要直接写入SQL语句去实现【外键约束】，例如</p><pre><code class="language-sql">ALTER TABLE scoresADD CONSTRAINT fk_student_sidFOREIGN KEY (student_sid)REFERENCES student (sid);</code></pre><p>django创建外键约束的方式如下，成绩表的【sid】字段定义如下</p><pre><code class="language-python">sid = models.OneToOneField('student', null=True, on_delete=models.CASCADE)</code></pre><h3 id="一对一-models-OneToOneField">一对一 models.OneToOneField()</h3><p>常用于“扩展”另一个模型的主键，就如同上述例子，扩展了学生的额外属性【成绩】</p><h3 id="一对多-models-ForeignKey">一对多 models.ForeignKey()</h3><p>常用于A包含B，外键定义在B表中，引用A表的主键</p><h3 id="多对多-ManyToManyField">多对多 ManyToManyField()</h3><p>你中有我，我中有你，一个班有多个老师，一个老师可以教多个班</p><h3 id="查询">查询</h3><h3 id="on-delete">on_delete</h3><p>字面意思，当删除的时候，应该怎么做</p><p><code>CASCADE</code>：删除</p>]]></content>
       
       
       <categories>
@@ -3116,11 +3116,11 @@
     
     
     <entry>
-      <title>django☞记忆点</title>
-      <link href="posts/3f8b5448/"/>
-      <url>posts/3f8b5448/</url>
+      <title>django☞管理静态文件</title>
+      <link href="posts/6a4df400/"/>
+      <url>posts/6a4df400/</url>
       
-        <content type="html"><![CDATA[<h2 id="git文件">.git文件</h2><pre><code class="language-bash"># Django #*.log*.pot*.pyc__pycache__mediastatic# Backup files #*.bak# other.vscode.gitdblog</code></pre><h2 id="Dockerfile">Dockerfile</h2><pre><code class="language-bash">FROM python:3.8-alpineLABEL maintainer=&quot;aaa103439@hotmail.com&quot;WORKDIR /app COPY . /appRUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories &amp;&amp; \    apk update &amp;&amp; \    apk add gcc musl-dev jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev libffi-dev openssl-dev &amp;&amp; \    pip install --upgrade pip &amp;&amp; pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/CMD [&quot;sh&quot;,&quot;/app/start.sh&quot;]</code></pre><h2 id="生成-settings-SECRET-KEY">生成 settings.SECRET_KEY</h2><pre><code class="language-python">#!/usr/bin/env python# coding=utf-8from django.core.management.utils import  get_random_secret_keyprint(&quot;务必妥善保管好此密码&quot;)print(get_random_secret_key())</code></pre><h2 id="调用-fontawesome-free-图标库">调用 fontawesome-free 图标库</h2><pre><code class="language-bash">pip install fontawesome-free</code></pre><p><code>settings.INSTALLED_APPS</code> 中加入<code>fontawesome-free</code></p><h2 id="外键">外键</h2><p>外键，顾名思义不是自己的字段，而是引用其它表的字段。</p><blockquote><p>外键不是通过字段名定义的，而是通过【外键约束】定义</p></blockquote><p>外键可以实现一对多、多对多和一对一的关系。</p><p>外键既可以通过数据库来约束，也可以不设置约束，仅依靠应用程序的逻辑来保证。</p><p>学生表【student】有主键【sid】，成绩表也有主键【sid】, 学生表和成绩表是1对1的关系</p><p><img src="/posts/3f8b5448/image-20210716114155366.png" alt="image-20210716114155366"></p><p>如果没有【外键约束】的规则建立，则两个表在数据库看来是没有关系的，即：要保持两个表的关系，则需要应用程序去保证逻辑正确，也就是说，应用程序不能插入相同学号的数据到表里。</p><p>若应用程序不想去维持，则就需要数据库【外键约束】去维持。</p><p>在没有django的时候，你需要直接写入SQL语句去实现【外键约束】，例如</p><pre><code class="language-sql">ALTER TABLE scoresADD CONSTRAINT fk_student_sidFOREIGN KEY (student_sid)REFERENCES student (sid);</code></pre><p>django创建外键约束的方式如下，成绩表的【sid】字段定义如下</p><pre><code class="language-python">sid = models.OneToOneField('student', null=True, on_delete=models.CASCADE)</code></pre><h3 id="一对一-models-OneToOneField">一对一 models.OneToOneField()</h3><p>常用于“扩展”另一个模型的主键，就如同上述例子，扩展了学生的额外属性【成绩】</p><h3 id="一对多-models-ForeignKey">一对多 models.ForeignKey()</h3><p>常用于A包含B，外键定义在B表中，引用A表的主键</p><h3 id="多对多-ManyToManyField">多对多 ManyToManyField()</h3><p>你中有我，我中有你，一个班有多个老师，一个老师可以教多个班</p><h3 id="查询">查询</h3><h3 id="on-delete">on_delete</h3><p>字面意思，当删除的时候，应该怎么做</p><p><code>CASCADE</code>：删除</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://docs.djangoproject.com/zh-hans/3.1/howto/static-files/">管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)</a></p><p><a href="https://docs.djangoproject.com/zh-hans/3.1/ref/views/">内置视图 | Django 文档 | Django (djangoproject.com)</a></p><h2 id="通用设置">通用设置</h2><p>项目.settings.py中</p><pre><code class="language-python">STATIC_URL = '/static/'if DEBUG:    STATICFILES_DIRS = [        BASE_DIR / &quot;static&quot;,    ]else:    STATIC_ROOT = BASE_DIR / &quot;static&quot;MEDIA_URL = '/media/'MEDIA_ROOT = BASE_DIR / &quot;media</code></pre><h2 id="DEBUG开启">DEBUG开启</h2><p>无需其它改动</p><h2 id="DEBUG关闭">DEBUG关闭</h2><p>项目.urls.py中</p><pre><code class="language-python">from django.views.static import servefrom django.urls import path, include, re_pathfrom . import settingsif not settings.DEBUG:    urlpatterns += [        re_path(r'^media/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.MEDIA_ROOT,        &#125;),        re_path(r'^static/(?P&lt;path&gt;.*)$', serve, &#123;            'document_root': settings.STATIC_ROOT,        &#125;),    ]</code></pre><h2 id="部署静态文件">部署静态文件</h2><pre><code class="language-bash">python manage.py collectstatic --noinput</code></pre>]]></content>
       
       
       <categories>
@@ -3537,35 +3537,6 @@
     
     
     <entry>
-      <title>django☞restful简单使用</title>
-      <link href="posts/dd4c9efa/"/>
-      <url>posts/dd4c9efa/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>官方快速教程：<a href="https://www.django-rest-framework.org/tutorial/quickstart/">Quickstart - Django REST framework (django-rest-framework.org)</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">pip install djangorestframework</code></pre><h2 id="配置">配置</h2><p><code>settings.INSTALLED_APPS</code>加入<code>'rest_framework.authtoken','rest_framework'</code></p><blockquote><p>其中<code>rest_framework.authtoken</code>是简单的 Token 认证</p></blockquote><p><code>settings.py</code> 中加入以下代码：</p><pre><code class="language-python">REST_FRAMEWORK = &#123;    'DEFAULT_AUTHENTICATION_CLASSES': [        'rest_framework.authentication.BasicAuthentication',        'rest_framework.authentication.SessionAuthentication',        'rest_framework.authentication.TokenAuthentication'  # 开启 Token 认证    ],    'DEFAULT_PERMISSION_CLASSES': [        'rest_framework.permissions.IsAuthenticated', # 全局接口权限：开启全局认证    ],    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # 接口分页    # 'PAGE_SIZE': 10&#125;</code></pre><h2 id="具体">具体</h2><p><img src="/posts/dd4c9efa/image-20210805152047616.png" alt="image-20210805152047616"></p><p>大概的界面就如上图所示：</p><ol><li>右上角是一个登录UI</li><li>正面是请求地址/方法之类的，以及返回的数据</li></ol><h3 id="关于右上角的登录UI">关于右上角的登录UI</h3><pre><code class="language-python"># 项目根APP里的 urls.pyfrom django.urls import path, includeurlpatterns += [    path('api-auth/', include('rest_framework.urls')), ]</code></pre><h3 id="大致的一个流程">大致的一个流程</h3><p>Request☞DjangoUrLs☞AppRootUrL☞APIUrL☞APIView☞API序列化☞DjangoModel</p><p>假设你的API地址是 /api-user/user</p><h3 id="DjangoUrLs路由">DjangoUrLs路由</h3><blockquote><p>项目根路由</p></blockquote><pre><code class="language-python">urlpatterns += [    path('api-user/', include(loginurls, namespace=&quot;login&quot;)),]</code></pre><h3 id="AppRoutUrL">AppRoutUrL</h3><blockquote><p>loginurls文件：App根路由</p></blockquote><pre><code class="language-python">app_name=&quot;login&quot;from rest_framework.decorators import api_viewfrom rest_framework.response import Responsefrom rest_framework.reverse import reverse@api_view(['GET'])def api_root(request, format=None):    return Response(&#123;        'users': reverse('login:user-list', request=request, format=format),        'snippets': reverse('login:asset-list', request=request, format=format)    &#125;)# API根路由urlpatterns += [    path('', api_root),]</code></pre><h3 id="APIURL">APIURL</h3><pre><code class="language-python">user_list = views.UserViewSet.as_view(&#123;    'get': 'list'&#125;)user_detail = views.UserViewSet.as_view(&#123;    'get': 'retrieve'&#125;)urlpatterns += [    path('user/', user_list, name='user-list'),    path('user/&lt;int:pk&gt;/', user_detail, name='user-detail')]</code></pre><h3 id="APIViews">APIViews</h3><pre><code class="language-python">from login import models as loginmodelsfrom login.serializers import UserSerializerfrom django.contrib.auth.models import Userfrom rest_framework import permissionsfrom rest_framework import viewsetsclass UserViewSet(viewsets.ModelViewSet):    &quot;&quot;&quot;    This viewset automatically provides `list` and `retrieve` actions.    &quot;&quot;&quot;    queryset = User.objects.all()    serializer_class = UserSerializer    permission_classes = [permissions.IsAdminUser]</code></pre><h3 id="API序列化">API序列化</h3><pre><code class="language-python">from rest_framework import serializersfrom login import models as loginmodelsfrom django.contrib.auth.models import Userclass UserSerializer(serializers.HyperlinkedModelSerializer):    # 显示的定义两个数据字段的查找方法，一个是user的关联外键 user_asset，一个是 HyperlinkedModelSerializer 所需的链接字段 url    user_asset = serializers.HyperlinkedRelatedField(     # user_asset 是 User主表的外键名(related_name)        view_name=&quot;login:asset-detail&quot;, read_only=True    )    url = serializers.HyperlinkedIdentityField(        view_name='login:user-detail',   # 默认 HyperlinkedModelSerializer 的 url 字段查找的视图名是 &#123;model_name&#125;-detail。 这里显示指定视图    )    class Meta:        model = User        fields = ['url', 'id', 'username', 'user_asset']  # api返回的数据</code></pre><h2 id="简单的Token认证">简单的Token认证</h2><blockquote><p>通过API拿到数据，一般我们会开启认证，例如Token方式</p></blockquote><pre><code class="language-python">&quot;&quot;&quot;Token URL&quot;&quot;&quot;from login import views as loginviewsurlpatterns += [    path('api/gettoken/', loginviews.CustomAuthToken.as_view()), # 通过发起POST获取token，&#123;&quot;username&quot;: &quot;xxx&quot;, &quot;password&quot;:xxx&#125;]</code></pre><pre><code class="language-python">&quot;&quot;&quot;views&quot;&quot;&quot;from rest_framework.authtoken.views import ObtainAuthTokenfrom rest_framework.authtoken.models import Tokenfrom rest_framework.response import Responseclass CustomAuthToken(ObtainAuthToken):    #throttle_classes =     def post(self, request, *args, **kwargs):        serializer = self.serializer_class(data=request.data,                                        context=&#123;'request': request&#125;)        serializer.is_valid(raise_exception=True)        user = serializer.validated_data['user']        token, created = Token.objects.get_or_create(user=user)        return Response(&#123;            'token': token.key,            'user_id': user.pk,            'email': user.email        &#125;)</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 语言 </category>
-          
-          <category> python </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> python </tag>
-            
-            <tag> django </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>jquery☞伪进度条</title>
       <link href="posts/5d527900/"/>
       <url>posts/5d527900/</url>
@@ -3593,11 +3564,11 @@
     
     
     <entry>
-      <title>django☞验证码</title>
-      <link href="posts/d60c38c/"/>
-      <url>posts/d60c38c/</url>
+      <title>django☞restful简单使用</title>
+      <link href="posts/dd4c9efa/"/>
+      <url>posts/dd4c9efa/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://django-simple-captcha.readthedocs.io/en/latest/advanced.html#configuration-toggles">高级主题 — Django Simple Captcha 0.5.14 文档 (django-simple-captcha.readthedocs.io)</a></p><h2 id="安装">安装</h2><pre><code class="language-python">pip install django-simple-captcha</code></pre><p><code>settings.INSTALLED_APPS</code>加入<code>captcha</code></p><h2 id="配置">配置</h2><p><code>settings.py</code>末尾中加入以下代码：</p><pre><code class="language-python"># 验证码设置CAPTCHA_FIELD_TEMPLATE = &quot;captcha/field.html&quot; # 字段排列CAPTCHA_TEXT_FIELD_TEMPLATE = &quot;captcha/text_field.html&quot; # 文本输入框#CAPTCHA_HIDDEN_FIELD_TEMPLATE = &quot;captcha/hidden_field.html&quot; CAPTCHA_IMAGE_TEMPLATE = &quot;captcha/image.html&quot; # 验证码图标框CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge' # 验证码类型CAPTCHA_IMAGE_SIZE=(100,36) # 验证码尺寸CAPTCHA_TIMEOUT=1#CAPTCHA_OUTPUT_FORMAT=u'%(text_field)s %(hidden_field)s %(image)s'</code></pre><h2 id="具体">具体</h2><p>以<code>app:login</code>为例，在其根目录构建以下内容</p><ol><li>构建<code>templates/captcha</code>目录，并创建<code>field.html</code>、<code>text_field.html</code>、<code>image.html</code>模板</li></ol><pre><code class="language-bash">❯ cat field.html&#123;&#123; text_field &#125;&#125;&#123;&#123; hidden_field &#125;&#125;&#123;&#123; image &#125;&#125;❯ cat text_field.html&lt;input id=&quot;id_&#123;&#123; name &#125;&#125;_1&quot; name=&quot;&#123;&#123; name &#125;&#125;_1&quot; type=&quot;text&quot; placeholder=&quot;captcha&quot; /&gt;❯ cat image.html&lt;img src=&quot;&#123;&#123; image &#125;&#125;&quot; alt=&quot;&#123;&#123; name &#125;&#125;&quot; class=&quot;&#123;&#123; name &#125;&#125;&quot;/&gt;</code></pre><ol start="2"><li>构建<code>static/login/js</code>目录，并创建<code>captcha.js</code>，用于动态刷新验证码</li></ol><pre><code class="language-bash">❯ cat captcha.js$('img.captcha').click(function() &#123;  $.getJSON('/captcha/refresh/',function(json) &#123; // This should update your captcha image src and captcha hidden input      console.log(json);      $(&quot;img.captcha&quot;).attr(&quot;src&quot;,json.image_url);      $(&quot;#id_captcha_0&quot;).val(json.key);    &#125;);    return false;&#125;);</code></pre><ol start="3"><li>创建<code>form</code>表单调用<code>captcha</code></li></ol><pre><code>❯ cat forms.py&quot;&quot;&quot;导入表单模块&quot;&quot;&quot;from django import formsfrom captcha.fields import CaptchaField, CaptchaTextInputclass UserForm(forms.Form):    &quot;&quot;&quot;    用户表单    &quot;&quot;&quot;    username = forms.CharField(label='用户名', max_length=128, widget=forms.TextInput(attrs=&#123;'class': 'form-control'&#125;))    password = forms.CharField(label='密码', max_length=256, widget=forms.PasswordInput(attrs=&#123;'class': 'form-control'&#125;))    captcha = CaptchaField(label='验证码')</code></pre><ol start="4"><li>构建<code>templates/login</code>目录，并创建<code>login.html</code>模板调用<code>caphtcha</code></li></ol><pre><code class="language-html">&#123;% load static %&#125;&lt;!doctype html&gt;&lt;html lang=&quot;en&quot;&gt;  &lt;head&gt;    &lt;!-- Required meta tags --&gt;    &lt;meta charset=&quot;utf-8&quot;&gt;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&gt;    &lt;!-- 上述meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ --&gt;    &lt;!-- Bootstrap CSS --&gt;    &lt;link href=&quot;&#123;% static 'login/css/login.css' %&#125;&quot; rel=&quot;stylesheet&quot; /&gt;    &lt;link href=&quot;&#123;% static 'fontawesome_free/css/all.min.css' %&#125;&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;    &lt;title&gt;登录&lt;/title&gt;  &lt;/head&gt;  &lt;body&gt;    &lt;div id=&quot;container&quot;&gt;      &lt;h1&gt;登录&lt;/h1&gt;      &#123;% if login_form.captcha.errors %&#125;        &#123;% for error in login_form.captcha.errors %&#125;        <small>😢😢😢&#123;&#123; error &#125;&#125;😢😢😢</small>        &#123;% endfor %&#125;      &#123;% elif message %&#125;        <small>😢😢😢&#123;&#123; message &#125;&#125;😢😢😢</small>      &#123;% else %&#125;        <small>😊😊😊欢迎您的到来😊😊😊</small>      &#123;% endif %&#125;      &lt;form class=&quot;form&quot; action=&quot;/login/&quot; method=&quot;post&quot;&gt;&#123;% csrf_token %&#125;        &lt;!-- 判断用户输入信息，并返回错误信息 --&gt;        &#123;% for item in login_form %&#125;          &#123;% if item.html_name == "username" %&#125;          <div class="item">            <i class="far fa-user"></i>            <input id="&#123;&#123; item.id_for_label &#125;&#125;" name="&#123;&#123; item.html_name &#125;&#125;" type="&#123;&#123; item.field.widget.input_type &#125;&#125;" placeholder="&#123;&#123; item.html_name &#125;&#125;">            <text>            &#123;% for error in item.errors %&#125;                &#123;&#123; error &#125;&#125;            &#123;% endfor %&#125;            &lt;/text&gt;          &lt;/div&gt;          &#123;% endif %&#125;          &#123;% if item.html_name == "password" %&#125;          <div class="item">            <i class="fas fa-key"></i>            <input id="&#123;&#123; item.id_for_label &#125;&#125;" name="&#123;&#123; item.html_name &#125;&#125;" type="&#123;&#123; item.field.widget.input_type &#125;&#125;" placeholder="&#123;&#123; item.html_name &#125;&#125;">            <text>            &#123;% for error in item.errors %&#125;                &#123;&#123; error &#125;&#125;            &#123;% endfor %&#125;            </text>          </div>          &#123;% endif %&#125;          &#123;% if item.html_name == "captcha" %&#125;          <div class="item">            <i class="fas fa-robot"></i>            &#123;&#123; login_form.captcha &#125;&#125;            </div>            &#123;% endif %&#125;        &#123;% endfor %&#125;        &lt;div class=&quot;item1&quot;&gt;          &lt;button type=&quot;submit&quot;&gt;Go~~~~&lt;/button&gt;          &lt;a href=&quot;/register/&quot;&gt;Register&lt;/a&gt;        &lt;/div&gt;      &lt;/form&gt;    &lt;/div&gt;    &lt;script src=&quot;https://cdn.bootcss.com/jquery/3.5.1/jquery.js&quot;&gt;&lt;/script&gt;    &lt;script src=&quot;https://cdn.bootcss.com/popper.js/1.16.0/umd/popper.js&quot;&gt;&lt;/script&gt;    &lt;script src=&quot;https://cdn.bootcss.com/twitter-bootstrap/4.5.3/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;    &lt;script src=&quot;&#123;% static 'login/js/captcha.js' %&#125;&quot;&gt;&lt;/script&gt;  &lt;/body&gt;&lt;/html&gt;</text></div></code></pre><ol start="5"><li>构建<code>static/login/css</code>目录，并创建<code>login.css</code></li></ol><pre><code class="language-bash">❯ cat login.cssbody &#123;background: url('../image/backend.jpg') center center no-repeat;background-attachment: fixed;background-size: cover;&#125;input::-webkit-input-placeholder&#123;    color:#000000;&#125;input::-moz-placeholder&#123;   /* Mozilla Firefox 19+ */    color:#000000;&#125;input:-moz-placeholder&#123;    /* Mozilla Firefox 4 to 18 */    color:#000000;&#125;input:-ms-input-placeholder&#123;  /* Internet Explorer 10-11 */    color:#000000;&#125;#container &#123;    width: 35%;    height: 400px;    margin: 0 auto;    margin-top: 15%;    padding: 20px 50px;    text-align: center;    background: #ffffff50;&#125;#container .alert &#123;    margin: 0 auto;    width: 350px;    text-align: left;&#125;#container .form &#123;    margin-top: 30px;&#125;#container .form .item &#123;    margin-top: 15px;    position: relative;&#125;#container .form .item i &#123;    font-size: 20px;&#125;#container .form .item input &#123;    border: 0;    border-bottom: 2px solid #000;    padding: 10px 30px;    background: #ffffff00;    font-size: 20px;    padding-left: 11px;&#125;#container .form .item text &#123;    position: absolute;    text-size: 5px;    text-align: left;    padding-top: 10px;&#125;#container .form .item img &#123;    position: absolute;&#125;#container .form .item1 &#123;    display: flex;    justify-content: space-between;    margin-top: 15px;    padding-top: 5%;    padding-left: 22%;    padding-right: 22%;&#125;#container .form .item1 button &#123;    width: 180px;    height: 30px;    font-size: 20px;    font-weight: 600;    color: #ffffff;    background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);    border-radius: 15px;    border: 0;&#125;#container .form .item1 a &#123;    text-decoration:none;    width: 100px;    font-size: 20px;    font-weight: 600;    color: #ffffff;    background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);    border-radius: 15px;    border: 0;&#125;</code></pre><ol start="6"><li>添加路由</li></ol><p><code>项目.urls.urlpatterns</code>中添加<code>path('captcha/', include('captcha.urls')),</code></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>官方快速教程：<a href="https://www.django-rest-framework.org/tutorial/quickstart/">Quickstart - Django REST framework (django-rest-framework.org)</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">pip install djangorestframework</code></pre><h2 id="配置">配置</h2><p><code>settings.INSTALLED_APPS</code>加入<code>'rest_framework.authtoken','rest_framework'</code></p><blockquote><p>其中<code>rest_framework.authtoken</code>是简单的 Token 认证</p></blockquote><p><code>settings.py</code> 中加入以下代码：</p><pre><code class="language-python">REST_FRAMEWORK = &#123;    'DEFAULT_AUTHENTICATION_CLASSES': [        'rest_framework.authentication.BasicAuthentication',        'rest_framework.authentication.SessionAuthentication',        'rest_framework.authentication.TokenAuthentication'  # 开启 Token 认证    ],    'DEFAULT_PERMISSION_CLASSES': [        'rest_framework.permissions.IsAuthenticated', # 全局接口权限：开启全局认证    ],    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # 接口分页    # 'PAGE_SIZE': 10&#125;</code></pre><h2 id="具体">具体</h2><p><img src="/posts/dd4c9efa/image-20210805152047616.png" alt="image-20210805152047616"></p><p>大概的界面就如上图所示：</p><ol><li>右上角是一个登录UI</li><li>正面是请求地址/方法之类的，以及返回的数据</li></ol><h3 id="关于右上角的登录UI">关于右上角的登录UI</h3><pre><code class="language-python"># 项目根APP里的 urls.pyfrom django.urls import path, includeurlpatterns += [    path('api-auth/', include('rest_framework.urls')), ]</code></pre><h3 id="大致的一个流程">大致的一个流程</h3><p>Request☞DjangoUrLs☞AppRootUrL☞APIUrL☞APIView☞API序列化☞DjangoModel</p><p>假设你的API地址是 /api-user/user</p><h3 id="DjangoUrLs路由">DjangoUrLs路由</h3><blockquote><p>项目根路由</p></blockquote><pre><code class="language-python">urlpatterns += [    path('api-user/', include(loginurls, namespace=&quot;login&quot;)),]</code></pre><h3 id="AppRoutUrL">AppRoutUrL</h3><blockquote><p>loginurls文件：App根路由</p></blockquote><pre><code class="language-python">app_name=&quot;login&quot;from rest_framework.decorators import api_viewfrom rest_framework.response import Responsefrom rest_framework.reverse import reverse@api_view(['GET'])def api_root(request, format=None):    return Response(&#123;        'users': reverse('login:user-list', request=request, format=format),        'snippets': reverse('login:asset-list', request=request, format=format)    &#125;)# API根路由urlpatterns += [    path('', api_root),]</code></pre><h3 id="APIURL">APIURL</h3><pre><code class="language-python">user_list = views.UserViewSet.as_view(&#123;    'get': 'list'&#125;)user_detail = views.UserViewSet.as_view(&#123;    'get': 'retrieve'&#125;)urlpatterns += [    path('user/', user_list, name='user-list'),    path('user/&lt;int:pk&gt;/', user_detail, name='user-detail')]</code></pre><h3 id="APIViews">APIViews</h3><pre><code class="language-python">from login import models as loginmodelsfrom login.serializers import UserSerializerfrom django.contrib.auth.models import Userfrom rest_framework import permissionsfrom rest_framework import viewsetsclass UserViewSet(viewsets.ModelViewSet):    &quot;&quot;&quot;    This viewset automatically provides `list` and `retrieve` actions.    &quot;&quot;&quot;    queryset = User.objects.all()    serializer_class = UserSerializer    permission_classes = [permissions.IsAdminUser]</code></pre><h3 id="API序列化">API序列化</h3><pre><code class="language-python">from rest_framework import serializersfrom login import models as loginmodelsfrom django.contrib.auth.models import Userclass UserSerializer(serializers.HyperlinkedModelSerializer):    # 显示的定义两个数据字段的查找方法，一个是user的关联外键 user_asset，一个是 HyperlinkedModelSerializer 所需的链接字段 url    user_asset = serializers.HyperlinkedRelatedField(     # user_asset 是 User主表的外键名(related_name)        view_name=&quot;login:asset-detail&quot;, read_only=True    )    url = serializers.HyperlinkedIdentityField(        view_name='login:user-detail',   # 默认 HyperlinkedModelSerializer 的 url 字段查找的视图名是 &#123;model_name&#125;-detail。 这里显示指定视图    )    class Meta:        model = User        fields = ['url', 'id', 'username', 'user_asset']  # api返回的数据</code></pre><h2 id="简单的Token认证">简单的Token认证</h2><blockquote><p>通过API拿到数据，一般我们会开启认证，例如Token方式</p></blockquote><pre><code class="language-python">&quot;&quot;&quot;Token URL&quot;&quot;&quot;from login import views as loginviewsurlpatterns += [    path('api/gettoken/', loginviews.CustomAuthToken.as_view()), # 通过发起POST获取token，&#123;&quot;username&quot;: &quot;xxx&quot;, &quot;password&quot;:xxx&#125;]</code></pre><pre><code class="language-python">&quot;&quot;&quot;views&quot;&quot;&quot;from rest_framework.authtoken.views import ObtainAuthTokenfrom rest_framework.authtoken.models import Tokenfrom rest_framework.response import Responseclass CustomAuthToken(ObtainAuthToken):    #throttle_classes =     def post(self, request, *args, **kwargs):        serializer = self.serializer_class(data=request.data,                                        context=&#123;'request': request&#125;)        serializer.is_valid(raise_exception=True)        user = serializer.validated_data['user']        token, created = Token.objects.get_or_create(user=user)        return Response(&#123;            'token': token.key,            'user_id': user.pk,            'email': user.email        &#125;)</code></pre>]]></content>
       
       
       <categories>
@@ -3651,6 +3622,35 @@
     
     
     <entry>
+      <title>django☞验证码</title>
+      <link href="posts/d60c38c/"/>
+      <url>posts/d60c38c/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://django-simple-captcha.readthedocs.io/en/latest/advanced.html#configuration-toggles">高级主题 — Django Simple Captcha 0.5.14 文档 (django-simple-captcha.readthedocs.io)</a></p><h2 id="安装">安装</h2><pre><code class="language-python">pip install django-simple-captcha</code></pre><p><code>settings.INSTALLED_APPS</code>加入<code>captcha</code></p><h2 id="配置">配置</h2><p><code>settings.py</code>末尾中加入以下代码：</p><pre><code class="language-python"># 验证码设置CAPTCHA_FIELD_TEMPLATE = &quot;captcha/field.html&quot; # 字段排列CAPTCHA_TEXT_FIELD_TEMPLATE = &quot;captcha/text_field.html&quot; # 文本输入框#CAPTCHA_HIDDEN_FIELD_TEMPLATE = &quot;captcha/hidden_field.html&quot; CAPTCHA_IMAGE_TEMPLATE = &quot;captcha/image.html&quot; # 验证码图标框CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge' # 验证码类型CAPTCHA_IMAGE_SIZE=(100,36) # 验证码尺寸CAPTCHA_TIMEOUT=1#CAPTCHA_OUTPUT_FORMAT=u'%(text_field)s %(hidden_field)s %(image)s'</code></pre><h2 id="具体">具体</h2><p>以<code>app:login</code>为例，在其根目录构建以下内容</p><ol><li>构建<code>templates/captcha</code>目录，并创建<code>field.html</code>、<code>text_field.html</code>、<code>image.html</code>模板</li></ol><pre><code class="language-bash">❯ cat field.html&#123;&#123; text_field &#125;&#125;&#123;&#123; hidden_field &#125;&#125;&#123;&#123; image &#125;&#125;❯ cat text_field.html&lt;input id=&quot;id_&#123;&#123; name &#125;&#125;_1&quot; name=&quot;&#123;&#123; name &#125;&#125;_1&quot; type=&quot;text&quot; placeholder=&quot;captcha&quot; /&gt;❯ cat image.html&lt;img src=&quot;&#123;&#123; image &#125;&#125;&quot; alt=&quot;&#123;&#123; name &#125;&#125;&quot; class=&quot;&#123;&#123; name &#125;&#125;&quot;/&gt;</code></pre><ol start="2"><li>构建<code>static/login/js</code>目录，并创建<code>captcha.js</code>，用于动态刷新验证码</li></ol><pre><code class="language-bash">❯ cat captcha.js$('img.captcha').click(function() &#123;  $.getJSON('/captcha/refresh/',function(json) &#123; // This should update your captcha image src and captcha hidden input      console.log(json);      $(&quot;img.captcha&quot;).attr(&quot;src&quot;,json.image_url);      $(&quot;#id_captcha_0&quot;).val(json.key);    &#125;);    return false;&#125;);</code></pre><ol start="3"><li>创建<code>form</code>表单调用<code>captcha</code></li></ol><pre><code>❯ cat forms.py&quot;&quot;&quot;导入表单模块&quot;&quot;&quot;from django import formsfrom captcha.fields import CaptchaField, CaptchaTextInputclass UserForm(forms.Form):    &quot;&quot;&quot;    用户表单    &quot;&quot;&quot;    username = forms.CharField(label='用户名', max_length=128, widget=forms.TextInput(attrs=&#123;'class': 'form-control'&#125;))    password = forms.CharField(label='密码', max_length=256, widget=forms.PasswordInput(attrs=&#123;'class': 'form-control'&#125;))    captcha = CaptchaField(label='验证码')</code></pre><ol start="4"><li>构建<code>templates/login</code>目录，并创建<code>login.html</code>模板调用<code>caphtcha</code></li></ol><pre><code class="language-html">&#123;% load static %&#125;&lt;!doctype html&gt;&lt;html lang=&quot;en&quot;&gt;  &lt;head&gt;    &lt;!-- Required meta tags --&gt;    &lt;meta charset=&quot;utf-8&quot;&gt;    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&gt;    &lt;!-- 上述meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ --&gt;    &lt;!-- Bootstrap CSS --&gt;    &lt;link href=&quot;&#123;% static 'login/css/login.css' %&#125;&quot; rel=&quot;stylesheet&quot; /&gt;    &lt;link href=&quot;&#123;% static 'fontawesome_free/css/all.min.css' %&#125;&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;    &lt;title&gt;登录&lt;/title&gt;  &lt;/head&gt;  &lt;body&gt;    &lt;div id=&quot;container&quot;&gt;      &lt;h1&gt;登录&lt;/h1&gt;      &#123;% if login_form.captcha.errors %&#125;        &#123;% for error in login_form.captcha.errors %&#125;        <small>😢😢😢&#123;&#123; error &#125;&#125;😢😢😢</small>        &#123;% endfor %&#125;      &#123;% elif message %&#125;        <small>😢😢😢&#123;&#123; message &#125;&#125;😢😢😢</small>      &#123;% else %&#125;        <small>😊😊😊欢迎您的到来😊😊😊</small>      &#123;% endif %&#125;      &lt;form class=&quot;form&quot; action=&quot;/login/&quot; method=&quot;post&quot;&gt;&#123;% csrf_token %&#125;        &lt;!-- 判断用户输入信息，并返回错误信息 --&gt;        &#123;% for item in login_form %&#125;          &#123;% if item.html_name == "username" %&#125;          <div class="item">            <i class="far fa-user"></i>            <input id="&#123;&#123; item.id_for_label &#125;&#125;" name="&#123;&#123; item.html_name &#125;&#125;" type="&#123;&#123; item.field.widget.input_type &#125;&#125;" placeholder="&#123;&#123; item.html_name &#125;&#125;">            <text>            &#123;% for error in item.errors %&#125;                &#123;&#123; error &#125;&#125;            &#123;% endfor %&#125;            &lt;/text&gt;          &lt;/div&gt;          &#123;% endif %&#125;          &#123;% if item.html_name == "password" %&#125;          <div class="item">            <i class="fas fa-key"></i>            <input id="&#123;&#123; item.id_for_label &#125;&#125;" name="&#123;&#123; item.html_name &#125;&#125;" type="&#123;&#123; item.field.widget.input_type &#125;&#125;" placeholder="&#123;&#123; item.html_name &#125;&#125;">            <text>            &#123;% for error in item.errors %&#125;                &#123;&#123; error &#125;&#125;            &#123;% endfor %&#125;            </text>          </div>          &#123;% endif %&#125;          &#123;% if item.html_name == "captcha" %&#125;          <div class="item">            <i class="fas fa-robot"></i>            &#123;&#123; login_form.captcha &#125;&#125;            </div>            &#123;% endif %&#125;        &#123;% endfor %&#125;        &lt;div class=&quot;item1&quot;&gt;          &lt;button type=&quot;submit&quot;&gt;Go~~~~&lt;/button&gt;          &lt;a href=&quot;/register/&quot;&gt;Register&lt;/a&gt;        &lt;/div&gt;      &lt;/form&gt;    &lt;/div&gt;    &lt;script src=&quot;https://cdn.bootcss.com/jquery/3.5.1/jquery.js&quot;&gt;&lt;/script&gt;    &lt;script src=&quot;https://cdn.bootcss.com/popper.js/1.16.0/umd/popper.js&quot;&gt;&lt;/script&gt;    &lt;script src=&quot;https://cdn.bootcss.com/twitter-bootstrap/4.5.3/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;    &lt;script src=&quot;&#123;% static 'login/js/captcha.js' %&#125;&quot;&gt;&lt;/script&gt;  &lt;/body&gt;&lt;/html&gt;</text></div></code></pre><ol start="5"><li>构建<code>static/login/css</code>目录，并创建<code>login.css</code></li></ol><pre><code class="language-bash">❯ cat login.cssbody &#123;background: url('../image/backend.jpg') center center no-repeat;background-attachment: fixed;background-size: cover;&#125;input::-webkit-input-placeholder&#123;    color:#000000;&#125;input::-moz-placeholder&#123;   /* Mozilla Firefox 19+ */    color:#000000;&#125;input:-moz-placeholder&#123;    /* Mozilla Firefox 4 to 18 */    color:#000000;&#125;input:-ms-input-placeholder&#123;  /* Internet Explorer 10-11 */    color:#000000;&#125;#container &#123;    width: 35%;    height: 400px;    margin: 0 auto;    margin-top: 15%;    padding: 20px 50px;    text-align: center;    background: #ffffff50;&#125;#container .alert &#123;    margin: 0 auto;    width: 350px;    text-align: left;&#125;#container .form &#123;    margin-top: 30px;&#125;#container .form .item &#123;    margin-top: 15px;    position: relative;&#125;#container .form .item i &#123;    font-size: 20px;&#125;#container .form .item input &#123;    border: 0;    border-bottom: 2px solid #000;    padding: 10px 30px;    background: #ffffff00;    font-size: 20px;    padding-left: 11px;&#125;#container .form .item text &#123;    position: absolute;    text-size: 5px;    text-align: left;    padding-top: 10px;&#125;#container .form .item img &#123;    position: absolute;&#125;#container .form .item1 &#123;    display: flex;    justify-content: space-between;    margin-top: 15px;    padding-top: 5%;    padding-left: 22%;    padding-right: 22%;&#125;#container .form .item1 button &#123;    width: 180px;    height: 30px;    font-size: 20px;    font-weight: 600;    color: #ffffff;    background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);    border-radius: 15px;    border: 0;&#125;#container .form .item1 a &#123;    text-decoration:none;    width: 100px;    font-size: 20px;    font-weight: 600;    color: #ffffff;    background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);    border-radius: 15px;    border: 0;&#125;</code></pre><ol start="6"><li>添加路由</li></ol><p><code>项目.urls.urlpatterns</code>中添加<code>path('captcha/', include('captcha.urls')),</code></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 语言 </category>
+          
+          <category> python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> python </tag>
+            
+            <tag> django </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>linux☞时间</title>
       <link href="posts/cd32aa48/"/>
       <url>posts/cd32aa48/</url>
@@ -3680,11 +3680,11 @@
     
     
     <entry>
-      <title>04ELK基本使用-elasticsearch</title>
-      <link href="posts/41bf4066/"/>
-      <url>posts/41bf4066/</url>
+      <title>05ELK基本使用-kibana</title>
+      <link href="posts/d8390732/"/>
+      <url>posts/d8390732/</url>
       
-        <content type="html"><![CDATA[<h2 id="准备">准备</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html</a></p><pre><code class="language-bash"># elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准sysctl -a | egrep &quot;(vm.max_map_count|net.ipv4.tcp_retries2)&quot;  # 查看是否过小, 如果过小执行下一条echo 'vm.max_map_count=262144' &gt;&gt; /etc/sysctl.confecho 'net.ipv4.tcp_retries2=5' &gt;&gt; /etc/sysctl.confsysctl -p## https://www.elastic.co/guide/en/elasticsearch/reference/7.15/setting-system-settings.htmlcat &gt;&gt; /etc/security/limits.conf &lt;&lt; EOF  *           soft   nofile       102400  *           hard   nofile       102400  *           soft   nproc        102400  *           hard   nproc        102400  *           soft  memlock      unlimited  *           hard  memlock      unlimitedEOF## 关闭swap 同时应该在 /etc/fstab 中取消 swap 的挂载sudo swapoff -a</code></pre><h2 id="安装">安装</h2><p><a href="https://mirrors.huaweicloud.com/elasticsearch/">https://mirrors.huaweicloud.com/elasticsearch/</a></p><pre><code>esVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/elasticsearch/$&#123;esVersion&#125;/elasticsearch-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o es.tgztar xf es.tgzmv elasticsearch-$&#123;esVersion&#125; ../elasticsearchuseradd -U elasticsearchchown -R elasticsearch:elasticsearch /export/elasticsearchsu - elasticsearchcd /export/elasticsearch</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html</a></p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html</a></p><h3 id="角色">角色</h3><p>角色介绍的官方文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles">https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles</a></p><p>elasticsearch 可以通过<code>node.roles: [xxx]</code>来设定节点角色。如果不设置<code>node.roles</code>，则默认节点拥有所有角色。</p><p>角色可分为：master、data和data_xxx系列、ingest、ml、remote_cluster_client、transform。</p><p>💢在一个集群中，master和data是必须的角色。</p><h3 id="一份通用节点配置">一份通用节点配置</h3><p>配置中<code>discovery.seed_hosts</code>替换成所有节点的hostname</p><pre><code class="language-bash">cp config/elasticsearch.yml config/elasticsearch.yml.defaulthostName=`hostname`cat &gt; /export/elasticsearch/config/elasticsearch.yml &lt;&lt; EOFcluster.name: es-clusterdiscovery.seed_hosts: xxx1,xxx2,xxx3node.name: $&#123;hostName&#125;#node.master: true#node.data: falsehttp.port: 9200network.host: 0.0.0.0http.cors.enabled: truehttp.cors.allow-origin: &quot;*&quot;bootstrap.memory_lock: truexpack.security.enabled: truexpack.security.transport.ssl.enabled: truexpack.security.transport.ssl.verification_mode: certificate xpack.security.transport.ssl.client_authentication: requiredxpack.security.transport.ssl.keystore.path: elastic-certificates.p12xpack.security.transport.ssl.truststore.path: elastic-certificates.p12resource.reload.interval.high: 5sEOF</code></pre><p>ℹ️<code>xpack.security.transport.ssl.keystore.path、xpack.security.transport.ssl.truststore.path</code>指定的文件名与下面启用TLS中的默认文件名一致。</p><p>💁 如果是单节点，则应该加入<code>discovery.type: single-node</code>，并删除<code>discovery.seed_hosts</code>。</p><h2 id="启用TLS">启用TLS</h2><p>当启用了<code>xpack.security.enabled: true</code>后，多节点生产模式集群必须启用TLS，否则无法启动集群。</p><p>创建CA证书和节点证书</p><pre><code class="language-bash">./bin/elasticsearch-certutil ca=&gt;回车，接受默认文件名 elastic-stack-ca.p12=&gt;输入CA证书密码./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12=&gt;输入CA证书密码=&gt;回车，接受默认文件名 elastic-certificates.p12=&gt;输入节点证书密码（可选）</code></pre><p>将生成的<code>elastic-certificates.p12</code>复制到每一个节点的<code>config</code>目录中，并确保授权<code>600</code></p><p>💔我添加了节点证书密码后，ES校验证书失败，不知原因。</p><p>💢如果节点证书开启了密码，则需要存在ES中，通过下列命令存储，会存放在<code>config/elasticsearch.keystore</code></p><pre><code class="language-bash">./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password=&gt;输入节点证书密码./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password=&gt;输入节点证书密码</code></pre><h2 id="启动、关闭">启动、关闭</h2><h3 id="启动">启动</h3><p>ES默认会自动调整JVM参数，非必要情况下无需调整.</p><p>命令中<code>-Ecluster.initial_master_nodes</code>替换成所有节点的hostname</p><pre><code class="language-bash">## export ES_JAVA_OPTS=&quot;$ES_JAVA_OPTS xxx&quot;export ES_TMPDIR=&quot;/export/elasticsearch/tmp&quot;mkdir -p /export/elasticsearch/tmpsu - elasticsearchcd /export/elasticsearch &amp;&amp; ./bin/elasticsearch -d -p es.pid -Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code></pre><p>💢<code>-Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code> 仅当首次启动的时候需要添加。当集群成功启动后，应删除此配置。重启集群、新节点入集群都不应该加入此配置。</p><h3 id="关闭">关闭</h3><pre><code class="language-bash">su - elasticsearchcd /export/elasticsearch &amp;&amp; pkill -F es.pid</code></pre><h2 id="内置用户密码生成">内置用户密码生成</h2><p>通过设置用户密码后，kibana就需要配置<code>elastic</code>账户来访问web.<code>elastic</code>是超级用户.</p><ol><li>需要es启动状态</li><li>当你通过<code>bin/elasticsearch-setup-passwords</code>设置了<code>elastic</code>用户密码后，你将无法再次运行<code>bin/elasticsearch-setup-passwords</code></li></ol><pre><code class="language-bash">./bin/elasticsearch-setup-passwords autoChanged password for user apm_systemPASSWORD apm_system = hpYNFwXxubBoAK910LVNChanged password for user kibana_systemPASSWORD kibana_system = ZQQz8FpPeyElvrOLdMSeChanged password for user kibanaPASSWORD kibana = ZQQz8FpPeyElvrOLdMSeChanged password for user logstash_systemPASSWORD logstash_system = LeWxPOQp6u0yZ6ELkJxlChanged password for user beats_systemPASSWORD beats_system = olPcjTe7dKbI1EqYG9D7Changed password for user remote_monitoring_userPASSWORD remote_monitoring_user = 0VxbZ0GjZk5aUcQhs2pEChanged password for user elasticPASSWORD elastic = rMknnbJxRh5qWDGVZQ2R</code></pre><p>在这之后，你可以通过kibana从而方便的进行图形化用户管理.</p><p>关于内置用户对应的权限，可以看相关内置角色的权限范围：</p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html</a></p><h2 id="备份集群">备份集群</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html</a></p><h2 id="问题点">问题点</h2><ol><li>如果磁盘不够用，则因添加新节点，而不是添加新磁盘路径</li><li><code>cluster.name</code>是集群的唯一标识，任何不一致的<code>cluster.name</code>节点无法加入集群</li><li><code>node.name</code>是节点的唯一标识名，默认取值主机名</li><li><code>network.host</code>的设置是ES判断开发模式和生产模式的依据，默认值是回环地址，ES将认为是开发模式。</li><li>没有<code>data</code>角色的节点如果在启动时在磁盘上找到任何分片数据将拒绝启动，而没有角色<code>master</code>和<code>data</code>角色的节点如果在启动时磁盘上有任何索引元数据将拒绝启动。</li></ol>]]></content>
+        <content type="html"><![CDATA[<h2 id="安装">安装</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/targz.html">https://www.elastic.co/guide/en/kibana/current/targz.html</a></p><pre><code class="language-bash">appName=kibanaesVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/$&#123;appName&#125;/$&#123;esVersion&#125;/$&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o $&#123;appName&#125;.tgztar xf $&#123;appName&#125;.tgzmv $&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64 ../$&#123;appName&#125; &amp;&amp; cd ..useradd -U $&#123;appName&#125;chown -R $&#123;appName&#125;:$&#123;appName&#125; /export/$&#123;appName&#125;cd /export/$&#123;appName&#125;</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/settings.html">https://www.elastic.co/guide/en/kibana/current/settings.html</a></p><pre><code class="language-yaml">cp /export/kibana/config/kibana.yml /export/kibana/config/kibana.yml.defaultcat &gt; /export/kibana/config/kibana.yml &lt;&lt; EOFserver.name: kibanaserver.host: 0.0.0.0server.port: 5601elasticsearch.hosts: [&quot;http://hadoop001:9200&quot;,&quot;http://hadoop002:9200&quot;,&quot;http://hadoop003:9200&quot;]xpack.monitoring.ui.container.elasticsearch.enabled: truei18n.locale: zh-CNEOF</code></pre><pre><code class="language-bash">bin/kibana-encryption-keys generate# 将输出的 `Settings` 配置追加到 kibana.ymlxpack.encryptedSavedObjects.encryptionKey: 40233b82c57c14127363xpack.reporting.encryptionKey: f5550ba4b241b820bxpack.security.encryptionKey: 9732d0b256555b</code></pre><h2 id="系统用户-可选">系统用户(可选)</h2><p>仅当ES开启安全配置后需要.</p><p>追加下列配置到<code>kibana.yml</code>，kibana通过kibana_system用户访问elasticsearch执行后台任务.</p><pre><code class="language-bash">elasticsearch.username: &quot;kibana_system&quot;</code></pre><p>执行下列命令,将密码加密存放.</p><pre><code class="language-bash">./bin/kibana-keystore create./bin/kibana-keystore add elasticsearch.password=&gt;输入ES安全配置期间，生成的`kibana_system`密码</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">su - kibanacd /export/kibananohup ./bin/kibana &amp;</code></pre><p>ℹ️如果启用安全设置和用户配置，则kibana的web访问需要<code>elastic</code>用户权限.</p><h2 id="用户权限管理">用户权限管理</h2><p><a href="https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html">https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html</a></p>]]></content>
       
       
       <categories>
@@ -3711,11 +3711,11 @@
     
     
     <entry>
-      <title>05ELK基本使用-kibana</title>
-      <link href="posts/d8390732/"/>
-      <url>posts/d8390732/</url>
+      <title>04ELK基本使用-elasticsearch</title>
+      <link href="posts/41bf4066/"/>
+      <url>posts/41bf4066/</url>
       
-        <content type="html"><![CDATA[<h2 id="安装">安装</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/targz.html">https://www.elastic.co/guide/en/kibana/current/targz.html</a></p><pre><code class="language-bash">appName=kibanaesVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/$&#123;appName&#125;/$&#123;esVersion&#125;/$&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o $&#123;appName&#125;.tgztar xf $&#123;appName&#125;.tgzmv $&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64 ../$&#123;appName&#125; &amp;&amp; cd ..useradd -U $&#123;appName&#125;chown -R $&#123;appName&#125;:$&#123;appName&#125; /export/$&#123;appName&#125;cd /export/$&#123;appName&#125;</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/settings.html">https://www.elastic.co/guide/en/kibana/current/settings.html</a></p><pre><code class="language-yaml">cp /export/kibana/config/kibana.yml /export/kibana/config/kibana.yml.defaultcat &gt; /export/kibana/config/kibana.yml &lt;&lt; EOFserver.name: kibanaserver.host: 0.0.0.0server.port: 5601elasticsearch.hosts: [&quot;http://hadoop001:9200&quot;,&quot;http://hadoop002:9200&quot;,&quot;http://hadoop003:9200&quot;]xpack.monitoring.ui.container.elasticsearch.enabled: truei18n.locale: zh-CNEOF</code></pre><pre><code class="language-bash">bin/kibana-encryption-keys generate# 将输出的 `Settings` 配置追加到 kibana.ymlxpack.encryptedSavedObjects.encryptionKey: 40233b82c57c14127363xpack.reporting.encryptionKey: f5550ba4b241b820bxpack.security.encryptionKey: 9732d0b256555b</code></pre><h2 id="系统用户-可选">系统用户(可选)</h2><p>仅当ES开启安全配置后需要.</p><p>追加下列配置到<code>kibana.yml</code>，kibana通过kibana_system用户访问elasticsearch执行后台任务.</p><pre><code class="language-bash">elasticsearch.username: &quot;kibana_system&quot;</code></pre><p>执行下列命令,将密码加密存放.</p><pre><code class="language-bash">./bin/kibana-keystore create./bin/kibana-keystore add elasticsearch.password=&gt;输入ES安全配置期间，生成的`kibana_system`密码</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">su - kibanacd /export/kibananohup ./bin/kibana &amp;</code></pre><p>ℹ️如果启用安全设置和用户配置，则kibana的web访问需要<code>elastic</code>用户权限.</p><h2 id="用户权限管理">用户权限管理</h2><p><a href="https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html">https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html</a></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="准备">准备</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html</a></p><pre><code class="language-bash"># elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准sysctl -a | egrep &quot;(vm.max_map_count|net.ipv4.tcp_retries2)&quot;  # 查看是否过小, 如果过小执行下一条echo 'vm.max_map_count=262144' &gt;&gt; /etc/sysctl.confecho 'net.ipv4.tcp_retries2=5' &gt;&gt; /etc/sysctl.confsysctl -p## https://www.elastic.co/guide/en/elasticsearch/reference/7.15/setting-system-settings.htmlcat &gt;&gt; /etc/security/limits.conf &lt;&lt; EOF  *           soft   nofile       102400  *           hard   nofile       102400  *           soft   nproc        102400  *           hard   nproc        102400  *           soft  memlock      unlimited  *           hard  memlock      unlimitedEOF## 关闭swap 同时应该在 /etc/fstab 中取消 swap 的挂载sudo swapoff -a</code></pre><h2 id="安装">安装</h2><p><a href="https://mirrors.huaweicloud.com/elasticsearch/">https://mirrors.huaweicloud.com/elasticsearch/</a></p><pre><code>esVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/elasticsearch/$&#123;esVersion&#125;/elasticsearch-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o es.tgztar xf es.tgzmv elasticsearch-$&#123;esVersion&#125; ../elasticsearchuseradd -U elasticsearchchown -R elasticsearch:elasticsearch /export/elasticsearchsu - elasticsearchcd /export/elasticsearch</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html</a></p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html</a></p><h3 id="角色">角色</h3><p>角色介绍的官方文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles">https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles</a></p><p>elasticsearch 可以通过<code>node.roles: [xxx]</code>来设定节点角色。如果不设置<code>node.roles</code>，则默认节点拥有所有角色。</p><p>角色可分为：master、data和data_xxx系列、ingest、ml、remote_cluster_client、transform。</p><p>💢在一个集群中，master和data是必须的角色。</p><h3 id="一份通用节点配置">一份通用节点配置</h3><p>配置中<code>discovery.seed_hosts</code>替换成所有节点的hostname</p><pre><code class="language-bash">cp config/elasticsearch.yml config/elasticsearch.yml.defaulthostName=`hostname`cat &gt; /export/elasticsearch/config/elasticsearch.yml &lt;&lt; EOFcluster.name: es-clusterdiscovery.seed_hosts: xxx1,xxx2,xxx3node.name: $&#123;hostName&#125;#node.master: true#node.data: falsehttp.port: 9200network.host: 0.0.0.0http.cors.enabled: truehttp.cors.allow-origin: &quot;*&quot;bootstrap.memory_lock: truexpack.security.enabled: truexpack.security.transport.ssl.enabled: truexpack.security.transport.ssl.verification_mode: certificate xpack.security.transport.ssl.client_authentication: requiredxpack.security.transport.ssl.keystore.path: elastic-certificates.p12xpack.security.transport.ssl.truststore.path: elastic-certificates.p12resource.reload.interval.high: 5sEOF</code></pre><p>ℹ️<code>xpack.security.transport.ssl.keystore.path、xpack.security.transport.ssl.truststore.path</code>指定的文件名与下面启用TLS中的默认文件名一致。</p><p>💁 如果是单节点，则应该加入<code>discovery.type: single-node</code>，并删除<code>discovery.seed_hosts</code>。</p><h2 id="启用TLS">启用TLS</h2><p>当启用了<code>xpack.security.enabled: true</code>后，多节点生产模式集群必须启用TLS，否则无法启动集群。</p><p>创建CA证书和节点证书</p><pre><code class="language-bash">./bin/elasticsearch-certutil ca=&gt;回车，接受默认文件名 elastic-stack-ca.p12=&gt;输入CA证书密码./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12=&gt;输入CA证书密码=&gt;回车，接受默认文件名 elastic-certificates.p12=&gt;输入节点证书密码（可选）</code></pre><p>将生成的<code>elastic-certificates.p12</code>复制到每一个节点的<code>config</code>目录中，并确保授权<code>600</code></p><p>💔我添加了节点证书密码后，ES校验证书失败，不知原因。</p><p>💢如果节点证书开启了密码，则需要存在ES中，通过下列命令存储，会存放在<code>config/elasticsearch.keystore</code></p><pre><code class="language-bash">./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password=&gt;输入节点证书密码./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password=&gt;输入节点证书密码</code></pre><h2 id="启动、关闭">启动、关闭</h2><h3 id="启动">启动</h3><p>ES默认会自动调整JVM参数，非必要情况下无需调整.</p><p>命令中<code>-Ecluster.initial_master_nodes</code>替换成所有节点的hostname</p><pre><code class="language-bash">## export ES_JAVA_OPTS=&quot;$ES_JAVA_OPTS xxx&quot;export ES_TMPDIR=&quot;/export/elasticsearch/tmp&quot;mkdir -p /export/elasticsearch/tmpsu - elasticsearchcd /export/elasticsearch &amp;&amp; ./bin/elasticsearch -d -p es.pid -Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code></pre><p>💢<code>-Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code> 仅当首次启动的时候需要添加。当集群成功启动后，应删除此配置。重启集群、新节点入集群都不应该加入此配置。</p><h3 id="关闭">关闭</h3><pre><code class="language-bash">su - elasticsearchcd /export/elasticsearch &amp;&amp; pkill -F es.pid</code></pre><h2 id="内置用户密码生成">内置用户密码生成</h2><p>通过设置用户密码后，kibana就需要配置<code>elastic</code>账户来访问web.<code>elastic</code>是超级用户.</p><ol><li>需要es启动状态</li><li>当你通过<code>bin/elasticsearch-setup-passwords</code>设置了<code>elastic</code>用户密码后，你将无法再次运行<code>bin/elasticsearch-setup-passwords</code></li></ol><pre><code class="language-bash">./bin/elasticsearch-setup-passwords autoChanged password for user apm_systemPASSWORD apm_system = hpYNFwXxubBoAK910LVNChanged password for user kibana_systemPASSWORD kibana_system = ZQQz8FpPeyElvrOLdMSeChanged password for user kibanaPASSWORD kibana = ZQQz8FpPeyElvrOLdMSeChanged password for user logstash_systemPASSWORD logstash_system = LeWxPOQp6u0yZ6ELkJxlChanged password for user beats_systemPASSWORD beats_system = olPcjTe7dKbI1EqYG9D7Changed password for user remote_monitoring_userPASSWORD remote_monitoring_user = 0VxbZ0GjZk5aUcQhs2pEChanged password for user elasticPASSWORD elastic = rMknnbJxRh5qWDGVZQ2R</code></pre><p>在这之后，你可以通过kibana从而方便的进行图形化用户管理.</p><p>关于内置用户对应的权限，可以看相关内置角色的权限范围：</p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html</a></p><h2 id="备份集群">备份集群</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html</a></p><h2 id="问题点">问题点</h2><ol><li>如果磁盘不够用，则因添加新节点，而不是添加新磁盘路径</li><li><code>cluster.name</code>是集群的唯一标识，任何不一致的<code>cluster.name</code>节点无法加入集群</li><li><code>node.name</code>是节点的唯一标识名，默认取值主机名</li><li><code>network.host</code>的设置是ES判断开发模式和生产模式的依据，默认值是回环地址，ES将认为是开发模式。</li><li>没有<code>data</code>角色的节点如果在启动时在磁盘上找到任何分片数据将拒绝启动，而没有角色<code>master</code>和<code>data</code>角色的节点如果在启动时磁盘上有任何索引元数据将拒绝启动。</li></ol>]]></content>
       
       
       <categories>
@@ -3998,9 +3998,9 @@
       
         <tags>
             
-            <tag> k8s </tag>
-            
             <tag> 容器 </tag>
+            
+            <tag> k8s </tag>
             
         </tags>
       
@@ -4320,33 +4320,6 @@
     
     
     <entry>
-      <title>nginx ☞ 泛域名_变量截取</title>
-      <link href="posts/78ceb386/"/>
-      <url>posts/78ceb386/</url>
-      
-        <content type="html"><![CDATA[<pre><code class="language-bash">server &#123;    listen       80;    listen       [::]:80;    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;    root /export/webapps/apple.com/$userName;    access_log  /var/log/nginx/access.log  main;    #开启浏览器静态文件缓存    location ~ .*\.(html|htm|gif|jpg|jpeg|bmp|png|ico|txt|js|css)$ &#123;        expires      3h;    &#125;        # https://&lt;username&gt;.apple.com/api -&gt; /export/webapps/apple.com/api.php #####    location ~* ^/(api|event_api)$ &#123;        root /export/webapps/apple.com;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;        # https://&lt;username&gt;.apple.com/&lt;uri&gt; -&gt; /export/webapps/apple.com/&lt;username&gt;/&lt;uri&gt;.php    location ~* ^/[0-9a-zA-Z]+$ &#123;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;&#125;</code></pre><blockquote><p>location 优先级从上往下依次递减：<br>location =      仅匹配字符串自身<br>location ^~    匹配某个字符串开头的uri<br>location ~      正则匹配，区分大小写<br>location ~*    正则匹配，不区分大小写<br>location /      表示匹配“域名/之后的uri”，再比如localtion /images，表示匹配“域名/images之后的uri</p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> web </category>
-          
-          <category> nginx </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>gitlab☞大版本迁移</title>
       <link href="posts/a38d0013/"/>
       <url>posts/a38d0013/</url>
@@ -4366,6 +4339,33 @@
         <tags>
             
             <tag> gitlab </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>nginx ☞ 泛域名_变量截取</title>
+      <link href="posts/78ceb386/"/>
+      <url>posts/78ceb386/</url>
+      
+        <content type="html"><![CDATA[<pre><code class="language-bash">server &#123;    listen       80;    listen       [::]:80;    server_name ~^(?&lt;userName&gt;.*)\.apple\.com\.cn$;    root /export/webapps/apple.com/$userName;    access_log  /var/log/nginx/access.log  main;    #开启浏览器静态文件缓存    location ~ .*\.(html|htm|gif|jpg|jpeg|bmp|png|ico|txt|js|css)$ &#123;        expires      3h;    &#125;        # https://&lt;username&gt;.apple.com/api -&gt; /export/webapps/apple.com/api.php #####    location ~* ^/(api|event_api)$ &#123;        root /export/webapps/apple.com;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;        # https://&lt;username&gt;.apple.com/&lt;uri&gt; -&gt; /export/webapps/apple.com/&lt;username&gt;/&lt;uri&gt;.php    location ~* ^/[0-9a-zA-Z]+$ &#123;        rewrite ^/(.*)$ /$1.php break;        fastcgi_pass     127.0.0.1:9001;        fastcgi_index    index.php;        include      fastcgi.conf;        fastcgi_connect_timeout    600s;        fastcgi_send_timeout       600s;        fastcgi_read_timeout       600s;        fastcgi_buffers 8 256k;        fastcgi_buffer_size 256k;        fastcgi_busy_buffers_size 256k;        fastcgi_intercept_errors on;    &#125;&#125;</code></pre><blockquote><p>location 优先级从上往下依次递减：<br>location =      仅匹配字符串自身<br>location ^~    匹配某个字符串开头的uri<br>location ~      正则匹配，区分大小写<br>location ~*    正则匹配，不区分大小写<br>location /      表示匹配“域名/之后的uri”，再比如localtion /images，表示匹配“域名/images之后的uri</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> web </category>
+          
+          <category> nginx </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> nginx </tag>
             
         </tags>
       

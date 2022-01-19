@@ -986,6 +986,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/e902d670/">
+                     
+										    k8s☞21证书管理器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/c15432fa/">
                      
 										    k8s☞kubectl多集群管理
@@ -2486,15 +2497,59 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/41bf4066/">
+			<a href="/posts/cd32aa48/">
 				<h2 class="index-title">
-					04ELK基本使用-elasticsearch
+					linux☞时间
 				</h2>
 				<div class="index-brief">
-					准备
-https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html
-# elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准
-sysctl -a | egr
+					前言
+本文中描述的并不能涵盖所有时间设置命令，只是记录了经常用到的一些。
+时间同步
+sudo yum erase ntp*
+sudo yum -y install chrony
+sudo service chronyd start
+sed -i '1i server 10.200.16.101 pr
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-02-11</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/">系统</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/系统/linux/">linux</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/d8390732/">
+				<h2 class="index-title">
+					05ELK基本使用-kibana
+				</h2>
+				<div class="index-brief">
+					安装
+https://www.elastic.co/guide/en/kibana/current/targz.html
+appName=kibana
+esVersion=7.15.1
+cd /export/src
+curl &quot;https://mirrors.huaweicloud.com
 					...
 				</div>
 			</a>
@@ -2525,17 +2580,15 @@ sysctl -a | egr
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/d8390732/">
+			<a href="/posts/41bf4066/">
 				<h2 class="index-title">
-					05ELK基本使用-kibana
+					04ELK基本使用-elasticsearch
 				</h2>
 				<div class="index-brief">
-					安装
-https://www.elastic.co/guide/en/kibana/current/targz.html
-appName=kibana
-esVersion=7.15.1
-cd /export/src
-curl &quot;https://mirrors.huaweicloud.com
+					准备
+https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html
+# elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准
+sysctl -a | egr
 					...
 				</div>
 			</a>
@@ -2864,55 +2917,10 @@ s3官方授权示例：https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/dev/exa
                 </div>
 		</div>	
 	
-		<div class="index-li">
-			<a href="/posts/b7cf7b1f/">
-				<h2 class="index-title">
-					docker☞01安装
-				</h2>
-				<div class="index-brief">
-					依赖
-yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-
-仓库
-
-官方 repo: https://download.docker.com/linux/centos/docker-ce.repo
-
-yum-conf
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/docker/">docker</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/archives/page/13/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/12/">12</a><a class="page-number" href="/archives/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/archives/page/15/">15</a><a class="page-number" href="/archives/page/16/">16</a><a class="page-number" href="/archives/page/17/">17</a><a class="extend next" rel="next" href="/archives/page/15/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/archives/page/13/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/12/">12</a><a class="page-number" href="/archives/page/13/">13</a><span class="page-number current">14</span><a class="page-number" href="/archives/page/15/">15</a><a class="page-number" href="/archives/page/16/">16</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/18/">18</a><a class="extend next" rel="next" href="/archives/page/15/">&gt;</a>
 		
 	</div>
 </div>

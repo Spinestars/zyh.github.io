@@ -988,6 +988,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/e902d670/">
+                     
+										    k8s☞21证书管理器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/c15432fa/">
                      
 										    k8s☞kubectl多集群管理
@@ -2723,6 +2734,8 @@ spec:
 </ul>
 <p>当Exact和Prefix混用的时候, 如果一个请求同时匹配了这两个类型下的path, 那么Exact 优先级更高.</p>
 <h3 id="构建TLS">构建TLS</h3>
+<p>默认情况下，如果为该 Ingress 启用了 TLS，ingress-controller 将使用 308 永久重定向响应将 HTTP 客户端重定向到 HTTPS 端口 443。</p>
+<h4 id="手动证书">手动证书</h4>
 <ol>
 <li>
 <h4 id="创建-Secret-对象-导入证书文件">创建 Secret 对象, 导入证书文件</h4>
@@ -2766,6 +2779,8 @@ spec:
 </li>
 </ol>
 <p>不同的Ingress控制器对于TLS这块也有一定差异.具体以控制器本身说明为准.</p>
+<h4 id="自动证书">自动证书</h4>
+<p>构建cert-manager证书管理器。具体安装参见证书管理器文档。</p>
 <h1>问题</h1>
 <h2 id="解决svc-lb类型的问题">解决svc lb类型的问题</h2>
 <p>我们可以看到通过helm默认安装的 ingress crotroller 的 Service 对象是LoadBalancer类型. 这种类型我们用于云端环境. 而我这里测试环境是裸机,因此你可以看到这里它一直无法获取到<code>EXTERNAL-IP</code>.</p>

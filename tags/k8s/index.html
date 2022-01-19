@@ -986,6 +986,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/e902d670/">
+                     
+										    k8s☞21证书管理器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/c15432fa/">
                      
 										    k8s☞kubectl多集群管理
@@ -2603,15 +2614,18 @@ spec:
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/51015304/">
+			<a href="/posts/710e3e49/">
 				<h2 class="index-title">
-					helm☞01入门
+					helm☞02chart
 				</h2>
 				<div class="index-brief">
 					前言
-helm： k8s的包管理器，这里是v3版本
-大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
-chart仓库：存储chart程序包，不包含程序，是一个
+Helm | Getting Started
+chart包目录结构：
+wordpress/
+  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
+  values.yaml         # 必选：chart 的默认配置 values
+  cha
 					...
 				</div>
 			</a>
@@ -2642,18 +2656,15 @@ chart仓库：存储chart程序包，不包含程序，是一个
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/710e3e49/">
+			<a href="/posts/51015304/">
 				<h2 class="index-title">
-					helm☞02chart
+					helm☞01入门
 				</h2>
 				<div class="index-brief">
 					前言
-Helm | Getting Started
-chart包目录结构：
-wordpress/
-  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
-  values.yaml         # 必选：chart 的默认配置 values
-  cha
+helm： k8s的包管理器，这里是v3版本
+大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
+chart仓库：存储chart程序包，不包含程序，是一个
 					...
 				</div>
 			</a>
@@ -2852,26 +2863,33 @@ metadata:
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3b5cd3e1/">
+			<a href="/posts/e902d670/">
 				<h2 class="index-title">
-					jenkins☞动态agent
+					k8s☞21证书管理
 				</h2>
 				<div class="index-brief">
-					流程
-jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
-凭证信息
-通过 kube config 里的加密信息获
+					基本
+
+安装文档
+
+https://cert-manager.io/docs/installation/helm/#installing-with-helm
+
+卸载文档
+
+https://cert-manager.io/docs/installation/helm/#uninstalling
+
+he
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2021-01-16</span>
+				    <span>2021-01-19</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
+                                        <a href="/categories/容器/">容器</a>
 										
 											>
 										
@@ -2881,7 +2899,7 @@ jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/jenkins/">jenkins</a>
+                                        <a href="/categories/容器/k8s/">k8s</a>
 										
                                     </span>
                                 
@@ -2893,7 +2911,7 @@ jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&
 	
 	<div id="index-paginator">
 		
-			<span class="page-number current">1</span><a class="page-number" href="/tags/k8s/page/2/">2</a><a class="page-number" href="/tags/k8s/page/3/">3</a><a class="extend next" rel="next" href="/tags/k8s/page/2/">&gt;</a>
+			<span class="page-number current">1</span><a class="page-number" href="/tags/k8s/page/2/">2</a><a class="page-number" href="/tags/k8s/page/3/">3</a><a class="page-number" href="/tags/k8s/page/4/">4</a><a class="extend next" rel="next" href="/tags/k8s/page/2/">&gt;</a>
 		
 	</div>
 </div>

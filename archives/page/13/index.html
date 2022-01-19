@@ -986,6 +986,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/e902d670/">
+                     
+										    k8s☞21证书管理器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/c15432fa/">
                      
 										    k8s☞kubectl多集群管理
@@ -2486,6 +2497,48 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/d9cdb70/">
+				<h2 class="index-title">
+					jenkins☞安装和基本配置
+				</h2>
+				<div class="index-brief">
+					基本安装
+
+https://github.com/jenkinsci/docker/blob/master/README.md
+
+通过容器安装
+通过 https://hub.docker.com/r/jenkins/jenkins/tags?page=1&amp;name=2.318 过滤版本
+# 
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-03-25</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/jenkins/">jenkins</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/b73a61bf/">
 				<h2 class="index-title">
 					fpm☞安装-包管理方式
@@ -2688,13 +2741,18 @@ ht
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/5d527900/">
+			<a href="/posts/dd4c9efa/">
 				<h2 class="index-title">
-					jquery☞伪进度条
+					django☞restful简单使用
 				</h2>
 				<div class="index-brief">
 					前言
-点击-&gt;触发脚本jquery-&gt;脚本访问url-&gt;django view(show_progress)-&gt;view返回数据给脚本jquery-&gt;脚本jquery拿到进度数据百分比-&gt;更新进度条-&gt;重复访问url-&gt;直至进度条数据100%-&gt;
+官方快速教程：Quickstart - Django REST framework (django-rest-framework.org)
+安装
+pip install djangorestframework
+
+配置
+settings.INSTALLED_APPS加入'rest_framewo
 					...
 				</div>
 			</a>
@@ -2715,7 +2773,7 @@ ht
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/jquery/">jquery</a>
+                                        <a href="/categories/语言/python/">python</a>
 										
                                     </span>
                                 
@@ -2725,18 +2783,17 @@ ht
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/dd4c9efa/">
+			<a href="/posts/d60c38c/">
 				<h2 class="index-title">
-					django☞restful简单使用
+					django☞验证码
 				</h2>
 				<div class="index-brief">
 					前言
-官方快速教程：Quickstart - Django REST framework (django-rest-framework.org)
+高级主题 — Django Simple Captcha 0.5.14 文档 (django-simple-captcha.readthedocs.io)
 安装
-pip install djangorestframework
+pip install django-simple-captcha
 
-配置
-settings.INSTALLED_APPS加入'rest_framewo
+settings.INSTALLED_APPS加入captch
 					...
 				</div>
 			</a>
@@ -2840,17 +2897,13 @@ import json
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/d60c38c/">
+			<a href="/posts/5d527900/">
 				<h2 class="index-title">
-					django☞验证码
+					jquery☞伪进度条
 				</h2>
 				<div class="index-brief">
 					前言
-高级主题 — Django Simple Captcha 0.5.14 文档 (django-simple-captcha.readthedocs.io)
-安装
-pip install django-simple-captcha
-
-settings.INSTALLED_APPS加入captch
+点击-&gt;触发脚本jquery-&gt;脚本访问url-&gt;django view(show_progress)-&gt;view返回数据给脚本jquery-&gt;脚本jquery拿到进度数据百分比-&gt;更新进度条-&gt;重复访问url-&gt;直至进度条数据100%-&gt;
 					...
 				</div>
 			</a>
@@ -2871,49 +2924,7 @@ settings.INSTALLED_APPS加入captch
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/python/">python</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/cd32aa48/">
-				<h2 class="index-title">
-					linux☞时间
-				</h2>
-				<div class="index-brief">
-					前言
-本文中描述的并不能涵盖所有时间设置命令，只是记录了经常用到的一些。
-时间同步
-sudo yum erase ntp*
-sudo yum -y install chrony
-sudo service chronyd start
-sed -i '1i server 10.200.16.101 pr
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-02-11</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/linux/">linux</a>
+                                        <a href="/categories/语言/jquery/">jquery</a>
 										
                                     </span>
                                 
@@ -2925,7 +2936,7 @@ sed -i '1i server 10.200.16.101 pr
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/archives/page/12/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/11/">11</a><a class="page-number" href="/archives/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/archives/page/14/">14</a><a class="page-number" href="/archives/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/17/">17</a><a class="extend next" rel="next" href="/archives/page/14/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/archives/page/12/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/11/">11</a><a class="page-number" href="/archives/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/archives/page/14/">14</a><a class="page-number" href="/archives/page/15/">15</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/18/">18</a><a class="extend next" rel="next" href="/archives/page/14/">&gt;</a>
 		
 	</div>
 </div>

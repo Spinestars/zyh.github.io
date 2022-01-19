@@ -986,6 +986,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/e902d670/">
+                     
+										    k8s☞21证书管理器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/c15432fa/">
                      
 										    k8s☞kubectl多集群管理
@@ -2486,6 +2497,52 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/318675c1/">
+				<h2 class="index-title">
+					go☞006函数-闭包
+				</h2>
+				<div class="index-brief">
+					前言
+构建闭包原则：
+
+函数A中还有一个函数B，并且函数A返回了函数B
+函数B调用了函数A的形参
+main函数里调用函数A
+
+基本原理
+正常情况下，函数被调用执行完毕后，函数的形参将被释放回收。
+但当函数是一个闭包后，这里假设是函数A。
+此时C=函数A, 而函数A返还函数B，因此C=函数B，函数A已
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-06</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/8a6b5455/">
 				<h2 class="index-title">
 					go☞004条件语句
@@ -2575,25 +2632,20 @@ func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/1a034363/">
+			<a href="/posts/8c3e952e/">
 				<h2 class="index-title">
-					go☞003运算符
+					go☞002常量
 				</h2>
 				<div class="index-brief">
 					前言
-常见的运算符就不说了，学过数学的都会。
-逻辑运算符
-A &amp;&amp; B A和B都为真，则真
-A || B A和B任意为真，则为真
-!A A为真，则为假
-当上述条件为真时，则执行下一步代码
-位运算符
-将整数转为二进制后进行运算
-二进制数：0为假，1为真
-例如：
-a,b := 2,4
+常量只有一个元数据，就是内存地址存储的数据。
+常量声明的同时必须赋值
+声明和赋值
 
+不能省略 const 关键词，省略了就没法判断是常量还是变量了
 
+单类型
+const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
 					...
 				</div>
 			</a>
@@ -2624,20 +2676,25 @@ a,b := 2,4
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8c3e952e/">
+			<a href="/posts/1a034363/">
 				<h2 class="index-title">
-					go☞002常量
+					go☞003运算符
 				</h2>
 				<div class="index-brief">
 					前言
-常量只有一个元数据，就是内存地址存储的数据。
-常量声明的同时必须赋值
-声明和赋值
+常见的运算符就不说了，学过数学的都会。
+逻辑运算符
+A &amp;&amp; B A和B都为真，则真
+A || B A和B任意为真，则为真
+!A A为真，则为假
+当上述条件为真时，则执行下一步代码
+位运算符
+将整数转为二进制后进行运算
+二进制数：0为假，1为真
+例如：
+a,b := 2,4
 
-不能省略 const 关键词，省略了就没法判断是常量还是变量了
 
-单类型
-const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
 					...
 				</div>
 			</a>
@@ -2873,55 +2930,10 @@ ingress controller 负责实现功能，不过配置规则由i
                 </div>
 		</div>	
 	
-		<div class="index-li">
-			<a href="/posts/4bf29cf0/">
-				<h2 class="index-title">
-					k8s☞12-2有状态服务StatefulSet
-				</h2>
-				<div class="index-brief">
-					前言
-当我们构建一个有状态的应用的时候, 例如 mysql / ftp / 包含session的管理界面等. 我们可能会有下列预期:
-
-稳定的、唯一的网络标识符。
-稳定的、持久的存储。
-有序的、优雅的部署和缩放。
-有序的、优雅的删除和终止。
-有序的、自动的滚动更新。
-
-StatefulSet 就是干
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-09-21</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/">容器</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/容器/k8s/">k8s</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
 	
 	<div id="index-paginator">
 		
-			<a class="extend prev" rel="prev" href="/archives/page/5/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/archives/page/7/">7</a><a class="page-number" href="/archives/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/17/">17</a><a class="extend next" rel="next" href="/archives/page/7/">&gt;</a>
+			<a class="extend prev" rel="prev" href="/archives/page/5/">&lt;</a><a class="page-number" href="/archives/">1</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/archives/page/7/">7</a><a class="page-number" href="/archives/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/18/">18</a><a class="extend next" rel="next" href="/archives/page/7/">&gt;</a>
 		
 	</div>
 </div>

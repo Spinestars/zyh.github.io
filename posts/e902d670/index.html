@@ -2597,7 +2597,7 @@ var _hmt = _hmt || [];
 <p>Orders 订单，根据Certificate创建</p>
 </li>
 <li>
-<p>Challenges 挑战校验所有权对象，根据Certificate创建。</p>
+<p>Challenges 挑战校验所有权对象，根据Certificate创建。若证书请求成功，则会自动删除。</p>
 <blockquote>
 <p>Certificates对象中的每一个dnsName都需要创建一个，并且Challenges对象是串行校验。如果网络不好，可能会耗时比较久。☠Challenges 是最有可能出错的对象，需要持续关注。例如 dns token 配置错误，或者网络错误，或者 webhook bug 导致无法正确请求 dns api。</p>
 </blockquote>
@@ -2665,6 +2665,8 @@ certificaterequest.cert-manager.io/selfsigned-cert-dwtdj   True                T
 </code></pre>
 <h1>证书申请</h1>
 <p>申请证书，需要选用发行方（issuer）和域名所有权校验（Challenges ）方法。这里以ACME+DNS方式来配置。</p>
+<p>证书申请对象流程：</p>
+<p>order订单对象-&gt;</p>
 <p>文档：</p>
 <p><a target="_blank" rel="noopener" href="https://cert-manager.io/docs/configuration/acme/dns01/">https://cert-manager.io/docs/configuration/acme/dns01/</a></p>
 <p><a target="_blank" rel="noopener" href="https://cert-manager.io/docs/configuration/acme/dns01/#webhook">https://cert-manager.io/docs/configuration/acme/dns01/#webhook</a></p>
@@ -2673,7 +2675,7 @@ certificaterequest.cert-manager.io/selfsigned-cert-dwtdj   True                T
 <p>通过webhook，让cert-manager可以支持aliyun dns域名校验</p>
 <pre><code class="language-bash">➜ helm repo add cert-manager-alidns-webhook https://devmachine-fr.github.io/cert-manager-alidns-webhook
 ➜ helm repo update
-➜ helm install cert-manager-alidns-webhook cert-manager-alidns-webhook/alidns-webhook -n cert-manager --set groupName=&lt;&gt;
+➜ helm install cert-manager-alidns-webhook cert-manager-alidns-webhook/alidns-webhook -n cert-manager --set groupName=zyh
 </code></pre>
 <p>😒groupName必须和后面ClusterIssuer对象里的groupName保持一致。<a target="_blank" rel="noopener" href="https://github.com/DEVmachine-fr/cert-manager-alidns-webhook/issues/11">https://github.com/DEVmachine-fr/cert-manager-alidns-webhook/issues/11</a></p>
 <h2 id="构建域名解析服务商token">构建域名解析服务商token</h2>
@@ -2686,17 +2688,18 @@ certificaterequest.cert-manager.io/selfsigned-cert-dwtdj   True                T
 <h2 id="构建发行方ClusterIssuer">构建发行方ClusterIssuer</h2>
 <p>ClusterIssuer 对象用来指明你要用的证书发行方（集群级别）。以ACME发行方，并采用dns验证域名所有权。</p>
 <p><a target="_blank" rel="noopener" href="https://cert-manager.io/docs/configuration/acme/">https://cert-manager.io/docs/configuration/acme/</a></p>
-<pre><code class="language-yaml">➜   cat &lt;&lt; EOF | tee clusterissuer-ali.yaml
+<pre><code class="language-yaml"># 测试版本的发行方
+➜   cat &lt;&lt; EOF | tee clusterissuer-letsencrypt-staging-ali.yaml
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-ali
+  name: letsencrypt-staging-ali
 spec:
   acme:
     email: 
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: letsencrypt-ali
+      name: letsencrypt-staging-ali
     solvers:
     - dns01:
         webhook:
@@ -2708,35 +2711,61 @@ spec:
             secretKeySecretRef:
               key: secret-key
               name: alidns-secrets
-          groupName: 
+          groupName: zyh
+          solverName: alidns-solver
+EOF
+
+# 正式版本的发行方
+➜   cat &lt;&lt; EOF | tee clusterissuer-letsencrypt-prod-ali.yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod-ali
+spec:
+  acme:
+    email: 
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod-ali
+    solvers:
+    - dns01:
+        webhook:
+          config:
+            regionId: cn-beijing
+            accessTokenSecretRef:
+              key: access-token
+              name: alidns-secrets
+            secretKeySecretRef:
+              key: secret-key
+              name: alidns-secrets
+          groupName: zyh
           solverName: alidns-solver
 EOF
 </code></pre>
 <blockquote>
-<p>email acme 需定义一个ACME账户邮箱</p>
-<p><a target="_blank" rel="noopener" href="http://privateKeySecretRef.name">privateKeySecretRef.name</a> 存储ACME账户私钥的secret对象，会自动创建</p>
-<p>webhook.config 定义webhoob调用的dns token</p>
-<p>groupName 并不是证书包含的域名，指的是组织名</p>
+<p>acme.server  定义ACME服务端</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://acme-staging-v02.api.letsencrypt.org/directory">https://acme-staging-v02.api.letsencrypt.org/directory</a>  测试服务器</li>
+<li><a target="_blank" rel="noopener" href="https://acme-v02.api.letsencrypt.org/directory">https://acme-v02.api.letsencrypt.org/directory</a>  线上服务器</li>
+</ul>
+<p>acme.email  acme 需定义一个ACME账户邮箱，【自己定义】</p>
+<p><a target="_blank" rel="noopener" href="http://acme.privateKeySecretRef.name">acme.privateKeySecretRef.name</a> 存储ACME账户私钥的secret对象，会自动创建</p>
+<p>webhook.config 定义webhoob调用的dns token，【自己定义】</p>
+<p>groupName 并不是证书包含的域名，指的是组织名，【自己定义】，需与webhook里保持一直。</p>
 <p>solverName 指向webhook里定义的解析者，alidns-solver 貌似是写死的。</p>
 </blockquote>
 <h2 id="校验">校验</h2>
-<pre><code class="language-bash">➜   kubectl get Issuers,ClusterIssuers,Certificates,CertificateRequests,Orders,Challenges -n cert-manager
+<p>确认  <a target="_blank" rel="noopener" href="http://clusterissuer.cert-manager.io/letsencrypt-*-ali">clusterissuer.cert-manager.io/letsencrypt-*-ali</a> 是 True</p>
+<pre><code class="language-bash">➜   kubectl get Issuers,ClusterIssuers -n cert-manager
 NAME                                                          READY   AGE
-issuer.cert-manager.io/cert-manager-alidns-webhook-ca         True    68m
-issuer.cert-manager.io/cert-manager-alidns-webhook-selfsign   True    68m
+issuer.cert-manager.io/cert-manager-alidns-webhook-ca         True    20h
+issuer.cert-manager.io/cert-manager-alidns-webhook-selfsign   True    20h
 
-NAME                                            READY   AGE
-clusterissuer.cert-manager.io/letsencrypt-ali   True    108s
-
-NAME                                                                  READY   SECRET                                    AGE
-certificate.cert-manager.io/cert-manager-alidns-webhook-ca            True    cert-manager-alidns-webhook-ca            68m
-certificate.cert-manager.io/cert-manager-alidns-webhook-webhook-tls   True    cert-manager-alidns-webhook-webhook-tls   68m
+NAME                                                    READY   AGE
+clusterissuer.cert-manager.io/letsencrypt-prod-ali      True    137m
+clusterissuer.cert-manager.io/letsencrypt-staging-ali   True    137m
 </code></pre>
-<p>在创建证书对象之前，应该校验 <a target="_blank" rel="noopener" href="http://clusterissuer.cert-manager.io/letsencrypt-ali">clusterissuer.cert-manager.io/letsencrypt-ali</a> 是 True</p>
-<p>如果你发现它是False，则执行命令并观察错误信息</p>
-<pre><code class="language-bash">➜   kubectl describe clusterissuer.cert-manager.io/letsencrypt-ali
-</code></pre>
-<p>在中国，可能出现的错误信息有：</p>
+<p>如果你发现它是False，则通过describe观察错误信息。在中国，可能出现的错误信息有：</p>
 <ol>
 <li><code>Error initializing issuer: context deadline exceeded</code> 这通常表明无法访问acme服务。这种情况下你需要耐心等待，直到注册成功。</li>
 </ol>
@@ -2746,7 +2775,7 @@ certificate.cert-manager.io/cert-manager-alidns-webhook-webhook-tls   True    ce
 kind: Certificate
 metadata:
   name: example-com
-  namespace: &lt;&gt;
+  namespace: dev-zyh
 spec:
   secretName: example-com-tls
   issuerRef:
@@ -2764,7 +2793,7 @@ spec:
 <p>dnsNames 证书包含的域名</p>
 </blockquote>
 <h2 id="再次校验">再次校验</h2>
-<pre><code class="language-bash">kubectl get Certificates,CertificateRequests,Orders,Challenges -n &lt;&gt;
+<pre><code class="language-bash">➜   kubectl get Certificates,CertificateRequests,Orders,Challenges -n dev-zyh
 </code></pre>
 <h2 id="成功结果">成功结果</h2>
 <pre><code class="language-bash">➜   kubectl get Certificates,CertificateRequests,Orders,Challenges -n dev-zyh -o wide
@@ -2784,6 +2813,100 @@ order.acme.cert-manager.io/zyh-cool-jgj92-4122243896   valid   letsencrypt-ali  
 <p>你还可以通过<code>spec.duration</code>设定证书有效时间，则更新时间<code>spec.renewBefore</code>将默认设定为<code>spec.duration</code>的<code>2/3</code>。</p>
 <p>不过如果用<code>letsencrypt</code>，则没有必要设定<code>spec.duration</code>，因为你只能申请最大90天。</p>
 <h1>证书使用</h1>
+<h2 id="通过ingress直接申请调用">通过ingress直接申请调用</h2>
+<p>cert-manager 通过组件<code>ingress-shim</code>监控<code>Ingress</code>注解和<code>spec.tls</code>的配置从而自动创建 Certificate 对象，并调用<code>issuer</code>来申请证书。</p>
+<p>前置条件：</p>
+<ul>
+<li>issuer 或者 clusterissuer 对象已创建</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>默认如果order彻底失败，则1小时之后将再次发起请求</li>
+</ul>
+<p>已知并经过验证的问题：</p>
+<ul>
+<li>
+<p>如果<code>ingress注解</code>或者<code>ingress.spec.tls</code>发生了修改，但<code>ingress.spec.tls.hosts</code>完全没有改变，则不可直接apply。因为这将在同一时刻出现两份针对相同hosts发起的证书申请。这会导致其中一个申请永远不会成功并且重复发起，直至进入锁定期。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jetstack/cert-manager/issues/1888">https://github.com/jetstack/cert-manager/issues/1888</a></p>
+<p>💥多个ingress里永远不要出现完全相同的<code>ingress.spec.tls.hosts</code></p>
+</li>
+<li>
+<p><code>spec.tls.hosts</code> 必须包含<code>spec.rules.hosts  </code>，否则 ingress 会将 Kubernetes Ingress Controller Fake Certificate 默认证书传递到 ingress-controller</p>
+</li>
+</ul>
+<p>一个例子：</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    # add an annotation indicating the issuer to use.
+    cert-manager.io/cluster-issuer: letsencrypt-ali
+    cert-manager.io/duration: 2160h # 90d
+    cert-manager.io/renew-before: 360h # 15d
+  name: myIngress
+  namespace: dev-zyh
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: zyh.cool
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: myservice
+            port:
+              number: 80
+  tls: # &lt; placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
+  - hosts:
+    - '*.zyh.cool'
+    - zyh.cool
+    secretName: myingress-cert # &lt; cert-manager will store the created certificate in this secret.
+</code></pre>
+<p><code>annotations.cert-manager.io/cluster-issuer: nameOfClusterIssuer</code> <code>ingress-shim</code>监视此注解，从而启动集群级别的证书发行方</p>
+<p><code>tls.secretName</code> 指定存储证书的secret对象，它会自动创建</p>
+<p><code>tls.hosts</code> 指定证书绑定的域名</p>
+<h2 id="校验-2">校验</h2>
+<pre><code class="language-bash">kubectl get Certificates,CertificateRequests,Orders,Challenges -n dev-zyh
+</code></pre>
+<h2 id="一份证书申请正常的日志">一份证书申请正常的日志</h2>
+<pre><code class="language-bash">2022-01-20T14:31:04.709965618+08:00 I0120 06:31:04.709580       1 conditions.go:201] Setting lastTransitionTime for Certificate &quot;zyh-cool-prod-tls&quot; condition &quot;Ready&quot; to 2022-01-20 06:31:04.709572525 +0000 UTC m=+84737.724471939
+
+2022-01-20T14:31:04.709985148+08:00 I0120 06:31:04.709732       1 trigger_controller.go:181] cert-manager/controller/certificates-trigger &quot;msg&quot;=&quot;Certificate must be re-issued&quot; &quot;key&quot;=&quot;dev-cms/zyh-cool-prod-tls&quot; &quot;message&quot;=&quot;Issuing certificate as Secret does not exist&quot; &quot;reason&quot;=&quot;DoesNotExist&quot;
+
+2022-01-20T14:31:04.709989519+08:00 I0120 06:31:04.709741       1 conditions.go:201] Setting lastTransitionTime for Certificate &quot;zyh-cool-prod-tls&quot; condition &quot;Issuing&quot; to 2022-01-20 06:31:04.709739172 +0000 UTC m=+84737.724638545
+
+2022-01-20T14:31:04.733560526+08:00 I0120 06:31:04.733475       1 controller.go:161] cert-manager/controller/certificates-trigger &quot;msg&quot;=&quot;re-queuing item due to optimistic locking on resource&quot; &quot;key&quot;=&quot;dev-cms/zyh-cool-prod-tls&quot; &quot;error&quot;=&quot;Operation cannot be fulfilled on certificates.cert-manager.io \&quot;zyh-cool-prod-tls\&quot;: the object has been modified; please apply your changes to the latest version and try again&quot;
+
+2022-01-20T14:31:04.733613304+08:00 I0120 06:31:04.733525       1 trigger_controller.go:181] cert-manager/controller/certificates-trigger &quot;msg&quot;=&quot;Certificate must be re-issued&quot; &quot;key&quot;=&quot;dev-cms/zyh-cool-prod-tls&quot; &quot;message&quot;=&quot;Issuing certificate as Secret does not exist&quot; &quot;reason&quot;=&quot;DoesNotExist&quot;
+
+2022-01-20T14:31:04.733620510+08:00 I0120 06:31:04.733538       1 conditions.go:201] Setting lastTransitionTime for Certificate &quot;zyh-cool-prod-tls&quot; condition &quot;Issuing&quot; to 2022-01-20 06:31:04.73353554 +0000 UTC m=+84737.748434908
+
+2022-01-20T14:31:04.833325827+08:00 I0120 06:31:04.833054       1 conditions.go:261] Setting lastTransitionTime for CertificateRequest &quot;zyh-cool-prod-tls-22n7r&quot; condition &quot;Approved&quot; to 2022-01-20 06:31:04.833048731 +0000 UTC m=+84737.847948132
+
+2022-01-20T14:31:04.863021821+08:00 I0120 06:31:04.862933       1 conditions.go:261] Setting lastTransitionTime for CertificateRequest &quot;zyh-cool-prod-tls-22n7r&quot; condition &quot;Ready&quot; to 2022-01-20 06:31:04.862927112 +0000 UTC m=+84737.877826465
+
+2022-01-20T14:31:17.954783254+08:00 I0120 06:31:17.954632       1 dns.go:88] cert-manager/controller/challenges/Present &quot;msg&quot;=&quot;presenting DNS01 challenge for domain&quot; &quot;dnsName&quot;=&quot;test.zyh.cool&quot; &quot;domain&quot;=&quot;test.zyh.cool&quot; &quot;resource_kind&quot;=&quot;Challenge&quot; &quot;resource_name&quot;=&quot;zyh-cool-prod-tls-22n7r-2700220904-1691659519&quot; &quot;resource_namespace&quot;=&quot;dev-cms&quot; &quot;resource_version&quot;=&quot;v1&quot; &quot;type&quot;=&quot;DNS-01&quot; 
+
+2022-01-20T14:32:27.475094724+08:00 I0120 06:32:27.474930       1 acme.go:209] cert-manager/controller/certificaterequests-issuer-acme/sign &quot;msg&quot;=&quot;certificate issued&quot; &quot;related_resource_kind&quot;=&quot;Order&quot; &quot;related_resource_name&quot;=&quot;zyh-cool-prod-tls-22n7r-2700220904&quot; &quot;related_resource_namespace&quot;=&quot;dev-cms&quot; &quot;related_resource_version&quot;=&quot;v1&quot; &quot;resource_kind&quot;=&quot;CertificateRequest&quot; &quot;resource_name&quot;=&quot;zyh-cool-prod-tls-22n7r&quot; &quot;resource_namespace&quot;=&quot;dev-cms&quot; &quot;resource_version&quot;=&quot;v1&quot; 
+
+2022-01-20T14:32:27.475161100+08:00 I0120 06:32:27.475001       1 conditions.go:250] Found status change for CertificateRequest &quot;zyh-cool-prod-tls-22n7r&quot; condition &quot;Ready&quot;: &quot;False&quot; -&gt; &quot;True&quot;; setting lastTransitionTime to 2022-01-20 06:32:27.474997969 +0000 UTC m=+84820.489897312
+
+2022-01-20T14:32:27.537540719+08:00 I0120 06:32:27.537414       1 conditions.go:190] Found status change for Certificate &quot;zyh-cool-prod-tls&quot; condition &quot;Ready&quot;: &quot;False&quot; -&gt; &quot;True&quot;; setting lastTransitionTime to 2022-01-20 06:32:27.537409387 +0000 UTC m=+84820.552308752
+
+2022-01-20T14:32:27.552649591+08:00 E0120 06:32:27.552582       1 controller.go:211] cert-manager/controller/challenges &quot;msg&quot;=&quot;challenge in work queue no longer exists&quot; &quot;error&quot;=&quot;challenge.acme.cert-manager.io \&quot;zyh-cool-prod-tls-22n7r-2700220904-1691659519\&quot; not found&quot;  
+
+2022-01-20T14:32:27.571542097+08:00 I0120 06:32:27.571149       1 controller.go:161] cert-manager/controller/certificates-readiness &quot;msg&quot;=&quot;re-queuing item due to optimistic locking on resource&quot; &quot;key&quot;=&quot;dev-cms/zyh-cool-prod-tls&quot; &quot;error&quot;=&quot;Operation cannot be fulfilled on certificates.cert-manager.io \&quot;zyh-cool-prod-tls\&quot;: the object has been modified; please apply your changes to the latest version and try again&quot;
+
+2022-01-20T14:32:27.571579091+08:00 I0120 06:32:27.571390       1 conditions.go:190] Found status change for Certificate &quot;zyh-cool-prod-tls&quot; condition &quot;Ready&quot;: &quot;False&quot; -&gt; &quot;True&quot;; setting lastTransitionTime to 2022-01-20 06:32:27.571386394 +0000 UTC m=+84820.586285748
+</code></pre>
+<p>里面存在一些看起来是错误的日志，但其实并不是。</p>
+<h2 id="非ingress直接申请调用">非ingress直接申请调用</h2>
+<p>前置条件：</p>
+<ul>
+<li>证书已申请成功</li>
+</ul>
 <p>待续</p>
 <h1>监控</h1>
 <p>待续</p>

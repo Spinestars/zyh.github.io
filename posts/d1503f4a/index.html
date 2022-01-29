@@ -1360,6 +1360,17 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -2187,6 +2198,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2770,6 +2792,33 @@ func main()&#123;
 <p>输出：</p>
 <pre><code class="language-bash">Name:Platypus, Order:Monotremata
 Name:Quoll, Order:Dasyuromorphia
+</code></pre>
+<h3 id="注意点">注意点</h3>
+<p>以小写字母开头的结构体字段不会被编码进去</p>
+<pre><code class="language-yaml">package main
+
+import (  
+    &quot;fmt&quot;
+    &quot;encoding/json&quot;
+)
+
+type MyData struct &#123;  
+    One int
+    two string
+&#125;
+
+func main() &#123;  
+    in := MyData&#123;1,&quot;two&quot;&#125;
+    fmt.Printf(&quot;%#v\n&quot;,in) //prints main.MyData&#123;One:1, two:&quot;two&quot;&#125;
+
+    encoded,_ := json.Marshal(in)
+    fmt.Println(string(encoded)) //prints &#123;&quot;One&quot;:1&#125;  这里可以看出two:&quot;two&quot;没有被编码进去
+
+    var out MyData
+    json.Unmarshal(encoded,&amp;out)
+
+    fmt.Printf(&quot;%#v\n&quot;,out) //prints main.MyData&#123;One:1, two:&quot;&quot;&#125;
+&#125;
 </code></pre>
 <h2 id="time">time</h2>
 <p><a target="_blank" rel="noopener" href="https://pkg.go.dev/time#Now">time package - time - pkg.go.dev</a></p>

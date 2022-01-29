@@ -1360,6 +1360,17 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -2187,6 +2198,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2862,7 +2884,7 @@ spec:
   - hosts:
     - '*.zyh.cool'
     - zyh.cool
-    secretName: myingress-cert # &lt; cert-manager will store the created certificate in this secret.
+    secretName: zyh-cool-tls # &lt; cert-manager will store the created certificate in this secret.
 </code></pre>
 <p><code>annotations.cert-manager.io/cluster-issuer: nameOfClusterIssuer</code> <code>ingress-shim</code>监视此注解，从而启动集群级别的证书发行方</p>
 <p><code>tls.secretName</code> 指定存储证书的secret对象，它会自动创建</p>
@@ -2907,7 +2929,31 @@ spec:
 <ul>
 <li>证书已申请成功</li>
 </ul>
-<p>待续</p>
+<p>ingress配置</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myIngress
+  namespace: dev-zyh
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: zyh.cool
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: myservice
+            port:
+              number: 80
+  tls: # &lt; placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
+  - hosts:
+    - '*.zyh.cool'
+    - zyh.cool
+    secretName: zyh-cool-tls # &lt; cert-manager will store the created certificate in this secret.
+</code></pre>
 <h1>监控</h1>
 <p>待续</p>
 <h1>卸载</h1>

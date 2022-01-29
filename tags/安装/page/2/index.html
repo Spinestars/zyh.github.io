@@ -1358,6 +1358,17 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -2185,6 +2196,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2497,17 +2519,15 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/d8390732/">
+			<a href="/posts/41bf4066/">
 				<h2 class="index-title">
-					05ELK基本使用-kibana
+					04ELK基本使用-elasticsearch
 				</h2>
 				<div class="index-brief">
-					安装
-https://www.elastic.co/guide/en/kibana/current/targz.html
-appName=kibana
-esVersion=7.15.1
-cd /export/src
-curl &quot;https://mirrors.huaweicloud.com
+					准备
+https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html
+# elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准
+sysctl -a | egr
 					...
 				</div>
 			</a>
@@ -2538,15 +2558,17 @@ curl &quot;https://mirrors.huaweicloud.com
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/41bf4066/">
+			<a href="/posts/d8390732/">
 				<h2 class="index-title">
-					04ELK基本使用-elasticsearch
+					05ELK基本使用-kibana
 				</h2>
 				<div class="index-brief">
-					准备
-https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html
-# elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准
-sysctl -a | egr
+					安装
+https://www.elastic.co/guide/en/kibana/current/targz.html
+appName=kibana
+esVersion=7.15.1
+cd /export/src
+curl &quot;https://mirrors.huaweicloud.com
 					...
 				</div>
 			</a>
@@ -2742,6 +2764,46 @@ Elasticsearch 搜索分析 https://www.elastic.co/cn/downloads/elasti
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/41d19ce/">
+				<h2 class="index-title">
+					007-kafka基本保活
+				</h2>
+				<div class="index-brief">
+					保活工具
+monit
+配置
+check process zookeeper with pidfile /export/kafka/zookeeper.pid
+  start program = &quot;/bin/bash -c 'source /etc/profile &amp;&amp; cd
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2019-03-05</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/">消息</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/消息/kafka/">kafka</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/1a545f72/">
 				<h2 class="index-title">
 					006-kafka基本监控
@@ -2838,50 +2900,6 @@ bin/kafka-reassign-partitions.sh 可以用来调整分区副本的重新分布�
 
 producer_byte_rate 生产速率，单位是字节/s
 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2019-03-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/">消息</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/消息/kafka/">kafka</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/2fb0e26c/">
-				<h2 class="index-title">
-					003-kafka基本认证
-				</h2>
-				<div class="index-brief">
-					kafka的认证是通过java认证技术JAAS实现。
-http://kafka.apache.org/documentation/#security_sasl_plain
-服务端
-添加用户配置
-
-添加用户
-
-# 创建超级用户
-bin/kafka-configs.sh --zookeeper kafk
 					...
 				</div>
 			</a>

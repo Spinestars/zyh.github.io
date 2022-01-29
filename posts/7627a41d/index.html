@@ -1360,6 +1360,17 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -2187,6 +2198,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2734,7 +2756,9 @@ spec:
 </ul>
 <p>当Exact和Prefix混用的时候, 如果一个请求同时匹配了这两个类型下的path, 那么Exact 优先级更高.</p>
 <h3 id="构建TLS">构建TLS</h3>
-<p>默认情况下，如果为该 Ingress 启用了 TLS，ingress-controller 将使用 308 永久重定向响应将 HTTP 客户端重定向到 HTTPS 端口 443。</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#tls">https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#tls</a></p>
+<p>默认情况下，如果为 Ingress 启用了 TLS，ingress-controller 将使用 308 永久重定向响应将 HTTP 客户端重定向到 HTTPS 端口 443。</p>
+<p>💥<code>ingress.spec.tls.hosts</code>必须完全包含<code>ingress.spec.rules.hosts</code></p>
 <h4 id="手动证书">手动证书</h4>
 <ol>
 <li>

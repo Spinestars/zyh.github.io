@@ -1358,6 +1358,17 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -2185,6 +2196,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2497,6 +2519,52 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/8a6b5455/">
+				<h2 class="index-title">
+					go☞004条件语句
+				</h2>
+				<div class="index-brief">
+					前言
+常见的if就不说了
+switch
+case后面的值匹配了变量，就执行对应代码，否则执行default代码
+switch 变量/常量 &#123;
+    case 值1:
+        ...
+    case 值2, 值3:
+        ...
+    default:
+       
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/98f86e16/">
 				<h2 class="index-title">
 					go☞005函数
@@ -2540,27 +2608,25 @@ func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8a6b5455/">
+			<a href="/posts/8c3e952e/">
 				<h2 class="index-title">
-					go☞004条件语句
+					go☞002常量
 				</h2>
 				<div class="index-brief">
 					前言
-常见的if就不说了
-switch
-case后面的值匹配了变量，就执行对应代码，否则执行default代码
-switch 变量/常量 &#123;
-    case 值1:
-        ...
-    case 值2, 值3:
-        ...
-    default:
-       
+常量只有一个元数据，就是内存地址存储的数据。
+常量声明的同时必须赋值
+声明和赋值
+
+不能省略 const 关键词，省略了就没法判断是常量还是变量了
+
+单类型
+const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2020-10-04</span>
+				    <span>2020-10-03</span>
                     
                             
                                 
@@ -2635,50 +2701,6 @@ a,b := 2,4
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8c3e952e/">
-				<h2 class="index-title">
-					go☞002常量
-				</h2>
-				<div class="index-brief">
-					前言
-常量只有一个元数据，就是内存地址存储的数据。
-常量声明的同时必须赋值
-声明和赋值
-
-不能省略 const 关键词，省略了就没法判断是常量还是变量了
-
-单类型
-const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-03</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/759b68d8/">
 				<h2 class="index-title">
 					go☞001变量
@@ -2693,8 +2715,8 @@ const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&g
 部分变量类型:
 int，整型，默认是0
 string，字符串，默认是空
-​	字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示rune ，类似于其它语言的字节类型
-bool，布尔，默
+​	💥字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示rune ，类似于其它语言的字节类型
+​	字符串算是
 					...
 				</div>
 			</a>

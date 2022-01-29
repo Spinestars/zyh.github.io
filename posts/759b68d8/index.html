@@ -1360,6 +1360,17 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -2186,6 +2197,17 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
+								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
 								<li class="file active">
 									<a href="/posts/759b68d8/">
                      
@@ -2559,7 +2581,8 @@ var _hmt = _hmt || [];
 <p>部分变量类型:</p>
 <p>int，整型，默认是0</p>
 <p>string，字符串，默认是空</p>
-<p>​	字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示<code>rune</code> ，类似于其它语言的字节类型</p>
+<p>​	💥字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示<code>rune</code> ，类似于其它语言的字节类型</p>
+<p>​	字符串算是只读切片，因此无法直接修改，若真修改，先转成byte</p>
 <p>bool，布尔，默认是false</p>
 <p>chan，管道，默认是nil</p>
 <p>[数组大小]数组值类型 	数组，默认是nil</p>
@@ -2592,7 +2615,7 @@ var _hmt = _hmt || [];
 <p>可以同时定义多种类型</p>
 <p>根据变量值，自动判断变量类型</p>
 <p>省略 var 声明关键词</p>
-<p>⚠️只能用于函数体内!!!</p>
+<p>⚠️只能用于函数体内!!! 另外，同一个变量不能紧邻的使用这种方式。最后，如果多个变量里包含结构体字段，则所有变量都需要提前声明。</p>
 <pre><code class="language-go">&lt;变量1&gt;, &lt;变量2&gt; := &lt;变量1的值&gt;,&lt;变量2的值&gt;
 </code></pre>
 <p>方法4：</p>
@@ -2666,16 +2689,32 @@ var01的内存地址（通过var02获取）:824633802928
 var01的新值是（通过*var02获取）:456
 </code></pre>
 <h2 id="作用范围">作用范围</h2>
-<p>函数内定义的是局部变量，生命周期仅在函数被调用期间</p>
+<p>函数内定义的变量，生命周期仅在函数被调用期间</p>
 <p>​	需要注意的是：if 和 for 这些控制结构中声明的变量的作用域只在相应的代码块内。即一般情况下，局部变量的作用域可以通过代码块（用大括号括起来的部分）判断。</p>
-<p>函数外定义的是全局变量，可以在任何地方使用</p>
-<p>当两种变量名一致时，局部变量优先级更高</p>
+<p>函数外定义的变量，可以在本级以及下一级嵌套里使用</p>
+<p>当两种变量名一致时，函数内变量优先级更高</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() &#123;  
+    x := 1
+    fmt.Println(x)     //prints 1
+    &#123;
+        fmt.Println(x) //prints 1
+        x := 2
+        fmt.Println(x) //prints 2
+    &#125;
+    fmt.Println(x)     //prints 1 (bad if you need 2)
+&#125;
+</code></pre>
 <h2 id="数组">数组</h2>
 <p>一维数组：<code>var &lt;var_name&gt; []&lt;type&gt;&#123;&#125;</code></p>
 <p>二维数组：<code>var &lt;var_name&gt; [][]&lt;type&gt;&#123;&#125;</code></p>
 <p>[] 表示数组长度，填入数字代表数组大小，填入<code>...</code>代表不确定数组大小由系统自动计算大小</p>
 <p>不管是一维数组，还是二维数组，只能存在一种类型</p>
-<p>数组一旦定义则不可变的</p>
+<p>数组一旦定义则不可变的。</p>
+<p>最后，函数参数是数组的时候，默认是值传递。</p>
 <h3 id="例子">例子</h3>
 <pre><code class="language-go">package main
 
@@ -2697,11 +2736,12 @@ func main()&#123;
 <p><code>array03</code>定义了一个不限行，限3列的数组，这里不限行<code>[]</code>的写法叫<code>切片</code></p>
 <h2 id="切片">切片</h2>
 <p>切片是可变的数组，可以通过<code>append(切片,追加切片)</code>来扩展<code>切片</code></p>
-<p>切片是一个引用变量，因此切片变量存储的是内存地址，这个内存地址就是一个数组</p>
+<p>切片是一个引用变量，因此切片变量存储的是内存地址，这个内存地址就是一个数组。</p>
+<p>💖所以当你函数参数是切片的时候，此时你传参传递是<code>引用传递</code></p>
 <p><img src="/posts/759b68d8/image-20211021224622784.png" alt="image-20211021224622784"></p>
 <h3 id="写法">写法</h3>
 <p>基本写法</p>
-<pre><code class="language-go">s1 := []int&#123;1,2,3&#125; // 初始化一个内置3元素，容量3的切片s1
+<pre><code class="language-go">s1 := []int&#123;1,2,3,&#125; // 初始化一个内置3元素，容量3的切片s1
 </code></pre>
 <p>添加容量大小的写法</p>
 <pre><code class="language-go">s1 := make([]int, &lt;len&gt;, &lt;cap&gt;) // &lt;len&gt;是定义切片内元素的长度，&lt;cap&gt;是定义切片容纳元素的上限数
@@ -2725,7 +2765,18 @@ s[3:] //截取3-最后，构建新切片，忽略末尾数字
 <h2 id="集合">集合</h2>
 <p>map 类似于 pythhon 的字典，由kv对组成，它是无序的，因此，在使用 range 返回的时候，无法决定返回顺序。</p>
 <h3 id="写法-2">写法</h3>
-<pre><code class="language-go">var m1 map[&lt;key_type&gt;]value_type
+<pre><code class="language-go">var m1 map[&lt;key_type&gt;]value_type = &#123;&quot;&quot;:&quot;&quot;&#125;
+</code></pre>
+<p>😒如果单纯的声明变量，却没有赋值，则会创建一个nil map。nil map不可通过<code>m1[key]=value</code>加集合元素。</p>
+<p>如果单纯的声明，可以使用make()</p>
+<pre><code class="language-go">package main
+import &quot;fmt&quot;
+
+func main() &#123;
+    m := make(map[string]int)
+    m[&quot;a&quot;]=1
+    fmt.Println(m[&quot;a&quot;])
+&#125;
 </code></pre>
 <p>例子：</p>
 <pre><code class="language-go">m1 := map[string]int&#123;&quot;河南&quot;:1, &quot;郑州&quot;:2&#125;
@@ -2737,6 +2788,20 @@ fmt.Println(m1[&quot;郑州&quot;])
 </code></pre>
 <h3 id="删除">删除</h3>
 <p>delete(<map>, <key>) 从map中删除对应的kv</key></map></p>
+<h3 id="技巧">技巧</h3>
+<p>下面这个例子，通过判断map取值返回的第二个值<code>ok</code>，来判断接下来的逻辑行为。</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() &#123;  
+    x := map[string]string&#123;&quot;one&quot;:&quot;a&quot;,&quot;two&quot;:&quot;&quot;,&quot;three&quot;:&quot;c&quot;&#125;
+
+    if _,ok := x[&quot;two&quot;]; !ok &#123;
+        fmt.Println(&quot;no entry&quot;)
+    &#125;
+&#125;
+</code></pre>
 
 </div>
 
@@ -2744,9 +2809,9 @@ fmt.Println(m1[&quot;郑州&quot;])
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/8c3e952e/">
+              <a href="/posts/1a034363/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go☞002常量
+                  go☞003运算符
               </a>
             
         </div>

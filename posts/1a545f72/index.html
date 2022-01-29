@@ -1360,6 +1360,17 @@ var _hmt = _hmt || [];
 								<div class="article-toc" style="display: none;"></div>
 							</ul>
 			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
 								</li>
 								
 							</ul>
@@ -2187,6 +2198,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2567,7 +2589,7 @@ cd /export/src
 curl &quot;https://github.com/danielqsj/kafka_exporter/releases/download/v$&#123;appVersion&#125;/kafka_exporter-$&#123;appVersion&#125;.linux-amd64.tar.gz&quot; -o kafka_exporter.tgz &amp;&amp; tar xf kafka_exporter.tgz &amp;&amp; mv kafka_exporter-$&#123;appVersion&#125;.linux-amd64 ../kafka_exporter
 cd ../kafka_exporter
 ./kafka_exporter \
---kafka.server=hadoop001:8123 \
+--kafka.server=kafka001:8123 \
 --sasl.enabled \
 --sasl.username=&quot;broker&quot; \
 --sasl.password=&quot;broker&quot; \
@@ -2575,17 +2597,20 @@ cd ../kafka_exporter
 </code></pre>
 <p>ℹ️默认<code>kafka_exporter</code>监听在<code>9308</code>端口上.</p>
 <p>⚠️在1.4.2版本中，kafka_exporter在部分系统中存在无法正确的解析hostname的问题，需直接指明IP。</p>
+<h3 id="添加到开机启动">添加到开机启动</h3>
+<p>/etc/crontab</p>
+<pre><code class="language-bash">@reboot root sleep 120;/export/kafka_exporter/kafka_exporter --kafka.server=kafka001:8123 --sasl.enabled --sasl.username=&quot;broker&quot; --sasl.password=&quot;broker&quot; --sasl.mechanism=&quot;scram-sha256&quot; &gt;&gt; /export/kafka_exporter/kafka_exporter.nohup 2&gt;&amp;1
+</code></pre>
 <h2 id="监控系统">监控系统</h2>
 <h3 id="Prometheus">Prometheus</h3>
 <p>主配置里加入</p>
 <pre><code class="language-yml">  - job_name: &quot;kafka_exporter&quot;
     metrics_path: /metrics
     static_configs:
-      - targets: ['kafka_exporter_ip_port']
+      - targets: ['kafka001:9038'] # kafka_exporter地址和端口
         labels:
           instance: it-zz-kafka-cluster
 </code></pre>
-<p><code>kafka_exporter_ip_port</code>换成真实IP和端口</p>
 <p>告警规则里加入</p>
 <p><a target="_blank" rel="noopener" href="https://awesome-prometheus-alerts.grep.to/rules#kafka-1">https://awesome-prometheus-alerts.grep.to/rules#kafka-1</a></p>
 <pre><code class="language-yml">  - alert: KafkaTopicsReplicas
@@ -2604,7 +2629,6 @@ cd ../kafka_exporter
     annotations:
       summary: Kafka consumers group (instance &#123;&#123; $labels.instance &#125;&#125;)
       description: &quot;Kafka consumers group\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;
-
 </code></pre>
 <h3 id="grafana">grafana</h3>
 <p>Grafana Dashboard ID: 7589, name: Kafka Exporter Overview.</p>
@@ -2615,9 +2639,9 @@ cd ../kafka_exporter
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/aaf9b7/">
+              <a href="/posts/41d19ce/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞01常见术语概念
+                  007-kafka基本保活
               </a>
             
         </div>

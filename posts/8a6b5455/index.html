@@ -2209,6 +2209,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/83a93e23/">
+                     
+										    go-015包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2573,9 +2584,31 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>常见的if就不说了</p>
+<h2 id="if">if</h2>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func givemeanumber() int &#123;
+    return -1
+&#125;
+
+func main() &#123;
+    if num := givemeanumber(); num &lt; 0 &#123;
+        fmt.Println(num, &quot;is negative&quot;)
+    &#125; else if num &lt; 10 &#123;
+        fmt.Println(num, &quot;has only one digit&quot;)
+    &#125; else &#123;
+        fmt.Println(num, &quot;has multiple digits&quot;)
+    &#125;
+&#125;
+</code></pre>
+<p>在上述代码中，num 变量是在 if 中声明的，因此它的作用域仅限于 if 中。这种写法在 go 中很常见。</p>
 <h2 id="switch">switch</h2>
-<p>case后面的值匹配了变量，就执行对应代码，否则执行default代码</p>
+<p>switch 旨在避免维护含有多个 if 的语句。</p>
+<ul>
+<li>满足变量</li>
+</ul>
 <pre><code class="language-go">switch 变量/常量 &#123;
     case 值1:
         ...
@@ -2585,7 +2618,11 @@ var _hmt = _hmt || [];
         ...
 &#125;
 </code></pre>
-<p>条件为真，就执行对应代码，否则执行default代码</p>
+<p>在上述代码中，若case后面的值若匹配变量，就执行对应代码，否则执行default代码。default语句不是必须的。</p>
+<p>🤷‍♂️需要注意的是，switch 后的变量类型和case后的值类型要保持一致。如果不一致，则编译将失败。</p>
+<ul>
+<li>满足条件</li>
+</ul>
 <pre><code class="language-go">switch &#123;
     case 条件1:
         ...
@@ -2593,6 +2630,28 @@ var _hmt = _hmt || [];
         ...
     default:
         ...
+&#125;
+</code></pre>
+<p>在上述代码中，若条件为真，就执行对应代码，否则执行default代码</p>
+<ul>
+<li>满足函数返回值</li>
+</ul>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() &#123;
+    switch time.Now().Weekday().String() &#123;
+    case &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;:
+        fmt.Println(&quot;It's time to learn some Go.&quot;)
+    default:
+        fmt.Println(&quot;It's weekend, time to rest!&quot;)
+    &#125;
+
+    fmt.Println(time.Now().Weekday().String())
 &#125;
 </code></pre>
 <h3 id="switch特殊">switch特殊</h3>
@@ -2637,16 +2696,16 @@ func main() &#123;
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/318675c1/">
+              <a href="/posts/98f86e16/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go☞006函数-闭包
+                  go☞005函数
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/98f86e16/">
-                go☞005函数
+              <a href="/posts/8c3e952e/">
+                go☞002常量
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		vcsa☞存储设备有vmfs分区，但数据存储丢失 | 
+		go-015包 | 
 	 
 	zyh
 	</title>
@@ -2131,7 +2131,7 @@ var _hmt = _hmt || [];
 									</a>
 									
 							<ul>
-								<li class="file active">
+								<li class="file">
 									<a href="/posts/eab024cf/">
                      
 										    vcsa☞存储设备有vmfs分区，但数据存储丢失
@@ -2208,7 +2208,7 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file">
+								<li class="file active">
 									<a href="/posts/83a93e23/">
                      
 										    go-015包
@@ -2530,16 +2530,16 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	vcsa☞存储设备有vmfs分区，但数据存储丢失
+	go-015包
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/eab024cf/" class="leancloud_visitors" data-flag-title="vcsa☞存储设备有vmfs分区，但数据存储丢失"></span>
+			阅读量:<span id="/posts/83a93e23/" class="leancloud_visitors" data-flag-title="go-015包"></span>
 		</span>
 	
 	<span>zyh</span>
-	<span>2021-07-06 13:59:00</span>
+	<span>2020-11-21 17:11:12</span>
 		<div id="article-categories">
     
 		<span>Categories：</span>
@@ -2547,7 +2547,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-folder" aria-hidden="true">
-                        <a href="/categories/虚拟化/">虚拟化</a>
+                        <a href="/categories/语言/">语言</a>
                         </i>
                       
                         >
@@ -2558,7 +2558,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-folder" aria-hidden="true">
-                        <a href="/categories/虚拟化/vmware/">vmware</a>
+                        <a href="/categories/语言/go/">go</a>
                         </i>
                       
                     </span>
@@ -2572,7 +2572,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/vmware/">vmware</a>
+                        <a href="/tags/go/">go</a>
                         </i>
                     </span>
                 
@@ -2583,73 +2583,79 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
-<p>一个esxi老是断连，根据日志判断是主板硬盘接口有点问题，所以将硬盘换到了另一个主机。结果主机启动起来之后，vcsa里可以看到存储设备，就是数据存储不可访问，删除之后，再扫描也找不到。</p>
-<h2 id="过程">过程</h2>
-<p>开启esxi的ssh服务，进入之后，发现分区啥的都还在，看起来是没有挂载成功。</p>
-<h3 id="检查分区">检查分区</h3>
-<p>发现序号8就是没有挂载上的vmfs分区，且检查没有错误</p>
-<p>voma -m vmfs -f check -d &lt;分区文件&gt;</p>
-<pre><code>voma -m vmfs -f check -d /vmfs/devices/disks/naa.50014ee213cfd76d:8
-===
-Running VMFS Checker version 2.1 in check mode
-Initializing LVM metadata, Basic Checks will be done
+	<h1>main包</h1>
+<p>主程序需要引用<code>package main</code>，只有引用了<code>main</code>，才可以编译生成二进制程序。</p>
+<h1>自定义包</h1>
+<h2 id="包代码">包代码</h2>
+<blockquote>
+<p>&lt;$GOHOME/src/packageName&gt;/sum.go</p>
+</blockquote>
+<pre><code class="language-go">package calculator // 包名
 
-Checking for filesystem activity
-Performing filesystem liveness check..\Scanning for VMFS-6 host activity (4096 bytes/HB, 1024 HBs).
-         Scsi 2 reservation successful
-Phase 1: Checking VMFS header and resource files
-   Detected VMFS-6 file system (labeled:'10-200-16-4-hdd') with UUID:60a7b864-03293672-7e51-8cdcd42142e2, Version 6:82
-Phase 2: Checking VMFS heartbeat region
-Marking Journal addr (0, 0) in use
-Phase 3: Checking all file descriptors.
-   Found stale lock [type 10c00001 offset 7561216 v 24, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 1109
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7577600 v 30, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 1119
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7585792 v 87, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 999
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7602176 v 42, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 1114
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7733248 v 47, hb offset 3899392
-         gen 77, mode 1, owner 60cb1a4b-1ed0702e-cebf-8cdcd42142e2 mtime 664
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7749632 v 49, hb offset 3899392
-         gen 77, mode 1, owner 60cb1a4b-1ed0702e-cebf-8cdcd42142e2 mtime 699
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7856128 v 70, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 986
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7864320 v 71, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 993
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7872512 v 72, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 1004
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7880704 v 73, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 1028
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-   Found stale lock [type 10c00001 offset 7888896 v 74, hb offset 3899392
-         gen 163, mode 1, owner 60d05066-92815c9b-65fa-8cdcd42142e2 mtime 1046
-         num 0 gblnum 0 gblgen 0 gblbrk 0]
-Phase 4: Checking pathname and connectivity.
-Phase 5: Checking resource reference counts.
+var logMessage = &quot;[LOG]&quot;
 
-Total Errors Found:           0
+// Version of the calculator
+var Version = &quot;1.0&quot;
+
+func internalSum(number int) int &#123;
+    return number - 1
+&#125;
+
+// Sum two integer numbers
+func Sum(number1, number2 int) int &#123;
+    return number1 + number2
+&#125;
 </code></pre>
 <blockquote>
-<p>输出信息里 Phase 1: 部分显示了vmfs分区的label和UUID</p>
+<p>package 定义包名</p>
+<p>go约定：小写开头的仅用于包内部，大写开头的包内外均可以用.</p>
 </blockquote>
-<h3 id="挂载vmfs分区，并加入开机启动">挂载vmfs分区，并加入开机启动</h3>
-<p>esxcfg-volume -M &lt;分区UUID&gt;</p>
-<pre><code class="language-bash">esxcfg-volume -M 60a7b864-03293672-7e51-8cdcd42142e2
-===
-Mounting volume 60a7b864-03293672-7e51-8cdcd42142e2
+<ul>
+<li>只能从包内调用 <code>logMessage</code> 变量。</li>
+<li>可以从任何位置访问 <code>Version</code> 变量。 建议你添加注释来描述此变量的用途。 （此描述适用于包的任何用户。）</li>
+<li>只能从包内调用 <code>internalSum</code> 函数。</li>
+<li>可以从任何位置访问 <code>Sum</code> 函数。 建议你添加注释来描述此函数的用途。</li>
+</ul>
+<h2 id="模块">模块</h2>
+<p>Go通过模块引用包。</p>
+<p>模块通常包含可提供相关功能的包。 包的模块还指定了 Go 运行你组合在一起的代码所需的上下文。 此上下文信息包括编写代码时所用的 Go 版本。</p>
+<pre><code class="language-go">cd &lt;$GOHOME/src/packageName&gt;
+go mod init github.com/myuser/calculator
 </code></pre>
+<blockquote>
+<p>init 后是模块名，也是下载地址，go通过这个地址去下载。</p>
+</blockquote>
+<h1>包调用</h1>
+<p>主程序：&lt;$GOHOME/src/packageName&gt;/main.go</p>
+<p>通过模块名调用包</p>
+<pre><code class="language-go">package main
+
+import (
+  &quot;fmt&quot;
+  &quot;github.com/myuser/calculator&quot;
+)
+
+func main() &#123;
+    total := calculator.Sum(3, 5) //通过模块名直接引用包下sum.go中的Sum()函数
+    fmt.Println(total)
+    fmt.Println(&quot;Version: &quot;, calculator.Version)
+&#125;
+</code></pre>
+<h2 id="初始化主程序模块">初始化主程序模块</h2>
+<p>告诉go你通过模块引用calculator包</p>
+<pre><code class="language-bash">go mod init packageName
+</code></pre>
+<h2 id="修正模块文件">修正模块文件</h2>
+<p>告知引用本地模块</p>
+<pre><code class="language-go">module helloworld
+
+go 1.14
+
+require github.com/myuser/calculator v0.0.0
+
+replace github.com/myuser/calculator =&gt; ../calculator
+</code></pre>
+<p><code>replace</code>关键词指定模块的本地路径</p>
 
 </div>
 
@@ -2657,16 +2663,16 @@ Mounting volume 60a7b864-03293672-7e51-8cdcd42142e2
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/9573a87d/">
+              <a href="/posts/b5d7d6ee/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  harbor☞安装
+                  aliyun☞oss
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/f0c6f6c3/">
-                git☞常用命令
+              <a href="/posts/d1503f4a/">
+                go☞012常用模块的记录
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

@@ -2209,6 +2209,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/83a93e23/">
+                     
+										    go-015包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2580,10 +2591,12 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h1>基本安装</h1>
+	<h1>安装Jenkins Master</h1>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://github.com/jenkinsci/docker/blob/master/README.md">https://github.com/jenkinsci/docker/blob/master/README.md</a></p>
 </blockquote>
+<h2 id="通过二进制安装">通过二进制安装</h2>
+<p>略过。。。</p>
 <h2 id="通过容器安装">通过容器安装</h2>
 <p>通过 <a target="_blank" rel="noopener" href="https://hub.docker.com/r/jenkins/jenkins/tags?page=1&amp;name=2.318">https://hub.docker.com/r/jenkins/jenkins/tags?page=1&amp;name=2.318</a> 过滤版本</p>
 <pre><code class="language-bash"># 定义版本，例如centos7+jdk8的jenkins
@@ -2593,14 +2606,25 @@ jenkinsPort=18080
 # 定义容器所用的dns
 jenkinsDns=119.29.29.29
 # 定义jenkins的web域名
-jenkinsDomain=jkspj.pengwin.com
+jenkinsDomain=
 docker volume create jenkins_home
-docker run --name jenkins_$&#123;jenkinsTag&#125; --hostname $&#123;jenkinsDomain&#125; --restart always --mount 'type=volume,src=jenkins_home,dst=/var/jenkins_home' -p $&#123;jenkinsPort&#125;:8080 -p 50000:50000 --dns $&#123;jenkinsDns&#125; -d jenkins/jenkins:$&#123;jenkinsTag&#125;
+docker run --name jenkins_$&#123;jenkinsTag&#125; \
+--hostname $&#123;jenkinsDomain&#125; \
+--restart always \
+--mount 'type=volume,src=jenkins_home,dst=/var/jenkins_home' \
+-p $&#123;jenkinsPort&#125;:8080 \
+-p 50000:50000 \
+--dns $&#123;jenkinsDns&#125; \
+-d jenkins/jenkins:$&#123;jenkinsTag&#125;
 echo &quot;docker run --name jenkins_$&#123;jenkinsTag&#125; --hostname $&#123;jenkinsDomain&#125;  --restart always --mount 'type=volume,src=jenkins_home,dst=/var/jenkins_home' -p $&#123;jenkinsPort&#125;:8080 -p 50000:50000 --dns $&#123;jenkinsDns&#125; -d jenkins/jenkins:$&#123;jenkinsTag&#125;&quot; &gt; docker-jenkins-install.command
 </code></pre>
 <ol>
 <li>调用宿主机 docker 命令所需的依赖(不一定可用，特别是最后一个库文件，不同版本位置不一定一致)</li>
 </ol>
+<blockquote>
+<p>不推荐在Master上进行此操作；</p>
+<p>推荐建议在额外Node上安装docker，并已二进制方式运行agent.jar，授权agent.jar执行用户访问docker命令，从而避免此问题</p>
+</blockquote>
 <pre><code class="language-bash">--mount 'type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock' \
 --mount 'type=bind,src=/usr/bin/docker,dst=/usr/bin/docker' \
 --mount 'type=bind,src=/usr/lib64/libltdl.so.7,dst=/usr/lib/x86_64-linux-gnu/libltdl.so.7'
@@ -2636,29 +2660,32 @@ localIP=<code>ip addr show | grep -A3 &quot; eth0&quot; | grep &quot;inet &quot;
 <li>插件安装：选择【安装推荐的插件】</li>
 <li>管理员用户创建，并点击【使用admin账户继续】，并点击【保存完成】</li>
 </ol>
-<h2 id="添加agent节点">添加agent节点</h2>
-<p>默认没有agent节点，也就是说默认情况下构建是运行在jenkins本身所在节点上。但是我们可以添加一个agent节点，并针对agent节点来安装构建所需的环境。</p>
-<p>[manage jenkins]-[manage nodes and clouds]-[create node]</p>
+<h2 id="添加额外的Jenkins-Node节点">添加额外的Jenkins Node节点</h2>
+<p>默认没有独立的Node节点，也就是说默认情况下构建是运行在Jenkins Master本身所在容器上。</p>
+<p>但是我们可以添加一个额外的Node节点，并安装构建所需的环境。</p>
+<p>路径：[manage jenkins]-[manage nodes and clouds]-[create node]</p>
 <p><img src="/posts/d9cdb70/image-20211102164349471.png" alt="image-20211102164349471"></p>
-<p>保存之后，在列表里点击创建的【agent01】即可以看到agent01的运行命令。例如：</p>
-<pre><code class="language-bash">echo 6ffa296c09a3bee21e7217d &gt; secret-file
+<p>保存之后，在列表里点击创建的【agent01】即可以看到如何在新Node里运行。例如：</p>
+<pre><code class="language-bash"># 创建目录(截图里填入的地址)
+mkdir -p &lt;远程工作目录&gt;/&lt;内部数据目录&gt;
+# 授权密码
+echo 6ffa296c09a3bee21e7217d &gt; secret-file
+# 运行命令
 nohup java -jar agent.jar -jnlpUrl http://$&#123;jenkinsDomain&#125;:18080/computer/agent01/jenkins-agent.jnlp -secret @secret-file -workDir &quot;/export/jenkins_agent_home&quot; -failIfWorkDirIsMissing &gt;&gt; agent.log &amp;
+# 将运行命令写入本地文件，方便之后启动
 echo &quot;nohup java -jar agent.jar -jnlpUrl http://$&#123;jenkinsDomain&#125;:18080/computer/agent01/jenkins-agent.jnlp -secret @secret-file -workDir &quot;/export/jenkins_agent_home&quot; -failIfWorkDirIsMissing &gt;&gt; agent.log &amp;&quot; &gt; jenkins_agent.command
 </code></pre>
 <blockquote>
 <ol>
-<li>你需要提前创建好<code>远程工作目录/内部数据目录</code></li>
-<li>你需要提前安装一个jdk环境</li>
-<li>agent.jar 需要先下载 [<a target="_blank" rel="noopener" href="http://$">http://$</a>{jenkinsDomain}:18080/jnlpJars/agent.jar]</li>
+<li>你需要提前在Node节点上安装一个jdk环境</li>
+<li>你需要先下载代理程序 agent.jar，下载地址位于Jenkins Master服务：<a target="_blank" rel="noopener" href="http://$">http://$</a>{jenkinsDomain}:18080/jnlpJars/agent.jar</li>
 </ol>
 </blockquote>
-<h2 id="配置jenkins">配置jenkins</h2>
+<h1>配置Jenkins Node构建环境</h1>
 <ol>
-<li>安装一些项目所需的命令</li>
+<li>安装awscli、ansible、aliyun</li>
 </ol>
-<pre><code class="language-bash">## 进入 jenkins 容器，安装ansible/awscli
-docker exec -it -u root jenkins_$&#123;jenkinsTag&#125; /bin/bash
-cd /var/jenkins_home/
+<pre><code class="language-bash">cd /export/jenkins_agent_home
 [[ -d src ]] || mkdir src
 cd src
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -2683,24 +2710,9 @@ cp aliyun /usr/bin/
 <ol start="2">
 <li>调用宿主机docker命令</li>
 </ol>
-<pre><code class="language-bash">## 获取 docker group ID
-dockerGroupID=`cat /etc/group | grep docker | awk -F&quot;:&quot; '&#123;print $3&#125;'`
-echo $&#123;dockerGroupID&#125;
-
-docker exec -it -u root jenkins /bin/bash
-
-## 在 jenkins 容器里创建 docker 组，并将 jenkins 用户加入到 docker 组
-groupadd -g &lt;docker-group-id&gt; docker
-usermod -aG docker jenkins
-exit
+<pre><code class="language-bash">usermod -aG docker jenkins
 </code></pre>
-<ol start="3">
-<li>重启</li>
-</ol>
-<pre><code class="language-bash"># 重启 jenkins 容器
-docker stop jenkins &amp;&amp; docker start jenkins
-</code></pre>
-<h1>WEB基本配置</h1>
+<h1>WEB界面的额外配置</h1>
 <h2 id="其它插件安装">其它插件安装</h2>
 <p>输出着色：<a target="_blank" rel="noopener" href="https://plugins.jenkins.io/ansicolor"> AnsiColor</a></p>
 <p>新界面：<a target="_blank" rel="noopener" href="https://plugins.jenkins.io/blueocean">Blue Ocean</a></p>

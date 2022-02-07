@@ -2208,6 +2208,17 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
+								<li class="file">
+									<a href="/posts/83a93e23/">
+                     
+										    go-015包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
 								<li class="file active">
 									<a href="/posts/759b68d8/">
                      
@@ -2578,6 +2589,12 @@ var _hmt = _hmt || [];
 <p>内存地址也是一串数</p>
 </blockquote>
 <h2 id="声明类型">声明类型</h2>
+<ul>
+<li>基本类型：数字、字符串和布尔值</li>
+<li>聚合类型：数组和结构</li>
+<li>引用类型：指针、切片、映射、函数和通道</li>
+<li>接口类型：接口</li>
+</ul>
 <p>部分变量类型:</p>
 <p>int，整型，默认是0</p>
 <p>string，字符串，默认是空</p>
@@ -2615,7 +2632,12 @@ var _hmt = _hmt || [];
 <p>可以同时定义多种类型</p>
 <p>根据变量值，自动判断变量类型</p>
 <p>省略 var 声明关键词</p>
-<p>⚠️只能用于函数体内!!! 另外，同一个变量不能紧邻的使用这种方式。最后，如果多个变量里包含结构体字段，则所有变量都需要提前声明。</p>
+<p>⚠️</p>
+<ol>
+<li>只能用于函数体内。</li>
+<li>仅可以用于新变量。</li>
+<li>多个变量单行同时声明并赋值的时候，如果某一个变量是结构体字段，则所有变量都需要提前声明。</li>
+</ol>
 <pre><code class="language-go">&lt;变量1&gt;, &lt;变量2&gt; := &lt;变量1的值&gt;,&lt;变量2的值&gt;
 </code></pre>
 <p>方法4：</p>
@@ -2627,13 +2649,34 @@ var _hmt = _hmt || [];
 )
 </code></pre>
 <h3 id="引用变量：指针变量">引用变量：指针变量</h3>
-<p>指针变量就是变量类型前加<code>*</code>，其它不变</p>
-<p>变量的值必须是<code>内存地址</code></p>
-<p><code>内存地址</code>的获取方法是<code>&amp;普通变量</code></p>
+<p>变量的值存储的是另一个变量的<code>内存地址</code>。因此，通过指针变量你可以修改另一个变量的值。</p>
+<p>在 Go 中，有两个运算符可用于处理指针：</p>
+<ul>
+<li><code>&amp;</code> 运算符调用变量对象的内存地址。</li>
+<li><code>*</code> 运算符表示取消引用指针或声明一个指针。
+<ul>
+<li><code>*指针变量</code>取消引用指针，本质上是指针变量存储的内存地址所对应的变量对象。</li>
+<li><code>*变量类型</code>声明指针。</li>
+</ul>
+</li>
+</ul>
 <p>例如:</p>
-<pre><code class="language-go">var02 := &amp;var01
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() &#123;
+    firstName := &quot;John&quot;
+    updateName(&amp;firstName) // 3. 普通变量前加&amp;，表示获取普通变量的内存地址
+    fmt.Println(firstName)
+&#125;
+
+func updateName(name *string) &#123; // 1. 形参变量类型前加*,表示这个形参是一个指针变量
+    *name = &quot;David&quot; // 2. 指针变量前加*，等同于指针变量所指向的普通变量
+&#125;
 </code></pre>
 <h3 id="变量类型转换">变量类型转换</h3>
+<p>Go 中隐式强制转换不起作用。</p>
 <ol>
 <li>浮点和整数之间</li>
 </ol>
@@ -2645,6 +2688,19 @@ var _hmt = _hmt || [];
 <p>import “strconv”</p>
 </blockquote>
 <p><code>strconv.Atoi(expression)</code>  字符串到数字</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;strconv&quot;
+)
+
+func main() &#123;
+    i, _ := strconv.Atoi(&quot;-42&quot;)
+    s := strconv.Itoa(-42)
+    fmt.Println(i, s)
+&#125;
+</code></pre>
 <h2 id="普通变量和指针变量的使用区别">普通变量和指针变量的使用区别</h2>
 <p>通过老的普通变量赋值生成的新普通变量，两者之间因为内存地址不一样，因此没有任何关联</p>
 <p>例如：</p>

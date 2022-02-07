@@ -2209,6 +2209,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/83a93e23/">
+                     
+										    go-015包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2573,9 +2584,13 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>常量只有一个元数据，就是内存地址存储的数据。</p>
-<p>常量声明的同时必须赋值</p>
+<p>常量只有一个元数据，就是内存地址存储的数据。它是一个静态值。</p>
+<p>常量声明的同时必须赋值。</p>
+<p>常量不可用<code>:=</code>声明并赋值。</p>
+<p>在 Go 中，常量名称通常以混合大小写字母或全部大写字母书写。</p>
+<p>常量定义后可以不用。</p>
 <h2 id="声明和赋值">声明和赋值</h2>
+<p>常量关键词是const。</p>
 <blockquote>
 <p>不能省略 const 关键词，省略了就没法判断是常量还是变量了</p>
 </blockquote>
@@ -2592,40 +2607,13 @@ var _hmt = _hmt || [];
     &lt;常量2&gt; &lt;类型2&gt; = &lt;常量2的值&gt;
 )
 </code></pre>
-<p>上述写法中，如果常量2和常量1一样，则可以直接写常量2，省略其余。</p>
+<p>上述写法中，如果常量2和常量1一样，则可以直接写常量2名，类型2和常量2的值可以省略。</p>
 <pre><code class="language-go">const (
     &lt;常量1&gt;,&lt;常量11&gt; &lt;类型1&gt; = &lt;常量1的值&gt;, &lt;常量11的值&gt;
     &lt;常量2&gt;,&lt;常量22&gt;
 )
 </code></pre>
-<p>需要注意的是，前两两行声明的常量数量需要对齐一致。</p>
-<p>⚠️常量声明赋值的时候，常量的值只能是<code>string</code>,<code>int</code>,<code>bool</code>类型，如果你的值是<code>函数</code>返回，则这个<code>函数</code>必须是<code>内置函数</code></p>
-<p>例如：</p>
-<pre><code class="language-go">package main
-
-import &quot;fmt&quot;
-
-
-
-func rtnlen(p string) (int) &#123;
-    return len(p)
-&#125;
-
-var (
-    code03 = &quot;abc&quot;
-    code04 = rtnlen(code03)    // 这里不会报错，因为变量没有 “必须为内置函数” 这个限制
-)
-
-const (
-    code06 = &quot;abc&quot;
-    code05 = rtnlen(code06)    // 这里会报错，因为 rtnlen() 不是内置函数，将其更换为 len() 就不会报错
-)
-
-func main()&#123;
-    fmt.Println(code05)
-    fmt.Println(code03, code04)
-&#125;
-</code></pre>
+<p>在这种省略写法中，需要注意的是，前两列需要对齐一致。</p>
 <h2 id="特殊常量iota">特殊常量iota</h2>
 <p>有一个内置的特殊常量iota，每声明一个常量，它会+1，初始值是0</p>
 
@@ -2635,9 +2623,9 @@ func main()&#123;
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/98f86e16/">
+              <a href="/posts/8a6b5455/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go☞005函数
+                  go☞004条件语句
               </a>
             
         </div>

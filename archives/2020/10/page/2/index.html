@@ -2207,6 +2207,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/83a93e23/">
+                     
+										    go-015包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/759b68d8/">
                      
 										    go☞001变量
@@ -2519,52 +2530,6 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/8a6b5455/">
-				<h2 class="index-title">
-					go☞004条件语句
-				</h2>
-				<div class="index-brief">
-					前言
-常见的if就不说了
-switch
-case后面的值匹配了变量，就执行对应代码，否则执行default代码
-switch 变量/常量 &#123;
-    case 值1:
-        ...
-    case 值2, 值3:
-        ...
-    default:
-       
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-04</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/98f86e16/">
 				<h2 class="index-title">
 					go☞005函数
@@ -2608,20 +2573,68 @@ func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/8a6b5455/">
+				<h2 class="index-title">
+					go☞004条件语句
+				</h2>
+				<div class="index-brief">
+					前言
+if
+package main
+
+import &quot;fmt&quot;
+
+func givemeanumber() int &#123;
+    return -1
+&#125;
+
+func main() &#123;
+    if num := givemeanumber(); nu
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-10-04</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/8c3e952e/">
 				<h2 class="index-title">
 					go☞002常量
 				</h2>
 				<div class="index-brief">
 					前言
-常量只有一个元数据，就是内存地址存储的数据。
-常量声明的同时必须赋值
+常量只有一个元数据，就是内存地址存储的数据。它是一个静态值。
+常量声明的同时必须赋值。
+常量不可用:=声明并赋值。
+在 Go 中，常量名称通常以混合大小写字母或全部大写字母书写。
+常量定义后可以不用。
 声明和赋值
+常量关键词是const。
 
-不能省略 const 关键词，省略了就没法判断是常量还是变量了
-
-单类型
-const &lt;常量1&gt;,&lt;常量2&gt; &lt;常量类型&gt; = &lt;常量1的值&gt;, &lt;常量2的
+不能省略 const 关键词，省略了就没法判断是常量
 					...
 				</div>
 			</a>
@@ -2712,11 +2725,16 @@ a,b := 2,4
 内存地址也是一串数
 
 声明类型
+
+基本类型：数字、字符串和布尔值
+聚合类型：数组和结构
+引用类型：指针、切片、映射、函数和通道
+接口类型：接口
+
 部分变量类型:
 int，整型，默认是0
 string，字符串，默认是空
-​	💥字符串的表示用双引号和反引号，不可用单引号，单引号在golang里表示rune ，类似于其它语言的字节类型
-​	字符串算是
+​	💥字符串的
 					...
 				</div>
 			</a>

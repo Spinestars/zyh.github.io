@@ -383,9 +383,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -394,11 +394,11 @@
     
     
     <entry>
-      <title>helm☞02chart</title>
-      <link href="posts/710e3e49/"/>
-      <url>posts/710e3e49/</url>
+      <title>helm☞01入门</title>
+      <link href="posts/51015304/"/>
+      <url>posts/51015304/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://helm.sh/docs/chart_template_guide/getting_started/">Helm | Getting Started</a></p><p>chart包目录结构：</p><pre><code class="language-bash">wordpress/  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件  values.yaml         # 必选：chart 的默认配置 values  charts/             # 必选：包含该 chart 依赖的所有 chart 的目录  crds/               # 必选：Custom Resource Definitions  templates/          # 必选：模板目录，与 values 结合使用时，将渲染生成 Kubernetes 资源清单文件  LICENSE             # 可选：包含 chart 的 license 的文本文件  README.md           # 可选：一个可读性高的 README 文件  values.schema.json  # 可选: 一个作用在 values.yaml 文件上的 JSON 模式  templates/NOTES.txt # 可选: 包含简短使用的文本文件</code></pre><h2 id="创建框架">创建框架</h2><p>helm create &lt;chart包名&gt;</p><h2 id="必要文件">必要文件</h2><h3 id="Chart-yaml">Chart.yaml</h3><p>Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为subcharts）</p><p>一份nginx的Chat.yaml示例：</p><pre><code class="language-bash">apiVersion: v1                                                                                         appVersion: 1.16.1description: Chart for the nginx serverengine: gotplhome: http://www.nginx.orgicon: https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.pngkeywords:- nginx- http- web- www- reverse proxymaintainers:- email: containers@bitnami.com  name: Bitnaminame: nginxsources:- https://github.com/bitnami/bitnami-docker-nginxversion: 5.1.5</code></pre><h3 id="Templates目录">Templates目录</h3><p>包含以<code>.yaml</code>结尾的模板文件和以<code>.txt</code>结尾的NOTES.txt文件</p><h4 id="NOTES-txt">NOTES.txt</h4><p>Release安装过程中的输出文本</p><p>Release命令<code>helm status</code>信息</p><h4 id="模板文件">模板文件</h4><blockquote><p>go模板语法</p></blockquote><p><code>&#123;&#123; template "myapp.fullname" &#125;&#125;</code> 引用模板信息，这里的<code>myapp.fullname</code>即chart的名</p><p><code>&#123;&#123; .Values.replicaCount &#125;&#125;</code> 表示 Values.yaml 文件里的顶级 key: replicaCount</p><h2 id="验证">验证</h2><pre><code class="language-bash"># chart 根路径helm lint .</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>helm： k8s的包管理器，这里是v3版本</p><p>大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release</p><p>chart仓库：存储chart程序包，不包含程序，是一个资源描述/模板 ，是一个http服务器。</p><p>helm：本地客户端</p><p>config：提供chart包所需的变量，构建特定的chart包配置，对应chart包里的values.yaml文件</p><p>Release：特定的chart包的本地实例化对象，部署于目标集群上的一个实例</p><p>当chart更新后，helm可以滚动更新对应的Release实例</p><h2 id="部署">部署</h2><h3 id="下载Helm包">下载Helm包</h3><p><a href="https://helm.sh/zh/docs/intro/install/">Helm | 安装Helm</a></p><p><a href="https://github.com/helm/helm/releases">Releases · helm/helm (github.com)</a></p><p>Helm包是一个二进制程序，直接解压就可以用，将解压后的 helm 文件放置在 /usr/bin/ 下即可</p><p>你也可以通过脚本一键安装最新版本的helm: <code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash</code></p><h2 id="添加源">添加源</h2><p>添加微软家的源，并命名为 stable</p><pre><code class="language-bash">helm repo add stable http://mirror.azure.cn/kubernetes/charts/</code></pre><p>列出已有的源</p><pre><code class="language-bash">helm repo list</code></pre><p>查询stable源包含的包</p><pre><code class="language-bash">helm search repo stable</code></pre><h2 id="常用命令">常用命令</h2><h3 id="release命令-v3版本">release命令(v3版本)</h3><ul><li><p>install</p><ul><li><code>helm install &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li><code>helm install myelk elastic/elasticsearch --namespace elk -f values.yaml</code></li></ul><blockquote><p>相同的包，不同的实例，之间是不相干独立管理的。</p></blockquote></li><li><p>delete</p><ul><li><pre><code class="language-bash">helm uninstall &lt;release_name&gt; &lt;flag&gt;</code></pre></li></ul><blockquote><p>flag 如果指定–keep-history，则属于标记删除，依然可以查到状态。在这种情况下，你可以通过 helm rollback 恢复</p></blockquote></li><li><p>upgrade：更新release版本，更新release配置</p><ul><li><code>helm upgrade &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li>chart_name 通过search命令查找</li><li>flag:<ul><li>–recreate-pods 重建所有Pod.</li></ul></li></ul></li><li><p>rollback：回滚release版本</p></li><li><p>list</p></li><li><p>history：获取release历史版本</p></li><li><p>status：获取release状态信息</p></li><li><p>get：获取release已设置的值。</p><ul><li><pre><code class="language-bash">helm get values &lt;release-name&gt;</code></pre></li></ul></li></ul><h3 id="chart命令-v3版本">chart命令(v3版本)</h3><ul><li><p>search 通过一个关键词查找一个chat。</p><ul><li><code>helm search repo metallb</code></li></ul></li><li><p>create 创建一个chart，将包含一些必要的文件</p></li><li><p>fetch 下载压缩包但不安装。常用来安装前自定义配置，例如values.yaml</p></li><li><p>get 下载</p></li><li><p>inspect</p></li><li><p>package 打包一个chart</p><ul><li><code>helm package &lt;chart根目录&gt;</code></li></ul></li><li><p>verify 验证一个chart</p></li></ul><h2 id="定制化">定制化</h2><p>就是通过定制化包的<code>values.yaml</code></p><p>通过下列命令导出包所支持的所有参数:</p><pre><code class="language-bash">helm show value &lt;pkg.name&gt;</code></pre><pre><code class="language-bash">➜   helm show values apphub/nginx  | grep -v '#' | grep -v '^$'image:  registry: docker.io  repository: bitnami/nginx  tag: 1.16.1-debian-10-r0  pullPolicy: IfNotPresentreplicaCount: 1podAnnotations: &#123;&#125;affinity: &#123;&#125;nodeSelector: &#123;&#125;tolerations: &#123;&#125;resources:  limits: &#123;&#125;  requests: &#123;&#125;livenessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 30  timeoutSeconds: 5  failureThreshold: 6readinessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 5  timeoutSeconds: 3  periodSeconds: 5service:  type: LoadBalancer  port: 80  httpsPort: 443  nodePorts:    http: &quot;&quot;    https: &quot;&quot;  annotations: &#123;&#125;  externalTrafficPolicy: Clusteringress:  enabled: false  certManager: false  hostname: example.local  annotations: &#123;&#125;  tls:    - hosts:        - example.local      secretName: example.local-tls  secrets:metrics:  enabled: false  image:    registry: docker.io    repository: bitnami/nginx-exporter    tag: 0.5.0-debian-10-r0    pullPolicy: IfNotPresent  podAnnotations:    prometheus.io/scrape: &quot;true&quot;    prometheus.io/port: &quot;9113&quot;  service:    port: 9113    annotations:      prometheus.io/scrape: &quot;true&quot;      prometheus.io/port: &quot;&#123;&#123; .Values.metrics.service.port &#125;&#125;&quot;  resources:    limits: &#123;&#125;    requests: &#123;&#125;  serviceMonitor:    enabled: false</code></pre><p>可以看到配置并非是k8s的标准格式。</p>]]></content>
       
       
       <categories>
@@ -423,11 +423,11 @@
     
     
     <entry>
-      <title>helm☞01入门</title>
-      <link href="posts/51015304/"/>
-      <url>posts/51015304/</url>
+      <title>helm☞02chart</title>
+      <link href="posts/710e3e49/"/>
+      <url>posts/710e3e49/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>helm： k8s的包管理器，这里是v3版本</p><p>大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release</p><p>chart仓库：存储chart程序包，不包含程序，是一个资源描述/模板 ，是一个http服务器。</p><p>helm：本地客户端</p><p>config：提供chart包所需的变量，构建特定的chart包配置，对应chart包里的values.yaml文件</p><p>Release：特定的chart包的本地实例化对象，部署于目标集群上的一个实例</p><p>当chart更新后，helm可以滚动更新对应的Release实例</p><h2 id="部署">部署</h2><h3 id="下载Helm包">下载Helm包</h3><p><a href="https://helm.sh/zh/docs/intro/install/">Helm | 安装Helm</a></p><p><a href="https://github.com/helm/helm/releases">Releases · helm/helm (github.com)</a></p><p>Helm包是一个二进制程序，直接解压就可以用，将解压后的 helm 文件放置在 /usr/bin/ 下即可</p><p>你也可以通过脚本一键安装最新版本的helm: <code>curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash</code></p><h2 id="添加源">添加源</h2><p>添加微软家的源，并命名为 stable</p><pre><code class="language-bash">helm repo add stable http://mirror.azure.cn/kubernetes/charts/</code></pre><p>列出已有的源</p><pre><code class="language-bash">helm repo list</code></pre><p>查询stable源包含的包</p><pre><code class="language-bash">helm search repo stable</code></pre><h2 id="常用命令">常用命令</h2><h3 id="release命令-v3版本">release命令(v3版本)</h3><ul><li><p>install</p><ul><li><code>helm install &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li><code>helm install myelk elastic/elasticsearch --namespace elk -f values.yaml</code></li></ul><blockquote><p>相同的包，不同的实例，之间是不相干独立管理的。</p></blockquote></li><li><p>delete</p><ul><li><pre><code class="language-bash">helm uninstall &lt;release_name&gt; &lt;flag&gt;</code></pre></li></ul><blockquote><p>flag 如果指定–keep-history，则属于标记删除，依然可以查到状态。在这种情况下，你可以通过 helm rollback 恢复</p></blockquote></li><li><p>upgrade：更新release版本，更新release配置</p><ul><li><code>helm upgrade &lt;release_name&gt; &lt;chart_name&gt; &lt;flag&gt;</code></li><li>chart_name 通过search命令查找</li><li>flag:<ul><li>–recreate-pods 重建所有Pod.</li></ul></li></ul></li><li><p>rollback：回滚release版本</p></li><li><p>list</p></li><li><p>history：获取release历史版本</p></li><li><p>status：获取release状态信息</p></li><li><p>get：获取release已设置的值。</p><ul><li><pre><code class="language-bash">helm get values &lt;release-name&gt;</code></pre></li></ul></li></ul><h3 id="chart命令-v3版本">chart命令(v3版本)</h3><ul><li><p>search 通过一个关键词查找一个chat。</p><ul><li><code>helm search repo metallb</code></li></ul></li><li><p>create 创建一个chart，将包含一些必要的文件</p></li><li><p>fetch 下载压缩包但不安装。常用来安装前自定义配置，例如values.yaml</p></li><li><p>get 下载</p></li><li><p>inspect</p></li><li><p>package 打包一个chart</p><ul><li><code>helm package &lt;chart根目录&gt;</code></li></ul></li><li><p>verify 验证一个chart</p></li></ul><h2 id="定制化">定制化</h2><p>就是通过定制化包的<code>values.yaml</code></p><p>通过下列命令导出包所支持的所有参数:</p><pre><code class="language-bash">helm show value &lt;pkg.name&gt;</code></pre><pre><code class="language-bash">➜   helm show values apphub/nginx  | grep -v '#' | grep -v '^$'image:  registry: docker.io  repository: bitnami/nginx  tag: 1.16.1-debian-10-r0  pullPolicy: IfNotPresentreplicaCount: 1podAnnotations: &#123;&#125;affinity: &#123;&#125;nodeSelector: &#123;&#125;tolerations: &#123;&#125;resources:  limits: &#123;&#125;  requests: &#123;&#125;livenessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 30  timeoutSeconds: 5  failureThreshold: 6readinessProbe:  httpGet:    path: /    port: http  initialDelaySeconds: 5  timeoutSeconds: 3  periodSeconds: 5service:  type: LoadBalancer  port: 80  httpsPort: 443  nodePorts:    http: &quot;&quot;    https: &quot;&quot;  annotations: &#123;&#125;  externalTrafficPolicy: Clusteringress:  enabled: false  certManager: false  hostname: example.local  annotations: &#123;&#125;  tls:    - hosts:        - example.local      secretName: example.local-tls  secrets:metrics:  enabled: false  image:    registry: docker.io    repository: bitnami/nginx-exporter    tag: 0.5.0-debian-10-r0    pullPolicy: IfNotPresent  podAnnotations:    prometheus.io/scrape: &quot;true&quot;    prometheus.io/port: &quot;9113&quot;  service:    port: 9113    annotations:      prometheus.io/scrape: &quot;true&quot;      prometheus.io/port: &quot;&#123;&#123; .Values.metrics.service.port &#125;&#125;&quot;  resources:    limits: &#123;&#125;    requests: &#123;&#125;  serviceMonitor:    enabled: false</code></pre><p>可以看到配置并非是k8s的标准格式。</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://helm.sh/docs/chart_template_guide/getting_started/">Helm | Getting Started</a></p><p>chart包目录结构：</p><pre><code class="language-bash">wordpress/  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件  values.yaml         # 必选：chart 的默认配置 values  charts/             # 必选：包含该 chart 依赖的所有 chart 的目录  crds/               # 必选：Custom Resource Definitions  templates/          # 必选：模板目录，与 values 结合使用时，将渲染生成 Kubernetes 资源清单文件  LICENSE             # 可选：包含 chart 的 license 的文本文件  README.md           # 可选：一个可读性高的 README 文件  values.schema.json  # 可选: 一个作用在 values.yaml 文件上的 JSON 模式  templates/NOTES.txt # 可选: 包含简短使用的文本文件</code></pre><h2 id="创建框架">创建框架</h2><p>helm create &lt;chart包名&gt;</p><h2 id="必要文件">必要文件</h2><h3 id="Chart-yaml">Chart.yaml</h3><p>Chart.yaml 文件包含chart的描述。您可以从模板中访问它。 charts/ 目录可能包含其他chart（我们称之为subcharts）</p><p>一份nginx的Chat.yaml示例：</p><pre><code class="language-bash">apiVersion: v1                                                                                         appVersion: 1.16.1description: Chart for the nginx serverengine: gotplhome: http://www.nginx.orgicon: https://bitnami.com/assets/stacks/nginx/img/nginx-stack-220x234.pngkeywords:- nginx- http- web- www- reverse proxymaintainers:- email: containers@bitnami.com  name: Bitnaminame: nginxsources:- https://github.com/bitnami/bitnami-docker-nginxversion: 5.1.5</code></pre><h3 id="Templates目录">Templates目录</h3><p>包含以<code>.yaml</code>结尾的模板文件和以<code>.txt</code>结尾的NOTES.txt文件</p><h4 id="NOTES-txt">NOTES.txt</h4><p>Release安装过程中的输出文本</p><p>Release命令<code>helm status</code>信息</p><h4 id="模板文件">模板文件</h4><blockquote><p>go模板语法</p></blockquote><p><code>&#123;&#123; template "myapp.fullname" &#125;&#125;</code> 引用模板信息，这里的<code>myapp.fullname</code>即chart的名</p><p><code>&#123;&#123; .Values.replicaCount &#125;&#125;</code> 表示 Values.yaml 文件里的顶级 key: replicaCount</p><h2 id="验证">验证</h2><pre><code class="language-bash"># chart 根路径helm lint .</code></pre>]]></content>
       
       
       <categories>
@@ -470,9 +470,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -499,9 +499,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -539,6 +539,35 @@
     
     
     <entry>
+      <title>prometheus☞06rabbitmq监控</title>
+      <link href="posts/7fd13722/"/>
+      <url>posts/7fd13722/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#rabbitmq">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://www.rabbitmq.com/prometheus.html">Monitoring with Prometheus &amp; Grafana — RabbitMQ</a></p><p><a href="https://grafana.com/grafana/dashboards/10991">RabbitMQ-Overview dashboard for Grafana | Grafana Labs</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">rabbitmq-plugins enable rabbitmq_prometheusrabbitmqctl -q set_cluster_name test@rabbitmq</code></pre><p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p><p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'rabbitmq-001'    static_configs:      - targets: ['&lt;rabbitmq地址&gt;:15692'] </code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:      - alert: RabbitmqNodeDown        expr: sum(rabbitmq_build_info) &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node down (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Less than 3 nodes running in RabbitMQ cluster\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNodeNotDistributed        expr: erlang_vm_dist_node_state &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node not distributed (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Distribution link state is not 'up'\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqInstancesDifferentVersions        expr: count(count(rabbitmq_build_info) by (rabbitmq_version)) &gt; 1        for: 1h        labels:          severity: warning        annotations:          summary: Rabbitmq instances different versions (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Running different version of Rabbitmq in the same cluster, can lead to failure.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqMemoryHigh        expr: rabbitmq_process_resident_memory_bytes / rabbitmq_resident_memory_limit_bytes * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq memory high (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of allocated RAM\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqFileDescriptorsUsage        expr: rabbitmq_process_open_fds / rabbitmq_process_max_fds * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq file descriptors usage (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of file descriptors\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchUnack        expr: sum(rabbitmq_queue_messages_unacked) BY (queue) &gt; 1000        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq too much unack (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Too much unacknowledged messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchConnections        expr: rabbitmq_connections &gt; 1000        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq too much connections (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;The total connections of a node is too high\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNoQueueConsumer        expr: rabbitmq_queue_consumers &lt; 1        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq no queue consumer (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has less than 1 consumer\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqUnroutableMessages        expr: increase(rabbitmq_channel_messages_unroutable_returned_total[1m]) &gt; 0 or increase(rabbitmq_channel_messages_unroutable_dropped_total[1m]) &gt; 0        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq unroutable messages (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has unroutable messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/10991">https://grafana.com/grafana/dashboards/10991</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> prometheus </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> rabbitmq </tag>
+            
+            <tag> prometheus </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>prometheus☞04mysql监控</title>
       <link href="posts/6178b477/"/>
       <url>posts/6178b477/</url>
@@ -560,35 +589,6 @@
             <tag> mysql </tag>
             
             <tag> prometheus </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>prometheus☞06rabbitmq监控</title>
-      <link href="posts/7fd13722/"/>
-      <url>posts/7fd13722/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p><a href="https://awesome-prometheus-alerts.grep.to/rules#rabbitmq">Awesome Prometheus alerts | Collection of alerting rules (grep.to)</a></p><p><a href="https://www.rabbitmq.com/prometheus.html">Monitoring with Prometheus &amp; Grafana — RabbitMQ</a></p><p><a href="https://grafana.com/grafana/dashboards/10991">RabbitMQ-Overview dashboard for Grafana | Grafana Labs</a></p><h2 id="安装">安装</h2><pre><code class="language-bash">rabbitmq-plugins enable rabbitmq_prometheusrabbitmqctl -q set_cluster_name test@rabbitmq</code></pre><p>15692 端口是 prometheus 采集器的暴露端口，docker方式默认采集插件已经开启。</p><p>宿主机里执行 <code>curl -s localhost:15692/metrics | head -n 3</code>确保可以返回采集器数据。</p><h2 id="prometheus-主配置">prometheus 主配置</h2><pre><code class="language-yaml">scrape_configs:  - job_name: 'rabbitmq-001'    static_configs:      - targets: ['&lt;rabbitmq地址&gt;:15692'] </code></pre><h2 id="prometheus-告警配置">prometheus 告警配置</h2><pre><code class="language-yaml">groups:  - name: mysql-alert    rules:      - alert: RabbitmqNodeDown        expr: sum(rabbitmq_build_info) &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node down (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Less than 3 nodes running in RabbitMQ cluster\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNodeNotDistributed        expr: erlang_vm_dist_node_state &lt; 3        for: 0m        labels:          severity: critical        annotations:          summary: Rabbitmq node not distributed (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Distribution link state is not 'up'\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqInstancesDifferentVersions        expr: count(count(rabbitmq_build_info) by (rabbitmq_version)) &gt; 1        for: 1h        labels:          severity: warning        annotations:          summary: Rabbitmq instances different versions (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Running different version of Rabbitmq in the same cluster, can lead to failure.\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqMemoryHigh        expr: rabbitmq_process_resident_memory_bytes / rabbitmq_resident_memory_limit_bytes * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq memory high (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of allocated RAM\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqFileDescriptorsUsage        expr: rabbitmq_process_open_fds / rabbitmq_process_max_fds * 100 &gt; 90        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq file descriptors usage (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A node use more than 90% of file descriptors\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchUnack        expr: sum(rabbitmq_queue_messages_unacked) BY (queue) &gt; 1000        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq too much unack (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;Too much unacknowledged messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqTooMuchConnections        expr: rabbitmq_connections &gt; 1000        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq too much connections (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;The total connections of a node is too high\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqNoQueueConsumer        expr: rabbitmq_queue_consumers &lt; 1        for: 1m        labels:          severity: warning        annotations:          summary: Rabbitmq no queue consumer (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has less than 1 consumer\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;      - alert: RabbitmqUnroutableMessages        expr: increase(rabbitmq_channel_messages_unroutable_returned_total[1m]) &gt; 0 or increase(rabbitmq_channel_messages_unroutable_dropped_total[1m]) &gt; 0        for: 2m        labels:          severity: warning        annotations:          summary: Rabbitmq unroutable messages (instance &#123;&#123; $labels.instance &#125;&#125;)          description: &quot;A queue has unroutable messages\n  VALUE = &#123;&#123; $value &#125;&#125;\n  LABELS = &#123;&#123; $labels &#125;&#125;&quot;</code></pre><h2 id="grafana">grafana</h2><p><a href="https://grafana.com/grafana/dashboards/10991">https://grafana.com/grafana/dashboards/10991</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> prometheus </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> prometheus </tag>
-            
-            <tag> rabbitmq </tag>
             
         </tags>
       
@@ -789,9 +789,9 @@
       
         <tags>
             
-            <tag> prometheus </tag>
-            
             <tag> 监控 </tag>
+            
+            <tag> prometheus </tag>
             
         </tags>
       
@@ -936,9 +936,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ssl </tag>
             
@@ -1241,9 +1241,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> kubeadm </tag>
             
@@ -1274,9 +1274,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> 证书 </tag>
             
@@ -1305,9 +1305,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> authorization </tag>
             
@@ -1633,9 +1633,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> storage </tag>
             
@@ -1662,9 +1662,9 @@
       
         <tags>
             
-            <tag> vsftpd </tag>
-            
             <tag> 安装 </tag>
+            
+            <tag> vsftpd </tag>
             
         </tags>
       
@@ -1718,9 +1718,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ingress </tag>
             
@@ -1749,9 +1749,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> StatefulSet </tag>
             
@@ -1780,9 +1780,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> DaemonSet </tag>
             
@@ -1811,13 +1811,13 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
             
-            <tag> 资源约束 </tag>
+            <tag> 容器 </tag>
             
             <tag> namespace </tag>
+            
+            <tag> 资源约束 </tag>
             
         </tags>
       
@@ -1844,9 +1844,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -1877,9 +1877,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> ConfigMap </tag>
             
@@ -1910,9 +1910,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> service </tag>
             
@@ -1941,9 +1941,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> deployment </tag>
             
@@ -1972,9 +1972,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> deployment </tag>
             
@@ -2030,9 +2030,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -2150,9 +2150,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
             <tag> pod </tag>
             
@@ -2202,9 +2202,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2231,9 +2231,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2260,9 +2260,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2289,9 +2289,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -2345,9 +2345,9 @@
       
         <tags>
             
-            <tag> 监控 </tag>
-            
             <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
             
         </tags>
       
@@ -2713,65 +2713,127 @@
     
     
     <entry>
+      <title>zabbix☞web监控</title>
+      <link href="posts/3d20f83e/"/>
+      <url>posts/3d20f83e/</url>
+      
+        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞redis</title>
+      <link href="posts/6c093771/"/>
+      <url>posts/6c093771/</url>
+      
+        <content type="html"><![CDATA[<h2 id="zabbix-模板">zabbix 模板</h2><ol><li>自动发现规则</li></ol><p><img src="/posts/6c093771/image-20200520152740815.png" alt="image-20200520152740815"></p><ol start="2"><li><p>过滤器</p><p><img src="/posts/6c093771/image-20200520152922570.png" alt="image-20200520152922570"></p></li><li><p>监控项原型</p><table><thead><tr><th>名称</th><th>键值</th><th>间隔</th><th>历史记录</th><th>趋势</th><th>类型</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,connected_clients]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; maxmemory[redis配置的内存上限]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,maxmemory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; mem_fragmentation_ratio[内存碎片率]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis_instantaneous_ops_per_sec[每秒执行的命令个数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,instantaneous_ops_per_sec]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis 存活状态</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; rejected_connections[被拒绝的客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,rejected_connections]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys[redis-master sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys_children[redis-children sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user[redis-master user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user_children[redis-children user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory[redis层面已使用内存-不含碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_pct[操作系统层面已使用内存百分比]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_peak[操作系统层面已使用内存历史峰值-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_peak]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_rss[操作系统层面已使用内存-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_rss]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr></tbody></table></li><li><p>触发器原型</p><table><thead><tr><th>严重性</th><th>名称</th><th>表达式</th></tr></thead><tbody><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  内存碎片化超过50%, 剩余可用内存低于30%</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&gt;1.5  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  可用内存低, 存在使用交换分区</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&lt;1  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  操作系统层面内存占用百分比过高</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>灾难</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis 端口无法访问</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist].last()&#125;&lt;&gt;1</code></td></tr></tbody></table></li><li><p>图形原型，就不详细写了，这里只列出我自己的分类</p><table><thead><tr><th>名称</th><th>宽</th><th>高</th><th>图形类别</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 连接数监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 其他监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis qps 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis mem 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis cpu 监控</code></td><td>900</td><td>200</td><td>正常</td></tr></tbody></table></li></ol><h2 id="脚本">脚本</h2><p>脚本会生成自动发现进程脚本和redis检测脚本</p><p>zabbix的redis配置路径：ZabbixEtc</p><p>zabbix的脚本路径：ZabbixShell</p><p>redis的cli命令路径：RedisCli</p><p>自动发现脚本：ip_port_discovery.sh</p><ul><li>bash ip_port_discovery.sh 进程名或者端口</li></ul><p>redis检测脚本：redis_info.sh</p><ul><li>bash redis_info.sh ip port item</li></ul><pre><code class="language-redis">ZabbixEtc=/etc/zabbix/zabbix_agentd.dZabbixShell=/etc/zabbix/shellRedisCli='docker exec -t redis redis-cli'[[ -d $&#123;ZabbixShell&#125; ]] || mkdir -p $&#123;ZabbixShell&#125;[[ -z $&#123;ZabbixEtc&#125; ]] &amp;&amp; [[ -z $&#123;ZabbixShell&#125; ]] || [[ -z $&#123;RedisCli&#125; ]] &amp;&amp; exitcat&gt;$&#123;ZabbixEtc&#125;/redis.conf&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFcat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashRedisCli=HOST=$1PORT=$2REDIS_INFO=&quot;$RedisCli -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$RedisCli -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i 's#RedisCli=#RedisCli=\&quot;'&quot;$&#123;RedisCli&#125;&quot;'\&quot;#' $&#123;ZabbixShell&#125;/redis_info.shecho '------------------------------------我是 zabbix 监控信息----------------------------------'echo '编辑 visudo，添加如下信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '若redis运行在docker中，执行如下命令'echo 'usermod -a -G docker zabbix'</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> redis </tag>
+            
+            <tag> zabbix </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix ☞ nginx</title>
+      <link href="posts/b35b5965/"/>
+      <url>posts/b35b5965/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>zabbix☞agent和proxy（yum）</title>
+      <link href="posts/1587f6e8/"/>
+      <url>posts/1587f6e8/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 监控 </category>
+          
+          <category> zabbix </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zabbix </tag>
+            
+            <tag> 监控 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>监控 ☞ 微信预警</title>
       <link href="posts/f9b08c30/"/>
       <url>posts/f9b08c30/</url>
       
         <content type="html"><![CDATA[<pre><code class="language-bash"># conf.ini[wechat]corpid = [app]it = &lt;app_agent_id&gt;:&lt;app_secret&gt;[group]it = usera|userb</code></pre><pre><code class="language-python">#!/usr/bin/env python3&quot;&quot;&quot;@author: zyh@contact: aaa103439@hotmail.com@software: vscode@file: sendchat.py@time: 2020/02/05&quot;&quot;&quot;import sys, os, requests, pathlib, json, configparserimport loggingimport logging.handlersfrom datetime import datetimeclass PySendchat():    def __init__(self, corpid, agentid, secret, touser, content):        self.corpid=corpid        self.agentid=agentid        self.secret=secret        self.touser=touser        self.content=content        LOG_PATHDIR=os.path.dirname(os.path.abspath(__file__))        LOG_FILENAME = '&#123;0&#125;/sendchat.log'.format(LOG_PATHDIR)        self.my_logger = logging.getLogger('SendChat')        self.my_logger.setLevel(logging.INFO)        # Add the log message handler to the logger        handler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=102400000, backupCount=5)        # create formatter and add it to the handlers        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')        handler.setFormatter(formatter)        self.my_logger.addHandler(handler)    def gettoken(self):        self.my_logger.info('-----------------------------------------------------------------------------------------')        pwd=os.path.dirname(os.path.abspath(__file__))        tokenfile='&#123;0&#125;/wechat.&#123;1&#125;'.format(pwd,self.agentid)        if pathlib.Path(tokenfile).exists():            tokenfilectime=os.path.getctime(tokenfile)            currenttime=datetime.now().timestamp()            dtime=currenttime-tokenfilectime            self.my_logger.info('&#123;0&#125; lived &#123;1&#125;s.'.format(tokenfile, dtime))            if dtime &gt;= 7200:                try:                    os.remove(tokenfile)                    self.my_logger.info('Token file &#123;0&#125;: delete success'.format(tokenfile))                except Exception as e:                    self.my_logger.error('Token file:&#123;0&#125; delete error.Reason:&#123;1&#125;'.format(tokenfile,e))                    exit        # check token file        try:            tokensize = os.path.getsize(tokenfile)        except Exception as e:            self.my_logger.info('Token file is not exist.Reason:&#123;0&#125;'.format(e))            tokensize = 0        # get token from token file        if tokensize != 0:            with open(tokenfile, 'rb') as fd:                token = fd.read() # get token success                self.my_logger.info('Get token from token file.')            jsonObject = json.loads(token.decode(encoding='utf8'))            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token        # get token from weixin api        else:            try:                self.my_logger.info('New Token Create.')                f = requests.get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=&#123;0&#125;&amp;corpsecret=&#123;1&#125;'.format(self.corpid, self.secret))                token = f.content                self.my_logger.info('Get token from weixin api.')                jsonObject = json.loads(token.decode(encoding='utf8'))                errcode=int(jsonObject.get(&quot;errcode&quot;))                if errcode != 0:                    errmsg=jsonObject.get(&quot;errmsg&quot;)                    self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(errmsg))                    exit()            except Exception as e:                self.my_logger.error('Get token error!Reason:&#123;0&#125;'.format(e))                exit()            try:                self.my_logger.info('Write token to &#123;0&#125;.'.format(tokenfile))                with open(tokenfile, 'wb') as fd:                    fd.write(token)            except Exception as e:                self.my_logger.error('Write &#123;0&#125; error!Reason:&#123;1&#125;'.format(tokenfile,e))                exit()            access_token = jsonObject.get(&quot;access_token&quot;)            return access_token    def sendmsg(self):        accessToken = self.gettoken()        self.my_logger.info('Token:&#123;0&#125;'.format(accessToken))        sendMapDirectroy = &#123;&#125;        sendMapDirectroy[&quot;agentid&quot;] = self.agentid        sendMapDirectroy[&quot;touser&quot;] = self.touser        sendMapDirectroy[&quot;msgtype&quot;] = &quot;text&quot;        sendMapDirectroy[&quot;safe&quot;] = &quot;0&quot;        contentDirectory = &#123;&#125;        sendMapDirectroy[&quot;text&quot;] = contentDirectory        contentDirectory[&quot;content&quot;] = self.content        bodyStr = json.dumps(sendMapDirectroy, ensure_ascii=False).encode(encoding=&quot;utf-8&quot;)        try:            f = requests.post(url=&quot;https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s&quot; % accessToken,                          data=bodyStr, timeout=5)            self.my_logger.info(f.content)        except Exception as e:            self.my_logger.error('Send chat network error!Reason:&#123;0&#125;'.format(e))if __name__ == '__main__':    appname = sys.argv[1]    content = sys.argv[3]    # read conf.ini    conf = configparser.ConfigParser()    conf_path = os.path.dirname(os.path.abspath(__file__))    conf_ini = &quot;&#123;0&#125;/conf.ini&quot;.format(conf_path)    if pathlib.Path(conf_ini).exists():        conf.read(conf_ini)        corpid = conf.get(&quot;wechat&quot;, &quot;corpid&quot;)        appinfo = conf.get(&quot;app&quot;, appname)        agentid = appinfo.split(':')[0]        secret = appinfo.split(':')[1]        groupname = conf.get(&quot;group&quot;, appname)        touser = groupname.split(':')[0]        chatobj = PySendchat(corpid, agentid, secret, touser, content)    else:        print('conf.ini error')        exit()    try:        chatobj.sendmsg()    except:        chatobj.my_logger.error(&quot;Send chat failure!&quot;)</code></pre><p>eg:</p><p>python <a href="http://sendchat.py">sendchat.py</a> it ‘’ &lt;预警内容&gt;</p><blockquote><p>创建好app，并关联用户到app</p><p>执行上述命令，会将预警内容通过&lt;app_agent_id&gt; 应用发送给用户usera和userb</p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 企业微信 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控 ☞ 远程磁盘检测</title>
-      <link href="posts/1fac36d/"/>
-      <url>posts/1fac36d/</url>
-      
-        <content type="html"><![CDATA[<pre><code class="language-bash">#!/bin/bash # 文件名：disklog.sh # 用途：监视远程系统的磁盘使用情况 BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $BaseDirlogfile=&quot;disk.log&quot; if [[ -n $1 ]];then     logfile=$1 fishellexecuser=`whoami`if [[ $shellexecuser == root ]];then    rm -rf /root/.ssh/known_hostselse    rm -rf /home/$shellexecuser/.ssh/known_hostsfiprintf &quot;%-8s %-14s %-9s %-8s %-6s %-6s %-6s %s\r\n&quot; &quot;Date&quot; &quot;IP ADDRESS&quot; &quot;Device&quot; &quot;Capacity&quot; &quot;Used&quot; &quot;Free&quot; &quot;Percent&quot; &quot;Status&quot; &gt; $logfile ##################### 手动填写区# 提供远程主机IP地址列表 1.1.1.1 2.2.2.2 3.3.3.3IP_LIST=# 监控阈值(百分比) 只填写数字 1 到 100DiskPct=# 执行用户UserName=''# 执行用户所需私钥, 此文件需要与脚本同级目录PemName=''# 企业微信bot机器人地址wx_api=''##################### 手动填写区for ip in $IP_LIST;do     ssh -i $PemName -o StrictHostKeyChecking=no $&#123;UserName&#125;@$ip 'df -H' | grep ^/dev/ &gt; /tmp/$$.df     while read line;do         cur_date=`date  &quot;+%F_%R&quot;`        printf &quot;%-8s %-14s &quot; $cur_date $ip         echo $line | awk '&#123; printf(&quot;%-9s %-8s %-6s %-6s %-8s&quot;, $1,$2,$3,$4,$5); &#125;'         pusg=$(echo $line | egrep -o &quot;[0-9]+%&quot;)         pusg=$&#123;pusg/\%/&#125;;         if [ $pusg -lt $DiskPct ];then             echo OK        else             echo ALERT         fi     done &lt; /tmp/$$.df     rm -rf /tmp/$$.dfdone &gt;&gt; $&#123;logfile&#125;sed -n '1p' $&#123;logfile&#125; &gt; alert.logawk '$NF == &quot;ALERT&quot;&#123;print $0&#125;' $&#123;logfile&#125; &gt;&gt; alert.log#sed -i '1i &quot;磁盘阈值：'&quot;$DiskPct&quot;'&quot;' alert.logcontent=`cat alert.log`grep -q 'ALERT' alert.log &amp;&amp; &#123;curl &quot;$wx_api&quot;  -H 'Content-Type: application/json'  \-d '   &#123;        &quot;msgtype&quot;: &quot;text&quot;,        &quot;text&quot;: &#123;            &quot;content&quot;: &quot;'&quot;$content&quot;'&quot;        &#125;   &#125;'&#125;</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> 磁盘 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>监控☞企业微信机器人</title>
-      <link href="posts/8c33f887/"/>
-      <url>posts/8c33f887/</url>
-      
-        <content type="html"><![CDATA[<h4 id="shell">shell</h4><pre><code class="language-bash">wechatUrl=wechatData=curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot;markdown&quot;: &#123;&quot;content&quot;: &quot;`'&quot;$wechatData&quot;'`&quot;&#125;&#125;'</code></pre><h4 id="python">python</h4><pre><code class="language-python">import json, requestswechatData=&#123;&quot;msgtype&quot;: &quot;text&quot;,&quot;text&quot;: &#123;&quot;content&quot;: &quot;&quot;&#125;&#125;wechatData['text']['content']='广州今日天气：29度，大部分多云，降雨概率：60%'wechatData['text']['mentioned_list']=[&quot;zyh&quot;]  # all 代表群组所有人wechatData=json.dumps(wechatData)wechatUrl=requests.post(url=wechatUrl, headers=&#123;&quot;Content-Type&quot;: &quot;application/json&quot;&#125;, data=wechatData, timeout=5)</code></pre>]]></content>
       
       
       <categories>
@@ -2821,18 +2883,16 @@
     
     
     <entry>
-      <title>zabbix☞web监控</title>
-      <link href="posts/3d20f83e/"/>
-      <url>posts/3d20f83e/</url>
+      <title>监控☞企业微信机器人</title>
+      <link href="posts/8c33f887/"/>
+      <url>posts/8c33f887/</url>
       
-        <content type="html"><![CDATA[<h2 id="1-构建-zabbix-agentd-端配置">1. 构建 zabbix_agentd 端配置</h2><p>选择一个主机用于发起监控</p><pre><code class="language-bash"># 目录结构[root@ip-10-230-10-105 zabbix]# pwd/etc/zabbix[root@ip-10-230-10-105 zabbix]# tree &#123;etc,shell&#125;etc├── zabbix_agentd.conf├── zabbix_agentd.conf.bak└── zabbix_agentd.conf.d    └── http_status.conf # 我是 zabbix_agentd 数据项配置shell└── web    ├── http_status.py # 我是自动发现脚本 + 数据采集脚本    └── WEB.txt  # 我是自动发现的数据源2 directories, 5 files</code></pre><pre><code class="language-bash"># zabbix_agentd 配置 http_status.confUserParameter=web.site.code[*],/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_code $1UserParameter=web.site.discovery,/usr/bin/python /etc/zabbix/shell/web/http_status.py web_site_discovery</code></pre><pre><code class="language-bash"># 自动发现规则配置文件 WEB.txt# 一行一个监控地址# get 原样写入# post 模仿get多加一个?https://abc.com??&lt;post_kv&gt;https://abc.com?&lt;get_kv&gt;https://abc.com</code></pre><pre><code class="language-python">#!/usr/bin/env python#encoding=utf-8# python2.7# 自动发现脚本 + 数据采集脚本 http_status.py# 请将我添加 o+x 权限# ConfigParser 模块是需要安装的import urllib2, sys, json, ConfigParser, os a1 = sys.argv[1]def web_site_code(args):    response = None    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    with open(WEB_TXT, 'ro') as f:        for line in f.readlines():            line = line.strip()            if args in line:                if &quot;??&quot; in line:                    line = line.split(&quot;??&quot;)                elif &quot;?&quot; in line:                    line = line.split(&quot;?&quot;)                else:                    pass                try:                    try:                        response = urllib2.urlopen(line[0], data=line[1], timeout=5)                        print response.code                    except IndexError:                        response = urllib2.urlopen(line[0], timeout=5)                        print response.code                    finally:                        response = urllib2.urlopen(line, timeout=5)                        print response.code                except urllib2.URLError,e:                    if hasattr(e, 'code'):                        print e.code                    elif hasattr(e, 'reason'):                        print 500                    else:                        print 500                finally:                    if response:                        response.close()                    exit()def web_site_discovery():    Dict = &#123;&quot;data&quot;:[]&#125;    WEB_TXT = &quot;%s/WEB.txt&quot; % (os.path.dirname(os.path.realpath(__file__)))    for line in open(WEB_TXT):        if &quot;??&quot; in line:            line = line.strip('\n').split(&quot;??&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        elif &quot;?&quot; in line:            line = line.strip('\n').split(&quot;?&quot;)            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line[0]&#125;        else:            line = line.strip('\n')            line = &#123;&quot;&#123;#SITENAME&#125;&quot;:line&#125;        Dict[&quot;data&quot;].append(line)    print json.dumps(Dict, indent=2)if a1 == 'web_site_code':    url = sys.argv[2]    web_site_code(url)elif a1 == 'web_site_discovery':    web_site_discovery()</code></pre><blockquote><p>{ #SITENAME} 自动发现脚本输出的重要变量 servername 地址，将会用于 web 控制台配置</p></blockquote><h2 id="2-构建-web-控制台配置">2. 构建 web 控制台配置</h2><ul><li><p>选择你配置好的zabbix_agentd端的主机所在的 web 控制台配置项，添加一个自动发现规则</p><p><img src="/posts/3d20f83e/image-20210524165435984.png" alt="image-20210524165435984"></p></li><li><p>在自动发现规则里，构建监控项原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165539770.png" alt="image-20210524165539770"></p><p>在自动发现规则里，构建触发器原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165609439.png" alt="image-20210524165609439"></p><blockquote><p>100秒以内，状态为200的次数少于3次告警</p></blockquote></li><li><p>在自动发现规则里，构建图形原型，内容如图：</p><p><img src="/posts/3d20f83e/image-20210524165635429.png" alt="image-20210524165635429"></p></li></ul>]]></content>
+        <content type="html"><![CDATA[<h4 id="shell">shell</h4><pre><code class="language-bash">wechatUrl=wechatData=curl $&#123;wechatUrl&#125; -H 'Content-Type: application/json' -d '&#123;&quot;msgtype&quot;: &quot;markdown&quot;,&quot;markdown&quot;: &#123;&quot;content&quot;: &quot;`'&quot;$wechatData&quot;'`&quot;&#125;&#125;'</code></pre><h4 id="python">python</h4><pre><code class="language-python">import json, requestswechatData=&#123;&quot;msgtype&quot;: &quot;text&quot;,&quot;text&quot;: &#123;&quot;content&quot;: &quot;&quot;&#125;&#125;wechatData['text']['content']='广州今日天气：29度，大部分多云，降雨概率：60%'wechatData['text']['mentioned_list']=[&quot;zyh&quot;]  # all 代表群组所有人wechatData=json.dumps(wechatData)wechatUrl=requests.post(url=wechatUrl, headers=&#123;&quot;Content-Type&quot;: &quot;application/json&quot;&#125;, data=wechatData, timeout=5)</code></pre>]]></content>
       
       
       <categories>
           
           <category> 监控 </category>
-          
-          <category> zabbix </category>
           
       </categories>
       
@@ -2841,7 +2901,7 @@
             
             <tag> 监控 </tag>
             
-            <tag> zabbix </tag>
+            <tag> 企业微信 </tag>
             
         </tags>
       
@@ -2850,18 +2910,16 @@
     
     
     <entry>
-      <title>zabbix☞agent和proxy（yum）</title>
-      <link href="posts/1587f6e8/"/>
-      <url>posts/1587f6e8/</url>
+      <title>监控 ☞ 远程磁盘检测</title>
+      <link href="posts/1fac36d/"/>
+      <url>posts/1fac36d/</url>
       
-        <content type="html"><![CDATA[<blockquote><p><a href="https://repo.zabbix.com/zabbix/">https://repo.zabbix.com/zabbix/</a></p></blockquote><h2 id="导入-zabbix-源">导入 zabbix 源</h2><pre><code class="language-bash：">rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm</code></pre><h2 id="agent-安装">agent 安装</h2><pre><code class="language-shell">yum install zabbix-agent -ysystemctl enable zabbix-agent</code></pre><h2 id="agent主动模式配置文件">agent主动模式配置文件</h2><h3 id="变量">变量</h3><pre><code class="language-bash"># 主机名前缀name_prefix=# 自动发现用的元数据host_meta_data=''# server或者proxy地址server_proxy_addr=# 本机ip## 若是 aws： local_ip=`curl -sq http://169.254.169.254/latest/meta-data/local-ipv4`local_ip=</code></pre><pre><code>mv /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.bak;cat &gt; /etc/zabbix/zabbix_agentd.conf.xxx &lt;&lt; EOFHostname=$&#123;name_prefix&#125;_$&#123;local_ip&#125;StartAgents=0ServerActive=$&#123;server_proxy_addr&#125;PidFile=/var/run/zabbix/zabbix_agentd.pidLogFile=/var/log/zabbix/zabbix_agentd.log#DebugLevel=4Include=/etc/zabbix/zabbix_agentd.d/*.conf#被监控端到服务器获取监控项的周期RefreshActiveChecks=60#被监控端存储监控信息的空间大小BufferSize=1000MaxLinesPerSecond=200#超时时间Timeout=10#自动发现用的元信息HostMetadata=$&#123;host_meta_data&#125;EOFvi  /etc/zabbix/zabbix_agentd.confsystemctl start zabbix-agent</code></pre><blockquote><p>如果无法被 zabbix_server 发现，则可能是上述生成的配置有特殊字符。</p></blockquote><h2 id="proxy-安装命令">proxy 安装命令</h2><pre><code class="language-bash:">yum install zabbix-proxy-mysql -y# 解压数据库文件, 并自行导入zcat /usr/share/doc/zabbix-proxy-mysql-*/schema.sql.gz &gt; schema.sql</code></pre><h2 id="proxy-配置">proxy 配置</h2><pre><code class="language-bash">mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bak;cat &gt; /etc/zabbix/zabbix_proxy.conf  &lt;&lt; 'EOF'Server=ServerPort=10051Hostname=LogFile=/var/log/zabbix/zabbix_proxy.logPidFile=/var/run/zabbix/zabbix_proxy.pidDBHost=DBPort=DBName=DBUser=DBPassword=Timeout=4LogSlowQueries=3000ConfigFrequency=60DataSenderFrequency=60StartDiscoverers=5CacheSize=128MStartDBSyncers=20HistoryCacheSize=256MHistoryIndexCacheSize=32MEOFvi /etc/zabbix/zabbix_proxy.conf</code></pre>]]></content>
+        <content type="html"><![CDATA[<pre><code class="language-bash">#!/bin/bash # 文件名：disklog.sh # 用途：监视远程系统的磁盘使用情况 BaseDir=`cd &quot;$(dirname &quot;$0&quot;)&quot;; pwd`cd $BaseDirlogfile=&quot;disk.log&quot; if [[ -n $1 ]];then     logfile=$1 fishellexecuser=`whoami`if [[ $shellexecuser == root ]];then    rm -rf /root/.ssh/known_hostselse    rm -rf /home/$shellexecuser/.ssh/known_hostsfiprintf &quot;%-8s %-14s %-9s %-8s %-6s %-6s %-6s %s\r\n&quot; &quot;Date&quot; &quot;IP ADDRESS&quot; &quot;Device&quot; &quot;Capacity&quot; &quot;Used&quot; &quot;Free&quot; &quot;Percent&quot; &quot;Status&quot; &gt; $logfile ##################### 手动填写区# 提供远程主机IP地址列表 1.1.1.1 2.2.2.2 3.3.3.3IP_LIST=# 监控阈值(百分比) 只填写数字 1 到 100DiskPct=# 执行用户UserName=''# 执行用户所需私钥, 此文件需要与脚本同级目录PemName=''# 企业微信bot机器人地址wx_api=''##################### 手动填写区for ip in $IP_LIST;do     ssh -i $PemName -o StrictHostKeyChecking=no $&#123;UserName&#125;@$ip 'df -H' | grep ^/dev/ &gt; /tmp/$$.df     while read line;do         cur_date=`date  &quot;+%F_%R&quot;`        printf &quot;%-8s %-14s &quot; $cur_date $ip         echo $line | awk '&#123; printf(&quot;%-9s %-8s %-6s %-6s %-8s&quot;, $1,$2,$3,$4,$5); &#125;'         pusg=$(echo $line | egrep -o &quot;[0-9]+%&quot;)         pusg=$&#123;pusg/\%/&#125;;         if [ $pusg -lt $DiskPct ];then             echo OK        else             echo ALERT         fi     done &lt; /tmp/$$.df     rm -rf /tmp/$$.dfdone &gt;&gt; $&#123;logfile&#125;sed -n '1p' $&#123;logfile&#125; &gt; alert.logawk '$NF == &quot;ALERT&quot;&#123;print $0&#125;' $&#123;logfile&#125; &gt;&gt; alert.log#sed -i '1i &quot;磁盘阈值：'&quot;$DiskPct&quot;'&quot;' alert.logcontent=`cat alert.log`grep -q 'ALERT' alert.log &amp;&amp; &#123;curl &quot;$wx_api&quot;  -H 'Content-Type: application/json'  \-d '   &#123;        &quot;msgtype&quot;: &quot;text&quot;,        &quot;text&quot;: &#123;            &quot;content&quot;: &quot;'&quot;$content&quot;'&quot;        &#125;   &#125;'&#125;</code></pre>]]></content>
       
       
       <categories>
           
           <category> 监控 </category>
-          
-          <category> zabbix </category>
           
       </categories>
       
@@ -2870,65 +2928,7 @@
             
             <tag> 监控 </tag>
             
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix ☞ nginx</title>
-      <link href="posts/b35b5965/"/>
-      <url>posts/b35b5965/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>确保相关目录地址如下：</p><p>/etc/zabbix/shell</p><p>/etc/zabbix/zabbix_agentd.d</p><p>/usr/local/nginx/conf/server</p></blockquote><ul><li>1，nginx增加配置 server_status.server</li></ul><pre><code class="language-bash:">cat &gt; /usr/local/nginx/conf/server/server_status.server &lt;&lt; 'EOF'server &#123;    listen       80;    server_name  127.0.0.1;    #charset koi8-r;    access_log  off;    location /server_status &#123;        stub_status on;        access_log off;        allow 127.0.0.1;        deny all;    &#125;&#125;EOF/usr/local/nginx/sbin/nginx -t &amp;&amp; /usr/local/nginx/sbin/nginx -s reload</code></pre><hr><ul><li>2，<a href="http://xn--nginx-e86hk14jmnl025b.sh">添加脚本nginx.sh</a>  (确保a+x权限)</li></ul><pre><code class="language-bash:">mkdir /etc/zabbix/shell -p;cat &gt; /etc/zabbix/shell/nginx.sh &lt;&lt; 'EOF'#!/bin/bash  function active &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Active' | awk '&#123;print $NF&#125;'&#125;function reading &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Reading' | awk '&#123;print $2&#125;'&#125;function writing &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt;/dev/null| grep 'Writing' | awk '&#123;print $4&#125;'&#125;function waiting &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| grep 'Waiting' | awk '&#123;print $6&#125;'&#125;function accepts &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $1&#125;'&#125;function handled &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $2&#125;'&#125;function requests &#123;/usr/bin/curl &quot;http://127.0.0.1/server_status&quot; 2&gt; /dev/null| awk NR==3 | awk '&#123;print $3&#125;'&#125;function qps &#123;        NGINX_STATUS_URL=&quot;http://127.0.0.1/server_status&quot;        #若是tnginx，则最后应输出d[length(d)-1]        requestold=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        TimeWait=1        sleep $TimeWait        requestnew=`/usr/bin/curl -s $&#123;NGINX_STATUS_URL&#125; | /usr/bin/awk '/server accepts handled requests/&#123;getline a;split(a,d);print d[length(d)]&#125;'`        if [ $requestnew -gt 0 ];then                QPS=`echo &quot;( $requestnew - $requestold ) / $TimeWait&quot; | /usr/bin/bc`        fi        echo $QPS&#125;# Run the requested function  $1EOFchmod a+x /etc/zabbix/shell/nginx.sh</code></pre><hr><ul><li>3，配置zabbix客户端zabbix_agentd.conf</li></ul><pre><code class="language-bash:">cat &gt; /etc/zabbix/zabbix_agentd.d/nginx.conf &lt;&lt; 'EOF'#monitor nginx  UserParameter=nginx.accepts,/etc/zabbix/shell/nginx.sh acceptsUserParameter=nginx.handled,/etc/zabbix/shell/nginx.sh handledUserParameter=nginx.requests,/etc/zabbix/shell/nginx.sh requestsUserParameter=nginx.connections.active,/etc/zabbix/shell/nginx.sh activeUserParameter=nginx.connections.reading,/etc/zabbix/shell/nginx.sh readingUserParameter=nginx.connections.writing,/etc/zabbix/shell/nginx.sh writingUserParameter=nginx.connections.waiting,/etc/zabbix/shell/nginx.sh waitingUserParameter=nginx.connections.qps,/etc/zabbix/shell/nginx.sh qpsEOF</code></pre><hr><ul><li>4，在服务的对应主机上添加模板</li></ul>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 监控 </tag>
-            
-            <tag> zabbix </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>zabbix☞redis</title>
-      <link href="posts/6c093771/"/>
-      <url>posts/6c093771/</url>
-      
-        <content type="html"><![CDATA[<h2 id="zabbix-模板">zabbix 模板</h2><ol><li>自动发现规则</li></ol><p><img src="/posts/6c093771/image-20200520152740815.png" alt="image-20200520152740815"></p><ol start="2"><li><p>过滤器</p><p><img src="/posts/6c093771/image-20200520152922570.png" alt="image-20200520152922570"></p></li><li><p>监控项原型</p><table><thead><tr><th>名称</th><th>键值</th><th>间隔</th><th>历史记录</th><th>趋势</th><th>类型</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,connected_clients]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; maxmemory[redis配置的内存上限]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,maxmemory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; mem_fragmentation_ratio[内存碎片率]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis_instantaneous_ops_per_sec[每秒执行的命令个数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,instantaneous_ops_per_sec]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; redis 存活状态</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; rejected_connections[被拒绝的客户端连接数]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,rejected_connections]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys[redis-master sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_sys_children[redis-children sys-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_sys_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user[redis-master user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_cpu_user_children[redis-children user-cpu占用]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_cpu_user_children]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory[redis层面已使用内存-不含碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_pct[操作系统层面已使用内存百分比]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_peak[操作系统层面已使用内存历史峰值-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_peak]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125; used_memory_rss[操作系统层面已使用内存-含内存碎片]</code></td><td><code>redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_rss]</code></td><td>30s</td><td>30d</td><td>90d</td><td>Zabbix客户端(主动式)</td></tr></tbody></table></li><li><p>触发器原型</p><table><thead><tr><th>严重性</th><th>名称</th><th>表达式</th></tr></thead><tbody><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  内存碎片化超过50%, 剩余可用内存低于30%</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&gt;1.5  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  可用内存低, 存在使用交换分区</code></td><td><code>&#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,mem_fragmentation_ratio].last()&#125;&lt;1  and &#123;Template Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>一般严重</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis  操作系统层面内存占用百分比过高</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,used_memory_pct].last()&#125;&gt;0.7</code></td></tr><tr><td>灾难</td><td><code>&#123;#IP&#125;:&#123;#TCP_PORT&#125; Redis 端口无法访问</code></td><td><code>&#123;Template  Redis Auto Discovert Active  mode:redis_info[&#123;#IP&#125;,&#123;#TCP_PORT&#125;,exist].last()&#125;&lt;&gt;1</code></td></tr></tbody></table></li><li><p>图形原型，就不详细写了，这里只列出我自己的分类</p><table><thead><tr><th>名称</th><th>宽</th><th>高</th><th>图形类别</th></tr></thead><tbody><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 连接数监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis 其他监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis qps 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis mem 监控</code></td><td>900</td><td>200</td><td>正常</td></tr><tr><td><code>&#123;#IP&#125;,&#123;#TCP_PORT&#125;  redis cpu 监控</code></td><td>900</td><td>200</td><td>正常</td></tr></tbody></table></li></ol><h2 id="脚本">脚本</h2><p>脚本会生成自动发现进程脚本和redis检测脚本</p><p>zabbix的redis配置路径：ZabbixEtc</p><p>zabbix的脚本路径：ZabbixShell</p><p>redis的cli命令路径：RedisCli</p><p>自动发现脚本：ip_port_discovery.sh</p><ul><li>bash ip_port_discovery.sh 进程名或者端口</li></ul><p>redis检测脚本：redis_info.sh</p><ul><li>bash redis_info.sh ip port item</li></ul><pre><code class="language-redis">ZabbixEtc=/etc/zabbix/zabbix_agentd.dZabbixShell=/etc/zabbix/shellRedisCli='docker exec -t redis redis-cli'[[ -d $&#123;ZabbixShell&#125; ]] || mkdir -p $&#123;ZabbixShell&#125;[[ -z $&#123;ZabbixEtc&#125; ]] &amp;&amp; [[ -z $&#123;ZabbixShell&#125; ]] || [[ -z $&#123;RedisCli&#125; ]] &amp;&amp; exitcat&gt;$&#123;ZabbixEtc&#125;/redis.conf&lt;&lt;EOF##redis monitorUserParameter=redis_info[*],$&#123;ZabbixShell&#125;/redis_info.sh \$1 \$2 \$3 \$4UserParameter=ip_port_discovery[*],$&#123;ZabbixShell&#125;/ip_port_discovery.sh \$1EOFcat&gt;$&#123;ZabbixShell&#125;/redis_info.sh&lt;&lt;&quot;EOF&quot;#!/bin/bashRedisCli=HOST=$1PORT=$2REDIS_INFO=&quot;$RedisCli -h $HOST -p $PORT info&quot;[[ $# -ne 3 ]] &amp;&amp; [[ $# -ne 4 ]] &amp;&amp; &#123; exit&#125;if [[ $# -eq 3 ]];thencase $3 inexist) result=`$RedisCli -h $HOST -p $PORT ping 2&gt;/dev/null |grep -c PONG` echo $result;;cluster)        result=`$REDIS_INFO|/bin/grep cluster|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;uptime_in_seconds)        result=`$REDIS_INFO|/bin/grep uptime_in_seconds|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;connected_clients)        result=`$REDIS_INFO|/bin/grep connected_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_longest_output_list)        result=`$REDIS_INFO|/bin/grep client_longest_output_list|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;client_biggest_input_buf)        result=`$REDIS_INFO|/bin/grep client_biggest_input_buf|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;blocked_clients)        result=`$REDIS_INFO|/bin/grep blocked_clients|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#内存maxmemory)        result=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory)        result=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_rss)        result=`$REDIS_INFO|/bin/grep -w used_memory_rss|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk -F'k' '&#123;print $1&#125;'`        echo $result;;used_memory_pct) A=`$REDIS_INFO|/bin/grep used_memory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` B=`$REDIS_INFO|/bin/grep maxmemory|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'` result=`echo $A $B | awk '&#123;printf&quot;%0.2f&quot;,$1/$2&#125;'`        echo $result;;used_memory_peak)        result=`$REDIS_INFO|/bin/grep used_memory_peak|awk -F&quot;:&quot; '&#123;print $NF&#125;'|awk 'NR==1'`        echo $result;;used_memory_lua)        result=`$REDIS_INFO|/bin/grep used_memory_lua|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;mem_fragmentation_ratio)        result=`$REDIS_INFO|/bin/grep mem_fragmentation_ratio|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;#rdbrdb_changes_since_last_save)        result=`$REDIS_INFO|/bin/grep rdb_changes_since_last_save|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_bgsave_in_progress)        result=`$REDIS_INFO|/bin/grep rdb_bgsave_in_progress|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_save_time)        result=`$REDIS_INFO|/bin/grep rdb_last_save_time|awk -F&quot;:&quot; '&#123;print $NF&#125;'`        echo $result;;rdb_last_bgsave_status)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_last_bgsave_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;rdb_current_bgsave_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;rdb_current_bgsave_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#rdbinfoaof_enabled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_enabled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_scheduled)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_scheduled&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_last_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_current_rewrite_time_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_rewrite_time_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result            ;;aof_last_bgrewrite_status)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_last_bgrewrite_status&quot; | awk -F':' '&#123;print $2&#125;' | /bin/grep -c ok`        echo $result;;#aofinfoaof_current_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_current_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_base_size)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_base_size&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_rewrite)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_rewrite&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_rewrite_buffer_length)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_rewrite_buffer_length&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_pending_bio_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_pending_bio_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;aof_delayed_fsync)        result=`$REDIS_INFO|/bin/grep -w &quot;aof_delayed_fsync&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;#statstotal_connections_received)        result=`$REDIS_INFO|/bin/grep -w &quot;total_connections_received&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;total_commands_processed)        result=`$REDIS_INFO|/bin/grep -w &quot;total_commands_processed&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;instantaneous_ops_per_sec)        result=`$REDIS_INFO|/bin/grep -w &quot;instantaneous_ops_per_sec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;rejected_connections)        result=`$REDIS_INFO|/bin/grep -w &quot;rejected_connections&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;expired_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;expired_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;evicted_keys)        result=`$REDIS_INFO|/bin/grep -w &quot;evicted_keys&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_hits)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_hits&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;keyspace_misses)        result=`$REDIS_INFO|/bin/grep -w &quot;keyspace_misses&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_channels)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_channels&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;pubsub_patterns)        result=`$REDIS_INFO|/bin/grep -w &quot;pubsub_patterns&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;latest_fork_usec)        result=`$REDIS_INFO|/bin/grep -w &quot;latest_fork_usec&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;connected_slaves)        result=`$REDIS_INFO|/bin/grep -w &quot;connected_slaves&quot; | awk -F':' '&#123;print $2&#125;'`        echo $result;;master_link_status)        result=`$REDIS_INFO|/bin/grep -w &quot;master_link_status&quot;|awk -F':' '&#123;print $2&#125;'|/bin/grep -c up`        echo $result;;master_last_io_seconds_ago)        result=`$REDIS_INFO|/bin/grep -w &quot;master_last_io_seconds_ago&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;master_sync_in_progress)        result=`$REDIS_INFO|/bin/grep -w &quot;master_sync_in_progress&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;slave_priority)        result=`$REDIS_INFO|/bin/grep -w &quot;slave_priority&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;#cpuused_cpu_sys)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_sys_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_sys_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;used_cpu_user_children)        result=`$REDIS_INFO|/bin/grep -w &quot;used_cpu_user_children&quot;|awk -F':' '&#123;print $2&#125;'`        echo $result;;*) echo &quot;argu error&quot;;;esac#db0:key   elif [[ $# -eq 4 ]];thencase $4 inkeys)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;keys&quot; | awk -F'=|,' '&#123;print $2&#125;'`        echo $result;;expires)        result=`$REDIS_INFO| /bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;expires&quot; | awk -F'=|,' '&#123;print $4&#125;'`        echo $result;;avg_ttl)        result=`$REDIS_INFO|/bin/grep -w &quot;db0&quot;| /bin/grep -w &quot;$1&quot; | /bin/grep -w &quot;avg_ttl&quot; | awk -F'=|,' '&#123;print $6&#125;'`        echo $result;;*)     echo &quot;argu error&quot; ;;esacfiEOFcat&gt;$&#123;ZabbixShell&#125;/ip_port_discovery.sh&lt;&lt;&quot;EOF&quot;#!/bin/bash#$1是要发现的进程部分词汇portarray=(`sudo ss -tnlp|egrep -i &quot;$1&quot;|awk &#123;'print $4'&#125;|awk -F':' '&#123;if ($NF~/^[0-9]*$/) print $NF&#125;'|sort|uniq`)iparray=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`length=$&#123;#portarray[@]&#125;printf &quot;&#123;\n&quot;printf '\t'&quot;\&quot;data\&quot;:[&quot;for ((i=0;i&lt;$length;i++))  do     printf '\n\t\t&#123;'     printf &quot;\&quot;&#123;#IP&#125;\&quot;:\&quot;$&#123;iparray&#125;\&quot;,\&quot;&#123;#TCP_PORT&#125;\&quot;:\&quot;$&#123;portarray[$i]&#125;\&quot;&#125;&quot;     if [ $i -lt $[$length-1] ];then                printf ','     fi  doneprintf &quot;\n\t]\n&quot;printf &quot;&#125;\n&quot;EOFchmod a+x $&#123;ZabbixShell&#125;/redis_info.shchmod a+x $&#123;ZabbixShell&#125;/ip_port_discovery.shsed -i 's#RedisCli=#RedisCli=\&quot;'&quot;$&#123;RedisCli&#125;&quot;'\&quot;#' $&#123;ZabbixShell&#125;/redis_info.shecho '------------------------------------我是 zabbix 监控信息----------------------------------'echo '编辑 visudo，添加如下信息'echo &quot;#zabbix用户可以以sudo执行sszabbix ALL = NOPASSWD: /usr/sbin/ss#zabbix用户使用sudo无需ttyDefaults:zabbix    !requiretty&quot;echo '若redis运行在docker中，执行如下命令'echo 'usermod -a -G docker zabbix'</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 监控 </category>
-          
-          <category> zabbix </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> redis </tag>
-            
-            <tag> zabbix </tag>
+            <tag> 磁盘 </tag>
             
         </tags>
       
@@ -3595,33 +3595,6 @@
     
     
     <entry>
-      <title>jquery☞伪进度条</title>
-      <link href="posts/5d527900/"/>
-      <url>posts/5d527900/</url>
-      
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>点击-&gt;触发脚本jquery-&gt;脚本访问url-&gt;django view(show_progress)-&gt;view返回数据给脚本jquery-&gt;脚本jquery拿到进度数据百分比-&gt;更新进度条-&gt;重复访问url-&gt;直至进度条数据100%-&gt;终止访问url.</p><h2 id="具体步骤">具体步骤</h2><h3 id="点击">点击</h3><blockquote><p>点击提交按钮，通过id “submit” 找到脚本</p></blockquote><pre><code class="language-html">        &lt;div class=&quot;item1&quot;&gt;          &lt;a href=&quot;&#123;% url 'assets:ssllist' %&#125;&quot;&gt;返回&lt;/a&gt;          &lt;button id=&quot;submit&quot; class=&quot;mybtn&quot; type=&quot;submit&quot;&gt;提交&lt;/button&gt;        &lt;/div</code></pre><h3 id="脚本jquery">脚本jquery</h3><pre><code class="language-javascript">    &lt;script&gt;    $(function () &#123;      $('#submit').on('click', function () &#123;     // 触发 click 动作，执行 function        $('#prog_out').attr(&quot;class&quot;,&quot;progress&quot;);      var sitv = setInterval(function()&#123;    // 添加一个间隔期函数setInterval，它有两个参数，参数1是执行函数function，参数2是间隔时间              var show_progress_url = &quot;&#123;% url 'assets:showprogress' %&#125;&quot;; // 变量 show_progress_url                $.getJSON(show_progress_url, function(res)&#123;    // 访问 show_progress_url，并将view视图的结果res传递给 function 函数，并执行 function(res)                 if(res === 100)&#123;       // 若 view视图返回100，则修改动作条颜色为 success，并且清空计时器并退出                  $('#prog_out').attr(&quot;class&quot;, &quot;progress progress-bar bg-success&quot;);                  clearInterval(sitv);                &#125;                console.log(&quot;currect progresspct:&quot;+res);  // 打印当前进度                  $('#prog_in').width(res + '%');     // 改变进度条进度，注意这里是内层的div， res是后台返回的进度                  $('#prog_in').val(res);   //改变进度条的值                &#125;);              &#125;,           1000);   // 间隔期函数setInterval,第二个参数，每1秒查询一次后台进度      &#125;);    &#125;)    &lt;/script&gt;</code></pre><h3 id="脚本访问URL">脚本访问URL</h3><p>通过上述JS脚本，访问show_progress_url变量</p><h3 id="django-view视图">django view视图</h3><pre><code class="language-python">def show_progress(request):    if request.user.is_authenticated:        loginuser = request.user.username        #progresspct = cache.get_or_set(loginuser,0)        print('当前创建证书的用户是:' + loginuser)        progresspct = cache.get(loginuser)        print(&quot;百分比:&#123;0&#125;&quot;.format(progresspct))        if progresspct == 100:            print('删除缓存')            cache.delete(loginuser)            return JsonResponse(progresspct, safe=False)        progresspct += 1        cache.set(loginuser,progresspct)        return JsonResponse(progresspct, safe=False)</code></pre>]]></content>
-      
-      
-      <categories>
-          
-          <category> 语言 </category>
-          
-          <category> jquery </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> jquery </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>django☞restful简单使用</title>
       <link href="posts/dd4c9efa/"/>
       <url>posts/dd4c9efa/</url>
@@ -3672,6 +3645,33 @@
             <tag> python </tag>
             
             <tag> django </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>jquery☞伪进度条</title>
+      <link href="posts/5d527900/"/>
+      <url>posts/5d527900/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>点击-&gt;触发脚本jquery-&gt;脚本访问url-&gt;django view(show_progress)-&gt;view返回数据给脚本jquery-&gt;脚本jquery拿到进度数据百分比-&gt;更新进度条-&gt;重复访问url-&gt;直至进度条数据100%-&gt;终止访问url.</p><h2 id="具体步骤">具体步骤</h2><h3 id="点击">点击</h3><blockquote><p>点击提交按钮，通过id “submit” 找到脚本</p></blockquote><pre><code class="language-html">        &lt;div class=&quot;item1&quot;&gt;          &lt;a href=&quot;&#123;% url 'assets:ssllist' %&#125;&quot;&gt;返回&lt;/a&gt;          &lt;button id=&quot;submit&quot; class=&quot;mybtn&quot; type=&quot;submit&quot;&gt;提交&lt;/button&gt;        &lt;/div</code></pre><h3 id="脚本jquery">脚本jquery</h3><pre><code class="language-javascript">    &lt;script&gt;    $(function () &#123;      $('#submit').on('click', function () &#123;     // 触发 click 动作，执行 function        $('#prog_out').attr(&quot;class&quot;,&quot;progress&quot;);      var sitv = setInterval(function()&#123;    // 添加一个间隔期函数setInterval，它有两个参数，参数1是执行函数function，参数2是间隔时间              var show_progress_url = &quot;&#123;% url 'assets:showprogress' %&#125;&quot;; // 变量 show_progress_url                $.getJSON(show_progress_url, function(res)&#123;    // 访问 show_progress_url，并将view视图的结果res传递给 function 函数，并执行 function(res)                 if(res === 100)&#123;       // 若 view视图返回100，则修改动作条颜色为 success，并且清空计时器并退出                  $('#prog_out').attr(&quot;class&quot;, &quot;progress progress-bar bg-success&quot;);                  clearInterval(sitv);                &#125;                console.log(&quot;currect progresspct:&quot;+res);  // 打印当前进度                  $('#prog_in').width(res + '%');     // 改变进度条进度，注意这里是内层的div， res是后台返回的进度                  $('#prog_in').val(res);   //改变进度条的值                &#125;);              &#125;,           1000);   // 间隔期函数setInterval,第二个参数，每1秒查询一次后台进度      &#125;);    &#125;)    &lt;/script&gt;</code></pre><h3 id="脚本访问URL">脚本访问URL</h3><p>通过上述JS脚本，访问show_progress_url变量</p><h3 id="django-view视图">django view视图</h3><pre><code class="language-python">def show_progress(request):    if request.user.is_authenticated:        loginuser = request.user.username        #progresspct = cache.get_or_set(loginuser,0)        print('当前创建证书的用户是:' + loginuser)        progresspct = cache.get(loginuser)        print(&quot;百分比:&#123;0&#125;&quot;.format(progresspct))        if progresspct == 100:            print('删除缓存')            cache.delete(loginuser)            return JsonResponse(progresspct, safe=False)        progresspct += 1        cache.set(loginuser,progresspct)        return JsonResponse(progresspct, safe=False)</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 语言 </category>
+          
+          <category> jquery </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> jquery </tag>
             
         </tags>
       
@@ -3738,11 +3738,11 @@
     
     
     <entry>
-      <title>05ELK基本使用-kibana</title>
-      <link href="posts/d8390732/"/>
-      <url>posts/d8390732/</url>
+      <title>04ELK基本使用-elasticsearch</title>
+      <link href="posts/41bf4066/"/>
+      <url>posts/41bf4066/</url>
       
-        <content type="html"><![CDATA[<h2 id="安装">安装</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/targz.html">https://www.elastic.co/guide/en/kibana/current/targz.html</a></p><pre><code class="language-bash">appName=kibanaesVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/$&#123;appName&#125;/$&#123;esVersion&#125;/$&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o $&#123;appName&#125;.tgztar xf $&#123;appName&#125;.tgzmv $&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64 ../$&#123;appName&#125; &amp;&amp; cd ..useradd -U $&#123;appName&#125;chown -R $&#123;appName&#125;:$&#123;appName&#125; /export/$&#123;appName&#125;cd /export/$&#123;appName&#125;</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/settings.html">https://www.elastic.co/guide/en/kibana/current/settings.html</a></p><pre><code class="language-yaml">cp /export/kibana/config/kibana.yml /export/kibana/config/kibana.yml.defaultcat &gt; /export/kibana/config/kibana.yml &lt;&lt; EOFserver.name: kibanaserver.host: 0.0.0.0server.port: 5601elasticsearch.hosts: [&quot;http://hadoop001:9200&quot;,&quot;http://hadoop002:9200&quot;,&quot;http://hadoop003:9200&quot;]xpack.monitoring.ui.container.elasticsearch.enabled: truei18n.locale: zh-CNEOF</code></pre><pre><code class="language-bash">bin/kibana-encryption-keys generate# 将输出的 `Settings` 配置追加到 kibana.ymlxpack.encryptedSavedObjects.encryptionKey: 40233b82c57c14127363xpack.reporting.encryptionKey: f5550ba4b241b820bxpack.security.encryptionKey: 9732d0b256555b</code></pre><h2 id="系统用户-可选">系统用户(可选)</h2><p>仅当ES开启安全配置后需要.</p><p>追加下列配置到<code>kibana.yml</code>，kibana通过kibana_system用户访问elasticsearch执行后台任务.</p><pre><code class="language-bash">elasticsearch.username: &quot;kibana_system&quot;</code></pre><p>执行下列命令,将密码加密存放.</p><pre><code class="language-bash">./bin/kibana-keystore create./bin/kibana-keystore add elasticsearch.password=&gt;输入ES安全配置期间，生成的`kibana_system`密码</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">su - kibanacd /export/kibananohup ./bin/kibana &amp;</code></pre><p>ℹ️如果启用安全设置和用户配置，则kibana的web访问需要<code>elastic</code>用户权限.</p><h2 id="用户权限管理">用户权限管理</h2><p><a href="https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html">https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html</a></p>]]></content>
+        <content type="html"><![CDATA[<h2 id="准备">准备</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html</a></p><pre><code class="language-bash"># elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准sysctl -a | egrep &quot;(vm.max_map_count|net.ipv4.tcp_retries2)&quot;  # 查看是否过小, 如果过小执行下一条echo 'vm.max_map_count=262144' &gt;&gt; /etc/sysctl.confecho 'net.ipv4.tcp_retries2=5' &gt;&gt; /etc/sysctl.confsysctl -p## https://www.elastic.co/guide/en/elasticsearch/reference/7.15/setting-system-settings.htmlcat &gt;&gt; /etc/security/limits.conf &lt;&lt; EOF  *           soft   nofile       102400  *           hard   nofile       102400  *           soft   nproc        102400  *           hard   nproc        102400  *           soft  memlock      unlimited  *           hard  memlock      unlimitedEOF## 关闭swap 同时应该在 /etc/fstab 中取消 swap 的挂载sudo swapoff -a</code></pre><h2 id="安装">安装</h2><p><a href="https://mirrors.huaweicloud.com/elasticsearch/">https://mirrors.huaweicloud.com/elasticsearch/</a></p><pre><code>esVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/elasticsearch/$&#123;esVersion&#125;/elasticsearch-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o es.tgztar xf es.tgzmv elasticsearch-$&#123;esVersion&#125; ../elasticsearchuseradd -U elasticsearchchown -R elasticsearch:elasticsearch /export/elasticsearchsu - elasticsearchcd /export/elasticsearch</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html</a></p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html</a></p><h3 id="角色">角色</h3><p>角色介绍的官方文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles">https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles</a></p><p>elasticsearch 可以通过<code>node.roles: [xxx]</code>来设定节点角色。如果不设置<code>node.roles</code>，则默认节点拥有所有角色。</p><p>角色可分为：master、data和data_xxx系列、ingest、ml、remote_cluster_client、transform。</p><p>💢在一个集群中，master和data是必须的角色。</p><h3 id="一份通用节点配置">一份通用节点配置</h3><p>配置中<code>discovery.seed_hosts</code>替换成所有节点的hostname</p><pre><code class="language-bash">cp config/elasticsearch.yml config/elasticsearch.yml.defaulthostName=`hostname`cat &gt; /export/elasticsearch/config/elasticsearch.yml &lt;&lt; EOFcluster.name: es-clusterdiscovery.seed_hosts: xxx1,xxx2,xxx3node.name: $&#123;hostName&#125;#node.master: true#node.data: falsehttp.port: 9200network.host: 0.0.0.0http.cors.enabled: truehttp.cors.allow-origin: &quot;*&quot;bootstrap.memory_lock: truexpack.security.enabled: truexpack.security.transport.ssl.enabled: truexpack.security.transport.ssl.verification_mode: certificate xpack.security.transport.ssl.client_authentication: requiredxpack.security.transport.ssl.keystore.path: elastic-certificates.p12xpack.security.transport.ssl.truststore.path: elastic-certificates.p12resource.reload.interval.high: 5sEOF</code></pre><p>ℹ️<code>xpack.security.transport.ssl.keystore.path、xpack.security.transport.ssl.truststore.path</code>指定的文件名与下面启用TLS中的默认文件名一致。</p><p>💁 如果是单节点，则应该加入<code>discovery.type: single-node</code>，并删除<code>discovery.seed_hosts</code>。</p><h2 id="启用TLS">启用TLS</h2><p>当启用了<code>xpack.security.enabled: true</code>后，多节点生产模式集群必须启用TLS，否则无法启动集群。</p><p>创建CA证书和节点证书</p><pre><code class="language-bash">./bin/elasticsearch-certutil ca=&gt;回车，接受默认文件名 elastic-stack-ca.p12=&gt;输入CA证书密码./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12=&gt;输入CA证书密码=&gt;回车，接受默认文件名 elastic-certificates.p12=&gt;输入节点证书密码（可选）</code></pre><p>将生成的<code>elastic-certificates.p12</code>复制到每一个节点的<code>config</code>目录中，并确保授权<code>600</code></p><p>💔我添加了节点证书密码后，ES校验证书失败，不知原因。</p><p>💢如果节点证书开启了密码，则需要存在ES中，通过下列命令存储，会存放在<code>config/elasticsearch.keystore</code></p><pre><code class="language-bash">./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password=&gt;输入节点证书密码./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password=&gt;输入节点证书密码</code></pre><h2 id="启动、关闭">启动、关闭</h2><h3 id="启动">启动</h3><p>ES默认会自动调整JVM参数，非必要情况下无需调整.</p><p>命令中<code>-Ecluster.initial_master_nodes</code>替换成所有节点的hostname</p><pre><code class="language-bash">## export ES_JAVA_OPTS=&quot;$ES_JAVA_OPTS xxx&quot;export ES_TMPDIR=&quot;/export/elasticsearch/tmp&quot;mkdir -p /export/elasticsearch/tmpsu - elasticsearchcd /export/elasticsearch &amp;&amp; ./bin/elasticsearch -d -p es.pid -Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code></pre><p>💢<code>-Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code> 仅当首次启动的时候需要添加。当集群成功启动后，应删除此配置。重启集群、新节点入集群都不应该加入此配置。</p><h3 id="关闭">关闭</h3><pre><code class="language-bash">su - elasticsearchcd /export/elasticsearch &amp;&amp; pkill -F es.pid</code></pre><h2 id="内置用户密码生成">内置用户密码生成</h2><p>通过设置用户密码后，kibana就需要配置<code>elastic</code>账户来访问web.<code>elastic</code>是超级用户.</p><ol><li>需要es启动状态</li><li>当你通过<code>bin/elasticsearch-setup-passwords</code>设置了<code>elastic</code>用户密码后，你将无法再次运行<code>bin/elasticsearch-setup-passwords</code></li></ol><pre><code class="language-bash">./bin/elasticsearch-setup-passwords autoChanged password for user apm_systemPASSWORD apm_system = hpYNFwXxubBoAK910LVNChanged password for user kibana_systemPASSWORD kibana_system = ZQQz8FpPeyElvrOLdMSeChanged password for user kibanaPASSWORD kibana = ZQQz8FpPeyElvrOLdMSeChanged password for user logstash_systemPASSWORD logstash_system = LeWxPOQp6u0yZ6ELkJxlChanged password for user beats_systemPASSWORD beats_system = olPcjTe7dKbI1EqYG9D7Changed password for user remote_monitoring_userPASSWORD remote_monitoring_user = 0VxbZ0GjZk5aUcQhs2pEChanged password for user elasticPASSWORD elastic = rMknnbJxRh5qWDGVZQ2R</code></pre><p>在这之后，你可以通过kibana从而方便的进行图形化用户管理.</p><p>关于内置用户对应的权限，可以看相关内置角色的权限范围：</p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html</a></p><h2 id="备份集群">备份集群</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html</a></p><h2 id="问题点">问题点</h2><ol><li>如果磁盘不够用，则因添加新节点，而不是添加新磁盘路径</li><li><code>cluster.name</code>是集群的唯一标识，任何不一致的<code>cluster.name</code>节点无法加入集群</li><li><code>node.name</code>是节点的唯一标识名，默认取值主机名</li><li><code>network.host</code>的设置是ES判断开发模式和生产模式的依据，默认值是回环地址，ES将认为是开发模式。</li><li>没有<code>data</code>角色的节点如果在启动时在磁盘上找到任何分片数据将拒绝启动，而没有角色<code>master</code>和<code>data</code>角色的节点如果在启动时磁盘上有任何索引元数据将拒绝启动。</li></ol>]]></content>
       
       
       <categories>
@@ -3769,11 +3769,11 @@
     
     
     <entry>
-      <title>04ELK基本使用-elasticsearch</title>
-      <link href="posts/41bf4066/"/>
-      <url>posts/41bf4066/</url>
+      <title>05ELK基本使用-kibana</title>
+      <link href="posts/d8390732/"/>
+      <url>posts/d8390732/</url>
       
-        <content type="html"><![CDATA[<h2 id="准备">准备</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/system-config.html</a></p><pre><code class="language-bash"># elasticsearch 具体安装命令和版本请以下载页中对应的docker安装方式页里命令为基准sysctl -a | egrep &quot;(vm.max_map_count|net.ipv4.tcp_retries2)&quot;  # 查看是否过小, 如果过小执行下一条echo 'vm.max_map_count=262144' &gt;&gt; /etc/sysctl.confecho 'net.ipv4.tcp_retries2=5' &gt;&gt; /etc/sysctl.confsysctl -p## https://www.elastic.co/guide/en/elasticsearch/reference/7.15/setting-system-settings.htmlcat &gt;&gt; /etc/security/limits.conf &lt;&lt; EOF  *           soft   nofile       102400  *           hard   nofile       102400  *           soft   nproc        102400  *           hard   nproc        102400  *           soft  memlock      unlimited  *           hard  memlock      unlimitedEOF## 关闭swap 同时应该在 /etc/fstab 中取消 swap 的挂载sudo swapoff -a</code></pre><h2 id="安装">安装</h2><p><a href="https://mirrors.huaweicloud.com/elasticsearch/">https://mirrors.huaweicloud.com/elasticsearch/</a></p><pre><code>esVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/elasticsearch/$&#123;esVersion&#125;/elasticsearch-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o es.tgztar xf es.tgzmv elasticsearch-$&#123;esVersion&#125; ../elasticsearchuseradd -U elasticsearchchown -R elasticsearch:elasticsearch /export/elasticsearchsu - elasticsearchcd /export/elasticsearch</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/important-settings.html</a></p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/configuring-stack-security.html</a></p><h3 id="角色">角色</h3><p>角色介绍的官方文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles">https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#node-roles</a></p><p>elasticsearch 可以通过<code>node.roles: [xxx]</code>来设定节点角色。如果不设置<code>node.roles</code>，则默认节点拥有所有角色。</p><p>角色可分为：master、data和data_xxx系列、ingest、ml、remote_cluster_client、transform。</p><p>💢在一个集群中，master和data是必须的角色。</p><h3 id="一份通用节点配置">一份通用节点配置</h3><p>配置中<code>discovery.seed_hosts</code>替换成所有节点的hostname</p><pre><code class="language-bash">cp config/elasticsearch.yml config/elasticsearch.yml.defaulthostName=`hostname`cat &gt; /export/elasticsearch/config/elasticsearch.yml &lt;&lt; EOFcluster.name: es-clusterdiscovery.seed_hosts: xxx1,xxx2,xxx3node.name: $&#123;hostName&#125;#node.master: true#node.data: falsehttp.port: 9200network.host: 0.0.0.0http.cors.enabled: truehttp.cors.allow-origin: &quot;*&quot;bootstrap.memory_lock: truexpack.security.enabled: truexpack.security.transport.ssl.enabled: truexpack.security.transport.ssl.verification_mode: certificate xpack.security.transport.ssl.client_authentication: requiredxpack.security.transport.ssl.keystore.path: elastic-certificates.p12xpack.security.transport.ssl.truststore.path: elastic-certificates.p12resource.reload.interval.high: 5sEOF</code></pre><p>ℹ️<code>xpack.security.transport.ssl.keystore.path、xpack.security.transport.ssl.truststore.path</code>指定的文件名与下面启用TLS中的默认文件名一致。</p><p>💁 如果是单节点，则应该加入<code>discovery.type: single-node</code>，并删除<code>discovery.seed_hosts</code>。</p><h2 id="启用TLS">启用TLS</h2><p>当启用了<code>xpack.security.enabled: true</code>后，多节点生产模式集群必须启用TLS，否则无法启动集群。</p><p>创建CA证书和节点证书</p><pre><code class="language-bash">./bin/elasticsearch-certutil ca=&gt;回车，接受默认文件名 elastic-stack-ca.p12=&gt;输入CA证书密码./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12=&gt;输入CA证书密码=&gt;回车，接受默认文件名 elastic-certificates.p12=&gt;输入节点证书密码（可选）</code></pre><p>将生成的<code>elastic-certificates.p12</code>复制到每一个节点的<code>config</code>目录中，并确保授权<code>600</code></p><p>💔我添加了节点证书密码后，ES校验证书失败，不知原因。</p><p>💢如果节点证书开启了密码，则需要存在ES中，通过下列命令存储，会存放在<code>config/elasticsearch.keystore</code></p><pre><code class="language-bash">./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password=&gt;输入节点证书密码./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password=&gt;输入节点证书密码</code></pre><h2 id="启动、关闭">启动、关闭</h2><h3 id="启动">启动</h3><p>ES默认会自动调整JVM参数，非必要情况下无需调整.</p><p>命令中<code>-Ecluster.initial_master_nodes</code>替换成所有节点的hostname</p><pre><code class="language-bash">## export ES_JAVA_OPTS=&quot;$ES_JAVA_OPTS xxx&quot;export ES_TMPDIR=&quot;/export/elasticsearch/tmp&quot;mkdir -p /export/elasticsearch/tmpsu - elasticsearchcd /export/elasticsearch &amp;&amp; ./bin/elasticsearch -d -p es.pid -Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code></pre><p>💢<code>-Ecluster.initial_master_nodes=xxx1,xxx2,xxx3</code> 仅当首次启动的时候需要添加。当集群成功启动后，应删除此配置。重启集群、新节点入集群都不应该加入此配置。</p><h3 id="关闭">关闭</h3><pre><code class="language-bash">su - elasticsearchcd /export/elasticsearch &amp;&amp; pkill -F es.pid</code></pre><h2 id="内置用户密码生成">内置用户密码生成</h2><p>通过设置用户密码后，kibana就需要配置<code>elastic</code>账户来访问web.<code>elastic</code>是超级用户.</p><ol><li>需要es启动状态</li><li>当你通过<code>bin/elasticsearch-setup-passwords</code>设置了<code>elastic</code>用户密码后，你将无法再次运行<code>bin/elasticsearch-setup-passwords</code></li></ol><pre><code class="language-bash">./bin/elasticsearch-setup-passwords autoChanged password for user apm_systemPASSWORD apm_system = hpYNFwXxubBoAK910LVNChanged password for user kibana_systemPASSWORD kibana_system = ZQQz8FpPeyElvrOLdMSeChanged password for user kibanaPASSWORD kibana = ZQQz8FpPeyElvrOLdMSeChanged password for user logstash_systemPASSWORD logstash_system = LeWxPOQp6u0yZ6ELkJxlChanged password for user beats_systemPASSWORD beats_system = olPcjTe7dKbI1EqYG9D7Changed password for user remote_monitoring_userPASSWORD remote_monitoring_user = 0VxbZ0GjZk5aUcQhs2pEChanged password for user elasticPASSWORD elastic = rMknnbJxRh5qWDGVZQ2R</code></pre><p>在这之后，你可以通过kibana从而方便的进行图形化用户管理.</p><p>关于内置用户对应的权限，可以看相关内置角色的权限范围：</p><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/built-in-roles.html</a></p><h2 id="备份集群">备份集群</h2><p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html">https://www.elastic.co/guide/en/elasticsearch/reference/7.15/backup-cluster.html</a></p><h2 id="问题点">问题点</h2><ol><li>如果磁盘不够用，则因添加新节点，而不是添加新磁盘路径</li><li><code>cluster.name</code>是集群的唯一标识，任何不一致的<code>cluster.name</code>节点无法加入集群</li><li><code>node.name</code>是节点的唯一标识名，默认取值主机名</li><li><code>network.host</code>的设置是ES判断开发模式和生产模式的依据，默认值是回环地址，ES将认为是开发模式。</li><li>没有<code>data</code>角色的节点如果在启动时在磁盘上找到任何分片数据将拒绝启动，而没有角色<code>master</code>和<code>data</code>角色的节点如果在启动时磁盘上有任何索引元数据将拒绝启动。</li></ol>]]></content>
+        <content type="html"><![CDATA[<h2 id="安装">安装</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/targz.html">https://www.elastic.co/guide/en/kibana/current/targz.html</a></p><pre><code class="language-bash">appName=kibanaesVersion=7.15.1cd /export/srccurl &quot;https://mirrors.huaweicloud.com/$&#123;appName&#125;/$&#123;esVersion&#125;/$&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64.tar.gz&quot; -o $&#123;appName&#125;.tgztar xf $&#123;appName&#125;.tgzmv $&#123;appName&#125;-$&#123;esVersion&#125;-linux-x86_64 ../$&#123;appName&#125; &amp;&amp; cd ..useradd -U $&#123;appName&#125;chown -R $&#123;appName&#125;:$&#123;appName&#125; /export/$&#123;appName&#125;cd /export/$&#123;appName&#125;</code></pre><h2 id="配置">配置</h2><p><a href="https://www.elastic.co/guide/en/kibana/current/settings.html">https://www.elastic.co/guide/en/kibana/current/settings.html</a></p><pre><code class="language-yaml">cp /export/kibana/config/kibana.yml /export/kibana/config/kibana.yml.defaultcat &gt; /export/kibana/config/kibana.yml &lt;&lt; EOFserver.name: kibanaserver.host: 0.0.0.0server.port: 5601elasticsearch.hosts: [&quot;http://hadoop001:9200&quot;,&quot;http://hadoop002:9200&quot;,&quot;http://hadoop003:9200&quot;]xpack.monitoring.ui.container.elasticsearch.enabled: truei18n.locale: zh-CNEOF</code></pre><pre><code class="language-bash">bin/kibana-encryption-keys generate# 将输出的 `Settings` 配置追加到 kibana.ymlxpack.encryptedSavedObjects.encryptionKey: 40233b82c57c14127363xpack.reporting.encryptionKey: f5550ba4b241b820bxpack.security.encryptionKey: 9732d0b256555b</code></pre><h2 id="系统用户-可选">系统用户(可选)</h2><p>仅当ES开启安全配置后需要.</p><p>追加下列配置到<code>kibana.yml</code>，kibana通过kibana_system用户访问elasticsearch执行后台任务.</p><pre><code class="language-bash">elasticsearch.username: &quot;kibana_system&quot;</code></pre><p>执行下列命令,将密码加密存放.</p><pre><code class="language-bash">./bin/kibana-keystore create./bin/kibana-keystore add elasticsearch.password=&gt;输入ES安全配置期间，生成的`kibana_system`密码</code></pre><h2 id="启动">启动</h2><pre><code class="language-bash">su - kibanacd /export/kibananohup ./bin/kibana &amp;</code></pre><p>ℹ️如果启用安全设置和用户配置，则kibana的web访问需要<code>elastic</code>用户权限.</p><h2 id="用户权限管理">用户权限管理</h2><p><a href="https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html">https://www.elastic.co/guide/en/kibana/7.15/tutorial-secure-access-to-kibana.html</a></p>]]></content>
       
       
       <categories>
@@ -4056,9 +4056,9 @@
       
         <tags>
             
-            <tag> 容器 </tag>
-            
             <tag> k8s </tag>
+            
+            <tag> 容器 </tag>
             
         </tags>
       
@@ -4620,9 +4620,9 @@
       
         <tags>
             
-            <tag> 安装 </tag>
-            
             <tag> openvpn </tag>
+            
+            <tag> 安装 </tag>
             
         </tags>
       
@@ -4876,7 +4876,7 @@
       <link href="posts/25732c33/"/>
       <url>posts/25732c33/</url>
       
-        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>lookup 插件可以配合 loop 循环实现 with_x 循环</p><h2 id="lookup-查询插件">lookup 查询插件</h2><blockquote><p>query 插件与 lookup 插件一样，区别在于 query 默认情况下，启用了wantlist=true。<br>wantlist 的意思是将返回的字符串构成一个列表<br>另外，query 可以简写为q</p></blockquote><h5 id="loop-关键词">loop 关键词</h5><p>用于将一个列表进行循环，默认循环单体变量是 item. 官方用来替代 with_xxx</p><p>用来遍历 lookup 结果集</p><blockquote><p>自定义loop循环单体变量为 xxx</p><pre><code class="language-yaml">loop_control:  loop_var: xxx</code></pre><p>loop_control 还有其它控制，比如</p><ul><li>index_var: var_name 循环索引.</li><li>pause: time 循环间隔时间</li><li>label: var_name 去掉 var_name 之外的不相干信息输出</li></ul></blockquote><h2 id="常用参数示例">常用参数示例</h2><h4 id="file-参数">file 参数</h4><blockquote><p>多个文件内容合并在一起，或以字符串逗号分隔输出，或以列表形式输出</p></blockquote><h4 id="ini-参数">ini 参数</h4><blockquote><p>获取 ini 配置信息</p></blockquote><pre><code class="language-ini"># ~/test.ini[testA]a1=zhangsana2=lisi[testB]b1=wangwu</code></pre><pre><code class="language-yaml">---- hosts: localhost  gather_facts: no  remote_user: zyh  tasks:    - name: get ini      debug:        msg: &quot;&#123;&#123; q('ini', 'a1 section=testA file=~/test.ini') &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; &#123;    &quot;msg&quot;: [        &quot;zhangsan&quot;    ]&#125;</code></pre><blockquote><p>当配置是 properties，可以追加 type=properties</p></blockquote><h4 id="dict参数">dict参数</h4><pre><code class="language-bash"># 结果集 [&#123;key: xxx, value: xxx&#125;, &#123;key: xxx, value: xxx&#125;]</code></pre><pre><code class="language-yaml">---- hosts: local  gather_facts: no  connection: local  vars:    users:      male: Bob      female: Maris  tasks:    - name: test vars 1      debug:        msg: &quot;&#123;&#123; item.key &#125;&#125;: &#123;&#123; item.value &#125;&#125;&quot;      loop: &quot;&#123;&#123; lookup('dict', users) &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; (item=&#123;'key': u'male', 'value': u'Bob'&#125;) =&gt; &#123;    &quot;msg&quot;: &quot;male: Bob&quot;&#125;ok: [localhost] =&gt; (item=&#123;'key': u'female', 'value': u'Maris'&#125;) =&gt; &#123;    &quot;msg&quot;: &quot;female: Maris&quot;&#125;</code></pre><h4 id="subelements参数">subelements参数</h4><pre><code class="language-bash"># 写法：&#123;&#123; lookup('subelements',list,'content') &#125;&#125;# 一个由相同结构字典组成的列表list，将字典中某一个元素key（值必须是列表）与字典剩余的元素（剩余的元素作为一个整体新字典），构建笛卡尔积。从而形成 item。每一个字典拆分组合后的 item 构建结果集 items# 结果集items=[[&#123;list.0.剩余kv&#125;,  list.0.key.0], [&#123;list.0.剩余kv&#125;,  list.0.key.1], [&#123;list.1.剩余kv&#125;,  list.1.key.0], [&#123;list.1.剩余kv&#125;,  list.1.key.1], ]</code></pre><pre><code class="language-yaml">---- hosts: local  gather_facts: no  connection: local  vars:          users:                  - name: Bob                    gender: male                    age: 18                    content:                            - eating                            - sleeping                            - play ogre                  - name: Maris                    gender: female                    age: 20                    content:                            - eating                            - sleeping                            - shopping  tasks:          - name: test vars 2            debug:                    msg: &quot;&#123;&#123; item.0.name &#125;&#125; - &#123;&#123; item.0.gender &#125;&#125; - &#123;&#123; item.1 &#125;&#125;&quot;            loop: &quot;&#123;&#123; lookup('subelements',users,'content') &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; (item=[&#123;u'gender': u'male', u'age': 18, u'name': u'Bob'&#125;, u'eating']) =&gt; &#123;    &quot;msg&quot;: &quot;Bob - male - eating&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'male', u'age': 18, u'name': u'Bob'&#125;, u'sleeping']) =&gt; &#123;    &quot;msg&quot;: &quot;Bob - male - sleeping&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'male', u'age': 18, u'name': u'Bob'&#125;, u'play ogre']) =&gt; &#123;    &quot;msg&quot;: &quot;Bob - male - play ogre&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'female', u'age': 20, u'name': u'Maris'&#125;, u'eating']) =&gt; &#123;    &quot;msg&quot;: &quot;Maris - female - eating&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'female', u'age': 20, u'name': u'Maris'&#125;, u'sleeping']) =&gt; &#123;    &quot;msg&quot;: &quot;Maris - female - sleeping&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'female', u'age': 20, u'name': u'Maris'&#125;, u'shopping']) =&gt; &#123;    &quot;msg&quot;: &quot;Maris - female - shopping&quot;&#125;</code></pre><blockquote><p>若有多个key需要附加，需要 nested 与  include_tasks 的组合实现</p></blockquote><h4 id="nested参数">nested参数</h4><blockquote><p>将多个列表进行笛卡尔积运算</p><ol><li>test3.yml 中拿到 users循环单体 user</li><li>针对循环单体 user引入附加任务 test3_1.yml</li><li>通过lookup插件nested，将 user字典中各key的value相互遍历，构建新列表 item</li></ol></blockquote><pre><code class="language-yaml">################ test3.yml---- hosts: local  gather_facts: no  connection: local  vars:          users:                  - name: Bob                    gender: male                           age: 18                    content:                            - eating                               - sleeping                             - play ogre                    specialty:                            - english                              - game                       - name: Maris                            gender: female                         age: 20                    content:                            - eating                               - sleeping                             - shopping                     specialty:                            - history                              - cooking    tasks:          - include_tasks: test3_1.yml             loop: &quot;&#123;&#123; users &#125;&#125;&quot;            loop_control:                    loop_var: user ################ test3_1.yml- loop: &quot;&#123;&#123; lookup('nested',user.name, user.age, user.content, user.specialty) &#125;&#125;&quot;  debug:    msg: &quot;name:&#123;&#123; item.0 &#125;&#125;, age:&#123;&#123; item.1 &#125;&#125;, &#123;&#123; item.2 &#125;&#125;, &#123;&#123; item.3 &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; (item=[u'Bob', 18, u'eating', u'english']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, eating, english&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'eating', u'game']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, eating, game&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'sleeping', u'english']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, sleeping, english&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'sleeping', u'game']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, sleeping, game&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'play ogre', u'english']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, play ogre, english&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'play ogre', u'game']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, play ogre, game&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'eating', u'history']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, eating, history&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'eating', u'cooking']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, eating, cooking&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'sleeping', u'history']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, sleeping, history&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'sleeping', u'cooking']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, sleeping, cooking&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'shopping', u'history']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, shopping, history&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'shopping', u'cooking']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, shopping, cooking&quot;&#125;</code></pre>]]></content>
+        <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>lookup 插件可以配合 loop 关键词循环实现 with_x 循环</p><h2 id="lookup-查询插件">lookup 查询插件</h2><p>通过不同的参数，返回结果集，结果集是一个列表。</p><blockquote><p>query 插件与 lookup 插件一样，区别在于 query 默认情况下，启用了wantlist=true。<br>wantlist 的意思是将返回的字符串构成一个列表<br>另外，query 可以简写为q</p></blockquote><h2 id="loop-关键词">loop 关键词</h2><p>loop 作用是将一个列表循环输出，每次循环时，将列表子元素赋值给 item 变量. 官方用来替代 with_xxx</p><h2 id="lookup和loop结合">lookup和loop结合</h2><p>loop用来遍历 lookup 结果集。</p><blockquote><p>自定义loop循环中的子元素变量为 xxx，代替item</p><pre><code class="language-yaml">loop_control:  loop_var: xxx</code></pre><p>loop_control 还有其它控制，比如</p><ul><li>index_var: var_name 循环索引.</li><li>pause: time 循环间隔时间</li><li>label: var_name 去掉 var_name 之外的不相干信息输出</li></ul></blockquote><h2 id="lookup常用参数示例">lookup常用参数示例</h2><h4 id="file-参数">file 参数</h4><blockquote><p>多个文件内容合并在一起，或以字符串逗号分隔输出，或以列表形式输出</p></blockquote><h4 id="ini-参数">ini 参数</h4><blockquote><p>获取 ini 配置信息</p></blockquote><pre><code class="language-ini"># ~/test.ini[testA]a1=zhangsana2=lisi[testB]b1=wangwu</code></pre><pre><code class="language-yaml">---- hosts: localhost  gather_facts: no  remote_user: zyh  tasks:    - name: get ini      debug:        msg: &quot;&#123;&#123; q('ini', 'a1 section=testA file=~/test.ini') &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; &#123;    &quot;msg&quot;: [        &quot;zhangsan&quot;    ]&#125;</code></pre><blockquote><p>当配置是 properties，可以追加 type=properties</p></blockquote><h4 id="dict参数">dict参数</h4><p>生成一个字典列表</p><pre><code class="language-bash"># 结果集 [&#123;key: xxx, value: xxx&#125;, &#123;key: xxx, value: xxx&#125;]</code></pre><pre><code class="language-yaml">---- hosts: local  gather_facts: no  connection: local  vars:    users:      male: Bob      female: Maris  tasks:    - name: test vars 1      loop: &quot;&#123;&#123; lookup('dict', users) &#125;&#125;&quot;      debug:        msg: &quot;&#123;&#123; item.key &#125;&#125;: &#123;&#123; item.value &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; (item=&#123;'key': u'male', 'value': u'Bob'&#125;) =&gt; &#123;    &quot;msg&quot;: &quot;male: Bob&quot;&#125;ok: [localhost] =&gt; (item=&#123;'key': u'female', 'value': u'Maris'&#125;) =&gt; &#123;    &quot;msg&quot;: &quot;female: Maris&quot;&#125;</code></pre><h4 id="subelements参数">subelements参数</h4><pre><code class="language-bash"># 写法：&#123;&#123; lookup('subelements',list,'content') &#125;&#125;# 一个由相同结构字典组成的列表list，将字典中某一个元素key（值必须是列表）与字典剩余的元素（剩余的元素作为一个整体新字典），构建笛卡尔积。从而形成 item。每一个字典拆分组合后的 item 构建结果集 items# 结果集items=[[&#123;list.0.剩余kv&#125;,  list.0.key.0], [&#123;list.0.剩余kv&#125;,  list.0.key.1], [&#123;list.1.剩余kv&#125;,  list.1.key.0], [&#123;list.1.剩余kv&#125;,  list.1.key.1], ]</code></pre><pre><code class="language-yaml">---- hosts: local  gather_facts: no  connection: local  vars:          users:                  - name: Bob                    gender: male                    age: 18                    content:                            - eating                            - sleeping                            - play ogre                  - name: Maris                    gender: female                    age: 20                    content:                            - eating                            - sleeping                            - shopping  tasks:          - name: test vars 2            debug:                    msg: &quot;&#123;&#123; item.0.name &#125;&#125; - &#123;&#123; item.0.gender &#125;&#125; - &#123;&#123; item.1 &#125;&#125;&quot;            loop: &quot;&#123;&#123; lookup('subelements',users,'content') &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; (item=[&#123;u'gender': u'male', u'age': 18, u'name': u'Bob'&#125;, u'eating']) =&gt; &#123;    &quot;msg&quot;: &quot;Bob - male - eating&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'male', u'age': 18, u'name': u'Bob'&#125;, u'sleeping']) =&gt; &#123;    &quot;msg&quot;: &quot;Bob - male - sleeping&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'male', u'age': 18, u'name': u'Bob'&#125;, u'play ogre']) =&gt; &#123;    &quot;msg&quot;: &quot;Bob - male - play ogre&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'female', u'age': 20, u'name': u'Maris'&#125;, u'eating']) =&gt; &#123;    &quot;msg&quot;: &quot;Maris - female - eating&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'female', u'age': 20, u'name': u'Maris'&#125;, u'sleeping']) =&gt; &#123;    &quot;msg&quot;: &quot;Maris - female - sleeping&quot;&#125;ok: [localhost] =&gt; (item=[&#123;u'gender': u'female', u'age': 20, u'name': u'Maris'&#125;, u'shopping']) =&gt; &#123;    &quot;msg&quot;: &quot;Maris - female - shopping&quot;&#125;</code></pre><blockquote><p>若有多个key需要附加，需要 nested 与  include_tasks 的组合实现</p></blockquote><h4 id="nested参数">nested参数</h4><blockquote><p>将多个列表进行笛卡尔积运算</p><ol><li>test3.yml 中拿到 users循环单体 user</li><li>针对循环单体 user引入附加任务 test3_1.yml</li><li>通过lookup插件nested，将 user字典中各key的value相互遍历，构建新列表 item</li></ol></blockquote><pre><code class="language-yaml">################ test3.yml---- hosts: local  gather_facts: no  connection: local  vars:          users:                  - name: Bob                    gender: male                           age: 18                    content:                            - eating                               - sleeping                             - play ogre                    specialty:                            - english                              - game                       - name: Maris                            gender: female                         age: 20                    content:                            - eating                               - sleeping                             - shopping                     specialty:                            - history                              - cooking    tasks:          - include_tasks: test3_1.yml             loop: &quot;&#123;&#123; users &#125;&#125;&quot;            loop_control:                    loop_var: user ################ test3_1.yml- loop: &quot;&#123;&#123; lookup('nested',user.name, user.age, user.content, user.specialty) &#125;&#125;&quot;  debug:    msg: &quot;name:&#123;&#123; item.0 &#125;&#125;, age:&#123;&#123; item.1 &#125;&#125;, &#123;&#123; item.2 &#125;&#125;, &#123;&#123; item.3 &#125;&#125;&quot;</code></pre><pre><code class="language-bash">ok: [localhost] =&gt; (item=[u'Bob', 18, u'eating', u'english']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, eating, english&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'eating', u'game']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, eating, game&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'sleeping', u'english']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, sleeping, english&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'sleeping', u'game']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, sleeping, game&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'play ogre', u'english']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, play ogre, english&quot;&#125;ok: [localhost] =&gt; (item=[u'Bob', 18, u'play ogre', u'game']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Bob, age:18, play ogre, game&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'eating', u'history']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, eating, history&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'eating', u'cooking']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, eating, cooking&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'sleeping', u'history']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, sleeping, history&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'sleeping', u'cooking']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, sleeping, cooking&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'shopping', u'history']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, shopping, history&quot;&#125;ok: [localhost] =&gt; (item=[u'Maris', 20, u'shopping', u'cooking']) =&gt; &#123;    &quot;msg&quot;: &quot;name:Maris, age:20, shopping, cooking&quot;&#125;</code></pre>]]></content>
       
       
       <categories>

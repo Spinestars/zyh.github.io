@@ -2592,18 +2592,20 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>lookup 插件可以配合 loop 循环实现 with_x 循环</p>
+<p>lookup 插件可以配合 loop 关键词循环实现 with_x 循环</p>
 <h2 id="lookup-查询插件">lookup 查询插件</h2>
+<p>通过不同的参数，返回结果集，结果集是一个列表。</p>
 <blockquote>
 <p>query 插件与 lookup 插件一样，区别在于 query 默认情况下，启用了wantlist=true。<br>
 wantlist 的意思是将返回的字符串构成一个列表<br>
 另外，query 可以简写为q</p>
 </blockquote>
-<h5 id="loop-关键词">loop 关键词</h5>
-<p>用于将一个列表进行循环，默认循环单体变量是 item. 官方用来替代 with_xxx</p>
-<p>用来遍历 lookup 结果集</p>
+<h2 id="loop-关键词">loop 关键词</h2>
+<p>loop 作用是将一个列表循环输出，每次循环时，将列表子元素赋值给 item 变量. 官方用来替代 with_xxx</p>
+<h2 id="lookup和loop结合">lookup和loop结合</h2>
+<p>loop用来遍历 lookup 结果集。</p>
 <blockquote>
-<p>自定义loop循环单体变量为 xxx</p>
+<p>自定义loop循环中的子元素变量为 xxx，代替item</p>
 <pre><code class="language-yaml">loop_control:
   loop_var: xxx
 </code></pre>
@@ -2614,7 +2616,7 @@ wantlist 的意思是将返回的字符串构成一个列表<br>
 <li>label: var_name 去掉 var_name 之外的不相干信息输出</li>
 </ul>
 </blockquote>
-<h2 id="常用参数示例">常用参数示例</h2>
+<h2 id="lookup常用参数示例">lookup常用参数示例</h2>
 <h4 id="file-参数">file 参数</h4>
 <blockquote>
 <p>多个文件内容合并在一起，或以字符串逗号分隔输出，或以列表形式输出</p>
@@ -2650,6 +2652,7 @@ b1=wangwu
 <p>当配置是 properties，可以追加 type=properties</p>
 </blockquote>
 <h4 id="dict参数">dict参数</h4>
+<p>生成一个字典列表</p>
 <pre><code class="language-bash"># 结果集 
 [&#123;key: xxx, value: xxx&#125;, &#123;key: xxx, value: xxx&#125;]
 </code></pre>
@@ -2664,9 +2667,9 @@ b1=wangwu
 
   tasks:
     - name: test vars 1
+      loop: &quot;&#123;&#123; lookup('dict', users) &#125;&#125;&quot;
       debug:
         msg: &quot;&#123;&#123; item.key &#125;&#125;: &#123;&#123; item.value &#125;&#125;&quot;
-      loop: &quot;&#123;&#123; lookup('dict', users) &#125;&#125;&quot;
 </code></pre>
 <pre><code class="language-bash">ok: [localhost] =&gt; (item=&#123;'key': u'male', 'value': u'Bob'&#125;) =&gt; &#123;
     &quot;msg&quot;: &quot;male: Bob&quot;

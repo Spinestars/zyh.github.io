@@ -2066,7 +2066,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a33e212/">
                      
-										    jenkins☞002声明式语法
+										    jenkins☞002Pipelines
                      
 									</a>
 								</li>
@@ -2253,7 +2253,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a6b5455/">
                      
-										    go☞004条件语句
+										    go☞004控制流
                      
 									</a>
 								</li>
@@ -2330,7 +2330,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/2dab3d00/">
                      
-										    go☞011异常处理
+										    go☞011特殊控制流
                      
 									</a>
 								</li>
@@ -2672,17 +2672,16 @@ os.OpenFile根据flag模式来创建/打开一个文件
 		<div class="index-li">
 			<a href="/posts/2dab3d00/">
 				<h2 class="index-title">
-					go☞011异常处理
+					go☞011特殊控制流
 				</h2>
 				<div class="index-brief">
 					前言
 三个奇特的关键字defer/recover/Panic
 defer
-defer用于当前函数作用域结束后，执行定义的代码
-写法
-defer func()  // func来自其它函数
-defer func()&#123;&#125;  // func为新建函数
-defer func(args1)
+defer用于当前函数作用域结束后，执行 defer 后定义的代码。也就是说 defer 可以推迟语句的执行。
+规则
+
+一个函数体内可以包含多个 defer，多个 defer 会暂存在队列中，并且多个 defer 的执行顺序是
 					...
 				</div>
 			</a>
@@ -2927,19 +2926,22 @@ main函数里调用函数A
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/98f86e16/">
+			<a href="/posts/8a6b5455/">
 				<h2 class="index-title">
-					go☞005函数
+					go☞004控制流
 				</h2>
 				<div class="index-brief">
-					前言
-如果有参数，则需提供参数类型
-如果有返回值，则需提供返回值类型
-结构
-func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
-    ...
-    return rtn_value
-&#125
+					if
+package main
+
+import &quot;fmt&quot;
+
+func givemeanumber() int &#123;
+    return -1
+&#125;
+
+func main() &#123;
+    if num := givemeanumber(); num &
 					...
 				</div>
 			</a>

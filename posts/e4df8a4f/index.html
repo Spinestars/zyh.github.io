@@ -2068,7 +2068,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a33e212/">
                      
-										    jenkins☞002声明式语法
+										    jenkins☞002Pipelines
                      
 									</a>
 								</li>
@@ -2255,7 +2255,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a6b5455/">
                      
-										    go☞004条件语句
+										    go☞004控制流
                      
 									</a>
 								</li>
@@ -2332,7 +2332,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/2dab3d00/">
                      
-										    go☞011异常处理
+										    go☞011特殊控制流
                      
 									</a>
 								</li>
@@ -2583,33 +2583,93 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="结构">结构</h2>
-<pre><code class="language-groovy">- src
-  - org
-    - devops
-      - tools.groovy // org.devops.tools (class)
-- vars
-- resources
-  - org
-    - devops
-      - bar.json // org.devops.bar (static data)
+	<h1>基本</h1>
+<p><a target="_blank" rel="noopener" href="https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/">https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/</a></p>
+<p>多个Jenkins工程的流水线可能包含重复代码，因此这些重复代码可以剥离出来从而被共享使用，这种东西叫共享库.</p>
+<h1>基本结构</h1>
+<pre><code class="language-groovy">(root)
++- src                     # Groovy source files
+|   +- org
+|       +- devops
+|           +- tools.groovy  # for org.devops.tools class
++- vars
+|   +- devops.groovy          # for global 'devops' variable
+|   +- devops.txt             # help for 'devops' variable
++- resources               # resource files (external libraries only)
+|   +- org
+|       +- devops
+|           +- tools.json    # static helper data for org.devops.Bar
 </code></pre>
-<h2 id="写法">写法</h2>
-<p>org.devops.tools</p>
+<h1>基本写法</h1>
+<p>/src/org/devops/tools.groovy</p>
 <pre><code class="language-groovy">package org.devops
 
-//格式化输出
-def PrintMes(value,color)&#123;
-    colors = ['red'  : &quot;\033[40;31m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot;,
-           'blue'  : &quot;\033[47;34m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot;,
-           'green' : &quot;\033[40;32m &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;$&#123;value&#125;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; \033[0m&quot; ]
+//格式化输出, 需要AnsiColor插件支持.
+def myPrint(content, color)&#123;
+    colors = ['red'   : &quot;\033[40;31m #############$&#123;content&#125;############# \033[0m&quot;,
+              'green' : &quot;\033[40;32m #############$&#123;content&#125;############# \033[0m&quot;,
+              'yellow' : &quot;\033[40;33m #############$&#123;content&#125;############# \033[0m&quot;,
+              'blue'  : &quot;\033[47;34m #############$&#123;content&#125;############# \033[0m&quot;]
     ansiColor('xterm') &#123;
         println(colors[color])
     &#125;
 &#125;
+
+//封装chatBot请求， 需要 http request 插件
+def myChat(reqMode,reqUrl,reqBody)&#123;
+    result = httpRequest httpMode: reqMode,
+                accept: &quot;APPLICATION_JSON_UTF8&quot;,
+                contentType: &quot;APPLICATION_JSON_UTF8&quot;,
+                consoleLogResponseBody: true,
+                ignoreSslErrors: true,
+                requestBody: reqBody,
+                url: reqUrl
+                quiet: true
+    return result
+&#125;
+
+//根据标签获取目标机器ip, 并写入到 .hosts 文件中
+//ipType: PublicIpAddress PrivateIpAddress
+def getEc2Ip(ipType, tagKey, tagValue, Region) &#123;
+    sh &quot;&quot;&quot;
+      export AWS_DEFAULT_REGION=$&#123;Regionssss&#125;
+      aws ec2 describe-instances --filters &quot;Name=tag:$&#123;tagKey&#125;,Values=$&#123;tagValue&#125;&quot; --query 'Reservations[*].Instances[*].[$&#123;ipType&#125;]' --output text &gt; .hosts
+      cat .hosts
+   &quot;&quot;&quot;
+&#125;
+
+def getRemoteIP(serverIP) &#123;
+    sh &quot;&quot;&quot;
+        echo $&#123;serverIP&#125; &gt; .hosts
+        cat .hosts
+    &quot;&quot;&quot;
+&#125;
+
+// 获取阿里云 acr 服务的动态 token, 得到全局变量 ACRUSER 和 ACRPWD
+// &#123;&quot;data&quot;:&#123;&quot;authorizationToken&quot;:&quot;abcde123456&quot;,&quot;tempUserName&quot;:&quot;cr_temp_user&quot;,&quot;expireDate&quot;:1612348203000&#125;&#125;
+def getAliAcrToken(url) &#123;
+    sh (
+        script: &quot;&quot;&quot;curl -sq $url &gt; acr.token;
+            cat acr.token | jq -r .'[&quot;data&quot;][&quot;tempUserName&quot;]' &gt; acr.user;
+            cat acr.token | jq -r .'[&quot;data&quot;][&quot;authorizationToken&quot;]' &gt;&gt; acr.pwd;
+        &quot;&quot;&quot;
+    )
+&#125;
+
+// 需要提前部署好私钥 /root/.remote.pem
+// 对应的公钥需要放置在目标机器的 $&#123;remoteUser&#125; 用户中
+// .hosts 存放在工作目录下
+def ansible(remoteUser,shellCommand) &#123;
+    sh &quot;&quot;&quot;
+        ansible -i .hosts --private-key /root/.remote.pem -u $&#123;remoteUser&#125; all -m shell -a &quot;$&#123;shellCommand&#125;&quot;
+    &quot;&quot;&quot;
+&#125;
 </code></pre>
 <h2 id="关联pipeline-libraries">关联pipeline libraries</h2>
 <p>jenkins 系统管理-系统配置-Global Pipeline Libraries</p>
+<blockquote>
+<p>这里将共享库放到git上，通过git拉去共享库.</p>
+</blockquote>
 <p><img src="/posts/e4df8a4f/image-20211102114354246.png" alt="image-20211102114354246"></p>
 <h2 id="调用pipeline-libraries">调用pipeline libraries</h2>
 <p>jenkins工程的pipeline代码开头添加，即jenkinsfile文件中</p>
@@ -2624,7 +2684,7 @@ def PrintMes(value,color)&#123;
     stages &#123;
         stage(&quot;第一个阶段&quot;) &#123;
             steps &#123;
-                tool.PrintMes(&quot;第一个步骤&quot;,&quot;green&quot;)
+                tool.myPrint(&quot;第一个步骤&quot;,&quot;green&quot;)
             &#125;
         &#125;
     &#125;
@@ -2643,7 +2703,7 @@ def PrintMes(value,color)&#123;
             
               <a href="/posts/8a33e212/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  jenkins☞002声明式语法
+                  jenkins☞002Pipelines
               </a>
             
         </div>

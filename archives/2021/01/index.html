@@ -2066,7 +2066,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a33e212/">
                      
-										    jenkins☞002声明式语法
+										    jenkins☞002Pipelines
                      
 									</a>
 								</li>
@@ -2253,7 +2253,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a6b5455/">
                      
-										    go☞004条件语句
+										    go☞004控制流
                      
 									</a>
 								</li>
@@ -2330,7 +2330,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/2dab3d00/">
                      
-										    go☞011异常处理
+										    go☞011特殊控制流
                      
 									</a>
 								</li>
@@ -2578,15 +2578,15 @@ he
 		<div class="index-li">
 			<a href="/posts/8a33e212/">
 				<h2 class="index-title">
-					jenkins☞002声明式语法
+					jenkins☞002Pipelines
 				</h2>
 				<div class="index-brief">
 					前言
-纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过jenkinsfile来配置。
-jenkinsfile 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
+纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。
+pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
 最后，脚本语言采用groovy语言编写。
 
-关于groovy的语法，可以简单的看看htt
+关于groovy的语法，可以简单的
 					...
 				</div>
 			</a>
@@ -2622,16 +2622,12 @@ jenkinsfile 有声明和脚本两种方式，声明式官方比较推荐。当�
 					jenkins☞003共享库
 				</h2>
 				<div class="index-brief">
-					结构
-- src
-  - org
-    - devops
-      - tools.groovy // org.devops.tools (class)
-- vars
-- resources
-  - org
-    - devops
-      - bar.json // org.devops.
+					基本
+https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
+多个Jenkins工程的流水线可能包含重复代码，因此这些重复代码可以剥离出来从而被共享使用，这种东西叫共享库.
+基本结构
+(root)
++- src           
 					...
 				</div>
 			</a>

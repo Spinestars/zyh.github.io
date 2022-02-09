@@ -2066,7 +2066,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a33e212/">
                      
-										    jenkins☞002声明式语法
+										    jenkins☞002Pipelines
                      
 									</a>
 								</li>
@@ -2253,7 +2253,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a6b5455/">
                      
-										    go☞004条件语句
+										    go☞004控制流
                      
 									</a>
 								</li>
@@ -2330,7 +2330,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/2dab3d00/">
                      
-										    go☞011异常处理
+										    go☞011特殊控制流
                      
 									</a>
 								</li>
@@ -2530,18 +2530,19 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/f8f9b4d0/">
+			<a href="/posts/1587f6e8/">
 				<h2 class="index-title">
-					监控 ☞ 邮件预警
+					zabbix☞agent和proxy（yum）
 				</h2>
 				<div class="index-brief">
-					# $1 收件人
-# $2 主题
-# $3 内容
-smtpServer=  # smtp 服务器地址，例如 smtp.gmail.com:xxx
-sendUserEmail='it@abc.com'
-sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web密码
-/usr/
+					
+https://repo.zabbix.com/zabbix/
+
+导入 zabbix 源
+rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+
+agent 安装
+
 					...
 				</div>
 			</a>
@@ -2554,38 +2555,6 @@ sendUserPassword=  # 一般发件人邮箱密码都是专用密码，并非web�
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/监控/">监控</a>
 										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/65ab632a/">
-				<h2 class="index-title">
-					redis☞安装
-				</h2>
-				<div class="index-brief">
-					docker 安装
-Docker Hub
-redisName=redis
-versionTag=6
-dataPath=/export/docker-data-redis
-mkdir -p $&#123;dataPath&#125;
-# redis.conf 请参考官方默认配置文档，默认配置文档地址：
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-05-14</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
 											>
 										
                                     </span>
@@ -2594,7 +2563,7 @@ mkdir -p $&#123;dataPath&#125;
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 
@@ -2604,17 +2573,21 @@ mkdir -p $&#123;dataPath&#125;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/421d605e/">
+			<a href="/posts/b35b5965/">
 				<h2 class="index-title">
-					日志☞logrotate安装
+					zabbix ☞ nginx
 				</h2>
 				<div class="index-brief">
-					前言
-logrotate 可以帮助我们进行日志切割，搭配 cron 服务，就可以自动的进行轮转
-logrotate 版本更新
+					
+确保相关目录地址如下：
+/etc/zabbix/shell
+/etc/zabbix/zabbix_agentd.d
+/usr/local/nginx/conf/server
 
-确保 logrotate 支持小时级别的管理，替换/usr/sbin/logrotate,并附加x权限，我这里有一个二进制版本logrotate
-或者也可以直接去 gith
+
+1，nginx增加配置 server_status.server
+
+cat &gt; /usr/local/nginx/
 					...
 				</div>
 			</a>
@@ -2625,7 +2598,7 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/">日志</a>
+                                        <a href="/categories/监控/">监控</a>
 										
 											>
 										
@@ -2635,7 +2608,69 @@ logrotate 版本更新
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/日志/其它/">其它</a>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/6c093771/">
+				<h2 class="index-title">
+					zabbix☞redis
+				</h2>
+				<div class="index-brief">
+					zabbix 模板
+
+自动发现规则
+
+
+
+
+过滤器
+
+
+
+监控项原型
+
+
+
+名称
+键值
+间隔
+历史记录
+趋势
+类型
+
+
+
+
+&#123;#IP&#125;,&#123;#TCP_PORT&#125; connected_clients[客户端连接数]
+redis_info[&#123;#IP&#12
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-14</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/zabbix/">zabbix</a>
 										
                                     </span>
                                 

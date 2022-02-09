@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		go☞004条件语句 | 
+		go☞004控制流 | 
 	 
 	zyh
 	</title>
@@ -2068,7 +2068,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a33e212/">
                      
-										    jenkins☞002声明式语法
+										    jenkins☞002Pipelines
                      
 									</a>
 								</li>
@@ -2255,7 +2255,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/8a6b5455/">
                      
-										    go☞004条件语句
+										    go☞004控制流
                      
 									</a>
 								</li>
@@ -2332,7 +2332,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/2dab3d00/">
                      
-										    go☞011异常处理
+										    go☞011特殊控制流
                      
 									</a>
 								</li>
@@ -2530,12 +2530,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	go☞004条件语句
+	go☞004控制流
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/8a6b5455/" class="leancloud_visitors" data-flag-title="go☞004条件语句"></span>
+			阅读量:<span id="/posts/8a6b5455/" class="leancloud_visitors" data-flag-title="go☞004控制流"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2583,8 +2583,7 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="前言">前言</h2>
-<h2 id="if">if</h2>
+	<h1>if</h1>
 <pre><code class="language-go">package main
 
 import &quot;fmt&quot;
@@ -2604,7 +2603,7 @@ func main() &#123;
 &#125;
 </code></pre>
 <p>在上述代码中，num 变量是在 if 中声明的，因此它的作用域仅限于 if 中。这种写法在 go 中很常见。</p>
-<h2 id="switch">switch</h2>
+<h1>switch</h1>
 <p>switch 旨在避免维护含有多个 if 的语句。</p>
 <ul>
 <li>满足变量</li>
@@ -2619,7 +2618,7 @@ func main() &#123;
 &#125;
 </code></pre>
 <p>在上述代码中，若case后面的值若匹配变量，就执行对应代码，否则执行default代码。default语句不是必须的。</p>
-<p>🤷‍♂️需要注意的是，switch 后的变量类型和case后的值类型要保持一致。如果不一致，则编译将失败。</p>
+<p>🤷‍♂️需要注意的是，switch 关键词后的变量类型和case后的值类型要保持一致。如果不一致，则编译将失败。</p>
 <ul>
 <li>满足条件</li>
 </ul>
@@ -2654,10 +2653,63 @@ func main() &#123;
     fmt.Println(time.Now().Weekday().String())
 &#125;
 </code></pre>
-<h3 id="switch特殊">switch特殊</h3>
+<h2 id="switch：fallthrough">switch：fallthrough</h2>
 <p><code>fallthrough</code>关键词</p>
-<p>当某个case执行语句中包含<code>fallthrough</code>的话，则紧邻的下一条<code>case</code>不需要判断条件就会直接执行</p>
-<h2 id="select">select</h2>
+<p>当某个case上下文中包含<code>fallthrough</code>的话，则会直接执行紧邻的下一条<code>case</code>且不判断条件。</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() &#123;
+    switch num := 15; &#123;
+    case num &lt; 50:
+        fmt.Printf(&quot;%d is less than 50\n&quot;, num)
+        fallthrough
+    case num &gt; 100:
+        fmt.Printf(&quot;%d is greater than 100\n&quot;, num)
+        fallthrough
+    case num &lt; 200:
+        fmt.Printf(&quot;%d is less than 200&quot;, num)
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="language-bash">15 is less than 50
+15 is greater than 100
+15 is less than 200
+</code></pre>
+<h1>for</h1>
+<pre><code class="language-go">func main()&#123;
+    sum := 0
+    for i := 0; i &lt; 100; i++ &#123;
+        sum += 1
+    &#125;
+    fmt.Printf(&quot;result: %d\n&quot;, sum)
+&#125;
+</code></pre>
+<p>go 没有 while 关键词。不过，可以用 for 去模拟。</p>
+<p>for 后可以直接跟条件表达式，表达式为 true 的时候，循环就不会结束；</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func main() &#123;
+    var num int64
+    rand.Seed(time.Now().Unix())
+    for num != 5 &#123;
+        num = rand.Int63n(15)
+        fmt.Println(num)
+    &#125;
+&#125;
+</code></pre>
+<p>若 for 后面没有任何表达式，则循环永远不会结束，除非循环体中包含 break。</p>
+<p>另外，循环体中遇到 continue 将终止当前迭代，直接进入下次循环。</p>
+<h1>select</h1>
 <p>select语句与switch类似，但它仅用来监听和channel有关的IO操作，当 IO 操作发生时，触发相应的动作。</p>
 <p>那么既然case条件与channel有关，则case条件必然伴随着写入和读取chan类型变量</p>
 <p>子句执行规则：</p>
@@ -2696,16 +2748,16 @@ func main() &#123;
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/98f86e16/">
+              <a href="/posts/318675c1/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go☞005函数
+                  go☞006函数-闭包
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/8c3e952e/">
-                go☞002常量
+              <a href="/posts/98f86e16/">
+                go☞005函数
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		jenkins☞002声明式语法 | 
+		jenkins☞002Pipelines | 
 	 
 	zyh
 	</title>
@@ -2068,7 +2068,7 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/8a33e212/">
                      
-										    jenkins☞002声明式语法
+										    jenkins☞002Pipelines
                      
 									</a>
 								</li>
@@ -2255,7 +2255,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a6b5455/">
                      
-										    go☞004条件语句
+										    go☞004控制流
                      
 									</a>
 								</li>
@@ -2332,7 +2332,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/2dab3d00/">
                      
-										    go☞011异常处理
+										    go☞011特殊控制流
                      
 									</a>
 								</li>
@@ -2530,12 +2530,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	jenkins☞002声明式语法
+	jenkins☞002Pipelines
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/8a33e212/" class="leancloud_visitors" data-flag-title="jenkins☞002声明式语法"></span>
+			阅读量:<span id="/posts/8a33e212/" class="leancloud_visitors" data-flag-title="jenkins☞002Pipelines"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2584,12 +2584,16 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h1>前言</h1>
-<p>纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过jenkinsfile来配置。</p>
-<p>jenkinsfile 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。</p>
+<p>纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。</p>
+<p>pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。</p>
 <p>最后，脚本语言采用groovy语言编写。</p>
 <blockquote>
 <p>关于groovy的语法，可以简单的看看https://www.w3cschool.cn/groovy/</p>
 </blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.jenkins.io/zh/doc/book/pipeline/syntax/#%E6%B5%81%E6%B0%B4%E7%BA%BF%E8%AF%AD%E6%B3%95">流水线语法</a></p>
+<p>基本流程如下：<br>
+Jenkins工程 =&gt; scm git =&gt; Jenkinsfile =&gt; pipeline</p>
+<h1>声明式语法</h1>
 <h2 id="agent">agent</h2>
 <p>用于指明运行程序的节点</p>
 <p>可用参数：</p>

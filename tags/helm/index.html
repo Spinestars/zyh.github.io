@@ -2066,7 +2066,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a33e212/">
                      
-										    jenkins☞002声明式语法
+										    jenkins☞002Pipelines
                      
 									</a>
 								</li>
@@ -2253,7 +2253,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/8a6b5455/">
                      
-										    go☞004条件语句
+										    go☞004控制流
                      
 									</a>
 								</li>
@@ -2330,7 +2330,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/2dab3d00/">
                      
-										    go☞011异常处理
+										    go☞011特殊控制流
                      
 									</a>
 								</li>
@@ -2530,15 +2530,18 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/51015304/">
+			<a href="/posts/710e3e49/">
 				<h2 class="index-title">
-					helm☞01入门
+					helm☞02chart
 				</h2>
 				<div class="index-brief">
 					前言
-helm： k8s的包管理器，这里是v3版本
-大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
-chart仓库：存储chart程序包，不包含程序，是一个
+Helm | Getting Started
+chart包目录结构：
+wordpress/
+  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
+  values.yaml         # 必选：chart 的默认配置 values
+  cha
 					...
 				</div>
 			</a>
@@ -2569,18 +2572,15 @@ chart仓库：存储chart程序包，不包含程序，是一个
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/710e3e49/">
+			<a href="/posts/51015304/">
 				<h2 class="index-title">
-					helm☞02chart
+					helm☞01入门
 				</h2>
 				<div class="index-brief">
 					前言
-Helm | Getting Started
-chart包目录结构：
-wordpress/
-  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
-  values.yaml         # 必选：chart 的默认配置 values
-  cha
+helm： k8s的包管理器，这里是v3版本
+大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
+chart仓库：存储chart程序包，不包含程序，是一个
 					...
 				</div>
 			</a>

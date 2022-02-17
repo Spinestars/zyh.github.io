@@ -2765,10 +2765,14 @@ func main() &#123;
 &#125;
 </code></pre>
 <h2 id="数组">数组</h2>
-<p>一维数组：<code>var &lt;var_name&gt; []&lt;type&gt;&#123;&#125;</code></p>
-<p>二维数组：<code>var &lt;var_name&gt; [][]&lt;type&gt;&#123;&#125;</code></p>
-<p>[] 表示数组长度，填入数字代表数组大小，填入<code>...</code>代表不确定数组大小由系统自动计算大小</p>
-<p>不管是一维数组，还是二维数组，只能存在一种类型</p>
+<p>一维数组：<code>var &lt;var_name&gt; [数组大小]&lt;type&gt;&#123;&#125;</code></p>
+<p>二维数组：<code>var &lt;var_name&gt; [一维数组大小][二维数组大小]&lt;type&gt;&#123;&#125;</code></p>
+<p>[] 表示数组长度：</p>
+<ul>
+<li>填入数字代表数组大小</li>
+<li>填入<code>...</code>代表不确定数组大小由系统根据初始化的值数量自动计算大小</li>
+</ul>
+<p>不管是一维数组，还是二维数组，只能存在一种类型。</p>
 <p>数组一旦定义则不可变的。</p>
 <p>最后，函数参数是数组的时候，默认是值传递。</p>
 <h3 id="例子">例子</h3>
@@ -2791,6 +2795,12 @@ func main()&#123;
 </code></pre>
 <p><code>array03</code>定义了一个不限行，限3列的数组，这里不限行<code>[]</code>的写法叫<code>切片</code></p>
 <h2 id="切片">切片</h2>
+<p>切片包含三个组件数据：</p>
+<ul>
+<li><strong>指向基础数组中第一个可访问元素的指针</strong>。此元素不一定是数组的第一个元素 <code>array[0]</code>。</li>
+<li><strong>切片的长度</strong>。切片中元素数目。</li>
+<li><strong>切片的容量</strong>。切片开头与基础数组结束之间的元素数目。</li>
+</ul>
 <p>切片是可变的数组，可以通过<code>append(切片,追加切片)</code>来扩展<code>切片</code></p>
 <p>切片是一个引用变量，因此切片变量存储的是内存地址，这个内存地址就是一个数组。</p>
 <p>💖所以当你函数参数是切片的时候，此时你传参传递是<code>引用传递</code></p>
@@ -2818,7 +2828,7 @@ s[3:] //截取3-最后，构建新切片，忽略末尾数字
     fmt.Println(i)
 &#125;
 </code></pre>
-<h2 id="集合">集合</h2>
+<h2 id="映射">映射</h2>
 <p>map 类似于 pythhon 的字典，由kv对组成，它是无序的，因此，在使用 range 返回的时候，无法决定返回顺序。</p>
 <h3 id="写法-2">写法</h3>
 <pre><code class="language-go">var m1 map[&lt;key_type&gt;]value_type = &#123;&quot;&quot;:&quot;&quot;&#125;

@@ -2627,6 +2627,13 @@ ramRoleName=`curl -sq http://100.100.100.200/latest/meta-data/ram/security-crede
 aliyun configure set --profile ecsRamRoleProfile  --mode EcsRamRole --ram-role-name $&#123;ramRoleName&#125; --region $&#123;Region&#125;
 EOF
 </code></pre>
+<h1>kubernetes中配置EcsRamRole</h1>
+<pre><code class="language-yaml">      annotations:
+        k8s.aliyun.com/eci-ram-role-name: role_name
+</code></pre>
+<h1>alpine Docker中调用aliyun命令</h1>
+<pre><code class="language-bash">apk add --no-cache libc6-compat musl
+</code></pre>
 <h1>基本使用</h1>
 <p>以 oss 为例：</p>
 <pre><code class="language-bash">## 设定 oss 的endpoint 地址，这里以内网地址为例
@@ -2661,9 +2668,9 @@ aliyun oss sync abc/ oss://test/ --update --delete --force -e $&#123;Endpoint&#1
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/6178b477/">
+              <a href="/posts/7fd13722/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  prometheus☞04mysql监控
+                  prometheus☞06rabbitmq监控
               </a>
             
         </div>

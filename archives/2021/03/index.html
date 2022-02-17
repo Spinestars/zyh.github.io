@@ -2667,16 +2667,14 @@ C:\Users\&lt;家目录&gt;\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu**
 					prometheus☞02外置prometheus监控k8s
 				</h2>
 				<div class="index-brief">
-					
-prometheus 需要访问kubernetes获取指标，访问kubernetes需要授权。
+					基本
+prometheus 获取 k8s 指标，需要从三个方面获取：
 
-授权认证
-创建服务账户
-kubectl create sa prometheus -n it
+kubelet 内置的 cadvisor
+kubernetes-apiserver 自身
+kube-state-metrics (第三方APP，需要提前自行安装)
 
-服务账户访问证书
-申请prometheus访问k8s的用户证书
-openssl genrsa -out 
+而上述三个方面，均需要 prometheus 去访问 k8s 
 					...
 				</div>
 			</a>

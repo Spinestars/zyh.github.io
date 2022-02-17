@@ -2530,6 +2530,45 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/6178b477/">
+				<h2 class="index-title">
+					prometheus☞04mysql监控
+				</h2>
+				<div class="index-brief">
+					前言
+Awesome Prometheus alerts | Collection of alerting rules (grep.to)
+prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)
+prom/
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2021-06-15</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/">监控</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/监控/prometheus/">prometheus</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/978d0c1d/">
 				<h2 class="index-title">
 					prometheus☞04redis监控
@@ -2607,45 +2646,6 @@ RabbitMQ-Overview dashboard
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6178b477/">
-				<h2 class="index-title">
-					prometheus☞04mysql监控
-				</h2>
-				<div class="index-brief">
-					前言
-Awesome Prometheus alerts | Collection of alerting rules (grep.to)
-prometheus/mysqld_exporter: Exporter for MySQL server metrics (github.com)
-prom/
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2021-06-15</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/">监控</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/监控/prometheus/">prometheus</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/bced4977/">
 				<h2 class="index-title">
 					prometheus☞k8s内置部署
@@ -2690,16 +2690,14 @@ https://prometheus-operator.dev/docs/kube-prometheus-on-kube
 					prometheus☞02外置prometheus监控k8s
 				</h2>
 				<div class="index-brief">
-					
-prometheus 需要访问kubernetes获取指标，访问kubernetes需要授权。
+					基本
+prometheus 获取 k8s 指标，需要从三个方面获取：
 
-授权认证
-创建服务账户
-kubectl create sa prometheus -n it
+kubelet 内置的 cadvisor
+kubernetes-apiserver 自身
+kube-state-metrics (第三方APP，需要提前自行安装)
 
-服务账户访问证书
-申请prometheus访问k8s的用户证书
-openssl genrsa -out 
+而上述三个方面，均需要 prometheus 去访问 k8s 
 					...
 				</div>
 			</a>
@@ -2911,11 +2909,9 @@ prometheus 监控的构建，相比 zabbix 来说，还是要麻烦一些。
 监控端组件
 搞之前，先创建一个网络
 docker network create promsnet
-grafana
 
-数据展示，部署在 proms 端
-
-
+Grafana 展示
+https://grafana
 					...
 				</div>
 			</a>

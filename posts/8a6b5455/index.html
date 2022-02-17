@@ -2608,6 +2608,7 @@ func main() &#123;
 <ul>
 <li>满足变量</li>
 </ul>
+<p>☠case 后不可跟条件表达式，只能跟值</p>
 <pre><code class="language-go">switch 变量/常量 &#123;
     case 值1:
         ...
@@ -2622,6 +2623,7 @@ func main() &#123;
 <ul>
 <li>满足条件</li>
 </ul>
+<p>☠case 后跟条件表达式，switch 后不可有变量</p>
 <pre><code class="language-go">switch &#123;
     case 条件1:
         ...

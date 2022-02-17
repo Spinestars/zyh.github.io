@@ -2617,17 +2617,15 @@ pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/e4df8a4f/">
+			<a href="/posts/3b5cd3e1/">
 				<h2 class="index-title">
-					jenkins☞003共享库
+					jenkins☞动态agent
 				</h2>
 				<div class="index-brief">
-					基本
-https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
-多个Jenkins工程的流水线可能包含重复代码，因此这些重复代码可以剥离出来从而被共享使用，这种东西叫共享库.
-基本结构
-(root)
-+- src           
+					流程
+jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
+凭证信息
+通过 kube config 里的加密信息获
 					...
 				</div>
 			</a>
@@ -2658,15 +2656,17 @@ https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3b5cd3e1/">
+			<a href="/posts/e4df8a4f/">
 				<h2 class="index-title">
-					jenkins☞动态agent
+					jenkins☞003共享库
 				</h2>
 				<div class="index-brief">
-					流程
-jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
-凭证信息
-通过 kube config 里的加密信息获
+					基本
+https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
+多个Jenkins工程的流水线可能包含重复代码，因此这些重复代码可以剥离出来从而被共享使用，这种东西叫共享库.
+基本结构
+(root)
++- src           
 					...
 				</div>
 			</a>

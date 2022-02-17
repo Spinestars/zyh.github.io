@@ -2572,7 +2572,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/监控/">监控</a>
+                        <a href="/tags/prometheus/">prometheus</a>
                         </i>
                     </span>
                 
@@ -2580,7 +2580,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/prometheus/">prometheus</a>
+                        <a href="/tags/监控/">监控</a>
                         </i>
                     </span>
                 
@@ -2591,15 +2591,17 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<blockquote>
-<p>prometheus 需要访问kubernetes获取指标，访问kubernetes需要授权。</p>
-</blockquote>
-<h2 id="授权认证">授权认证</h2>
-<h3 id="创建服务账户">创建服务账户</h3>
-<pre><code class="language-bash">kubectl create sa prometheus -n it
-</code></pre>
-<h3 id="服务账户访问证书">服务账户访问证书</h3>
-<p>申请prometheus访问k8s的用户证书</p>
+	<h1>基本</h1>
+<p>prometheus 获取 k8s 指标，需要从三个方面获取：</p>
+<ul>
+<li>kubelet 内置的 cadvisor</li>
+<li>kubernetes-apiserver 自身</li>
+<li>kube-state-metrics (第三方APP，需要提前自行安装)</li>
+</ul>
+<p>而上述三个方面，均需要 prometheus 去访问 k8s apiserver。这里需要提前创建授权token.</p>
+<h1>授权认证</h1>
+<h2 id="kube-apiserver-client访问证书">kube-apiserver-client访问证书</h2>
+<p>💥如果prometheus配置了<code>kubernetes_sd_configs.tls_config.insecure_skip_verify: true</code>，即禁用服务器证书认证，则无需这个步骤。</p>
 <pre><code class="language-bash">openssl genrsa -out prometheus.key 2048
 openssl req -new -key prometheus.key -out prometheus.csr -subj &quot;/CN=prometheus/O=it&quot;
 RequestStr=`cat prometheus.csr | base64 | tr -d &quot;\n&quot;`
@@ -2627,22 +2629,79 @@ openssl x509 -in prometheus.crt -noout -dates
 <blockquote>
 <p>保存好证书文件 prometheus.crt，prometheus配置所需</p>
 </blockquote>
-<h3 id="授权服务账户角色">授权服务账户角色</h3>
-<p>绑定服务账户prometheus到cluster-admin角色</p>
-<pre><code class="language-bash">kubectl create clusterrolebinding prometheus --clusterrole cluster-admin --serviceaccount=it:prometheus
+<h2 id="创建服务账户-集群角色-集群角色绑定对象">创建服务账户/集群角色/集群角色绑定对象</h2>
+<p>用于查询k8s资源。</p>
+<pre><code class="language-bash">kubectl create ns monitor
+</code></pre>
+<p>prometheus-rabc.yaml</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: monitor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - nodes
+  - services
+  - endpoints
+  - pods
+  - nodes/proxy
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - &quot;extensions&quot;
+  resources:
+    - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - &quot;&quot;
+  resources:
+  - configmaps
+  - nodes/metrics
+  verbs:
+  - get
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: monitor
 </code></pre>
 <p>因prometheus访问k8s需要拿到bearer_token，因此还需要获取服务账户prometheus的Tokens。</p>
-<pre><code class="language-bash">kubectl get sa prometheus -n it -o jsonpath=&#123;'.secrets[0].name'&#125; | more
-prometheus-token-s82mq
+<p>获取服务账户prometheus存储Token的secret对象名</p>
+<pre><code class="language-bash">➜   kubectl get sa prometheus -n monitor -o jsonpath=&#123;'.secrets[0].name'&#125; | more
+prometheus-token-2gljj
 </code></pre>
 <p>将Token进行解密</p>
-<pre><code class="language-bash">kubectl get secret prometheus-token-s82mq -n it -o jsonpath=&#123;'.data.token'&#125; | base64 -d &gt; prometheus.bearer_token
+<pre><code class="language-bash">➜   kubectl get secret prometheus-token-2gljj -n monitor -o jsonpath=&#123;'.data.token'&#125; | base64 -d &gt; prometheus.bearer_token
 </code></pre>
 <blockquote>
 <p>保存好解密后的 prometheus.bearer_token，prometheus配置所需</p>
 </blockquote>
-<h2 id="安装k8s指标采集服务">安装k8s指标采集服务</h2>
-<h3 id="从kube-state-metrics获取指标">从<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics">kube-state-metrics</a>获取指标</h3>
+<h1>安装kube-state-metrics</h1>
 <p>部署方式：<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard">点我</a></p>
 <p>指标文档：<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics/tree/master/docs">https://github.com/kubernetes/kube-state-metrics/tree/master/docs</a></p>
 <pre><code class="language-bash">➜  standard git:(master) ✗ ls -l
@@ -2652,29 +2711,87 @@ total 20
 -rw-r--r-- 1 zyh zyh 1134 Mar 12 17:29 deployment.yaml
 -rw-r--r-- 1 zyh zyh  197 Mar 12 12:07 service-account.yaml
 -rw-r--r-- 1 zyh zyh  410 Mar 12 12:07 service.yaml
-➜  standard git:(master) ✗ for i in *.yaml;do kubectl apply -f $i;done
 </code></pre>
 <blockquote>
-<p>需要注意的是，<a target="_blank" rel="noopener" href="http://deployment.xn--yamlkube-state-metricsk8s-3b63b637k9tejna412ib11erhyf.gcr.io/kube-state-metrics/kube-state-metrics%EF%BC%8C%E8%BF%99%E4%B8%AA%E5%9C%B0%E5%9D%80%E5%9B%BD%E5%86%85%E6%B2%A1%E6%B3%95%E8%AE%BF%E9%97%AE%E3%80%82%E5%9B%A0%E6%AD%A4%E9%9C%80%E8%A6%81%E6%9B%BF%E6%8D%A2%E4%B8%BA%E5%85%B6%E5%AE%83%E5%9C%B0%E5%9D%80%EF%BC%8C%E4%BE%8B%E5%A6%82%EF%BC%9Aquay.io/coreos/kube-state-metrics:v2.0.0-rc.0">deployment.yaml中kube-state-metrics的容器地址是k8s.gcr.io/kube-state-metrics/kube-state-metrics，这个地址国内没法访问。因此需要替换为其它地址，例如：quay.io/coreos/kube-state-metrics:v2.0.0-rc.0</a></p>
+<p>需要注意的是，<a target="_blank" rel="noopener" href="http://deployment.xn--yamlkube-state-metricsk8s-3b63b637k9tejna412ib11erhyf.gcr.io/kube-state-metrics/kube-state-metrics%EF%BC%8C%E8%BF%99%E4%B8%AA%E5%9C%B0%E5%9D%80%E5%9B%BD%E5%86%85%E6%B2%A1%E6%B3%95%E8%AE%BF%E9%97%AE%E3%80%82%E5%9B%A0%E6%AD%A4%E9%9C%80%E8%A6%81%E6%9B%BF%E6%8D%A2%E4%B8%BA%E5%85%B6%E5%AE%83%E5%9C%B0%E5%9D%80%E3%80%82">deployment.yaml中kube-state-metrics的容器地址是k8s.gcr.io/kube-state-metrics/kube-state-metrics，这个地址国内没法访问。因此需要替换为其它地址。</a></p>
 </blockquote>
-<h3 id="检查服务是否正常">检查服务是否正常</h3>
+<p>可以将项目clone下来，然后根据项目源代码里的Dockerfile来，自行build一个镜像。</p>
+<pre><code class="language-dockerfile">ARG GOVERSION=1.17
+ARG GOARCH=amd64
+FROM golang:$&#123;GOVERSION&#125; as builder
+ARG GOARCH
+ENV GOARCH=$&#123;GOARCH&#125;
+WORKDIR /go/src/k8s.io/kube-state-metrics/
+COPY . /go/src/k8s.io/kube-state-metrics/
+
+RUN make build-local
+
+FROM gcr.io/distroless/static:latest-$&#123;GOARCH&#125;
+COPY --from=builder /go/src/k8s.io/kube-state-metrics/kube-state-metrics /
+
+USER nobody
+
+ENTRYPOINT [&quot;/kube-state-metrics&quot;, &quot;--port=8080&quot;, &quot;--telemetry-port=8081&quot;]
+
+EXPOSE 8080 8081
+</code></pre>
+<p><code>GOARCH</code>指定环境，其余无需修改。</p>
+<h2 id="根据情况修改-service-对象">根据情况修改 service 对象</h2>
+<p>集群外的prometheus无法直接访问集群内的kube-state-metrics服务，因此需要暴漏kube-state-metrics。</p>
+<p>默认配置里，service对象是ClusterIP，仅针对了集群内部。</p>
+<ul>
+<li>prometheus + 阿里云 ASK</li>
+</ul>
+<p>通过内网负载均衡器提供。</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: kube-state-metrics
+    app.kubernetes.io/version: 2.3.0
+  name: kube-state-metrics
+  namespace: kube-system
+  annotations:
+    service.beta.kubernetes.io/alibaba-cloud-loadbalancer-spec: slb.s1.small
+    service.beta.kubernetes.io/alicloud-loadbalancer-address-type: intranet
+    service.beta.kubernetes.io/alibaba-cloud-loadbalancer-additional-resource-tags: &quot;project=cms-saas&quot;
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http-metrics
+    port: 8080
+    targetPort: http-metrics
+  - name: telemetry
+    port: 8081
+    targetPort: telemetry
+  selector:
+    app.kubernetes.io/name: kube-state-metrics
+</code></pre>
+<h2 id="安装">安装</h2>
+<pre><code class="language-bash">➜	kubectl apply -f .
+</code></pre>
+<h2 id="检查服务是否正常">检查服务是否正常</h2>
 <pre><code class="language-bash">curl ip:8080/metrics
 </code></pre>
-<h2 id="Prometheus基于k8s的自动发现">Prometheus基于k8s的自动发现</h2>
+<h2 id="遇到的问题">遇到的问题</h2>
+<p>性能不够（250m/512Mi，针对3000+ Job对象)，导致接口数据返回过慢，引发prometheus数据采集失败。</p>
+<h1>配置Prometheus</h1>
 <p><a target="_blank" rel="noopener" href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config</a></p>
-<h3 id="从apiservers获取cadvisor和kube-state-metrics的指标采集地址">从apiservers获取cadvisor和kube-state-metrics的指标采集地址</h3>
+<p>通过<code>role: node</code>发现 kubernetes 的节点上的kubelet地址，并将其作为刮取数据源</p>
+<p>通过<code>role: endpoints</code>发现 kubernetes service 对象的 endpoint 地址，从而找到 kube-state-metrics 的外部端点地址。</p>
 <pre><code class="language-yaml">  - job_name: 'k8s-cadvisor' # 抓容器, cadvisor被整合在kubelet中
     scheme: https
     metrics_path: /metrics
     tls_config:
-      ca_file: /etc/prometheus/conf/prometheus.crt
+      #ca_file: /etc/prometheus/conf/prometheus.crt
       insecure_skip_verify: true
     bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
     kubernetes_sd_configs:
     - role: node
       api_server: &quot;https://&lt;api_server_ip&gt;:6443&quot;
       tls_config:
-        ca_file: /etc/prometheus/conf/prometheus.crt
+        #ca_file: /etc/prometheus/conf/prometheus.crt
         insecure_skip_verify: true
       bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
     relabel_configs:
@@ -2700,79 +2817,78 @@ total 20
       target_label: container
       replacement: $1
       action: replace
-
-  - job_name: &quot;kube-state-metrics&quot; # 抓工作负载资源
-    scheme: http
-    tls_config:
-      ca_file: /etc/prometheus/conf/prometheus.crt
-      insecure_skip_verify: true
-    bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
-    kubernetes_sd_configs:
-    - role: endpoints
-      api_server: &quot;https://10.3.176.130:6443&quot;
-      tls_config:
-        ca_file: /etc/prometheus/conf/prometheus.crt
-        insecure_skip_verify: true
-      bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
-    relabel_configs:
-    - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name] # 将自动发现的endpoint只保留kube-state-metrics
-      regex: kube-state-metrics
-      replacement: $1
-      action: keep
-    - action: labelmap
-      regex: __meta_kubernetes_service_label_(.+)
-    - source_labels: [__meta_kubernetes_namespace]
-      action: replace
-      target_label: k8s_namespace
-    - source_labels: [__meta_kubernetes_service_name]
-      action: replace
-      target_label: k8s_sname
       
   - job_name: 'kubernetes-apiservers'
     scheme: https
     tls_config:
-      ca_file: /etc/prometheus/conf/prometheus.crt
+      #ca_file: /etc/prometheus/conf/prometheus.crt
       insecure_skip_verify: true
     bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
     kubernetes_sd_configs:
     - role: endpoints
-      api_server: &quot;https://10.3.176.130:6443&quot;
+      api_server: &quot;https://&lt;api_server_ip&gt;:6443&quot;
       tls_config:
-        ca_file: /etc/prometheus/conf/prometheus.crt
+        #ca_file: /etc/prometheus/conf/prometheus.crt
         insecure_skip_verify: true
       bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
     relabel_configs:
     - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
       action: keep
       regex: default;kubernetes;https
+
+  - job_name: &quot;kubernetes-state-metrics&quot; # 抓工作负载资源
+    scheme: http
+    tls_config:
+      #ca_file: /etc/prometheus/conf/prometheus.crt
+      insecure_skip_verify: true
+    bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
+    kubernetes_sd_configs:
+    - role: endpoints
+      api_server: &quot;https://&lt;api_server_ip&gt;:6443&quot;
+      tls_config:
+        #ca_file: /etc/prometheus/conf/prometheus.crt
+        insecure_skip_verify: true
+      bearer_token_file: /etc/prometheus/conf/prometheus.bearer_token
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name] # 将自动发现的endpoint只保留kube-state-metrics
+      regex: kube-state-metrics
+      replacement: $1
+      action: keep
+    metric_relabel_configs: # 排除部分kube-state-metrics采集项目
+    - source_labels: [__name__]
+      regex: &quot;^go_.*|^kube_job_.*&quot;  # 如果删除 job 会导致 job 对象监控失败.
+      action: drop
+    - source_labels: [pod]
+      regex: &quot;^无需监控的Pod名称前缀-.*&quot;
+      action: drop
 </code></pre>
-<h2 id="添加grafana模板">添加grafana模板</h2>
+<h1>添加grafana模板</h1>
 <p><a target="_blank" rel="noopener" href="https://grafana.com/grafana/dashboards/13105">https://grafana.com/grafana/dashboards/13105</a></p>
 <p><img src="/posts/e172b6e2/image-20210313180815651.png" alt="image-20210313180815651"></p>
 <p>上图是我在阿里云ASK中测试的最终效果图</p>
-<h3 id="调整模板">调整模板</h3>
-<p>如果你发现模板中，【微服务网络带宽】没有数据，则需要看下此板块SQL里的标签过滤是否有误。</p>
-<p>在我的环境里，模板中过滤的 name=‘^k8s_.*’ 不存在。因此删除SQL里的这个过滤即可。</p>
-<h2 id="添加预警">添加预警</h2>
+<h2 id="调整模板">调整模板</h2>
+<p>如果你发现模板中，【网络带宽】之类的没有数据，则需要看下此板块SQL里的标签过滤是否有误。</p>
+<p>在我的环境里，模板中过滤的 name=‘^k8s_.*’ 无法匹配到Pod。因此删除SQL里的这个过滤即可。</p>
+<h1>添加预警</h1>
 <p>需要明确，我们需要监控什么</p>
 <ol>
 <li>k8s本身各组件状态</li>
 <li>调度了多少个replicas？现在可用的有几个？</li>
 <li>Pod是否启动成功</li>
-<li>Pod重启了多少次？</li>
+<li>Pod重启速率？</li>
 </ol>
 <pre><code class="language-yaml">groups:
 - name: kubernetes
   rules:
-  - alert: kube-state-metrics down
+  - alert: kube endpoint down
     expr: (up&#123;job=&quot;kube-state-metrics&quot;&#125; or up&#123;job=&quot;kubernetes-apiservers&quot;&#125;) != 1  #0不正常，1正常
     for: 5m  #持续时间 ，表示持续5分钟获取不到信息，则触发报警
     labels:
       severity: error
       cluster: k8s
     annotations:
-      summary: &quot;Job: &#123;&#123; $labels.job &#125;&#125; down&quot;
-      description: &quot;Instance:&#123;&#123; $labels.instance &#125;&#125;, Job &#123;&#123; $labels.job &#125;&#125; stop &quot;
+      summary: &quot;Instance:&#123;&#123; $labels.instance &#125;&#125;, Job &#123;&#123; $labels.job &#125;&#125; stop &quot;
+      sourcedata: '&#123;&#123; $labels.job &#125;&#125;'
   - alert: JobFailed
     expr: kube_job_status_failed == 1
     for: 5m
@@ -2780,17 +2896,8 @@ total 20
       severity: error
       cluster: k8s
     annotations:
-      summary: 'Job: &#123;&#123; $labels.job &#125;&#125; failed'
-      description: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Job: &#123;&#123; $labels.job &#125;&#125; run failed.'
-  - alert: PodDown
-    expr: kube_pod_container_status_running != 1
-    for: 2s
-    labels:
-      severity: warning
-      cluster: k8s
-    annotations:
-      summary: 'Container: &#123;&#123; $labels.container &#125;&#125; down'
-      description: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Pod: &#123;&#123; $labels.pod &#125;&#125; is not running'
+      summary: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Job: &#123;&#123; $labels.job &#125;&#125; run failed.'
+      sourcedata: '&#123;&#123; $labels.job &#125;&#125;'
   - alert: PodReady
     expr: kube_pod_container_status_ready != 1
     for: 5m   #Ready持续5分钟，说明启动有问题
@@ -2798,17 +2905,35 @@ total 20
       severity: warning
       cluster: k8s
     annotations:
-      summary: 'Container: &#123;&#123; $labels.container &#125;&#125; ready'
-      description: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Pod: &#123;&#123; $labels.pod &#125;&#125; always ready for 5m'
+      summary: 'Namespace: &#123;&#123; $labels.namespace &#125;&#125;, Pod: &#123;&#123; $labels.pod &#125;&#125; not ready for 5m'
+      sourcedata: '&#123;&#123; $labels.job &#125;&#125;'
   - alert: PodRestart
-    expr: changes(kube_pod_container_status_restarts_total[30m])&gt;0 #最近30分钟pod重启次数
-    for: 2s
+    expr: kube_pod_container_status_last_terminated_reason == 1 and on(container) rate(kube_pod_container_status_restarts_total[5m]) * 300 &gt; 1
+    for: 5s
+    labels:
+      severity: error
+      cluster: k8s
+    annotations:
+      summary: 'namespace: &#123;&#123; $labels.namespace &#125;&#125;, pod: &#123;&#123; $labels.pod &#125;&#125; restart rate &gt; &#123;&#123; $value &#125;&#125;'
+      sourcedata: '&#123;&#123; $labels.job &#125;&#125;'
+  - alert: Deployment_replicas_available_num_low
+    expr: kube_deployment_status_replicas - kube_deployment_status_replicas_available &gt; 0
+    for: 1m
     labels:
       severity: warning
       cluster: k8s
     annotations:
-      summary: 'Container: &#123;&#123; $labels.container &#125;&#125; restart'
-      description: 'namespace: &#123;&#123; $labels.namespace &#125;&#125;, pod: &#123;&#123; $labels.pod &#125;&#125; restart &#123;&#123; $value &#125;&#125; times'
+      summary: 'namespace: &#123;&#123; $labels.namespace &#125;&#125;, deployment: &#123;&#123; $labels.deployment &#125;&#125; available low'
+      sourcedata: '&#123;&#123; $labels.job &#125;&#125;'
+  - alert: Deployment_replicas_unavailable
+    expr: kube_deployment_status_replicas &gt; 0 and kube_deployment_status_replicas_available == 0
+    for: 1m
+    labels:
+      severity: error
+      cluster: k8s
+    annotations:
+      summary: 'namespace: &#123;&#123; $labels.namespace &#125;&#125;, deployment: &#123;&#123; $labels.deployment &#125;&#125; unavailable'
+      sourcedata: '&#123;&#123; $labels.job &#125;&#125;'
 </code></pre>
 
 </div>

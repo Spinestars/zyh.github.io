@@ -2576,22 +2576,19 @@ main函数里调用函数A
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8a6b5455/">
+			<a href="/posts/98f86e16/">
 				<h2 class="index-title">
-					go☞004控制流
+					go☞005函数
 				</h2>
 				<div class="index-brief">
-					if
-package main
-
-import &quot;fmt&quot;
-
-func givemeanumber() int &#123;
-    return -1
-&#125;
-
-func main() &#123;
-    if num := givemeanumber(); num &
+					前言
+如果有参数，则需提供参数类型
+如果有返回值，则需提供返回值类型
+结构
+func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
+    ...
+    return rtn_value
+&#125
 					...
 				</div>
 			</a>
@@ -2622,19 +2619,22 @@ func main() &#123;
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/98f86e16/">
+			<a href="/posts/8a6b5455/">
 				<h2 class="index-title">
-					go☞005函数
+					go☞004控制流
 				</h2>
 				<div class="index-brief">
-					前言
-如果有参数，则需提供参数类型
-如果有返回值，则需提供返回值类型
-结构
-func &lt;func_name&gt; (&lt;args&gt; args_type) &lt;rtn_value_type&gt; &#123;
-    ...
-    return rtn_value
-&#125
+					if
+package main
+
+import &quot;fmt&quot;
+
+func givemeanumber() int &#123;
+    return -1
+&#125;
+
+func main() &#123;
+    if num := givemeanumber(); num &
 					...
 				</div>
 			</a>
@@ -2850,17 +2850,32 @@ rhel之类的，搜索【RPM installation on Centos, RHEL, or Fe
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6a4df400/">
+			<a href="/posts/3f8b5448/">
 				<h2 class="index-title">
-					django☞管理静态文件
+					django☞记忆点
 				</h2>
 				<div class="index-brief">
-					前言
-管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
-内置视图 | Django 文档 | Django (djangoproject.com)
-通用设置
-项目.settings.py中
-STATIC_URL 
+					.git文件
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+static
+
+# Backup files #
+*.bak
+
+# other
+.vscode
+.git
+db
+log
+
+Dockerfile
+FROM python:3.8-alpine
+L
 					...
 				</div>
 			</a>
@@ -2891,32 +2906,17 @@ STATIC_URL
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3f8b5448/">
+			<a href="/posts/6a4df400/">
 				<h2 class="index-title">
-					django☞记忆点
+					django☞管理静态文件
 				</h2>
 				<div class="index-brief">
-					.git文件
-# Django #
-*.log
-*.pot
-*.pyc
-__pycache__
-media
-static
-
-# Backup files #
-*.bak
-
-# other
-.vscode
-.git
-db
-log
-
-Dockerfile
-FROM python:3.8-alpine
-L
+					前言
+管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
+内置视图 | Django 文档 | Django (djangoproject.com)
+通用设置
+项目.settings.py中
+STATIC_URL 
 					...
 				</div>
 			</a>

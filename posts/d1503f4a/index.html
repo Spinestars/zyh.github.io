@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2286,9 +2308,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2297,9 +2319,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2583,7 +2605,53 @@ var _hmt = _hmt || [];
 </div>
 
 <div id="article-content">
-	<h2 id="os">os</h2>
+	<h2 id="log">log</h2>
+<p>log 是内置模块，无需导入</p>
+<pre><code class="language-go"># 直接打印
+log.Print(&quot;Hey, I'm a log!&quot;)
+2020/12/19 13:39:17 Hey, I'm a log!
+
+# 设置前缀
+log.SetPrefix(&quot;main():&quot;)
+main(): 2021/01/05 13:59:58 Hey, I'm a log!
+
+# 输出日志的同时退出程序，就如同执行os.Exit(1)
+log.Fatal(&quot;Hey, I'm an error log!&quot;)
+
+# 输出日志的同时执行 panic()
+log.Panic(&quot;Hey, I'm an error log!&quot;)
+
+# 输出日志到文件，file是打开的文件描述符
+log.SetOutput(file) 
+log.Print(&quot;Hey, I'm a log!&quot;)
+</code></pre>
+<h2 id="zerolog">zerolog</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/rs/zerolog">https://github.com/rs/zerolog</a></p>
+<p>日志框架，扩展log模块。通过日志框架可以设置日志级别或者配置不同的日志输出。</p>
+<pre><code class="language-bash">go get -u github.com/rs/zerolog/log
+</code></pre>
+<pre><code class="language-go">package main
+
+import (
+    &quot;github.com/rs/zerolog&quot;
+    &quot;github.com/rs/zerolog/log&quot;
+)
+
+func main()&#123;
+    zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+    log.Print(&quot;Hey!I'm a log message&quot;)
+    log.Debug().
+        Int(&quot;EmployeeID&quot;, 1001).
+        Msg(&quot;Getting Employee Information&quot;)
+    log.Debug().Str(&quot;Name&quot;, &quot;John&quot;).Send()
+&#125;
+</code></pre>
+<p>输出：</p>
+<pre><code>&#123;&quot;level&quot;:&quot;debug&quot;,&quot;time&quot;:1645513637,&quot;message&quot;:&quot;Hey!I'm a log message&quot;&#125;
+&#123;&quot;level&quot;:&quot;debug&quot;,&quot;EmployeeID&quot;:1001,&quot;time&quot;:1645513637,&quot;message&quot;:&quot;Getting Employee Information&quot;&#125;
+&#123;&quot;level&quot;:&quot;debug&quot;,&quot;Name&quot;:&quot;John&quot;,&quot;time&quot;:1645513637&#125;
+</code></pre>
+<h2 id="os">os</h2>
 <p><a target="_blank" rel="noopener" href="https://pkg.go.dev/os#File">os package - os - pkg.go.dev</a></p>
 <h3 id="文件">文件</h3>
 <p>os.OpenFile</p>
@@ -2885,7 +2953,7 @@ func main() &#123;
             
               <a href="/posts/83a93e23/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go-015包
+                  go-015自定义包
               </a>
             
         </div>

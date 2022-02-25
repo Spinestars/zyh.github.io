@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2286,9 +2308,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2297,9 +2319,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2594,10 +2616,61 @@ var _hmt = _hmt || [];
 	<h2 id="前言">前言</h2>
 <p>k8s的集群日志收集结构，一般分为下面几种：</p>
 <ol>
-<li>集群模式，节点级收集器，节点级收集器收集</li>
-<li>边车容器模式，边车容器只负责将日志流式传输到stdout和stderr，节点级收集器进行收集</li>
-<li>边车容器模式，边车容器直接从应用程序那收集日志，边车级收集器进行收集</li>
+<li>集群模式，节点级Pod收集器收集系统（k8s和容器）底层日志，并传输到日志系统。节点级收集器收集.</li>
+<li>边车容器模式，边车容器只负责将共享卷里的文件日志读取并传输到节点的stdout和stderr，然后节点级Pod收集器获取日志并传输到日志系统。节点级收集器进行收集</li>
+<li>边车容器模式，边车容器通过共享卷从应用程序那收集日志，然后传输到日志系统。边车级收集器进行收集</li>
+<li>应用容器模式，主程序直接将日志传输到日志系统。</li>
 </ol>
+<h2 id="集群模式（模式1）">集群模式（模式1）</h2>
+<p>采用daemonset方式在每一个节点上部署一个日志收集程序。对节点的日志目录采集：</p>
+<ul>
+<li>节点级日志：/var/log</li>
+<li>应用级日志：/var/lib/docker/containers</li>
+</ul>
+<p>例如：官方的示例EFK，elasticsearch - fluentd（节点级收集器）- kibana</p>
+<p>因为/var/lib/docker/containers的日志来源于stdout和stderr，所以如果应用程序因某些原因必须存在文件的时候，这种方案就不太合适。</p>
+<h2 id="边车容器模式（模式2）">边车容器模式（模式2）</h2>
+<p>解决了模式1不能收集文件日志的问题。模式2边车容器本身不消耗什么性能，比如用<code>tail -n+1 -f file.txt</code>命令就可以读取，但因为需要重新读取文件日志，且还需要在容器系统底层生成底层日志，对磁盘性能压力大。</p>
+<h2 id="边车容器模式（模式3）">边车容器模式（模式3）</h2>
+<p>解决了模式2的磁盘压力。模式3的边车容器直接读取文件日志，并发送到远程日志系统，缺点是边车容器程序占用资源高，例如filebeat或者flunetd。</p>
+<p>节点级日志：daemonset方式部署filebeat，收集/var/log/日志到logstash</p>
+<p>应用级日志：每一个运行的pod中添加一个日志收集容器filebeat，通过共享卷共享日志目录收集应用日志，将收集后的日志数据传输到logstash</p>
+<p>logstash 通过 filebeat 配置的标签创建不同的索引</p>
+<h3 id="logstash-配置">logstash 配置</h3>
+<pre><code class="language-yaml">input &#123;
+  beats &#123;
+    port =&gt; 5044
+  &#125;
+&#125;
+
+filter &#123;
+
+&#125;
+
+output &#123;
+  elasticsearch &#123;
+    hosts =&gt; [&quot;http://xxx:9200&quot;]
+    index =&gt; &quot;k8s-syslog-%&#123;+YYYY.MM.dd&#125;&quot;
+  &#125;
+&#125;
+
+stdout &#123;
+  codec =&gt; rubydebug
+&#125;
+</code></pre>
+<h3 id="节点级filebeat">节点级filebeat</h3>
+<pre><code class="language-yaml">- type: log
+  paths:
+    - /messages
+  fields:
+    app: k8s
+    type: module
+  fields_under_root: true
+  output.logstash:
+    hosts: ['xxx:5044']
+</code></pre>
+<pre><code class="language-javascript">apiVersion: v1kind: Podmetadata:  name: counterspec:  containers:  - name: count    image: busybox    args:    - /bin/sh    - -c    - &gt;      i=0;      while true;      do        echo &quot;$i: $(date)&quot; &gt;&gt; /var/log/1.log;        echo &quot;$(date) INFO $i&quot; &gt;&gt; /var/log/2.log;        i=$((i+1));        sleep 1;      done    volumeMounts:    - name: varlog      mountPath: /var/log  - name: count-log-1    image: busybox    args: [/bin/sh, -c, 'tail -n+1 -f /var/log/1.log']    volumeMounts:    - name: varlog      mountPath: /var/log  - name: count-log-2    image: busybox    args: [/bin/sh, -c, 'tail -n+1 -f /var/log/2.log']    volumeMounts:    - name: varlog      mountPath: /var/log  volumes:  - name: varlog    emptyDir: &#123;&#125;
+</code></pre>
 
 </div>
 
@@ -2613,8 +2686,8 @@ var _hmt = _hmt || [];
         </div>
         <div class="item right">
             
-              <a href="/posts/978d0c1d/">
-                prometheus☞04redis监控
+              <a href="/posts/6178b477/">
+                prometheus☞04mysql监控
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

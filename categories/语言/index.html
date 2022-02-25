@@ -2209,7 +2209,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2284,9 +2306,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2295,9 +2317,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2317,9 +2339,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2328,9 +2350,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2667,9 +2689,99 @@ background-size: cover;
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/786ba9af/">
+				<h2 class="index-title">
+					go-017测试
+				</h2>
+				<div class="index-brief">
+					前言
+TDD 测试驱动开发： 先编写测试程序，然后编写开发程序
+命令
+go test -v
+
+Go 将查找当前目录下所有 *_test.go 文件来运行测试。
+逻辑
+测试代码的逻辑是假想已有代码，通过构造测试对象并调用假想代码，如果假想代码【应该】有结果，则对结果进一步编写测试逻辑。
+例子
+银行转账
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-11-26</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/5086e20/">
+				<h2 class="index-title">
+					go-016并发
+				</h2>
+				<div class="index-brief">
+					前言
+go并发涉及两个概念：
+
+goroutine 轻量线程
+channel  通道
+
+go的程序运行在goroutine，并通过channel来发送和接收数据。
+因此，go不是通过共享内存通信，而是通过channel进行通信共享内存。
+goroutine
+go的第一个goroutine是main(
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-11-25</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/83a93e23/">
 				<h2 class="index-title">
-					go-015包
+					go-015自定义包
 				</h2>
 				<div class="index-brief">
 					main包
@@ -2717,14 +2829,15 @@ var logMessage = &quot;[
 					go☞012常用模块的记录
 				</h2>
 				<div class="index-brief">
-					os
-os package - os - pkg.go.dev
-文件
-os.OpenFile
-func OpenFile(name string, flag int, perm FileMode) (*File, error)
+					log
+log 是内置模块，无需导入
+# 直接打印
+log.Print(&quot;Hey, I'm a log!&quot;)
+2020/12/19 13:39:17 Hey, I'm a log!
 
-os.OpenFile根据flag模式来创建/打开一个文件
-这里的返回
+# 设置前缀
+log.SetPrefix(&quot;main():&quot;)
+main()
 					...
 				</div>
 			</a>
@@ -2757,7 +2870,7 @@ os.OpenFile根据flag模式来创建/打开一个文件
 		<div class="index-li">
 			<a href="/posts/2dab3d00/">
 				<h2 class="index-title">
-					go☞011特殊控制流
+					go☞010特殊控制流(defer panic recover)
 				</h2>
 				<div class="index-brief">
 					前言
@@ -2799,17 +2912,19 @@ defer用于当前函数作用域结束后，执行 defer 后定义的代码。�
 		<div class="index-li">
 			<a href="/posts/336ec0ac/">
 				<h2 class="index-title">
-					go☞010错误处理
+					go☞011错误处理
 				</h2>
 				<div class="index-brief">
 					前言
-Go语言检测和报告错误情况的方法是
-
-可能导致错误的函数将返回两个变量：一个值和一个错误代码，如果成功，则为nil；如果错误条件，则为== nil。
-在函数调用之后检查错误。如果发生错误（ if error != nil），则停止执行实际功能（或必要时整个程序）。
-
+Go语言检测和报告错误情况的常用方法：
+函数返回的多个值，并按照惯例将最后一个值定位错误。if条件判断这个错误值，如果为nil，则没有错误。
 例子
-package ma
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+    &quot
 					...
 				</div>
 			</a>
@@ -2846,100 +2961,15 @@ package ma
 				</h2>
 				<div class="index-brief">
 					前言
-接口和结构体一样，也是一种自定义数据类型，若多个数据类型都拥有相同的方法，为了方便的调用这些数据类型的方法，我们就可以将这些方法定义为一个接口。注意，这里只是说定义，并不是实现。
-反过来说，当一个数据类型实现了接口里的所有方法定义，就意味着这个数据类型实现了接口。
-接口类型变量，本质是一个指针
+接口和结构体一样，也是一种自定义数据类型，它是抽象类型。
+接口内只是定义了实现这个接口的具体类型所需要的方法名，并不处理方法的逻辑。
+✨这就如同你制作一艘飞船（具体类型），需要一个蓝图（接口）来告诉你飞船需要实现哪些功能（方法）。
+✨只不过飞船（具体类型）的这些功能（方法）如何制作，蓝图（接口
 					...
 				</div>
 			</a>
                 <div class="article-meta">
 				    <span>2020-10-09</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/a705a91a/">
-				<h2 class="index-title">
-					go☞008结构体
-				</h2>
-				<div class="index-brief">
-					前言
-结构体是多种类型的集合，它本身就是类型的一种，因此需要用type关键字来声明
-鉴于上述的性质，常用来描述一个具有多种属性的类。
-例如，人类，书本等。
-写法和使用
-当定义好一个struct后，就可以通过var声明struct类型了
-package main
-
-import &quot;fmt&q
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-08</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f8eb4b1b/">
-				<h2 class="index-title">
-					go☞007函数-方法
-				</h2>
-				<div class="index-brief">
-					前言
-一个函数是没有所有者的。
-但当一个函数有了所属对象后，则称之为方法
-在python中，一个类（接收者）定义方法，直接在类里写方法即可，只不过有一个self指向了它本身。
-在go中，没有这个self，因此定义方法需要指出所属者是谁。
-定义
-func (&lt;所属者&gt; &lt;所属者类型&
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-10-07</span>
                     
                             
                                 

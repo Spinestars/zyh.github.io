@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		go☞007函数-方法 | 
+		go☞008方法 | 
 	 
 	zyh
 	</title>
@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2285,10 +2307,10 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file active">
-									<a href="/posts/f8eb4b1b/">
+								<li class="file">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2296,10 +2318,10 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file">
-									<a href="/posts/a705a91a/">
+								<li class="file active">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2530,12 +2552,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	go☞007函数-方法
+	go☞008方法
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/f8eb4b1b/" class="leancloud_visitors" data-flag-title="go☞007函数-方法"></span>
+			阅读量:<span id="/posts/f8eb4b1b/" class="leancloud_visitors" data-flag-title="go☞008方法"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2584,16 +2606,19 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>一个函数是没有所有者的。</p>
-<p>但当一个函数有了所属对象后，则称之为<code>方法</code></p>
-<p>在python中，一个类（接收者）定义方法，直接在类里写方法即可，只不过有一个<code>self</code>指向了它本身。</p>
-<p>在go中，没有这个<code>self</code>，因此定义方法需要指出<code>所属者</code>是谁。</p>
+<p>一个函数是没有<code>接收方</code>的。但当一个函数有了<code>接收方</code>后，则称之为<code>方法</code>。</p>
+<p>在python中，一个类（接收方）定义方法，直接在类里写方法即可，只不过有一个<code>self</code>指向了它本身。这样，一个类对象就通过方法实现了行为。</p>
+<p>在go中，没有类概念，但当自定义的<code>结构</code>作为<code>方法</code>的<code>接收方</code>后，<code>结构</code>就既有了属性，又有了行为，从而实现了面向对象编程中的部分功能。</p>
+<p>✨并非只有自定义结构可以声明方法，其它类型也可以。</p>
 <h2 id="定义">定义</h2>
-<pre><code class="language-go">func (&lt;所属者&gt; &lt;所属者类型&gt;) 函数名() 函数返回类型&#123;
+<pre><code class="language-go">func (&lt;变量&gt; &lt;接收方类型&gt;) 方法名(形参) 方法返回类型&#123;
     ...
 &#125;
 </code></pre>
-<p>上面可以看出，方法和函数定义的区别，就是<code>函数名</code>前面添加了一个<code>(所属者 所属者类型)</code></p>
+<p>上面可以看出，方法和函数定义的区别，就是<code>函数名</code>前面添加了一个<code>(变量 接收方类型)</code>变量。</p>
+<p>这里的<code>变量</code>仅用于方法内<code>接收方</code>调用自身属性所用。</p>
+<p>💥接收方类型必须先创建，即结构必须先创建。</p>
+<p>✨方法可以绑定到多个结构类型上。</p>
 <h2 id="例子">例子</h2>
 <pre><code class="language-go">package main
 
@@ -2620,8 +2645,38 @@ func main()&#123;
 &#125;
 </code></pre>
 <p>上面的例子，有一个现象，就是<code>change()</code>并不能变更<code>person.name</code></p>
-<p>因为方法的所属者是<code>值</code>类型，所以<code>p.change()</code>其实是将p复制了一份传递给了方法的<code>self</code>变量。那么p和self的<code>内存地址</code>不一样，修改<code>self.name</code>当然就没有意义了。</p>
-<p>那么将方法的接收者变更为指针，就没得问题了。</p>
+<p>因为方法的<code>接收方person</code>是<code>值</code>类型，所以<code>p.change()</code>其实是将p复制了一份传递给了方法的<code>self</code>变量。因p和self的<code>内存地址</code>不一样，所以修改<code>self.name</code>不会改变<code>p.name</code>。</p>
+<p>如何改变?</p>
+<ol>
+<li>将方法内修改后的值通过 return 直接返回</li>
+</ol>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+// 定义所属者人类
+type person struct &#123;
+    name string
+&#125;
+
+// 定义人类的方法 change 
+func (self person) change() string&#123;
+    self.name = &quot;凡尔赛.&quot;+self.name
+    fmt.Printf(&quot;你的新名字可能变成了：%s\n&quot;, self.name)
+    return self.name
+&#125;
+
+// 主函数
+func main()&#123;
+    // 声明人类变量 p
+    p := person&#123;name:&quot;张三&quot;&#125;
+    // 调用 change 方法
+    p.name = p.change()
+    fmt.Printf(&quot;你的新名字是：%s\n&quot;, p.name)
+&#125;
+</code></pre>
+<h2 id="指针接收方">指针接收方</h2>
+<p>将方法的接收者变更为指针接收方。</p>
 <pre><code class="language-go">func (self *person) change()&#123;
     self.name = &quot;凡尔赛.&quot;+self.name
     fmt.Printf(&quot;你的新名字变成了：%s\n&quot;, self.name)
@@ -2630,8 +2685,188 @@ func main()&#123;
 func main()&#123;
     p := person&#123;name:&quot;张三&quot;&#125;
     (&amp;p).change()
-    fmt.Printf(&quot;你的新名字变更成功，它是：%s\n&quot;, p.name)
+    fmt.Printf(&quot;你的新名字是：%s\n&quot;, p.name)
 &#125;
+</code></pre>
+<p>什么时候会用到方法中的指针？</p>
+<ol>
+<li>参数太大，避免复制</li>
+</ol>
+<p>💥根据go的约定，要么结构的所有方法接收方都是指针类型，要么都是值类型，不要混用。</p>
+<h2 id="嵌套方法">嵌套方法</h2>
+<p>结构可以嵌套另一个结构，外层结构可以直接调用嵌套结构的方法</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+type triangle struct &#123;
+    size int
+&#125;
+
+type coloredTriangle struct &#123;
+    triangle
+    color string
+&#125;
+
+func (t *triangle) perimeter() int &#123;
+    return t.size * 3
+&#125;
+
+func (t *triangle) doubleSize() &#123;
+    t.size *= 2
+&#125;
+
+func main() &#123;
+    t := coloredTriangle&#123;
+        triangle&#123;3&#125;,
+        &quot;blue&quot;,
+    &#125;
+    t.doubleSize()
+    fmt.Println(&quot;NewSize:&quot;, t.size)
+    fmt.Println(&quot;Perimeter:&quot;, t.perimeter())
+&#125;
+</code></pre>
+<pre><code class="language-bash">OldSize: 3
+NewSize: 6
+Perimeter: 18
+</code></pre>
+<p>coloredTriangle 之所以可以调用 triangle 的方法 doubleSize 和 perimeter，原因在于 go 编译器自动创建了两个包装方法（包装器）。</p>
+<pre><code class="language-go">func (t *coloredTriangle) doubleSize() &#123;
+    t.triangle.size = t.triangle.doubleSize()
+&#125;
+
+func (t *coloredTriangle) perimeter() int &#123;
+    return t.triangle.perimeter()
+&#125;
+</code></pre>
+<h2 id="重载方法">重载方法</h2>
+<p>重载方法：表现上就是相同的方法名，不同的接收方。结构对象通过接收方来区分调用的方法。</p>
+<p>通过重载方法，可以在不修改主代码的情况下，改变主代码的输出。</p>
+<p>以上面的例子来说，就是主动去写包装方法，覆盖掉嵌套时候自动创建的包装方法。</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+type triangle struct &#123;
+    size int
+&#125;
+
+type coloredTriangle struct &#123;
+    triangle
+    color string
+&#125;
+
+func (t *triangle) perimeter() int &#123;
+    return t.size * 3
+&#125;
+
+
+// 重载方法perimeter
+func (t *coloredTriangle) perimeter() int &#123;
+    return t.size * 3 * 2
+&#125;
+
+func main() &#123;
+    t := coloredTriangle&#123;
+        triangle&#123;3&#125;,
+        &quot;blue&quot;,
+    &#125;
+    fmt.Println(&quot;Size:&quot;, t.size)
+    fmt.Println(&quot;Color Perimeter:&quot;, t.perimeter()) // 调用外结构的重载方法。
+    fmt.Println(&quot;NoColor Perimeter:&quot;, t.triangle.perimeter()) // 显示的调用嵌入结构的方法。
+&#125;
+</code></pre>
+<pre><code class="language-bash">Size: 3
+Color Perimeter: 18
+NoColor Perimeter: 9
+</code></pre>
+<h2 id="封装方法">封装方法</h2>
+<p>封装可以让方法或者属性变成私有，即仅可用于包内部。通过包的封装方法，可以仅提供部分方法供调用包的程序所用。</p>
+<p>go的封装方法仅用于程序包之间。</p>
+<p>将方法或者属性名的首字母大写即为公开，小写即为私有。</p>
+<pre><code class="language-bash">➜   tree
+.
+├── geometry
+│   ├── geometry.go
+│   └── go.mod # go mod init geometry
+├── go.mod # go mod init 022
+└── main.go
+
+➜   cat go.mod
+module 022
+
+go 1.17
+
+require geometry v0.0.0
+replace geometry =&gt; ./geometry
+</code></pre>
+<pre><code class="language-go">//geometry.go
+package geometry
+
+type Triangle struct &#123;
+    size int
+&#125;
+
+func (t *Triangle) doubleSize() &#123;
+    t.size *= 2
+&#125;
+
+func (t *Triangle) SetSize(size int) &#123;
+    t.size = size
+&#125;
+
+func (t *Triangle) Perimeter() int &#123;
+    t.doubleSize()
+    return t.size * 3
+&#125;
+</code></pre>
+<pre><code class="language-go">//main.go
+package main
+
+import (
+    &quot;fmt&quot;
+    &quot;geometry&quot;
+)
+
+func main()&#123;
+    t := geometry.Triangle&#123;&#125;
+    t.SetSize(3)
+    fmt.Println(&quot;Perimeter&quot;, t.Perimeter())
+    //fmt.Print(t.size)
+&#125;
+</code></pre>
+<pre><code class="language-bash">➜   go run main.go
+Perimeter 18
+</code></pre>
+<p>如果调用geometry私有属性size，则会报错</p>
+<pre><code class="language-go"># command-line-arguments
+./main.go:12:18: t.size undefined (cannot refer to unexported field or method size)
+</code></pre>
+<h2 id="其它类型的方法">其它类型的方法</h2>
+<p>默认情况下，无法基于基础类型声明方法，例如无法直接给string类型声明方法。</p>
+<p>但是可以基于基础类型创建新的类型，然后针对新的类型声明方法</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;strings&quot;
+)
+
+type stringupper string
+
+func(s stringupper) Upper() string &#123;
+    return strings.ToUpper(string(s)) // s 是 stringupper 类型，因此需要转成 string 类型，才可以被 ToUpper 方法调用
+&#125;
+
+func main()&#123;
+    s := stringupper(&quot;this is string&quot;) // stringupper 类型拥有 string() 方法，因此直接()传递字符串.
+    fmt.Println(s)
+    fmt.Println(s.Upper())
+&#125;
+</code></pre>
+<pre><code class="language-bash">➜   go run 023.go
+this is string
+THIS IS STRING
 </code></pre>
 
 </div>
@@ -2642,7 +2877,7 @@ func main()&#123;
             
               <a href="/posts/a705a91a/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go☞008结构体
+                  go☞007结构
               </a>
             
         </div>

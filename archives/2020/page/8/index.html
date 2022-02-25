@@ -2209,7 +2209,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2284,9 +2306,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2295,9 +2317,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2317,9 +2339,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2328,9 +2350,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2528,6 +2550,83 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/4235ddf4/">
+				<h2 class="index-title">
+					ansible☞常用模块-文本文件操作
+				</h2>
+				<div class="index-brief">
+					var 定义
+
+通过变量，修改playbook
+可直接写入 playbook， 也可以写入文件，然后 playbook 通过 vars_files 引用
+关键词:
+
+vars
+vars_files # 一次性加载文件内部数据，不支持文件动态修改或添加新变量
+
+
+简例
+---
+- hosts: loc
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-10</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/ansible/">ansible</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/3988a5f2/">
+				<h2 class="index-title">
+					linux☞输出个性化开机状态
+				</h2>
+				<div class="index-brief">
+					前沿
+觉得默认的登陆不够给力，无法忽悠机器，用wower的话来说，就是先祖忽悠着你
+效果图在此
+
+脚本在此
+
+将脚本放置到 /etc/profile.d/status.sh
+
+#!/bin/bash
+# Author: zyh
+# 需先安装 toilet 和 cowsay 命令
+# yum inst
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-05-09</span>
+                    
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/1ddb9d4e/">
@@ -2744,32 +2843,17 @@ ansible 某个 task 报错，会导致任务终止，而ignore_errors: true 可�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3f8b5448/">
+			<a href="/posts/6a4df400/">
 				<h2 class="index-title">
-					django☞记忆点
+					django☞管理静态文件
 				</h2>
 				<div class="index-brief">
-					.git文件
-# Django #
-*.log
-*.pot
-*.pyc
-__pycache__
-media
-static
-
-# Backup files #
-*.bak
-
-# other
-.vscode
-.git
-db
-log
-
-Dockerfile
-FROM python:3.8-alpine
-L
+					前言
+管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
+内置视图 | Django 文档 | Django (djangoproject.com)
+通用设置
+项目.settings.py中
+STATIC_URL 
 					...
 				</div>
 			</a>
@@ -2800,17 +2884,32 @@ L
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/6a4df400/">
+			<a href="/posts/3f8b5448/">
 				<h2 class="index-title">
-					django☞管理静态文件
+					django☞记忆点
 				</h2>
 				<div class="index-brief">
-					前言
-管理静态文件（比如图片、JavaScript、CSS） | Django 文档 | Django (djangoproject.com)
-内置视图 | Django 文档 | Django (djangoproject.com)
-通用设置
-项目.settings.py中
-STATIC_URL 
+					.git文件
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+media
+static
+
+# Backup files #
+*.bak
+
+# other
+.vscode
+.git
+db
+log
+
+Dockerfile
+FROM python:3.8-alpine
+L
 					...
 				</div>
 			</a>
@@ -2879,93 +2978,6 @@ special_time : @reboot @yearly @monthly @weekly @dail
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/b0929188/">
-				<h2 class="index-title">
-					ansible☞playbook-handle
-				</h2>
-				<div class="index-brief">
-					功能
-用一个短路判断来说，就是两者是串联关系，handlers 用来处理任务后续
-tasks &amp;&amp; handlers
-tasks &amp;&amp; handlers - listen （handlers 组）
-handlers 的 playbook 样本
----
-- hosts:
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-28</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/ansible/">ansible</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/2c2d50a0/">
-				<h2 class="index-title">
-					redis☞备份
-				</h2>
-				<div class="index-brief">
-					前言
-本文主要记录 redis 的两种数据磁盘固化方式。
-涉及到相关参数，简单的命令操作等。
-rdb
-
-通过fork一个子进程来存储某一时刻redis数据(bgsave方式)。rdb持久化是默认方式。
-特点：
-
-
-小幅度丢失数据(取决于save或者bgsave命令的执行周期)，这里我们不说save，
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-04-27</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/">数据库</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/数据库/redis/">redis</a>
 										
                                     </span>
                                 

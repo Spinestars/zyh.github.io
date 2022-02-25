@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2286,9 +2308,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2297,9 +2319,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2602,7 +2624,7 @@ var _hmt = _hmt || [];
 	<h1>基本</h1>
 <p>svc的NodePort解决了4层的对外服务提供。但7层的功能svc无法解决。例如https。</p>
 <p>ingress controller 可以将多个域名转发到service，提供负载均衡/SSL管理/虚拟命名主机/path路由。</p>
-<p>ingress controller 负责实现功能，不过配置规则由ingress对象实现。</p>
+<p>ingress controller 负责实现功能，不过路由配置规则由ingress对象实现。</p>
 <p>ingress-controller 的实现有很多，具体可以查看页面，k8s官方维护了<code>aws</code>，<code>gce</code>，<code>nginx</code>。</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers/">https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers/</a></p>
 <p>例如：</p>
@@ -2614,10 +2636,13 @@ var _hmt = _hmt || [];
 <h1>特点</h1>
 <ul>
 <li>
-<p>ingress 提供规则, 它需要和后端业务位于同一个ns中.</p>
+<p>ingress 提供路由规则给 ingress controller。ingress 和后端业务位于同一个 namespace 中。另外，configMap 也可以给 ingress controller 提供配置。</p>
 </li>
 <li>
-<p>ingress controller 可以单独位于一个ns，它会自动去解析 Ingress 对象（前提是 ingress 对象注解 annotations 中含有这个 ingress controller）。</p>
+<p>ingress controller 可以单独位于一个ns，它会自动去解析 Ingress 对象。</p>
+<ul>
+<li>需要 ingress 对象通过 ingressClass对象关联 ingress controller。</li>
+</ul>
 </li>
 <li>
 <p>ingress 针对的主要是 http 和 https. 这些之外的端口暴漏，如果仅仅是4层，则通过 Service.Type=NodePort 或者 Service.Type=LoadBalancer 即可。</p>
@@ -2627,20 +2652,13 @@ var _hmt = _hmt || [];
 <p>internet =&gt; Ingress =&gt; Service</p>
 <p><img src="/posts/7627a41d/image-20201023110559218.png" alt="image-20201023110559218"></p>
 <h1>组件</h1>
+<p>之后的信息以 ingress-nginx 为基准。</p>
 <h2 id="Ingress-controller">Ingress controller</h2>
-<ol>
-<li>
-<p>Ingress 想要正常运作, 需要Ingress控制器的支持.</p>
-</li>
-<li>
-<p>可以在k8s中部署多个Ingress控制器, 但是需要通过在 annotations 中用 ingress.class 注解强调想用哪一款.</p>
-</li>
-</ol>
-<p>这里我们选用 nginx ingress 控制器。它的部署文档是:</p>
+<p>部署文档：</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md">https://github.com/kubernetes/ingress-nginx/blob/master/docs/deploy/index.md</a></p>
 <p>或者</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">https://kubernetes.github.io/ingress-nginx/deploy/</a></p>
-<p>这里，我将通过helm来安装ingress-nginx. 其它安装方式. 在 <a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/deploy/">https://kubernetes.github.io/ingress-nginx/deploy/</a> 中可以找到很多不同环境的安装方式.</p>
+<p>这里，通过helm来安装ingress-nginx。</p>
 <p>当前 ingress-nginx 的仓库地址是: <a target="_blank" rel="noopener" href="https://hub.helm.sh/charts/ingress-nginx/ingress-nginx">https://hub.helm.sh/charts/ingress-nginx/ingress-nginx</a></p>
 <pre><code class="language-bash">helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
@@ -2648,13 +2666,25 @@ helm repo update
 <h3 id="配置ingress-nginx">配置ingress-nginx</h3>
 <pre><code class="language-bash">helm show values ingress-nginx/ingress-nginx &gt; values.yaml
 </code></pre>
-<p>将下列信息，添加到<code>values.yaml</code></p>
+<p>修改<code>values.yaml</code>，参考下列信息：</p>
+<ul>
+<li>
+<p>command 是之前的一种控制器关闭时防止丢失链接的方法。非必须添加。其中<code>sleep 5</code>是必须的，但原因不明。没有它，控制器关闭的时候会丢失连接。</p>
+</li>
+<li>
+<p>ingressClass 单 ingress 可以不用指定</p>
+</li>
+<li>
+<p>metrics 开启 prometheus 指标</p>
+</li>
+</ul>
 <pre><code class="language-yaml">controller:
   ......
   #lifecycle:
     #preStop:
       #exec:
         #command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;sleep 5; /usr/local/openresty/nginx/sbin/nginx -c /etc/nginx/nginx.conf -s quit; while pgrep -x nginx; do sleep 1; done&quot;]
+  ingressClass: nginx
   metrics:
     port: 10254
     # if this port is changed, change healthz-port: in extraArgs: accordingly
@@ -2664,8 +2694,6 @@ helm repo update
         prometheus.io/scrape: &quot;true&quot;
         prometheus.io/port: &quot;10254&quot;
 </code></pre>
-<p>#<code>sleep 5</code>是必须的，但原因不明。没有它，控制器关闭的时候会丢失连接。</p>
-<p>#<code>terminationGracePeriodSeconds: 300</code>延长pod终止前的宽恕期，不一定是最合适的时间，可能有点长，根据实际情况调整。</p>
 <h3 id="安装ingress-nginx">安装ingress-nginx</h3>
 <pre><code class="language-bash">kubectl create namespace ingress-nginx
 ## 查看最新的chat version
@@ -2688,7 +2716,7 @@ deployment.apps/ingress-nginx-controller   1/1     1            1           68m
 NAME                                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/ingress-nginx-controller-5886685d54   1         1         1       68m
 </code></pre>
-<p>我们可以看到 ingress-nginx 控制器创建了一个 <code>pod/ingress-nginx-controller-5886685d54-hf6l6</code>, 这个 pod 其实就是一个 nginx. 它通过 ingress 定义的规则，来动态的变更nginx配置，从而正确的将流量转发给后端应用的service对象.</p>
+<p>我们可以看到 ingress-nginx 控制器通过<code>deployment.apps/ingress-nginx-controller </code>创建了一个 <code>pod/ingress-nginx-controller-5886685d54-hf6l6</code>。这个 pod 其实就是一个 nginx. 它通过 ingress 定义的路由规则，来动态的变更nginx配置，从而正确的将流量转发给后端应用的service对象.</p>
 <pre><code class="language-bash">kubectl describe pod/ingress-nginx exec -it pod/ingress-nginx-controller-5886685d54-hf6l6
 ===
     Requests:
@@ -2739,6 +2767,7 @@ spec:
               number: 8002
 </code></pre>
 <p>🌟请注意, <code>networking.k8s.io/v1</code>必须是v1.19+才可以使用, 如果你不是,则应该使用<code>networking.k8s.io/v1beta1</code></p>
+<p>❤<code>spec.ingressClassName</code> 用来指定 ingressClass 对象。</p>
 <p>为了方便理解 ingress 的配置项，我参考 nginx 配置，来进行了一些横向对比：</p>
 <p>nginx.servername:  这里是 spec.rules[].host</p>
 <p>nginx.location: 这里是 spec.rules.http.paths[].path</p>

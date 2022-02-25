@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		go☞008结构体 | 
+		go☞007结构 | 
 	 
 	zyh
 	</title>
@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2285,10 +2307,10 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+								<li class="file active">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2296,10 +2318,10 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file active">
-									<a href="/posts/a705a91a/">
+								<li class="file">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2530,12 +2552,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	go☞008结构体
+	go☞007结构
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/a705a91a/" class="leancloud_visitors" data-flag-title="go☞008结构体"></span>
+			阅读量:<span id="/posts/a705a91a/" class="leancloud_visitors" data-flag-title="go☞007结构"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2584,7 +2606,7 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>结构体是多种类型的集合，它本身就是类型的一种，因此需要用<code>type</code>关键字来声明</p>
+<p>结构是多种类型的集合，它本身就是类型的一种，因此需要用<code>type</code>关键字来声明</p>
 <p>鉴于上述的性质，常用来描述一个具有多种属性的类。</p>
 <p>例如，人类，书本等。</p>
 <h2 id="写法和使用">写法和使用</h2>
@@ -2615,6 +2637,75 @@ func main()&#123;
     readBook(&amp;b)
 &#125;
 </code></pre>
+<pre><code class="language-bash">zhangsan lisi
+他们读取的书籍：魔兽世界
+</code></pre>
+<h2 id="结构和数据格式之间的编解码">结构和数据格式之间的编解码</h2>
+<p>定义结构的时候，添加数据格式映射关系</p>
+<pre><code class="language-go">package main
+
+import (
+    &quot;encoding/json&quot;
+    &quot;fmt&quot;
+)
+
+type Person struct &#123;
+    ID        int
+    FirstName string `json:&quot;name&quot;`
+    LastName  string
+    Address   string `json:&quot;address,omitempty&quot;`
+&#125;
+
+type Employee struct &#123;
+    Person
+    ManagerID int
+&#125;
+
+type Contractor struct &#123;
+    Person
+    CompanyID int
+&#125;
+
+func main() &#123;
+    employees := []Employee&#123;
+        Employee&#123;
+            Person: Person&#123;
+                LastName: &quot;Doe&quot;, FirstName: &quot;John&quot;,
+            &#125;,
+        &#125;,
+        Employee&#123;
+            Person: Person&#123;
+                LastName: &quot;Campbell&quot;, FirstName: &quot;David&quot;,
+            &#125;,
+        &#125;,
+    &#125;
+
+    data, _ := json.Marshal(employees)
+    fmt.Printf(&quot;%s\n&quot;, data)
+
+    var decoded []Employee
+    json.Unmarshal(data, &amp;decoded)
+    fmt.Printf(&quot;%v&quot;, decoded)
+&#125;
+</code></pre>
+<pre><code class="language-bash">[&#123;&quot;ID&quot;:0,&quot;name&quot;:&quot;John&quot;,&quot;LastName&quot;:&quot;Doe&quot;,&quot;ManagerID&quot;:0&#125;,&#123;&quot;ID&quot;:0,&quot;name&quot;:&quot;David&quot;,&quot;LastName&quot;:&quot;Campbell&quot;,&quot;ManagerID&quot;:0&#125;]
+[&#123;&#123;0 John Doe &#125; 0&#125; &#123;&#123;0 David Campbell &#125; 0&#125;]
+</code></pre>
+<p>在上面的代码中，有一段若改为下面代码，则报错</p>
+<pre><code class="language-go">        Employee&#123;
+            Person: Person&#123;
+                LastName: &quot;Doe&quot;, FirstName: &quot;John&quot;, &quot;Beijing&quot;
+            &#125;,
+        &#125;,
+</code></pre>
+<p>因为不可将初始化值方式和直接赋值方式混用。正确的写法如下：</p>
+<pre><code class="language-go">        Employee&#123;
+            Person: Person&#123;
+                LastName: &quot;Doe&quot;, FirstName: &quot;John&quot;, Address: &quot;Beijing&quot;
+            &#125;,
+        &#125;,
+</code></pre>
+<p>✨结构对象中没有初始化的属性，则会自动附加默认值。</p>
 
 </div>
 
@@ -2631,7 +2722,7 @@ func main()&#123;
         <div class="item right">
             
               <a href="/posts/f8eb4b1b/">
-                go☞007函数-方法
+                go☞008方法
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

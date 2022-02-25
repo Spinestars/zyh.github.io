@@ -2209,7 +2209,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2284,9 +2306,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2295,9 +2317,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2317,9 +2339,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2328,9 +2350,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2668,11 +2690,8 @@ Node的污点规则由两部分组成：污点:污点效果。
 					前言
 k8s的集群日志收集结构，一般分为下面几种：
 
-集群模式，节点级收集器，节点级收集器收集
-边车容器模式，边车容器只负责将日志流式传输到stdout和stderr，节点级收集器进行收集
-边车容器模式，边车容器直接从应用程序那收集日志，边车级收集器进行收集
-
-
+集群模式，节点级Pod收集器收集系统（k8s和容器）底层日志，并传输到日志系统。节点级收集器收集.
+边车容器模式，边车容器只负责将共享卷里的文件日志读取并传输到节点的stdout和stderr，然后节点级Pod收集器获取日志并传输到日志系统。节点
 					...
 				</div>
 			</a>

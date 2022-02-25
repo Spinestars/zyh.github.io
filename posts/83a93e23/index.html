@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		go-015包 | 
+		go-015自定义包 | 
 	 
 	zyh
 	</title>
@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file active">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2286,9 +2308,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2297,9 +2319,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2530,12 +2552,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	go-015包
+	go-015自定义包
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/83a93e23/" class="leancloud_visitors" data-flag-title="go-015包"></span>
+			阅读量:<span id="/posts/83a93e23/" class="leancloud_visitors" data-flag-title="go-015自定义包"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2642,11 +2664,10 @@ func main() &#123;
 &#125;
 </code></pre>
 <h2 id="初始化主程序模块">初始化主程序模块</h2>
-<p>告诉go你通过模块引用calculator包</p>
-<pre><code class="language-bash">go mod init packageName
+<pre><code class="language-bash">go mod init helloworld
 </code></pre>
 <h2 id="修正模块文件">修正模块文件</h2>
-<p>告知引用本地模块</p>
+<p>告知go引用本地模块 calculator 包</p>
 <pre><code class="language-go">module helloworld
 
 go 1.14

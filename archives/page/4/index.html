@@ -2209,7 +2209,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2284,9 +2306,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2295,9 +2317,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2317,9 +2339,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2328,9 +2350,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2658,15 +2680,17 @@ he
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3b5cd3e1/">
+			<a href="/posts/8a33e212/">
 				<h2 class="index-title">
-					jenkins☞动态agent
+					jenkins☞002Pipelines
 				</h2>
 				<div class="index-brief">
-					流程
-jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
-凭证信息
-通过 kube config 里的加密信息获
+					前言
+纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。
+pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
+最后，脚本语言采用groovy语言编写。
+
+关于groovy的语法，可以简单的
 					...
 				</div>
 			</a>
@@ -2697,17 +2721,15 @@ jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8a33e212/">
+			<a href="/posts/3b5cd3e1/">
 				<h2 class="index-title">
-					jenkins☞002Pipelines
+					jenkins☞动态agent
 				</h2>
 				<div class="index-brief">
-					前言
-纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。
-pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
-最后，脚本语言采用groovy语言编写。
-
-关于groovy的语法，可以简单的
+					流程
+jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
+凭证信息
+通过 kube config 里的加密信息获
 					...
 				</div>
 			</a>
@@ -2779,6 +2801,96 @@ https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
 		</div>	
 	
 		<div class="index-li">
+			<a href="/posts/786ba9af/">
+				<h2 class="index-title">
+					go-017测试
+				</h2>
+				<div class="index-brief">
+					前言
+TDD 测试驱动开发： 先编写测试程序，然后编写开发程序
+命令
+go test -v
+
+Go 将查找当前目录下所有 *_test.go 文件来运行测试。
+逻辑
+测试代码的逻辑是假想已有代码，通过构造测试对象并调用假想代码，如果假想代码【应该】有结果，则对结果进一步编写测试逻辑。
+例子
+银行转账
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-11-26</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/5086e20/">
+				<h2 class="index-title">
+					go-016并发
+				</h2>
+				<div class="index-brief">
+					前言
+go并发涉及两个概念：
+
+goroutine 轻量线程
+channel  通道
+
+go的程序运行在goroutine，并通过channel来发送和接收数据。
+因此，go不是通过共享内存通信，而是通过channel进行通信共享内存。
+goroutine
+go的第一个goroutine是main(
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-11-25</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/">语言</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/语言/go/">go</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/b5d7d6ee/">
 				<h2 class="index-title">
 					aliyun☞oss
@@ -2825,7 +2937,7 @@ https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
 		<div class="index-li">
 			<a href="/posts/83a93e23/">
 				<h2 class="index-title">
-					go-015包
+					go-015自定义包
 				</h2>
 				<div class="index-brief">
 					main包
@@ -2859,94 +2971,6 @@ var logMessage = &quot;[
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/d1503f4a/">
-				<h2 class="index-title">
-					go☞012常用模块的记录
-				</h2>
-				<div class="index-brief">
-					os
-os package - os - pkg.go.dev
-文件
-os.OpenFile
-func OpenFile(name string, flag int, perm FileMode) (*File, error)
-
-os.OpenFile根据flag模式来创建/打开一个文件
-这里的返回
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-11-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/go/">go</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/5290b79d/">
-				<h2 class="index-title">
-					网络☞S5700配置攻击朔源
-				</h2>
-				<div class="index-brief">
-					目的
-判断网络攻击来源
-设置管理员ip为白名单
-acl 3666
-rule 1 permit ip source 10.200.15.1 0.0.0.0
-
-根据IP判断
-cpu-defend policy 1
-auto-defend enable
-auto-defend attack-packet 
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-11-17</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/">其它</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/其它/网络/">网络</a>
 										
                                     </span>
                                 

@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2286,9 +2308,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2297,9 +2319,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2632,10 +2654,9 @@ var _hmt = _hmt || [];
 <p>可以同时定义多种类型</p>
 <p>根据变量值，自动判断变量类型</p>
 <p>省略 var 声明关键词</p>
-<p>⚠️</p>
 <ol>
-<li>只能用于函数体内。</li>
-<li>仅可以用于新变量。</li>
+<li>只能用于函数体内。💥</li>
+<li>仅可以用于新变量。💥</li>
 <li>多个变量单行同时声明并赋值的时候，如果某一个变量是结构体字段，则所有变量都需要提前声明。</li>
 </ol>
 <pre><code class="language-go">&lt;变量1&gt;, &lt;变量2&gt; := &lt;变量1的值&gt;,&lt;变量2的值&gt;
@@ -2765,15 +2786,16 @@ func main() &#123;
 &#125;
 </code></pre>
 <h2 id="数组">数组</h2>
-<p>一维数组：<code>var &lt;var_name&gt; [数组大小]&lt;type&gt;&#123;&#125;</code></p>
-<p>二维数组：<code>var &lt;var_name&gt; [一维数组大小][二维数组大小]&lt;type&gt;&#123;&#125;</code></p>
-<p>[] 表示数组长度：</p>
+<h3 id="写法">写法</h3>
+<p>一维数组：<code>var &lt;var_name&gt; [数组大小]&lt;type&gt;</code></p>
+<p>二维数组：<code>var &lt;var_name&gt; [一维数组大小][二维数组大小]&lt;type&gt;</code></p>
+<p>💥数组一旦定义则【长度不可变】，但你可以修改已有的元素。</p>
+<p>🤷‍♂️另外，通过var声明的数组会填充默认值。</p>
+<p>[] 填入<code>...</code>代表不确定数组大小由系统根据初始化的值数量自动计算大小</p>
 <ul>
-<li>填入数字代表数组大小</li>
-<li>填入<code>...</code>代表不确定数组大小由系统根据初始化的值数量自动计算大小</li>
+<li>[…]int{99: -1} 表示初始化一个100长度的数组，末位是-1，其余是0</li>
 </ul>
 <p>不管是一维数组，还是二维数组，只能存在一种类型。</p>
-<p>数组一旦定义则不可变的。</p>
 <p>最后，函数参数是数组的时候，默认是值传递。</p>
 <h3 id="例子">例子</h3>
 <pre><code class="language-go">package main
@@ -2797,28 +2819,57 @@ func main()&#123;
 <h2 id="切片">切片</h2>
 <p>切片包含三个组件数据：</p>
 <ul>
-<li><strong>指向基础数组中第一个可访问元素的指针</strong>。此元素不一定是数组的第一个元素 <code>array[0]</code>。</li>
+<li><strong>指向基础数组中切片可以访问的第一个元素的指针</strong>。此元素不一定是数组的第一个元素 <code>array[0]</code>。</li>
 <li><strong>切片的长度</strong>。切片中元素数目。</li>
-<li><strong>切片的容量</strong>。切片开头与基础数组结束之间的元素数目。</li>
+<li><strong>切片的容量</strong>。切片开头（切片可访问的第一个元素）与基础数组结束之间的元素数目。</li>
 </ul>
-<p>切片是可变的数组，可以通过<code>append(切片,追加切片)</code>来扩展<code>切片</code></p>
-<p>切片是一个引用变量，因此切片变量存储的是内存地址，这个内存地址就是一个数组。</p>
-<p>💖所以当你函数参数是切片的时候，此时你传参传递是<code>引用传递</code></p>
-<p><img src="/posts/759b68d8/image-20211021224622784.png" alt="image-20211021224622784"></p>
-<h3 id="写法">写法</h3>
+<p>切片是一个引用变量，因此切片变量存储的是内存地址，这个内存地址就是基础数组。</p>
+<p>在一个基础数组上产出的切片，因基础数组不变，所以内存开销都很低。</p>
+<p><img src="/posts/759b68d8/image-20220219152117217.png" alt="image-20220219152117217"></p>
+<p><img src="/posts/759b68d8/image-20220219161029354.png" alt="image-20220219161029354"></p>
+<h3 id="写法-2">写法</h3>
 <p>基本写法</p>
 <pre><code class="language-go">s1 := []int&#123;1,2,3,&#125; // 初始化一个内置3元素，容量3的切片s1
 </code></pre>
-<p>添加容量大小的写法</p>
-<pre><code class="language-go">s1 := make([]int, &lt;len&gt;, &lt;cap&gt;) // &lt;len&gt;是定义切片内元素的长度，&lt;cap&gt;是定义切片容纳元素的上限数
+<p>写法2：</p>
+<pre><code class="language-go">s1 := make([]int, &lt;len&gt;, &lt;cap&gt;) 
+// &lt;len&gt;是定义切片内元素的长度，&lt;cap&gt;是定义切片容纳元素的上限数
 </code></pre>
 <p>长度决定了切片的初始元素个数，容量决定了切片底层数组的元素个数</p>
 <h3 id="常用函数">常用函数</h3>
-<p><code>新切片 = append(&lt;目标切片&gt;, &lt;填充切片&gt;...)</code>，用来扩展目标切片并切出一个新切片。新切片是否在&lt;目标切片&gt;基础上操作取决于&lt;目标切片&gt;容量是否充足</p>
-<p><code>copy(&lt;目标切片&gt;, &lt;需复制切片&gt;)</code>，用来将切片复制到目标切片，目标切片有多长，就填充多长</p>
+<p>这两个函数是仅可以用于切片的，不可用于数组的。</p>
+<ul>
+<li>追加元素到切片</li>
+</ul>
+<p><code>新切片 := append(&lt;目标切片&gt;, &lt;填充元素&gt;)</code>，用来扩展目标切片并切出一个新切片。新切片是否在&lt;目标切片&gt;基础上操作取决于&lt;目标切片&gt;容量是否充足。</p>
+<p>&lt;填充元素&gt; 如果是一个切片，则需要在其后面追加<code>...</code>。</p>
+<p>就如同<code>新切片 := append(&lt;目标切片&gt;, &lt;填充切片&gt;...)</code></p>
+<ul>
+<li>完全复制一个切片</li>
+</ul>
+<p><code>copy(&lt;目标切片&gt;, &lt;需复制切片&gt;)</code>，用来将切片复制到目标切片，目标切片有多长，就填充多长。【目标切片是全新的，它的基础数组也是全新的】</p>
+<ul>
+<li>从切片里删除元素</li>
+</ul>
+<p>切片里没有内置删除功能.</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+func main() &#123;
+    letters := []string&#123;&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;&#125;
+    remove := 2
+    if remove &lt; len(letters) &#123;
+        fmt.Println(&quot;Before&quot;, letters, &quot;Remove &quot;, letters[remove])
+        letters = append(letters[:remove], letters[remove+1:]...)
+        fmt.Println(&quot;After&quot;, letters)
+    &#125;
+
+&#125;
+</code></pre>
 <h3 id="切片截取">切片截取</h3>
-<pre><code class="language-go">s[:3] //截取0-2构建新切片, 忽略首位数字
-s[3:] //截取3-最后，构建新切片，忽略末尾数字
+<pre><code class="language-go">s[:3] //忽略首位数字写法：截取0-2构建新切片
+s[3:] //忽略末尾数字写法：截取3-最后，构建新切片
 </code></pre>
 <h3 id="遍历输出">遍历输出</h3>
 <p>用<code>range</code>关键字</p>
@@ -2830,11 +2881,16 @@ s[3:] //截取3-最后，构建新切片，忽略末尾数字
 </code></pre>
 <h2 id="映射">映射</h2>
 <p>map 类似于 pythhon 的字典，由kv对组成，它是无序的，因此，在使用 range 返回的时候，无法决定返回顺序。</p>
-<h3 id="写法-2">写法</h3>
-<pre><code class="language-go">var m1 map[&lt;key_type&gt;]value_type = &#123;&quot;&quot;:&quot;&quot;&#125;
+<h3 id="写法-3">写法</h3>
+<pre><code class="language-go">// 通过 var 声明一个map，会自动附加默认值。
+var m1 map[&lt;key_type&gt;]value_type
+// 声明的时候
+m1 := map[&lt;key_type&gt;]value_type &#123;
+    &quot;key_type&quot;:&quot;value_type&quot;
+&#125;
 </code></pre>
-<p>😒如果单纯的声明变量，却没有赋值，则会创建一个nil map。nil map不可通过<code>m1[key]=value</code>加集合元素。</p>
-<p>如果单纯的声明，可以使用make()</p>
+<p>😒nil map不可通过<code>m1[key]=value</code>加集合元素。</p>
+<p>所以，如果单纯的声明一个空映射（就是什么都没有，nil都没有），可以使用make()</p>
 <pre><code class="language-go">package main
 import &quot;fmt&quot;
 

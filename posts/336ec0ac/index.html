@@ -9,7 +9,7 @@
 	
 	<title>
 	
-		go☞010错误处理 | 
+		go☞011错误处理 | 
 	 
 	zyh
 	</title>
@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2286,9 +2308,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2297,9 +2319,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2318,10 +2340,10 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file active">
-									<a href="/posts/336ec0ac/">
+								<li class="file">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2329,10 +2351,10 @@ var _hmt = _hmt || [];
 							</ul>
 			
 							<ul>
-								<li class="file">
-									<a href="/posts/2dab3d00/">
+								<li class="file active">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2530,12 +2552,12 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<h1 id="article-title">
-	go☞010错误处理
+	go☞011错误处理
 </h1>
 <div class="article-meta">
 	
 		<span>
-			阅读量:<span id="/posts/336ec0ac/" class="leancloud_visitors" data-flag-title="go☞010错误处理"></span>
+			阅读量:<span id="/posts/336ec0ac/" class="leancloud_visitors" data-flag-title="go☞011错误处理"></span>
 		</span>
 	
 	<span>zyh</span>
@@ -2584,37 +2606,80 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h2 id="前言">前言</h2>
-<p>Go语言检测和报告错误情况的方法是</p>
-<ul>
-<li>可能导致错误的函数将返回两个变量：一个值和一个错误代码，如果成功，则为nil；如果错误条件，则为== nil。</li>
-<li>在函数调用之后检查错误。如果发生错误（ if error != nil），则停止执行实际功能（或必要时整个程序）。</li>
-</ul>
+<p>Go语言检测和报告错误情况的常用方法：</p>
+<p>函数返回的多个值，并按照惯例将最后一个值定位错误。if条件判断这个错误值，如果为nil，则没有错误。</p>
 <h2 id="例子">例子</h2>
 <pre><code class="language-go">package main
 
 import (
     &quot;fmt&quot;
+    &quot;time&quot;
     &quot;errors&quot;
-    &quot;math&quot;
+//    &quot;os&quot;
 )
 
-func Sqrt(i float64) (float64, error) &#123;
-    if i&lt;0 &#123;
-        return 0,errors.New(&quot;错误：负数的平方根&quot;)
-    &#125;
-    return math.Sqrt(i), nil
+type Employee struct &#123;
+    ID        int
+    FirstName string
+    LastName  string
+    Address   string
 &#125;
 
-func main()&#123;
-    var i float64
-    i=-64
-    q, err := Sqrt(i)
+var ErrNotFound = errors.New(&quot;Employee not found&quot;)
+
+func main() &#123;
+    employee, err := getInformation(1001)
     if err != nil &#123;
-        fmt.Println(err)
+        fmt.Printf(&quot;%v&quot;, err)
+        // Something is wrong. Do something.
+    &#125; else &#123;
+        fmt.Print(employee)
     &#125;
-    fmt.Println(q)
+&#125;
+
+func getInformation(id int) (*Employee, error) &#123;
+    for tries := 0; tries &lt; 3; tries++ &#123;
+        employee, err := apiCallEmployee(1000)
+        if err == nil &#123;
+            return employee, nil
+        &#125;
+        fmt.Printf(&quot;Server is not responding, retrying...\n%v\n&quot;, err)
+        time.Sleep(time.Second * 2)
+    &#125;
+    return nil, fmt.Errorf(&quot;server has failed to respond to get the employee infotmation&quot;)
+&#125;
+
+func apiCallEmployee(id int) (*Employee, error) &#123;
+    if id != 1001 &#123;
+        return nil, ErrNotFound
+    &#125;
+    employee := Employee&#123;LastName: &quot;Doe&quot;, FirstName: &quot;John&quot;&#125;
+    return &amp;employee, nil
 &#125;
 </code></pre>
+<h2 id="常见的一些写法">常见的一些写法</h2>
+<pre><code class="language-go">fmt.Errorf(&quot;Got an error when getting the employee information: %v&quot;, err)
+errors.New('string')
+</code></pre>
+<p>这两种写法的区别，就是fmt.Errorf()支持格式化，errors.New()可以用来创建错误变量从而重复利用。</p>
+<pre><code class="language-go">var ErrNotFound = errors.New(&quot;Employee not found!&quot;)
+</code></pre>
+<p>ErrNotFound变量中Err前缀是错误变量常用的惯例写法。</p>
+<pre><code class="language-go">if errors.Is(err, ErrNotFound) &#123;
+    fmt.Printf(&quot;Not Fount: %v\n&quot;, err)
+&#125; else &#123;
+    fmt.Print(employee)
+&#125;
+</code></pre>
+<p>返回 true/false 用来判断比较错误变量。其中 ErrNotFound 是提前定义好的错误，err是需要比对的错误</p>
+<h2 id="推荐的错误用法">推荐的错误用法</h2>
+<ul>
+<li>始终检查是否存在错误，即使预期不存在。 然后正确处理它们，以免向最终用户公开不必要的信息。</li>
+<li>在错误消息中包含一个前缀，以便了解错误的来源。 例如，可以包含包和函数的名称。</li>
+<li>创建尽可能多的可重用错误变量。</li>
+<li>了解使用返回错误和 panic 之间的差异。 不能执行其他操作时再使用 panic。 例如，如果某个依赖项未准备就绪，则程序运行无意义（除非你想要运行默认行为）。</li>
+<li>在记录错误时记录尽可能多的详细信息（我们将在下一部分介绍记录方法），并打印出最终用户能够理解的错误。</li>
+</ul>
 
 </div>
 
@@ -2624,7 +2689,7 @@ func main()&#123;
             
               <a href="/posts/2dab3d00/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  go☞011特殊控制流
+                  go☞010特殊控制流(defer panic recover)
               </a>
             
         </div>

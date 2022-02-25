@@ -2211,7 +2211,29 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/83a93e23/">
                      
-										    go-015包
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
                      
 									</a>
 								</li>
@@ -2286,9 +2308,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/f8eb4b1b/">
+									<a href="/posts/a705a91a/">
                      
-										    go☞007函数-方法
+										    go☞007结构
                      
 									</a>
 								</li>
@@ -2297,9 +2319,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/a705a91a/">
+									<a href="/posts/f8eb4b1b/">
                      
-										    go☞008结构体
+										    go☞008方法
                      
 									</a>
 								</li>
@@ -2319,9 +2341,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/336ec0ac/">
+									<a href="/posts/2dab3d00/">
                      
-										    go☞010错误处理
+										    go☞010特殊控制流(defer panic recover)
                      
 									</a>
 								</li>
@@ -2330,9 +2352,9 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
-									<a href="/posts/2dab3d00/">
+									<a href="/posts/336ec0ac/">
                      
-										    go☞011特殊控制流
+										    go☞011错误处理
                      
 									</a>
 								</li>
@@ -2711,38 +2733,6 @@ func main() &#123;
 </code></pre>
 <p>若 for 后面没有任何表达式，则循环永远不会结束，除非循环体中包含 break。</p>
 <p>另外，循环体中遇到 continue 将终止当前迭代，直接进入下次循环。</p>
-<h1>select</h1>
-<p>select语句与switch类似，但它仅用来监听和channel有关的IO操作，当 IO 操作发生时，触发相应的动作。</p>
-<p>那么既然case条件与channel有关，则case条件必然伴随着写入和读取chan类型变量</p>
-<p>子句执行规则：</p>
-<p>select判断所有case条件是否与chan有关：</p>
-<p>与chan有关：</p>
-<p>​	判断case条件是否可完成chan的I/O操作：</p>
-<p>​		可完成：</p>
-<p>​			<code>随机</code>执行一个完成case条件的语句</p>
-<p>​		不可完成：</p>
-<p>​			有default子句：执行default子句</p>
-<p>​			无default子句：阻塞，直到出现一个可完成的case条件</p>
-<p>与chan无关：</p>
-<p>​	直接报错</p>
-<pre><code class="language-go">package main
-
-import (
-    &quot;fmt&quot;
-)
-
-func main() &#123;
-    ch1 := make(chan int,1)
-    for i := 0; i &lt; 10; i++&#123;
-        select &#123;
-        case x := &lt;- ch1:
-            fmt.Printf(&quot;ch1取出数据%d\n&quot;,x)
-        case ch1 &lt;- i:
-            fmt.Printf(&quot;ch1插入数据%d\n&quot;,i)
-        &#125;
-    &#125;
-&#125;
-</code></pre>
 
 </div>
 

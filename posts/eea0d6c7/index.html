@@ -2809,7 +2809,7 @@ var _hmt = _hmt || [];
 </li>
 <li>
 <p>jenkins 启用和配置 gitlab 插件。</p>
-<p><img src="/posts/eea0d6c7/image-20220327163856124.png" alt="image-20220327163856124"></p>
+<p>jenkins-gitops-ci<img src="/posts/eea0d6c7/image-20220327163856124.png" alt="image-20220327163856124"></p>
 </li>
 <li>
 <p>流水线工程启用 gitlab 事件推送，从而获取 jenkins 提供 webhook 地址，便于 gitlab 将代码变更事件推送到 jenkins.</p>
@@ -2828,46 +2828,39 @@ var _hmt = _hmt || [];
 <p>✨SCM的的git用户需要 read_repository 权限.</p>
 </li>
 </ol>
-<h2 id="Jenkinsfile">Jenkinsfile</h2>
-<pre><code class="language-groovy">pipeline&#123;
+<h2 id="配置仓库的Jenkinsfile">配置仓库的Jenkinsfile</h2>
+<pre><code>pipeline&#123;
 	environment &#123;
-		appName = &quot;spring-boot-helloworld&quot; // 程序名，亦是镜像仓库名
-		appVersion = &quot;v0.9.0&quot; // 程序版本，亦是镜像标签
-		registryCredential = &quot;image-admin&quot; // 镜像注册表登录凭据名，需提前在jenkins凭据功能里添加
-		registryUrl = &quot;https://xxx&quot; // 镜像注册表地址
+		appName = &quot;server&quot; // 程序名，亦是镜像仓库名
+		appVersion = &quot;v0.1.0&quot; // 程序版本，亦是镜像标签
+		appGit = &quot;http://git.xxx.com/it/test.git&quot;
+		registryCredential = &quot;harbor-jenkins-rw&quot; // 镜像注册表登录凭据名，需提前在jenkins凭据功能里添加
+		registryUrl = &quot;https://harbor.xxx.com/&quot; // 镜像注册表地址
+		registryProject = &quot;it&quot; // 项目名/命名空间
 		dockerImage = &quot;&quot; // 空的环境变量名
 	&#125;
     agent&#123;
         kubernetes&#123;
-            //label &quot;jenkins-agent&quot; // pod 模板标签
-            //cloud 'kubernetes'  // 插件配置名
-            inheritFrom &quot;maven-and-docker&quot; // 从标签为 maven-and-docker 的 pod 模板继承
+            inheritFrom &quot;dockerbuild&quot; // Pod模板名
         &#125;
     &#125;
 
     stages &#123;
-		stage(&quot;git&quot;) &#123;
+		stage(&quot;code: pull&quot;) &#123;
 			steps &#123;
-				git branch: 'master', url: 'https://github.com/abc.git' //从https://github.com/abc.git的master分支克隆代码
+				git credentialsId: 'gitgg-apps-ro', branch: 'master', url: appGit
 			&#125;
 		&#125;
-		stage('java: test and build') &#123;
-			steps &#123;
-				container('maven') &#123;
-					sh 'mvn clean test package'  //启动java程序的测试程序和打包为jar
-				&#125;
-			&#125;
-		&#125;
-        stage('docker image: build') &#123;
+        stage('docker: build') &#123;
 			steps &#123;
 				container('docker') &#123;
 					script &#123;
-						dockerImage = docker.build appName + &quot;:&quot; +appVersion  // 从代码里读取Dockerfile并打镜像，其中appName变量是镜像名，appVersion变量是镜像标签; dockerImage 是存储镜像信息
+						dockerImage = docker.build( registryProject + &quot;/&quot; + appName + &quot;:&quot; +appVersion, &quot;docker&quot;)  // build方法接收两个参数，第一个是镜像tag，第二个是dockerfile在代码里的相对目录
 					&#125;
 				&#125;
 			&#125;
 		&#125;
-		stage('docker image: push') &#123;
+		stage('docker: push') &#123;
 		    steps &#123;
 		        container('docker') &#123;
 		            script &#123;

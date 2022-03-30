@@ -2717,25 +2717,18 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/634b48fb/">
+			<a href="/posts/604e367f/">
 				<h2 class="index-title">
-					docker-常用的指令
+					docker☞非root用户执行程序
 				</h2>
 				<div class="index-brief">
-					基本
-记录一些常用的指令
-列表
-1. 查看镜像环境变量
-docker run -it --rm [image_name] env
-
-2. 删除
-删除所有dangling但没有被引用的镜像
-docker image prune
-
-删除所有没有被引用的本地卷
-docker volume prune
-
-删
+					前言
+容器内以root用户运行，则就可以看到挂载点内root用户的文件，这并不安全。
+但同时，容器里的用户需要与宿主机里的用户，拥有相同的ID，否则容器里的用户无法拥有足够的权限访问挂载点
+创建宿主机用户
+对应容器里的用户
+groupadd --gid 60000 test
+useradd --ui
 					...
 				</div>
 			</a>
@@ -2996,18 +2989,15 @@ spec:
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/710e3e49/">
+			<a href="/posts/51015304/">
 				<h2 class="index-title">
-					helm☞02chart
+					helm☞01入门
 				</h2>
 				<div class="index-brief">
 					前言
-Helm | Getting Started
-chart包目录结构：
-wordpress/
-  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
-  values.yaml         # 必选：chart 的默认配置 values
-  cha
+helm： k8s的包管理器，这里是v3版本
+大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
+chart仓库：存储chart程序包，不包含程序，是一个
 					...
 				</div>
 			</a>
@@ -3038,15 +3028,18 @@ wordpress/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/51015304/">
+			<a href="/posts/710e3e49/">
 				<h2 class="index-title">
-					helm☞01入门
+					helm☞02chart
 				</h2>
 				<div class="index-brief">
 					前言
-helm： k8s的包管理器，这里是v3版本
-大致流程：Chart仓库&lt;-helm-&gt;存储到helm客户端本地-&gt;config-&gt;kubeconfig-&gt;Kube Apiserver-&gt;Release
-chart仓库：存储chart程序包，不包含程序，是一个
+Helm | Getting Started
+chart包目录结构：
+wordpress/
+  Chart.yaml          # 必选：包含当前 chart 信息的 YAML 文件
+  values.yaml         # 必选：chart 的默认配置 values
+  cha
 					...
 				</div>
 			</a>

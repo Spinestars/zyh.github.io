@@ -2782,14 +2782,14 @@ var _hmt = _hmt || [];
 <p>根据gitlab的程序配置仓库，当配置变更的时候，执行jenkins cd工程，部署程序。</p>
 <p>在kubernetes中，配置仓库里就是kubernetes清单。</p>
 <h2 id="操作步骤">操作步骤</h2>
-<p>与gitlab的关联，方法与ci一致</p>
-<h2 id="Jenkinsfile">Jenkinsfile</h2>
+<p>与gitlab的关联，方法与ci一致.</p>
+<h2 id="配置仓库的Jenkinsfile">配置仓库的Jenkinsfile</h2>
 <pre><code class="language-groovy">pipeline&#123;
     agent&#123;
         kubernetes&#123;
             //label &quot;jenkins-agent&quot; // pod 模板标签
             //cloud 'kubernetes'  // 插件配置名
-            inheritFrom &quot;kubectl&quot; // 从标签为 maven-and-docker 的 pod 模板继承
+            inheritFrom &quot;kubectl&quot; // 从标签为 kubectl 的 pod 模板继承
         &#125;
     &#125;
 

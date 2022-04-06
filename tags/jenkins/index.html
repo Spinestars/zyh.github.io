@@ -2728,17 +2728,15 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
-			<a href="/posts/8a33e212/">
+			<a href="/posts/3b5cd3e1/">
 				<h2 class="index-title">
-					jenkins☞002Pipelines
+					jenkins☞基于k8s生成动态的Jenkins agent
 				</h2>
 				<div class="index-brief">
-					前言
-纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。
-pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
-最后，脚本语言采用groovy语言编写。
-
-关于groovy的语法，可以简单的
+					流程
+jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
+凭证信息
+jenkins-master 通过凭证来动态
 					...
 				</div>
 			</a>
@@ -2810,15 +2808,17 @@ https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3b5cd3e1/">
+			<a href="/posts/8a33e212/">
 				<h2 class="index-title">
-					jenkins☞基于k8s生成动态的Jenkins agent
+					jenkins☞002Pipelines
 				</h2>
 				<div class="index-brief">
-					流程
-jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
-凭证信息
-jenkins-master 通过凭证来动态
+					前言
+纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。
+pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
+最后，脚本语言采用groovy语言编写。
+
+关于groovy的语法，可以简单的
 					...
 				</div>
 			</a>

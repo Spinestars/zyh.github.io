@@ -2865,19 +2865,17 @@ spec:
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/932d1f08/">
+			<a href="/posts/451721ed/">
 				<h2 class="index-title">
-					k8s☞17-1调度之node污染和pod容忍
+					k8s☞18日志系统
 				</h2>
 				<div class="index-brief">
-					引用
-概念文档：污点和容忍度 | Kubernetes
-命令文档：Kubectl Reference Docs (kubernetes.io)
-污点/容忍概念
-Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。
-Node的污点规则由两部分组成：污点:污点效果。
+					前言
+k8s的集群日志收集结构，一般分为下面几种：
 
-
+集群节点级模式，节点程序收集系统（k8s和容器）底层日志，并传输到日志系统。
+伪边车容器模式，边车容器程序只负责将共享卷里的文件日志读取并传输到节点的stdout和stderr，然后节点级Pod收集器获取日志并传输到日志系统。
+边车容器模式，边车
 					...
 				</div>
 			</a>
@@ -2908,17 +2906,19 @@ Node的污点规则由两部分组成：污点:污点效果。
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/451721ed/">
+			<a href="/posts/932d1f08/">
 				<h2 class="index-title">
-					k8s☞18日志系统
+					k8s☞17-1调度之node污染和pod容忍
 				</h2>
 				<div class="index-brief">
-					前言
-k8s的集群日志收集结构，一般分为下面几种：
+					引用
+概念文档：污点和容忍度 | Kubernetes
+命令文档：Kubectl Reference Docs (kubernetes.io)
+污点/容忍概念
+Node上的污点规则，即Node告知调度器只有可以容忍污点规则的Pod才可以调度过来。
+Node的污点规则由两部分组成：污点:污点效果。
 
-集群节点级模式，节点程序收集系统（k8s和容器）底层日志，并传输到日志系统。
-伪边车容器模式，边车容器程序只负责将共享卷里的文件日志读取并传输到节点的stdout和stderr，然后节点级Pod收集器获取日志并传输到日志系统。
-边车容器模式，边车
+
 					...
 				</div>
 			</a>

@@ -3069,7 +3069,7 @@ spec:
 <ul>
 <li>
 <p>通过 rolebinding 将 user 和 clusterrole 关联起来，实现对一个 user 添加 namespace 级别的 clusterrole 权限。</p>
-<p>因为 clusterrole 是集群级别，而 rolebinding 是命名空间级别，将多个 rolebinding 和 user 关联到一个 clusterrole 下，可以将 clusterrole 的权限约束到 rolebinding 所在的命名空间。</p>
+<p>因为 clusterrole 是集群级别，而 rolebinding 是命名空间级别，通过不同namespace下的 rolebinding 将 user 关联到一个 clusterrole 下，可以将 clusterrole 的权限约束到 rolebinding 所在的命名空间。</p>
 </li>
 </ul>
 <blockquote>

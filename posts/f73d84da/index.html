@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2767,7 +2778,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/ELK/">ELK</a>
+                        <a href="/tags/docker/">docker</a>
                         </i>
                     </span>
                 
@@ -2775,7 +2786,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/docker/">docker</a>
+                        <a href="/tags/ELK/">ELK</a>
                         </i>
                     </span>
                 
@@ -2810,7 +2821,7 @@ var _hmt = _hmt || [];
 <p>ℹ️具体插件介绍查看：<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/logstash/current/codec-plugins.html">https://www.elastic.co/guide/en/logstash/current/codec-plugins.html</a></p>
 <p>三者的合作方式是：</p>
 <p>inputs将接收事件，并将事件写入内存队列中，每一个管道的工作线程从队列里获取数据，交给filters处理，最后通过output输出。</p>
-<p>需要注意的是，位于内存中的时间队列无法保证可靠性，因此如果不设置持久队列，则一旦出现意外，数据将丢失。</p>
+<p>需要注意的是，位于内存中的事件队列无法保证可靠性，因此如果不设置持久队列，则一旦出现意外，数据将丢失。</p>
 <p>关于队列持久，有两大类，第一类是inputs将事件写入到本地磁盘存储，第二类是在logstash前放一个其它服务，例如kafka或者redis，通过其它服务来提前构建高可用的事件队列.</p>
 <p>具体参考：<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/logstash/current/persistent-queues.html">https://www.elastic.co/guide/en/logstash/current/persistent-queues.html</a></p>
 <h2 id="安装">安装</h2>
@@ -2897,6 +2908,7 @@ bin/logstash-keystore remove
 <p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/logstash/current/filter-plugins.html">https://www.elastic.co/guide/en/logstash/current/filter-plugins.html</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/logstash/current/output-plugins.html">https://www.elastic.co/guide/en/logstash/current/output-plugins.html</a></p>
 <p>配置文件：config/pipelines.yml</p>
+<h3 id="示例1">示例1</h3>
 <pre><code class="language-yaml">- pipeline.id: upstream_server
   config.string: |
     input &#123;
@@ -2967,6 +2979,37 @@ bin/logstash-keystore remove
     &#125;
 </code></pre>
 <p>⚠️数据进kafka后，会转为json格式，因此需要在input中加入json编码器</p>
+<h3 id="示例2">示例2</h3>
+<pre><code class="language-yaml">- pipeline.id: k8scontainers
+  pipeline.workers: 3
+  queue.type: persisted
+  config.string: |
+    input &#123;
+      kafka &#123;
+        topics_pattern =&gt; &quot;zz.it.elk.k8s.containers&quot;
+        group_id =&gt; &quot;logstash&quot;
+        bootstrap_servers =&gt; &quot;data01:8123,data02:8123,data03:8123&quot;
+        security_protocol =&gt; &quot;SASL_PLAINTEXT&quot;
+        sasl_mechanism =&gt; &quot;SCRAM-SHA-256&quot;
+        sasl_jaas_config =&gt; &quot;org.apache.kafka.common.security.scram.ScramLoginModule required username='elk'  password='123456';&quot;
+        codec =&gt;&quot;json&quot;
+      &#125;
+    &#125;
+    filter &#123;
+      mutate &#123;
+        remove_tag =&gt; [&quot;beats_input_codec_plain_applied&quot;]
+      &#125;
+    &#125;
+    output &#123;
+      elasticsearch &#123;
+          hosts =&gt; [&quot;data01:9200&quot;,&quot;data02:9200&quot;,&quot;data03:9200&quot;]
+          user =&gt; &quot;index_admin&quot;
+          password =&gt; &quot;index_admin&quot;
+          manage_template =&gt; false
+          index =&gt; &quot;%&#123;[tags][0]&#125;-%&#123;[kubernetes][container][name]&#125;-%&#123;+YYYY.MM.dd&#125;&quot;
+        &#125;
+    &#125;
+</code></pre>
 <h3 id="创建管道所需的ES写权限账户">创建管道所需的ES写权限账户</h3>
 <p>⚠️<code>output.elasticsearch.user</code>的用户需要在ES中创建。可以使用kibana用户管理中去创建，其用户的角色权限示例如下图所示：</p>
 <p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/logstash/current/ls-security.html">https://www.elastic.co/guide/en/logstash/current/ls-security.html</a></p>
@@ -3152,7 +3195,7 @@ EOF
 <p>最后，一个至关重要的点，logstash始终通过【检查点文件】来判断事件。</p>
 <p>⚠️ logstash突然故障：</p>
 <ul>
-<li>会导致没有记录在检查点文件里的<code>buffered</code>事件丢失。(这个buffered不确定是不是指的数据队列，也可能指的是内存的buffer空间)</li>
+<li>会导致没有记录在检查点文件里的<code>buffered</code>事件丢失。(也就是还未写入磁盘的内存队列里的事件)</li>
 <li>会导致已经完成处理但却来不及更新进检查点文件的事件被重复输出。</li>
 </ul>
 <p><code>pipelines.yml</code>示例配置：</p>

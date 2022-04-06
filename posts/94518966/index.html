@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2791,9 +2802,28 @@ var _hmt = _hmt || [];
 <p>你总能在k8s的各类资源中找到云环境对应的资源影子. 如果你用过GCP，你会更有这种感觉.</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/workloads/pods/">https://kubernetes.io/docs/concepts/workloads/pods/</a></p>
 <h2 id="Pod与容器">Pod与容器</h2>
-<p>一个pod可以拥有多个容器，并且包含一个init的特殊容器，它始终首先运行。</p>
+<p>一个pod可以拥有多个容器。</p>
+<p>pod 内包含多个容器，所以多个容器共享以下资源。</p>
+<ul>
+<li>
+<p>PID命名空间: pod内的进程能互相看到PID</p>
+</li>
+<li>
+<p>网络命名空间: pod中的多个容器共享一个ip (唯一)</p>
+</li>
+<li>
+<p>IPC命名空间: pod中的多个容器之间可以互相通信</p>
+</li>
+<li>
+<p>UTS命名空间: pod中的多个容器共享一个主机名 (唯一)</p>
+</li>
+<li>
+<p>存储卷: pod多个容器可以共同访问pod定义的存储卷</p>
+</li>
+</ul>
+<p>另外，Pod可以包含一个init的特殊容器，它始终首先运行。</p>
 <p>若pod只有一个容器，那么pod就是一个包装器</p>
-<p>若pod有多个容器，则一般主容器提供服务；边车/挂斗/附属容器提供额外功能，例如刷新主容器的文件。</p>
+<p>若pod有多个容器，则一般主容器提供服务；边车/挂斗/附属容器提供额外功能，例如刷新主容器的文件，收集日志。</p>
 <p>ℹ️上述的功能的实现基于pod内的容器共享网络命名空间和存储空间.</p>
 <p><img src="https://d33wubrfki0l68.cloudfront.net/aecab1f649bc640ebef1f05581bfcc91a48038c4/728d6/images/docs/pod.svg" alt="example pod diagram"></p>
 <blockquote>
@@ -2872,7 +2902,8 @@ deployments                       deploy       apps/v1                          
 <p>鉴于前面提到的pod类同于ecs/ec2. 因此. pod中的容器就如同ecs/ec2里的app一样，都有相同的ip， 端口范围， 主机名.</p>
 <p>k8s的网络基于各种插件.每一种插件的实现详情见官网. <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model">https://kubernetes.io/docs/concepts/cluster-administration/networking/#how-to-implement-the-kubernetes-networking-model</a></p>
 <p>如果你是本地搭建， 那么常用的插件是Flannel. 如果你是在云服务上搭建，那么建议使用云服务已有的k8s服务.</p>
-<p>如果你必须在云服务上自己搭建，那么aws/azure/gcp都有对应的网络插件.它可以让你在k8s中结合使用云服务的网络组件.</p>
+<p>如果你必须在云服务上自己搭建，那么aws/azure/gcp都有对应的网络插件.它可以让你在k8s中结合使用云服务的网络组件.<br>
+当然你依然可以用 flannel 网络插件。</p>
 <h2 id="静态pod">静态pod</h2>
 <p>特点：</p>
 <ol>
@@ -2899,13 +2930,19 @@ total 16
 -rw------- 1 root root 2564 Aug 25 16:33 kube-controller-manager.yaml
 -rw------- 1 root root 1120 Aug 25 16:33 kube-scheduler.yaml
 </code></pre>
+<h2 id="容器生命周期">容器生命周期</h2>
+<ul>
+<li>waiting，一般对应Pod的pending阶段</li>
+<li>running，容器运行OK</li>
+<li>terminated，容器退出</li>
+</ul>
 <h2 id="Pod-生命周期">Pod-生命周期</h2>
 <p>pod生命周期包含5个状态：</p>
 <ul>
 <li>pending，调度时间和拉取容器镜像时间，容器均处于waiting状态</li>
-<li>running，至少一个容器处于启动、重启、running状态</li>
+<li>running，pod里所有容器都已经创建，且至少一个容器处于启动、重启、running状态</li>
 <li>failed，pod里的容器全退出，有部分容器以非0状态进入terminated状态</li>
-<li>succeeded，pod里的容器全部以0状态进入terminated状态</li>
+<li>succeeded，pod里的容器全部以0状态进入terminated状态，并且不会再重启</li>
 <li>unknown，pod所在节点和主节点之间失联，不过这种状态会因k8s的策略转为failed状态</li>
 </ul>
 <p>pod是通过uid来鉴别，而不是pod名，pod被替换时名称可以不变。</p>
@@ -2929,18 +2966,22 @@ total 16
 <p>针对上述问题，kubernetes允许在上面4个默认状态的基础上自定义就绪状态类型。</p>
 <p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-readiness-gate</a></p>
 <h3 id="终止">终止</h3>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination">https://kubernetes.io/zh/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination</a></p>
 <ol>
 <li>
-<p>Apiserver拿到删除请求、Apiserver更新pod状态，转为<code>Terminating</code></p>
+<p>Apiserver拿到删除请求、Apiserver更新pod状态，转为<code>Terminating</code>。默认Pod有30 秒优雅终止时间。</p>
 </li>
 <li>
 <p>kubelet推送preStop事件到容器中执行，如果设置了preStop的话</p>
 </li>
 <li>
-<p>kubelet通过<code>container runtime</code>发送信号给每个容器中pid为1的进程号，并同时将pod从svc端点中剥离。</p>
+<p>kubelet通过<code>container runtime</code>发送TERM信号(kill-14)给每个容器中pid为1的进程号，并同时将pod从svc端点中剥离。</p>
+<ol>
+<li>如果容器在30秒内没有停止成功，则kubelet会发送SIGKILL信号（kill -9）给容器，强行杀掉。</li>
+</ol>
 </li>
 <li>
-<p>容器关闭后，Apiserver将Pod删除。</p>
+<p>容器关闭状态转为Terminated，Apiserver将Pod删除。</p>
 </li>
 </ol>
 <blockquote>
@@ -2964,16 +3005,16 @@ LastState: map[terminated:map[exitCode:137 reason:OOM Killed startedAt:2015-07-0
     <div class="post-guide">
         <div class="item left">
             
-              <a href="/posts/3ec72f7e/">
+              <a href="/posts/c83ca575/">
                   <i class="fa fa-angle-left" aria-hidden="true"></i>
-                  k8s☞04Pod-init容器 - 容器 - k8s - pod
+                  mysql☞离线迁移脚本
               </a>
             
         </div>
         <div class="item right">
             
-              <a href="/posts/c15432fa/">
-                k8s☞kubectl多集群管理
+              <a href="/posts/3ec72f7e/">
+                k8s☞04Pod-init容器 - 容器 - k8s - pod
                 <i class="fa fa-angle-right" aria-hidden="true"></i>
               </a>
             

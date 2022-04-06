@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2949,9 +2960,14 @@ PONG
 </ol>
 <h2 id="哨兵模式">哨兵模式</h2>
 <p><a target="_blank" rel="noopener" href="https://redis.io/topics/sentinel">https://redis.io/topics/sentinel</a></p>
-<p>哨兵模式，通过哨兵来监控master节点，并通过master节点info中发现slave节点。</p>
+<p>哨兵模式，通过哨兵来监控master节点，并通过调用master节点info命令中发现slave节点。</p>
 <p>当故障切换的时候，哨兵需要执行config指令来修改配置信息。</p>
 <p>💥因此，info和config两个指令不可自定义别名。</p>
+<p>哨兵分为主观下线（sdown）和客观下线（odown）。主观下线就是自己监控master down掉，但此时还不会切换，客观下线就是其它哨兵也发现有问题，则此时满足客观下线条件。</p>
+<p>当客观下线也满足的时候，就会开始选出执行故障转移的哨兵领导者（一个哨兵不会在两次连续的故障中被选为领导者）。</p>
+<p>领导者选出一个从redis，并发送slaveof no one指令将其转为主。</p>
+<p>之后，发送修改配置指令给其它节点，变更配置指向新主。</p>
+<p>最后执行主切换指令。在此之后，通过哨兵查询主节点就会返回新的主地址给客户端。</p>
 <h3 id="配置">配置</h3>
 <p>redis-sentinel.conf</p>
 <pre><code>protected-mode no
@@ -3049,10 +3065,10 @@ SENTINEL sentinels mymaster # 获取其它哨兵信息
 <h3 id="模拟主故障">模拟主故障</h3>
 <pre><code class="language-bash">bin/redis-cli -p 6379 -a 123456 DEBUG sleep 120
 </code></pre>
-<h3 id="故障信息">故障信息</h3>
+<h3 id="故障信息日志">故障信息日志</h3>
 <p>被选为执行故障转移的领导者哨兵日志如下：</p>
-<pre><code class="language-log">30977:X 15 Mar 2022 18:25:46.361 # +sdown master mymaster 10.200.16.51 6379    # 主观下线
-30977:X 15 Mar 2022 18:25:46.419 # +odown master mymaster 10.200.16.51 6379 #quorum 2/2  # 满足客观下线
+<pre><code class="language-log">30977:X 15 Mar 2022 18:25:46.361 # +sdown master mymaster 10.200.16.51 6379    # 10.200.16.51 主观下线
+30977:X 15 Mar 2022 18:25:46.419 # +odown master mymaster 10.200.16.51 6379 #quorum 2/2  # 10.200.16.51 满足客观下线
 30977:X 15 Mar 2022 18:25:46.420 # +new-epoch 3  # 第三次出现问题
 30977:X 15 Mar 2022 18:25:46.420 # +try-failover master mymaster 10.200.16.51 6379   
 30977:X 15 Mar 2022 18:25:46.422 # +vote-for-leader c4f6768af1f0f82e2b094d10e0cdaeba030a5412 3   # 选出哨兵领导，字符串是哨兵ID

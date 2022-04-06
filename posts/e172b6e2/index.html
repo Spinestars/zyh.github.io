@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2759,7 +2770,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/prometheus/">prometheus</a>
+                        <a href="/tags/监控/">监控</a>
                         </i>
                     </span>
                 
@@ -2767,7 +2778,7 @@ var _hmt = _hmt || [];
                 
                     <span>
                         <i class="fa fa-tag" aria-hidden="true">
-                        <a href="/tags/监控/">监控</a>
+                        <a href="/tags/prometheus/">prometheus</a>
                         </i>
                     </span>
                 
@@ -2782,10 +2793,18 @@ var _hmt = _hmt || [];
 <p>prometheus 获取 k8s 指标，需要从三个方面获取：</p>
 <ul>
 <li>kubelet 内置的 cadvisor</li>
-<li>kubernetes-apiserver 自身</li>
+<li>kubernetes-apiserver.metrics-server (需要额外安装)</li>
 <li>kube-state-metrics (第三方APP，需要提前自行安装)</li>
 </ul>
 <p>而上述三个方面，均需要 prometheus 去访问 k8s apiserver。这里需要提前创建授权token.</p>
+<ul>
+<li>cAdvisor：cAdvisor是Google开源的容器资源监控和性能分析工具，它是专门为容器而生，本身也支持Docker容器，Kubernetes中，我们不需要单独去安装，cAdvisor作为kubelet内置的一部分程序可以直接使用</li>
+<li>kube-state-metrics：通过监听API Server生成有关资源对象的状态指标，比如Deployment、Node、Pod，需要注意的是kube-state-metrics只是简单的提供一个metrics数据，并不会存储这些指标数据，所以我们可以使用Prometheus来抓取这些数据然后存储</li>
+<li>metrics-server：是一个集群范围内的资源数据局和工具，是Heapster的代替品，同样的，metrics-server也只是显示数据，并不提供数据存储服务。他当前的核心作用是：为HPA等组件提供决策指标支持。也可以将接收到的数据存储到influxdb进行存储,简单来说,如果想基础监控,那么就要安装这个组件</li>
+</ul>
+<p>不过kube-state-metrics和metrics-server之前还有很大不同的，二者主要区别如下</p>
+<p>1.kube-state-metrics主要关注的是业务相关的一些元数据，比如Deployment、Pod、副本状态等</p>
+<p>2.metrics-service主要关注的是资源度量API的实现，比如CPU、文件描述符、内存、请求延时等指标</p>
 <h1>授权认证</h1>
 <h2 id="kube-apiserver-client访问证书">kube-apiserver-client访问证书</h2>
 <p>💥如果prometheus配置了<code>kubernetes_sd_configs.tls_config.insecure_skip_verify: true</code>，即禁用服务器证书认证，则无需这个步骤。</p>
@@ -2888,6 +2907,19 @@ prometheus-token-2gljj
 <blockquote>
 <p>保存好解密后的 prometheus.bearer_token，prometheus配置所需</p>
 </blockquote>
+<h1>安装Metrics-server</h1>
+<p>添加 metrics-server  <a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/metrics-server#configuration">https://github.com/kubernetes-sigs/metrics-server#configuration</a></p>
+<pre><code class="language-bash">wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+# 修改metrics-server容器参数部分，添加额外的启动参数(arg)
+args:
+  - --kubelet-preferred-address-types=InternalIP
+  - --kubelet-insecure-tls
+kubectl apply -f components.yaml
+kubectl get --raw &quot;/apis/metrics.k8s.io/v1beta1/nodes&quot;
+</code></pre>
+<blockquote>
+<p>kubectl top 指令需要指标才能输出</p>
+</blockquote>
 <h1>安装kube-state-metrics</h1>
 <p>部署方式：<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard">点我</a></p>
 <p>指标文档：<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kube-state-metrics/tree/master/docs">https://github.com/kubernetes/kube-state-metrics/tree/master/docs</a></p>
@@ -2965,8 +2997,8 @@ spec:
 <p>性能不够（250m/512Mi，针对3000+ Job对象)，导致接口数据返回过慢，引发prometheus数据采集失败。</p>
 <h1>配置Prometheus</h1>
 <p><a target="_blank" rel="noopener" href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config">https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config</a></p>
-<p>通过<code>role: node</code>发现 kubernetes 的节点上的kubelet地址，并将其作为刮取数据源</p>
-<p>通过<code>role: endpoints</code>发现 kubernetes service 对象的 endpoint 地址，从而找到 kube-state-metrics 的外部端点地址。</p>
+<p>通过<code>kubernetes_sd_configs</code>.<code>role: node</code>发现 kubernetes 的节点上的kubelet地址，并将其作为刮取数据源</p>
+<p>通过<code>kubernetes_sd_configs</code>.<code>role: endpoints</code>发现 kubernetes service 对象的 endpoint 地址，从而找到 kube-state-metrics 的外部端点地址。</p>
 <p>✨配置里需要将api_server替换成k8s的api_server服务地址.</p>
 <pre><code class="language-yaml">  - job_name: 'k8s-cadvisor' # 抓容器, cadvisor被整合在kubelet中
     scheme: https

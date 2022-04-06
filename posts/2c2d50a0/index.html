@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2792,7 +2803,7 @@ var _hmt = _hmt || [];
 <li>bgsave会fork一个子进程来处理，子进程不会阻塞，不过会占用额外的内存。✨fork子进程这个操作会阻塞，一般这个操作很快。</li>
 </ul>
 </li>
-<li>恢复速度快</li>
+<li>恢复速度快，因为它就是redis内存数据的快照，只需要将rdb文件直接加到内存里。</li>
 </ul>
 </blockquote>
 <pre><code class="language-bash"># 压缩rdb文件
@@ -2825,8 +2836,8 @@ save 60 10000
 <p>记录的是redis每一次的写入操作记录</p>
 <p>特点：</p>
 <ul>
-<li>恢复速度慢</li>
-<li>丢失数据小。默认是1秒写入一次</li>
+<li>恢复速度慢，因为aof记录的不是内存数据快照，而是执行过的命令，恢复的时候需要从新执行。</li>
+<li>丢失数据小。默认是1秒同步一次执行命令到aof文件内。</li>
 </ul>
 </blockquote>
 <pre><code class="language-bash"># 开启aof机制
@@ -2861,7 +2872,7 @@ redis-check-aof -fix file.aof
 <p>AOF重写原理：AOF 重写和 RDB 创建快照一样，都巧妙地利用了写时复制机制</p>
 <ul>
 <li>Redis 执行 fork() ，现在同时拥有父进程和子进程。</li>
-<li>子进程开始将新 AOF 文件的内容写入到临时文件。</li>
+<li>子进程开始将 AOF 文件的内容写入到临时文件。</li>
 <li>对于所有新执行的写入命令，父进程一边将它们累积到一个内存缓存中，一边将这些改动追加到现有 AOF 文件的末尾,这样样即使在重写的中途发生停机，现有的 AOF 文件也还是安全的。</li>
 <li>当子进程完成重写工作时，它给父进程发送一个信号，父进程在接收到信号之后，将内存缓存中的所有数据追加到新 AOF 文件的末尾。</li>
 <li>搞定！现在 Redis 原子地用新文件替换旧文件，之后所有命令都会直接追加到新 AOF 文件的末尾。</li>

@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2787,6 +2798,9 @@ var _hmt = _hmt || [];
 
 <div id="article-content">
 	<h1>容器生命周期-回调</h1>
+<p>💥这里说的是容器，容器，容器，不是Pod，Pod，Pod</p>
+<p>💥这里说的是容器，容器，容器，不是Pod，Pod，Pod</p>
+<p>💥这里说的是容器，容器，容器，不是Pod，Pod，Pod</p>
 <p>容器状态包含3个：</p>
 <ul>
 <li>waiting，一般对应Pod的pending阶段</li>
@@ -2908,8 +2922,8 @@ This is preStop
 <li><code>failureThreshold</code>：当探测失败时，Kubernetes 的重试次数。 存活探测情况下的放弃就意味着重新启动容器。 就绪探测情况下的放弃 Pod 会被打上未就绪的标签。默认值是 3。最小值是 1。</li>
 </ul>
 <h2 id="启动探测器-startupProbe">启动探测器 startupProbe</h2>
-<p>目的在于设置一个容器启动宽容期。当启动探测器确认容器没问题后，后续的健康状态将交给存活探测器。</p>
-<p>它仅在容器启动初期运行。</p>
+<p>💥目的在于设置一个容器启动宽容期，适合慢速启动程序的初期检测。只要启动探测器在超时时间以内成功一次，后续的健康状态将交给存活探测器。</p>
+<p>💥如果启动探测器在超时时间内没有成功，则容器直接被杀死，而pod按照 restartPolicy 策略执行。</p>
 <p>例如：</p>
 <pre><code class="language-yaml">ports:
 - name: liveness-port
@@ -2927,9 +2941,8 @@ startupProbe:
 </code></pre>
 <p>上述例子意思是：kubelet 检测总时间超过 300 秒后，如果还未检测成功，认为启动失败。</p>
 <h2 id="存活探测器-livenessProbe">存活探测器 livenessProbe</h2>
-<p>目的在于确认容器是否健康，并在不健康的时候重启容器。</p>
-<p>它将在容器整个生命周期中运行。</p>
-<p>它与就绪探测器最大区别就是，kubelet检测失败后会重启容器。</p>
+<p>💥目的在于确认容器是否健康，但在不健康的时候重启容器。它将在容器整个生命周期中运行。</p>
+<p>💥它与就绪探测器最大区别就是，kubelet检测失败后会重启容器。</p>
 <p>例子如下：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
@@ -2957,11 +2970,13 @@ spec:
 <p>探测器会认为 200&lt;=x&lt;400 的状态码为正常。</p>
 </blockquote>
 <h2 id="就绪探测器-readinessProbe">就绪探测器 readinessProbe</h2>
-<p>目的在于仅确认容器是否健康，但是并不删除容器，【不健康时候不接收svc流量】 。适用于下列场景：</p>
+<p>💥目的在于仅确认容器是否健康，但是并不重启容器；它将在容器整个生命周期中运行。</p>
+<p>💥容器刚启动的时候，就绪探针会告知kubelet是否把当前pod的endpoint地址加入svc 。</p>
+<p>💥容器运行中如果就绪探针失败，就绪探针负责告知kubelet将pod endpoint从svc中移除</p>
+<p>适用于下列场景：</p>
 <ol>
 <li>容器启动后，加载数据多，加载完之前无法提供服务</li>
 </ol>
-<p>它将在容器整个生命周期中运行。</p>
 <p>例如：</p>
 <pre><code class="language-yaml:">apiVersion: v1
 kind: Pod
@@ -2984,9 +2999,22 @@ spec:
 <p>上述例子意思是：kubelet 等待 initialDelaySeconds 后开始第一次检测，每次检测间隔10秒，检测成功，认为可以提供服务</p>
 <h2 id="最佳实践">最佳实践</h2>
 <ol>
-<li>存活和就绪探针的健康状态接口应该是两个互相独立的接口</li>
-<li>存活探针的健康状态接口应该是直接返回http code，不应该有任何逻辑</li>
-<li>就绪探针的健康状态接口应该提供就绪所需要的逻辑。但是不应该添加重新构建就绪的逻辑。例如：处理http请求的程序需要一个数据库连接的就绪状态，那么就应该在就绪探针的健康状态接口里添加数据库连接的检查逻辑。</li>
+<li>
+<p>存活和就绪探针的健康状态接口应该是两个互相独立的接口</p>
+</li>
+<li>
+<p>存活探针的健康状态接口应该是直接返回http code，不应该有任何逻辑</p>
+</li>
+<li>
+<p>就绪探针的健康状态接口应该提供就绪所需要的逻辑。但是不应该添加重新构建就绪的逻辑。</p>
+<p>例如：处理http请求的程序需要一个数据库连接的就绪状态，那么就应该在就绪探针的健康状态接口里添加数据库连接的检查逻辑。</p>
+</li>
+<li>
+<p>存活探针可以用来判定程序的最简单功能是否正常，如果最简单都不正常，则无需让程序启动。</p>
+</li>
+<li>
+<p>就绪探针可以用来判定程序复杂一些的逻辑是否正常。</p>
+</li>
 </ol>
 
 </div>

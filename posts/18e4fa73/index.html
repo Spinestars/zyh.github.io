@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2891,13 +2902,14 @@ spec:
 <h2 id="更新策略">更新策略</h2>
 <p>deployment 的 .spec 中可以添加一些策略.</p>
 <pre><code class="language-bash">spec:  
+  replicas: 3
   minReadySeconds: 3  # pod 就绪时间，在此时间之前，deployment 认为 pod 还没有准备好. 默认0
   revisionHistoryLimit: 10 # 最大版本保留次数. 默认10 
   strategy:
     type: RollingUpdate # 定义变更策略. 除了 RollingUpdate，还可以是Recreate.Recreate指的是先删除所有pod,再创建.
     rollingUpdate:
-      maxUnavailable: 30% # 变更期间最多存在多少个不可用的pod,可以是具体数字
-      maxSurge: 30% # 变更期间最多存在多少个超出已定义副本的pod数量,可以是具体数字
+      maxUnavailable: 30% # 变更期间，不可用的副本数。可以是具体数字
+      maxSurge: 30% # 变更期间，可以超出replicas定义的副本数。可以是具体数字
 </code></pre>
 <blockquote>
 <p>maxUnavailable 和 maxSurge 设置相等即可. 即开多少个新的同时，就关多少个老的</p>
@@ -3017,7 +3029,7 @@ kubectl annotate # 添加一个注释
 <pre><code class="language-bash">kubectl apply -f new-nginx-deployment.yaml &amp;&amp; kubectl rollout pause deployment/nginx-deployment
 </code></pre>
 <ol start="3">
-<li>若新 Pod 没有通过验证，则恢复发布并立即回滚。</li>
+<li>若新 Pod 没有通过验证，则恢复发布并立即回滚上一个版本。</li>
 </ol>
 <pre><code class="language-bash">kubectl rollout resume deployment/nginx-deployment &amp;&amp; kubectl rollout undo deployment/nginx-deployment
 </code></pre>

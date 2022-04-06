@@ -1087,6 +1087,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/e1096625/">
                      
 										    k8s☞记录点
@@ -2255,7 +2266,7 @@ var _hmt = _hmt || [];
 								<li class="file">
 									<a href="/posts/3b5cd3e1/">
                      
-										    jenkins☞动态agent
+										    jenkins☞基于k8s生成动态的Jenkins agent
                      
 									</a>
 								</li>
@@ -2890,10 +2901,19 @@ volumeBindingMode: WaitForFirstConsumer
 <p>外置供应商部署: <a target="_blank" rel="noopener" href="https://github.com/kubernetes-retired/external-storage">https://github.com/kubernetes-retired/external-storage</a></p>
 <h2 id="回收策略">回收策略</h2>
 <p><code>spec.persistentVolumeReclaimPolicy</code> 定义 PVC 被删除的时候，集群如何处理PV。</p>
-<p><strong>Retain</strong>  不处理PV。但 PV 不能直接再次服用，因为里面还有之前Pod的数据。复用PV：</p>
+<p><strong>Retain</strong>  不处理PV。但 PV 默认不能直接再次复用，因为里面还有之前Pod的数据。</p>
 <ul>
-<li>在静态PV下，PV的名字是固定的，因此删除PVC之后，通过删除<code>pv.spec.claimRef.uid</code>解除PV的<code>Released</code>状态，就可以采用原有的PVC配置分配到。</li>
-<li>在动态PV下，PV的名字是动态生成的， 因此删除PVC之后， 当PVC重新申请资源的时候， PV默认将会分配到一个新的资源路径。</li>
+<li>
+<p>复用PV：</p>
+<ul>
+<li>
+<p>在静态PV下，PV的名字是固定的，因此删除PVC之后，通过删除<code>pv.spec.claimRef.uid</code>解除PV的<code>Released</code>状态，就可以采用原有的PVC配置分配到。</p>
+</li>
+<li>
+<p>在动态PV下，PV的名字是动态生成的， 因此删除PVC之后， 当PVC重新申请资源的时候， PV默认将会分配到一个新的资源路径。</p>
+</li>
+</ul>
+</li>
 </ul>
 <p><strong>Delete</strong> 同时删除PVC和Volume。只不过Volume是否删除取决于每一个StorageClass中parameters的定义。</p>
 <ul>

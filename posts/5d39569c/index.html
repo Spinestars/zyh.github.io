@@ -1,0 +1,3576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		k8s☞13-1 ingress-nginx的各种用法 | 
+	 
+	zyh
+	</title>
+	
+	<!-- keywords,description -->
+	 
+
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
+
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
+		}
+		var homeHost = "zyh.cool";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
+		}
+	</script>
+
+
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/styles/darcula.min.css">
+
+	
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+
+
+	
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+	
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/highlight.min.js"></script>
+
+	
+<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+	
+		
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+
+		
+<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+
+	
+	
+		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+	
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d8eaf4579517c8bea955331f62e2b380";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<header id="header">
+    <a id="title" href="/" class="logo">zyh</a>
+
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
+
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="https://github.com/Spinestars" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle" ><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										web
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										fpm
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b73a61bf/">
+                     
+										    fpm☞安装-包管理方式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3321a2dc/">
+                     
+										    fpm☞安装-编译方式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1d65c30/">
+                     
+										    fpm☞静态配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										nginx
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2722921e/">
+                     
+										    nginx-常用变量
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/58a1c0c7/">
+                     
+										    nginx☞fcgi中alias的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c513678/">
+                     
+										    nginx☞location
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18de0eed/">
+                     
+										    nginx☞基本认证
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6209085/">
+                     
+										    nginx☞安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9fb0f3a1/">
+                     
+										    nginx☞日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/78ceb386/">
+                     
+										    nginx☞泛域名_变量截取
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6332ca50/">
+                     
+										    nginx☞问题集
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/7c44c2e8/">
+                     
+										    web☞服务器承载能力计算
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										公有云
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										aws
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2e07203a/">
+                     
+										    aws☞EC2-GPU实例安装显卡驱动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/438aa722/">
+                     
+										    aws☞rds-mysql参数
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/604c5952/">
+                     
+										    aws☞rds-mysql日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2c5a64ff/">
+                     
+										    aws☞s3初始化创建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7cac5d21/">
+                     
+										    aws☞s3跨账户访问
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ddc4c969/">
+                     
+										    aws☞利用cf服务初始化aws环境
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2e304ad6/">
+                     
+										    aws☞国内外之间迁移-AMI
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										阿里云
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/bd60be5f/">
+                     
+										    aliyun-ack_ingress
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6723fbb4/">
+                     
+										    aliyun-k8s_svc绑定固定ELB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6df9bb76/">
+                     
+										    aliyun☞cli安装和基本调用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b5d7d6ee/">
+                     
+										    aliyun☞oss
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4cc38acc/">
+                     
+										    aliyun☞常见问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										git
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/a38d0013/">
+                     
+										    gitlab☞大版本迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f38f454/">
+                     
+										    gitlab☞安装及备份
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5edc3545/">
+                     
+										    gitlab☞批量修改用户密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0c6f6c3/">
+                     
+										    git☞常用命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										hexo
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/662e9d4d/">
+                     
+										    hexo☞图片显示404错误的解决办法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5c218d/">
+                     
+										    hexo☞本地搜索
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a4903823/">
+                     
+										    jira-备份文档
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7c1abbe1/">
+                     
+										    openvpn☞安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/894f9595/">
+                     
+										    vsftpd☞安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3827a60a/">
+                     
+										    工具库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/248f8ccf/">
+                     
+										    开发-认证机制[转载]
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/40d986c3/">
+                     
+										    网络-SNAT和DNAT
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f68976bc/">
+                     
+										    网络-华为路由器vlan划分
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5290b79d/">
+                     
+										    网络☞S5700配置攻击朔源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6f53a6b8/">
+                     
+										    网络☞链路聚合
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ddb9d4e/">
+                     
+										    问题记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										容器
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/cdd230fc/">
+                     
+										    docker-多阶段构建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/634b48fb/">
+                     
+										    docker-常用的指令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7cf7b1f/">
+                     
+										    docker☞01安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/604e367f/">
+                     
+										    docker☞非root用户执行程序
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										harbor
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9573a87d/">
+                     
+										    harbor☞安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										helm
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/51015304/">
+                     
+										    helm☞01入门
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/710e3e49/">
+                     
+										    helm☞02chart
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										k8s
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/74e7acf4/">
+                     
+										    k8s-22自定义hpa
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/87e37b21/">
+                     
+										    k8s-安全上下文
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aaf9b7/">
+                     
+										    k8s☞01常见术语概念
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c3c9f0f8/">
+                     
+										    k8s☞02-1切换使用runtime-containerd
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9602dad/">
+                     
+										    k8s☞02安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/94518966/">
+                     
+										    k8s☞03Pod
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3ec72f7e/">
+                     
+										    k8s☞04Pod-init容器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9aa66899/">
+                     
+										    k8s☞05容器生命周期-回调和探针
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18e4fa73/">
+                     
+										    k8s☞06无状态服务deployment
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e328b5/">
+                     
+										    k8s☞07自动扩缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d3b80b5f/">
+                     
+										    k8s☞08负载均衡service
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1080c6b6/">
+                     
+										    k8s☞09存储资源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4b0e4a5/">
+                     
+										    k8s☞10应用配置与密码与信息提供
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/64fa9c84/">
+                     
+										    k8s☞11-1pod资源约束
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ed4c29d5/">
+                     
+										    k8s☞11-2namespace资源约束
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/63d8d3d4/">
+                     
+										    k8s☞12-1DaemonSet
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4bf29cf0/">
+                     
+										    k8s☞12-2有状态服务StatefulSet
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/5d39569c/">
+                     
+										    k8s☞13-1 ingress-nginx的各种用法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7627a41d/">
+                     
+										    k8s☞13高级版负载均衡ingress控制器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a5ed67a6/">
+                     
+										    k8s☞14认证授权
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55da993d/">
+                     
+										    k8s☞15证书管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7538d100/">
+                     
+										    k8s☞16kubeadm集群升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/932d1f08/">
+                     
+										    k8s☞17-1调度之node污染和pod容忍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4d69fc4a/">
+                     
+										    k8s☞17-2调度之亲和性和反亲和性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/451721ed/">
+                     
+										    k8s☞18日志收集系统
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ce23a4a1/">
+                     
+										    k8s☞19日志系统EFK
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/68c615a7/">
+                     
+										    k8s☞20网络cni
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e902d670/">
+                     
+										    k8s☞21证书管理器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c15432fa/">
+                     
+										    k8s☞kubectl多集群管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9a7bc037/">
+                     
+										    k8s☞showdoc部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/106410b0/">
+                     
+										    k8s☞常用命令记录
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e1096625/">
+                     
+										    k8s☞记录点
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										数据库
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										mysql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/a1d2702d/">
+                     
+										    mysql-主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d73c1236/">
+                     
+										    mysql-联合索引
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b824edd8/">
+                     
+										    mysql☞安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e6ae9474/">
+                     
+										    mysql☞常用命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c83ca575/">
+                     
+										    mysql☞离线迁移脚本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										pgsql
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/684ab210/">
+                     
+										    pgsql-基础命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										redis
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/65ab632a/">
+                     
+										    redis-001安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2c2d50a0/">
+                     
+										    redis-002备份
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28361833/">
+                     
+										    redis-003内存紧张bgsave失败
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/783b242a/">
+                     
+										    redis-004主从复制知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/847734cb/">
+                     
+										    redis-005主从复制和哨兵配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5067cdc/">
+                     
+										    redis-006获取没有设置TTL的key
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										日志
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/13e95dda/">
+                     
+										    日志-06Elasticsearch索引生命周期
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8ca35d2/">
+                     
+										    日志☞00ELK基本使用-简介
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3475106c/">
+                     
+										    日志☞01ELK基本使用-beats组件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f73d84da/">
+                     
+										    日志☞02ELK基本使用-logstash组件01-安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/56da51f2/">
+                     
+										    日志☞03ELK基本使用-logstash组件02-插件介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41bf4066/">
+                     
+										    日志☞04ELK基本使用-elasticsearch
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d8390732/">
+                     
+										    日志☞05ELK基本使用-kibana
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/421d605e/">
+                     
+										    日志☞logrotate安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										消息
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										kafka
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bd7430f/">
+                     
+										    001-kafka基本信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bd4c8d1c/">
+                     
+										    002-kafka基本安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fb0e26c/">
+                     
+										    003-kafka基本认证
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/14fdb3fd/">
+                     
+										    004-kafka用户配额
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/124a3d6d/">
+                     
+										    005-kafka基本维护
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1a545f72/">
+                     
+										    006-kafka基本监控
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41d19ce/">
+                     
+										    007-kafka基本保活
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										rabbitmq
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/188d54be/">
+                     
+										    rabbitmq-集群相关概念
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b43013ef/">
+                     
+										    rabbitmq☞安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										监控
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										prometheus
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e55f0a09/">
+                     
+										    prometheus-07k8s-coredns
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1bafff65/">
+                     
+										    prometheus-08k8s-node
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/65820315/">
+                     
+										    prometheus☞01搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e172b6e2/">
+                     
+										    prometheus☞02外置prometheus监控k8s
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bced4977/">
+                     
+										    prometheus☞03k8s内置部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/978d0c1d/">
+                     
+										    prometheus☞04redis监控
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6178b477/">
+                     
+										    prometheus☞05mysql监控
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7fd13722/">
+                     
+										    prometheus☞06rabbitmq监控
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										zabbix
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/3d20f83e/">
+                     
+										    zabbix☞WEB监控
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1587f6e8/">
+                     
+										    zabbix☞agent和proxy(yum)
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b35b5965/">
+                     
+										    zabbix☞nginx
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6c093771/">
+                     
+										    zabbix☞redis
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ed865d2f/">
+                     
+										    zabbix☞server安装注意事项
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/25f36846/">
+                     
+										    zabbix☞容器搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4ebbd3a8/">
+                     
+										    zabbix☞预警
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/ae41ae33/">
+                     
+										    监控☞monit
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ab1247fb/">
+                     
+										    监控☞mysql慢sql预警
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c33f887/">
+                     
+										    监控☞企业微信机器人
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f9b08c30/">
+                     
+										    监控☞微信预警
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fac36d/">
+                     
+										    监控☞远程磁盘检测
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8f9b4d0/">
+                     
+										    监控☞邮件预警
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										系统
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										linux
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/3dd05018/">
+                     
+										    linux-vim中文乱码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c3b69c28/">
+                     
+										    linux-添加ssh登陆限制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/13364d65/">
+                     
+										    linux☞centos7重置root密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a3dfc0e8/">
+                     
+										    linux☞df与du数据不一致的原因
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5db0cd07/">
+                     
+										    linux☞ssh-MFA自动登陆
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4f7ce4c/">
+                     
+										    linux☞ubuntu20-04纯命令行网卡配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7b3cf3d8/">
+                     
+										    linux☞使用expect自动登录ssh后远程会话不会跟随本地会话缩放的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2fed0bf/">
+                     
+										    linux☞利用acme-sh管理免费的ssl证书申请
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cd32aa48/">
+                     
+										    linux☞时间
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f41d0763/">
+                     
+										    linux☞系统内核优化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a7611bc1/">
+                     
+										    linux☞软raid创建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3988a5f2/">
+                     
+										    linux☞输出个性化开机状态
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										windows
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/348cba53/">
+                     
+										    windows-wsl问题点
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/22b82d75/">
+                     
+										    windows-包管理工具-scoop
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/88eb7b6/">
+                     
+										    windows☞win10迁移数据
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										自动化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ansible
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/15aa7d2e/">
+                     
+										    ansible☞playbook-aws
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b0929188/">
+                     
+										    ansible☞playbook-handle
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ce01f58/">
+                     
+										    ansible☞playbook-include
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/25732c33/">
+                     
+										    ansible☞playbook-lookup插件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/960fc783/">
+                     
+										    ansible☞playbook-tags
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4235ddf4/">
+                     
+										    ansible☞playbook-变量
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/14bc184e/">
+                     
+										    ansible☞playbook-循环
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/29683589/">
+                     
+										    ansible☞playbook-条件判断
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f43dca37/">
+                     
+										    ansible☞playbook-过滤器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4126d5a/">
+                     
+										    ansible☞playbook-错误捕获
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d3e413b7/">
+                     
+										    ansible☞基础信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e274151/">
+                     
+										    ansible☞常用模块-命令调用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4235ddf4/">
+                     
+										    ansible☞常用模块-文本文件操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/84eb900/">
+                     
+										    ansible☞常用模块-系统相关
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3d9b9ec1/">
+                     
+										    ansible☞常用模块-软件包管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/724fda19/">
+                     
+										    ansible☞模板
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/720afd15/">
+                     
+										    ansible☞角色
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										jenkins
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9011aa7a/">
+                     
+										    jenkins-gitops-cd
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eea0d6c7/">
+                     
+										    jenkins-gitops-ci
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e804084e/">
+                     
+										    jenkins-groovy基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57e9683e/">
+                     
+										    jenkins-pipeline dsl 常用方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/75dc22a9/">
+                     
+										    jenkins-常用插件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67a8b607/">
+                     
+										    jenkins-构建工具集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/192a4f4c/">
+                     
+										    jenkins-示例1
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7391a97/">
+                     
+										    jenkins-集成SonarQube
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2a5275e1/">
+                     
+										    jenkins-集成gitlab
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d9cdb70/">
+                     
+										    jenkins☞001安装和基本配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a33e212/">
+                     
+										    jenkins☞002Pipelines
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e4df8a4f/">
+                     
+										    jenkins☞003共享库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e0f2183/">
+                     
+										    jenkins☞从容器中访问宿主机docker命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3b5cd3e1/">
+                     
+										    jenkins☞基于k8s生成动态的Jenkins agent
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										虚拟化
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										vmware
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/eab024cf/">
+                     
+										    vcsa☞存储设备有vmfs分区，但数据存储丢失
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										语言
+									</a>
+									
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										css
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/fa5680b3/">
+                     
+										    css☞背景图居中拉伸平铺
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										go
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/38c126f9/">
+                     
+										    go-013文件先读再覆盖写
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/0/">
+                     
+										    go-014并发和管道
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/83a93e23/">
+                     
+										    go-015自定义包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5086e20/">
+                     
+										    go-016并发
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/786ba9af/">
+                     
+										    go-017测试
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/717b7a86/">
+                     
+										    go-100遇到的点
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/759b68d8/">
+                     
+										    go☞001变量
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8c3e952e/">
+                     
+										    go☞002常量
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1a034363/">
+                     
+										    go☞003运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a6b5455/">
+                     
+										    go☞004控制流
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/98f86e16/">
+                     
+										    go☞005函数
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/318675c1/">
+                     
+										    go☞006函数-闭包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a705a91a/">
+                     
+										    go☞007结构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f8eb4b1b/">
+                     
+										    go☞008方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/77a46e91/">
+                     
+										    go☞009接口
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2dab3d00/">
+                     
+										    go☞010特殊控制流(defer panic recover)
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/336ec0ac/">
+                     
+										    go☞011错误处理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d1503f4a/">
+                     
+										    go☞012常用模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										java
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/ac6b3b36/">
+                     
+										    jdk☞安装和配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										jquery
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5d527900/">
+                     
+										    jquery☞伪进度条
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										python
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/86059ffb/">
+                     
+										    django☞admin管理视图
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dd4c9efa/">
+                     
+										    django☞restful简单使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/26bd5165/">
+                     
+										    django☞日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6a4df400/">
+                     
+										    django☞管理静态文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3f8b5448/">
+                     
+										    django☞记忆点
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d60c38c/">
+                     
+										    django☞验证码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/876c5852/">
+                     
+										    python☞json
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										shell
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f2de1fb/">
+                     
+										    shell-[[ ]]
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/241ce96c/">
+                     
+										    shell☞if判定
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b06f599c/">
+                     
+										    shell☞read嵌套
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/1a0d1bbd/">
+                     
+										    正则表达式-修饰符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	k8s☞13-1 ingress-nginx的各种用法
+</h1>
+<div class="article-meta">
+	
+		<span>
+			阅读量:<span id="/posts/5d39569c/" class="leancloud_visitors" data-flag-title="k8s☞13-1 ingress-nginx的各种用法"></span>
+		</span>
+	
+	<span>zyh</span>
+	<span>2020-09-22 18:30:04</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/容器/">容器</a>
+                        </i>
+                      
+                        >
+                      
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/容器/k8s/">k8s</a>
+                        </i>
+                      
+                    </span>
+                
+            
+    
+
+    
+		<span>Tags：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/容器/">容器</a>
+                        </i>
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/k8s/">k8s</a>
+                        </i>
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/ingress/">ingress</a>
+                        </i>
+                    </span>
+                
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<h2 id="基本">基本</h2>
+<p>官方文档</p>
+<p><a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/">https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/</a></p>
+<h2 id="关键须知">关键须知</h2>
+<ol>
+<li>ingress 的注解可能会在当前所有的 path 里生效。例如在 ingress-nginx 中，下列两个就会遵循这个规则：</li>
+</ol>
+<ul>
+<li>
+<p><a target="_blank" rel="noopener" href="http://inginx.ingress.kubernetes.io/rewrite-target">inginx.ingress.kubernetes.io/rewrite-target</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="http://nginx.ingress.kubernetes.io/configuration-snippet">nginx.ingress.kubernetes.io/configuration-snippet</a></p>
+<p>💥这里列举的注解并非是所有遵循这个规则的注解，仅是一个例子。</p>
+</li>
+</ul>
+<p>​	   ✨如果你只想针对某个 path 来添加，则需要重新创建一个新的ingress对象，并保持 ingress 对象中的 host 一致。</p>
+<p>​             💥ingress对象名不可以相同。</p>
+<p>​       ✨不同的ingress对象，但拥有相同的host和不同的path，则两个ingress对象规则会合并。</p>
+<ol start="2">
+<li>两个ingress的host和path不能完全一样，一样的时候，第二个ingress应用的时候会被拒绝，并提示已定义。</li>
+</ol>
+<pre><code class="language-bash">Error from server (BadRequest): error when creating &quot;1-ingress-err.yaml&quot;: admission webhook &quot;validate.nginx.ingress.kubernetes.io&quot; denied the request: host &quot;ingress.xxx.com&quot; and path &quot;/foo&quot; is already defined in ingress default/test-ingress
+</code></pre>
+<ol start="3">
+<li>如果你发现某个注解没有在 ingress-controller 里的 nginx.conf 里生效，则看下注解的key是否写的正确。</li>
+</ol>
+<p>👙可能的最佳方式：</p>
+<p>一个域名一个yaml，一个yaml里添加多个 ingress，一个ingress配置通用，其它ingress对应特殊的path（额外注解），并确保所有的ingress保持相同的host和不同的name</p>
+<h2 id="基本配置示例1">基本配置示例1</h2>
+<h3 id="后端服务">后端服务</h3>
+<p><a target="_blank" rel="noopener" href="http://xn--registry-yy6e.cn-hangzhou.aliyuncs.com/yilong/ingress-test:web1">✨registry.cn-hangzhou.aliyuncs.com/yilong/ingress-test:web1</a>  可以接收 /foo 和 /bar ，并输出 web1: /foo 和 web1: /bar</p>
+<p>0-dep-web1service.yaml</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-web1
+  labels:
+    app: test-web1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-web1
+  template:
+    metadata:
+      labels:
+        app: test-web1
+    spec:
+      containers:
+      - name: test-web1
+        imagePullPolicy: IfNotPresent
+        image: registry.cn-hangzhou.aliyuncs.com/yilong/ingress-test:web1
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web1-service
+spec:
+  type: ClusterIP
+  selector:
+    app: test-web1
+  ports:
+    - port: 8080
+      targetPort: 8080
+</code></pre>
+<h3 id="ingress-配置">ingress 配置</h3>
+<p>1-ingress-web1service.yaml</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: default
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /foo
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: ImplementationSpecific
+      - path: /bar
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: ImplementationSpecific
+</code></pre>
+<h3 id="访问">访问</h3>
+<pre><code class="language-bash">curl -H &quot;host:foo.bar.com&quot; http://39.103.219.253/foo
+web1: /foo
+curl -H &quot;host:foo.bar.com&quot; http://39.103.219.253/bar
+web1: /bar
+</code></pre>
+<h2 id="基本重定向">基本重定向</h2>
+<p>使用<code>nginx.ingress.kubernetes.io/rewrite-target</code>注解支持基本的Rewrite配置。</p>
+<p>下列配置实现效果： <a target="_blank" rel="noopener" href="http://foo.bar.com/aoo/xxx">http://foo.bar.com/aoo/xxx</a> =&gt; <a target="_blank" rel="noopener" href="http://foo.bar.com/xxx">http://foo.bar.com/xxx</a></p>
+<p>💥这个基本重定向的 rewrite 会写在当前 ingress 对象里的所有 path 下，等同于</p>
+<pre><code class="language-bash">location /foo &#123;
+rewrite &quot;(?i)/foo&quot; /$1 break;
+&#125;
+location /bar &#123;
+rewrite &quot;(?i)/bar&quot; /$1 break;
+&#125;
+location /aoo/(.*) &#123;
+rewrite &quot;(?i)/aoo/(.*)&quot; /$1 break;
+&#125;
+</code></pre>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: default
+  annotations:
+    #URL重定向。
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /foo
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: ImplementationSpecific
+      - path: /bar
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: ImplementationSpecific
+      - path: /aoo/(.*)
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: ImplementationSpecific
+</code></pre>
+<h2 id="复杂重定向">复杂重定向</h2>
+<ul>
+<li><code>nginx.ingress.kubernetes.io/server-snippet</code>：添加配置到nginx的server配置上下文。</li>
+<li><code>nginx.ingress.kubernetes.io/configuration-snippet</code>：添加配置到nginx的【所有】location上下文。</li>
+</ul>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gray-release
+  annotations:
+    nginx.ingress.kubernetes.io/server-snippet: |
+      rewrite ^/v4/(.*)/card/query http://foo.bar.com/v5/#!/card/query permanent;
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^/v6/(.*)/card/query http://foo.bar.com/v7/#!/card/query permanent;
+</code></pre>
+<p>对应的nginx配置如下（configuration-snippet的配置根据location来动态添加）</p>
+<pre><code class="language-conf">## start server foo.bar.com
+    server &#123;
+        server_name foo.bar.com ;
+        listen 80;
+        listen [::]:80;
+        set $proxy_upstream_name &quot;-&quot;;
+        ### server-snippet配置。
+        rewrite ^/v4/(.*)/card/query http://foo.bar.com/v5/#!/card/query permanent;
+        ...
+        location / &#123;
+          ### configuration-snippet配置。
+          rewrite ^/v6/(.*)/card/query http://foo.bar.com/v7/#!/card/query permanent;
+          ...
+      &#125;
+    &#125;
+    ## end server foo.bar.com
+</code></pre>
+<h2 id="基本重定向和复杂重定向混合使用">基本重定向和复杂重定向混合使用</h2>
+<p>实现需求：</p>
+<pre><code class="language-bash">➜   curl ingress.pengwin.com/foo
+web1: /foo
+➜   curl ingress.pengwin.com/bar
+web1: /bar
+➜   curl ingress.pengwin.com/aoo/foo
+web1: /foo
+➜   curl ingress.pengwin.com/aoo/bar
+web1: /bar
+</code></pre>
+<pre><code class="language-yaml"># 满足 curl ingress.pengwin.com/foo 和 curl ingress.pengwin.com/bar
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-pengwin-com-01
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: &quot;true&quot;     # 启用正则，否则 path 无法支持正则
+spec:
+  tls:
+  - hosts:
+      - ingress.pengwin.com
+    secretName: pengwin-com-tls
+  rules:
+  - host: ingress.pengwin.com
+    http:
+      paths:
+      - path: /(foo|bar)
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: Prefix
+---
+# 满足  curl ingress.pengwin.com/aoo/foo 和 curl ingress.pengwin.com/aoo/bar
+# 仅针对 path: /aoo/ 启用特殊的重定向规则.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-pengwin-com-02
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+        rewrite &quot;(?i)/aoo/(.*)&quot; /$1 break; 
+spec:
+  tls:
+  - hosts:
+      - ingress.pengwin.com
+    secretName: pengwin-com-tls
+  rules:
+  - host: ingress.pengwin.com
+    http:
+      paths:
+      - path: /aoo/
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: Prefix
+</code></pre>
+<h2 id="SSL配置">SSL配置</h2>
+<p>假设你需要创建一个foo.bar.com域名的私有证书</p>
+<pre><code class="language-bash">openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout foo.bar.com.key -out foo.bar.com.crt -subj &quot;/CN=foo.bar.com/O=foo.bar.com&quot;
+</code></pre>
+<p>通过k8s的secret对象导入证书</p>
+<p>命令方式：</p>
+<pre><code class="language-bash">kubectl create secret tls foo-bar-com --key foo.bar.com.key --cert foo.bar.com.crt
+</code></pre>
+<p>声明方式：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: foo-bar-com
+  namespace: default
+data:
+  tls.crt: base64 encoded cert # 这里需要填写 base64 编码后的 cert 内容. tls.crt 不可更名
+  tls.key: base64 encoded key  # 这里需要填写 base64 编码后的 key 内容. tls.key 不可更名
+type: kubernetes.io/tls
+</code></pre>
+<p>ingress调用证书</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: foo-bar-com-foo
+  namespace: default
+spec:
+  tls:
+  - hosts:
+    - foo.bar.com
+    secretName: foo-bar-com
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /foo
+        backend:
+          service: 
+            name: web1-service
+            port: 
+              number: 80
+        pathType: ImplementationSpecific
+</code></pre>
+<p>ingress设置tls之后，会自动创建443的配置</p>
+<pre><code class="language-bash">➜   kubectl get ingress
+NAME           CLASS   HOSTS                 ADDRESS          PORTS     AGE
+foo-bar-com-foo   nginx   foo.bar.com  		 xxx.xxx.xxx.xxx   80, 443   10m
+</code></pre>
+<h2 id="双向SSL配置">双向SSL配置</h2>
+<p>创建ca、server、client的私钥和证书</p>
+<p>✨命令严格执行</p>
+<p>✨server 请求文件 /CN=<a target="_blank" rel="noopener" href="http://foo.bar.com">foo.bar.com</a> 替换成自有域名</p>
+<pre><code class="language-bash">#ca
+openssl req -x509 -sha256 -newkey rsa:4096 -keyout ca.key -out ca.crt -days 3560 -nodes -subj '/CN=Fern CA'
+#server
+openssl req -new -newkey rsa:4096 -keyout server.key -out server.csr -nodes -subj '/CN=foo.bar.com'
+openssl x509 -req -sha256 -days 3650 -in server.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out server.crt
+#client
+openssl req -new -newkey rsa:4096 -keyout client.key -out client.csr -nodes -subj '/CN=Fern'
+openssl x509 -req -sha256 -days 3650 -in client.csr -CA ca.crt -CAkey ca.key -set_serial 02 -out client.crt
+</code></pre>
+<p>创建ca、server的secret对象</p>
+<pre><code class="language-bash">kubectl create secret generic ca-secret --from-file=ca.crt=ca.crt
+kubectl create secret generic tls-secret --from-file=tls.crt=server.crt --from-file=tls.key=server.key
+</code></pre>
+<p>ingress</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: &quot;on&quot;
+    nginx.ingress.kubernetes.io/auth-tls-secret: &quot;default/ca-secret&quot;
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: &quot;1&quot;
+    nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: &quot;true&quot;
+  name: nginx-test
+  namespace: default
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: web1-service
+            port: 
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - foo.bar.com
+    secretName: tls-secret
+</code></pre>
+<p>测试</p>
+<pre><code class="language-bash"> curl --cacert ./ca.crt --cert ./client.crt --key ./client.key https://foo.bar.com
+</code></pre>
+<h2 id="ingress转发到https服务">ingress转发到https服务</h2>
+<p>通过添加注解：<a target="_blank" rel="noopener" href="http://nginx.ingress.kubernetes.io/backend-protocol:">nginx.ingress.kubernetes.io/backend-protocol:</a> “HTTPS”</p>
+<h2 id="追加多个域名到server-name">追加多个域名到server_name</h2>
+<p><a target="_blank" rel="noopener" href="http://nginx.ingress.kubernetes.io/server-alias:">nginx.ingress.kubernetes.io/server-alias:</a> ‘~^\d+.pengwin.com$’</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-pengwin-com-foo
+  annotations:
+    nginx.ingress.kubernetes.io/server-alias: '~^\d+\.bar\.com$'
+spec:
+  tls:
+  - hosts:
+    - foo.bar.com
+    secretName: foo-bar-com
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /foo
+        backend:
+          service:
+            name: web1-service
+            port:
+              number: 8080
+        pathType: ImplementationSpecific
+</code></pre>
+<h2 id>-------------------------------------------------------------------------------------</h2>
+<h2 id="基本配置示例2">基本配置示例2</h2>
+<h3 id="后端服务-2">后端服务</h3>
+<p>0-dep-oldnginx.yaml</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: old-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: old-nginx
+  template:
+    metadata:
+      labels:
+        run: old-nginx
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/acs-sample/old-nginx
+        imagePullPolicy: Always
+        name: old-nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: old-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: old-nginx
+  sessionAffinity: None
+  type: NodePort
+</code></pre>
+<h3 id="ingress-配置-2">ingress 配置</h3>
+<p>1-ingress-oldnginx.yaml</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gray-release
+spec:
+  rules:
+  - host: www.example.com
+    http:
+      paths:
+      # 新版本服务。
+      - path: /
+        backend:
+          service:
+            name: old-nginx
+            port:
+              number: 80
+        pathType: ImplementationSpecific
+</code></pre>
+<h3 id="测试">测试</h3>
+<pre><code class="language-bash">➜ kubectl get ingress
+➜ curl -H &quot;host:www.example.com&quot; http://&lt;ingress_ip&gt;
+old
+</code></pre>
+<h2 id="蓝绿发布">蓝绿发布</h2>
+<p>蓝绿发布的基本逻辑：</p>
+<ol>
+<li>构建新版本的yaml配置清单。
+<ul>
+<li>通过 label 来区分新旧程序。例如这里通过：run: old-nginx 和 run: new-nginx 来区分新旧版本</li>
+<li>通过 <a target="_blank" rel="noopener" href="http://service.metadata.name">service.metadata.name</a> 来区分新旧程序的服务。例如这里是： old-nginx 和 new-nginx</li>
+</ul>
+</li>
+</ol>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: new-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: new-nginx
+  template:
+    metadata:
+      labels:
+        run: new-nginx
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/acs-sample/new-nginx
+        imagePullPolicy: Always
+        name: new-nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: new-nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: new-nginx
+  sessionAffinity: None
+  type: NodePort
+</code></pre>
+<ol start="2">
+<li>更新旧版本的ingress</li>
+</ol>
+
+</div>
+
+
+    <div class="post-guide">
+        <div class="item left">
+            
+              <a href="/posts/ae41ae33/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  监控☞monit
+              </a>
+            
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/7627a41d/">
+                k8s☞13高级版负载均衡ingress控制器
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
+        </div>
+    </div>
+
+
+
+	<div id="vcomments"></div>
+
+
+<script>
+	
+		// 评论
+		new Valine({
+			el: '#vcomments',
+			appId: 'Sq2igagqhmGqvs3eHHtcNKiB-gzGzoHsz',
+			appKey: 'cDTpqcpogeQq55SOuBHEXv9W',
+			placeholder: '写点东西吧',
+			path: window.location.pathname,
+			avatar: 'retro',
+			highlight: false,
+      recordIP: true,
+      enableQQ: true,
+			requiredFields: ['nick','mail']
+		})
+	
+	
+    // 显示次数
+		function showTime(Counter) {
+			var query = new AV.Query("Counter");
+			if($(".leancloud_visitors").length > 0){
+				var url = $(".leancloud_visitors").attr('id').trim();
+				// where field
+				query.equalTo("words", url);
+				// count
+				query.count().then(function (number) {
+					// There are number instances of MyClass where words equals url.
+					$(document.getElementById(url)).text(number?  number : '--');
+				}, function (error) {
+					// error is an instance of AVError.
+				});
+			}
+		}
+		// 追加pv
+		function addCount(Counter) {
+			var url = $(".leancloud_visitors").length > 0 ? $(".leancloud_visitors").attr('id').trim() : 'wujun234.github.io';
+			var Counter = AV.Object.extend("Counter");
+			var query = new Counter;
+			query.save({
+				words: url
+			}).then(function (object) {
+			})
+		}
+		$(function () {
+			var Counter = AV.Object.extend("Counter");
+			addCount(Counter);
+			showTime(Counter);
+		});
+	
+</script>
+	</div>
+	<div id="footer">
+	<p>
+	©2016-<span id="footerYear"></span> 
+	<a href="/">zyh</a> 
+	
+	
+		|
+		<span id="busuanzi_container_site_pv">
+			pv
+			<span id="busuanzi_value_site_pv"></span>
+		</span>
+		|
+		<span id="busuanzi_container_site_uv"> 
+			uv
+			<span id="busuanzi_value_site_uv"></span>
+		</span>
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
+</div>
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
+</script>
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
+</body>
+</html>

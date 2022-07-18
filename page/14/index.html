@@ -1624,6 +1624,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/c6df585d/">
+                     
+										    prometheus-09windows_exporter
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/65820315/">
                      
 										    prometheus☞01搭建
@@ -2823,6 +2834,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/58609f2b/">
+                     
+										    python-虚拟环境
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/876c5852/">
                      
 										    python☞json
@@ -2915,6 +2937,50 @@ var _hmt = _hmt || [];
 		<div id="index">
 	
 		<div class="index-li">
+			<a href="/posts/2a5275e1/">
+				<h2 class="index-title">
+					jenkins-集成gitlab
+				</h2>
+				<div class="index-brief">
+					简要
+jenkins集成gitlab有两种方式：
+
+通过 jenkins 自带的通用 webhook 触发器。
+通过 gitlab 或者 gitlab-branch-source 之类的插件。
+
+本文档介绍通用 webhook 触发器，更加灵活。
+
+可以自定义 webhook 地址的请求参数，用于限
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2020-04-25</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/">自动化</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/自动化/jenkins/">jenkins</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
 			<a href="/posts/67a8b607/">
 				<h2 class="index-title">
 					jenkins-构建工具集成
@@ -2958,17 +3024,17 @@ wget --no-check-certificate https://dlcdn.apac
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/57e9683e/">
+			<a href="/posts/e804084e/">
 				<h2 class="index-title">
-					jenkins-pipeline dsl 常用方法
+					jenkins-groovy基础
 				</h2>
 				<div class="index-brief">
-					前言
-这些方法都在jenkins里内置了，因此可以直接在pipeline里使用
-图形化的代码配置可以访问：http:///job/prod_saas_cms/pipeline-syntax/
-👙如果你找不到某个DSL，则说明需要相关插件
-json 读取 readJSON
-(需要额外插件) Pipe
+					字符串和列表
+&quot;devopstestops&quot;.contains(&quot;ops&quot;)  // 包含 ops
+true
+&quot;devopstestops&quot;.endsWith(&quot;ops)   // 已 ops 结尾
+true
+&quot;devo
 					...
 				</div>
 			</a>
@@ -2999,17 +3065,17 @@ json 读取 readJSON
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/e804084e/">
+			<a href="/posts/57e9683e/">
 				<h2 class="index-title">
-					jenkins-groovy基础
+					jenkins-pipeline dsl 常用方法
 				</h2>
 				<div class="index-brief">
-					字符串和列表
-&quot;devopstestops&quot;.contains(&quot;ops&quot;)  // 包含 ops
-true
-&quot;devopstestops&quot;.endsWith(&quot;ops)   // 已 ops 结尾
-true
-&quot;devo
+					前言
+这些方法都在jenkins里内置了，因此可以直接在pipeline里使用
+图形化的代码配置可以访问：http:///job/prod_saas_cms/pipeline-syntax/
+👙如果你找不到某个DSL，则说明需要相关插件
+json 读取 readJSON
+(需要额外插件) Pipe
 					...
 				</div>
 			</a>
@@ -3283,49 +3349,6 @@ s
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
                                         <a href="/categories/系统/windows/">windows</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/9011aa7a/">
-				<h2 class="index-title">
-					jenkins-gitops-cd
-				</h2>
-				<div class="index-brief">
-					目的
-根据gitlab的程序配置仓库，当配置变更的时候，执行jenkins cd工程，部署程序。
-在kubernetes中，配置仓库里就是kubernetes清单。
-操作步骤
-与gitlab的关联，方法与ci一致.
-配置仓库的Jenkinsfile
-pipeline&#123;
-    agent&
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2020-03-27</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/">自动化</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/自动化/jenkins/">jenkins</a>
 										
                                     </span>
                                 

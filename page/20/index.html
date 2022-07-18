@@ -1624,6 +1624,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/c6df585d/">
+                     
+										    prometheus-09windows_exporter
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/65820315/">
                      
 										    prometheus☞01搭建
@@ -2823,6 +2834,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/58609f2b/">
+                     
+										    python-虚拟环境
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/876c5852/">
                      
 										    python☞json
@@ -2913,6 +2935,95 @@ var _hmt = _hmt || [];
 	<!-- 引入正文 -->
 	<div id="content">
 		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/7c1abbe1/">
+				<h2 class="index-title">
+					openvpn☞安装
+				</h2>
+				<div class="index-brief">
+					前言
+openvpn 一般用于小公司远程连接公司办公网络环境，此脚本需要一个linux系统的主机。
+至于土豪公司，可以无视。
+文档包含安装脚本，创建用户脚本，删除用户脚本。使用的时候，安装脚本和创建用户脚本，需要自行修改一些变量。
+
+需要注意的是，发现移动网络连接其它运营商网络的时候，不稳定。
+比如
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-03-22</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/其它/">其它</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/847734cb/">
+				<h2 class="index-title">
+					redis-005主从复制和哨兵配置
+				</h2>
+				<div class="index-brief">
+					基本配置
+构建三个节点，一主两从。
+之所以是三节点，是因为哨兵模式（一种高可用）需要最少三个才稳健。
+✨这里的三个指的是哨兵进程，而不是redis进程。redis可以只有主从两个。
+
+
+
+服务类型
+是否是主服务器
+IP地址
+端口
+
+
+
+
+Redis
+是
+10.200.16.51
+6379
+
+
+Red
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2018-01-13</span>
+                    
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/">数据库</a>
+										
+											>
+										
+                                    </span>
+                                
+                            
+                                
+                                    <span>
+                                        <i class="fa fa-folder" aria-hidden="true"></i>
+                                        <a href="/categories/数据库/redis/">redis</a>
+										
+                                    </span>
+                                
+                            
+                    
+                </div>
+		</div>	
 	
 		<div class="index-li">
 			<a href="/posts/783b242a/">
@@ -3173,48 +3284,6 @@ long_query_time：要防止在慢速查询日志中记录快速运行的查询�
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/13364d65/">
-				<h2 class="index-title">
-					linux☞centos7重置root密码
-				</h2>
-				<div class="index-brief">
-					
-开机按ECS，进入启动项
-
-
-
-
-按e，编辑第一条
-
-
-将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh
-
-
-
-
-按 ctrl+x，进入系统，并执行 passwd 命令进行修改
-
-
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-01-20</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/系统/">系统</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
 			<a href="/posts/f41d0763/">
 				<h2 class="index-title">
 					linux☞系统内核优化
@@ -3248,78 +3317,39 @@ net.ipv4.tcp_retr
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/2722921e/">
+			<a href="/posts/13364d65/">
 				<h2 class="index-title">
-					nginx-常用变量
+					linux☞centos7重置root密码
 				</h2>
 				<div class="index-brief">
-					常用的全局变量
-arg_PARAMETER    #这个变量包含GET请求中，如果有变量PARAMETER时的值。
-args                    #这个变量等于请求行中(GET请求)的参数，如：foo=123&amp;bar=blahblah;
-binary_remote_addr
-					...
-				</div>
-			</a>
-                <div class="article-meta">
-				    <span>2017-01-13</span>
-                    
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/">web</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/web/nginx/">nginx</a>
-										
-                                    </span>
-                                
-                            
-                    
-                </div>
-		</div>	
-	
-		<div class="index-li">
-			<a href="/posts/f2de1fb/">
-				<h2 class="index-title">
-					shell-[[ ]]和(( ))
-				</h2>
-				<div class="index-brief">
-					(( ))
-整数表达式运算用 (( )) ，(( a+b*c-d )) ，a、b、c、d为变量，可不写$，运算符 &gt;、&gt;=、&lt;、&lt;=、==、!=
-举例：
-➜   a=1;b=2;(( a=a+b ));echo $a
-2
+					
+开机按ECS，进入启动项
 
-💥使用 (( )) 时，不需要空格分隔各值和运算符
+
+
+
+按e，编辑第一条
+
+
+将 root 挂载，从 ro 变更为 rw，并在最后添加 init=/bin/sh
+
+
+
+
+按 ctrl+x，进入系统，并执行 passwd 命令进行修改
+
+
 					...
 				</div>
 			</a>
                 <div class="article-meta">
-				    <span>2017-01-02</span>
+				    <span>2017-01-20</span>
                     
                             
                                 
                                     <span>
                                         <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/">语言</a>
-										
-											>
-										
-                                    </span>
-                                
-                            
-                                
-                                    <span>
-                                        <i class="fa fa-folder" aria-hidden="true"></i>
-                                        <a href="/categories/语言/shell/">shell</a>
+                                        <a href="/categories/系统/">系统</a>
 										
                                     </span>
                                 

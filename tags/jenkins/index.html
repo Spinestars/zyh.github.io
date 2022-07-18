@@ -1624,6 +1624,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/c6df585d/">
+                     
+										    prometheus-09windows_exporter
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/65820315/">
                      
 										    prometheus☞01搭建
@@ -2823,6 +2834,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/58609f2b/">
+                     
+										    python-虚拟环境
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/876c5852/">
                      
 										    python☞json
@@ -2956,17 +2978,16 @@ https://www.jenkins.io/zh/doc/book/pipeline/shared-libraries/
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/3b5cd3e1/">
+			<a href="/posts/8a33e212/">
 				<h2 class="index-title">
-					jenkins☞基于k8s生成动态的Jenkins agent
+					jenkins☞002Pipelines
 				</h2>
 				<div class="index-brief">
-					流程
-jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
-所需插件
-
-kubernetes
-kubernetes
+					前言
+纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。
+pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
+可以在http://groovy.jsrun.net/等站点上调试语法。
+流水
 					...
 				</div>
 			</a>
@@ -2997,16 +3018,17 @@ kubernetes
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/8a33e212/">
+			<a href="/posts/3b5cd3e1/">
 				<h2 class="index-title">
-					jenkins☞002Pipelines
+					jenkins☞基于k8s生成动态的Jenkins agent
 				</h2>
 				<div class="index-brief">
-					前言
-纯图形化的配置，并不能很有效的支撑自动化，也不灵活，一般jenkins的工程会通过Jenkinsfile来配置pipeline。
-pipeline 有声明和脚本两种方式，声明式官方比较推荐。当然声明也可以嵌入脚本。
-可以在http://groovy.jsrun.net/等站点上调试语法。
-流水
+					流程
+jenkins-master -&gt; pipeline -&gt; kubernetes 插件 -&gt; kubernetes 集群 -&gt; jenkins-agent【k8s pod】 -&gt; jenkins-master
+所需插件
+
+kubernetes
+kubernetes
 					...
 				</div>
 			</a>
@@ -3173,17 +3195,17 @@ jenkins集成gitlab有两种方式：
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/57e9683e/">
+			<a href="/posts/e804084e/">
 				<h2 class="index-title">
-					jenkins-pipeline dsl 常用方法
+					jenkins-groovy基础
 				</h2>
 				<div class="index-brief">
-					前言
-这些方法都在jenkins里内置了，因此可以直接在pipeline里使用
-图形化的代码配置可以访问：http:///job/prod_saas_cms/pipeline-syntax/
-👙如果你找不到某个DSL，则说明需要相关插件
-json 读取 readJSON
-(需要额外插件) Pipe
+					字符串和列表
+&quot;devopstestops&quot;.contains(&quot;ops&quot;)  // 包含 ops
+true
+&quot;devopstestops&quot;.endsWith(&quot;ops)   // 已 ops 结尾
+true
+&quot;devo
 					...
 				</div>
 			</a>
@@ -3214,17 +3236,17 @@ json 读取 readJSON
 		</div>	
 	
 		<div class="index-li">
-			<a href="/posts/e804084e/">
+			<a href="/posts/57e9683e/">
 				<h2 class="index-title">
-					jenkins-groovy基础
+					jenkins-pipeline dsl 常用方法
 				</h2>
 				<div class="index-brief">
-					字符串和列表
-&quot;devopstestops&quot;.contains(&quot;ops&quot;)  // 包含 ops
-true
-&quot;devopstestops&quot;.endsWith(&quot;ops)   // 已 ops 结尾
-true
-&quot;devo
+					前言
+这些方法都在jenkins里内置了，因此可以直接在pipeline里使用
+图形化的代码配置可以访问：http:///job/prod_saas_cms/pipeline-syntax/
+👙如果你找不到某个DSL，则说明需要相关插件
+json 读取 readJSON
+(需要额外插件) Pipe
 					...
 				</div>
 			</a>

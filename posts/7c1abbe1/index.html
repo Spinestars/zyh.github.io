@@ -1626,6 +1626,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/c6df585d/">
+                     
+										    prometheus-09windows_exporter
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/65820315/">
                      
 										    prometheus☞01搭建
@@ -2825,6 +2836,17 @@ var _hmt = _hmt || [];
 			
 							<ul>
 								<li class="file">
+									<a href="/posts/58609f2b/">
+                     
+										    python-虚拟环境
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
 									<a href="/posts/876c5852/">
                      
 										    python☞json
@@ -3048,6 +3070,7 @@ push &quot;route 需要走openvpn的网段和掩码&quot;
 <pre><code class="language-bash"># redirect-gateway def1
 </code></pre>
 <h2 id="创建用户脚本">创建用户脚本</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/kylemanna/docker-openvpn/blob/master/docs/clients.md#revoking-client-certificates">https://github.com/kylemanna/docker-openvpn/blob/master/docs/clients.md#revoking-client-certificates</a></p>
 <p>👙需要注意的是，下列脚本中，有两个 sed 命令是需要自行修改ip的。</p>
 <pre><code class="language-bash">sed -i &quot;s/1194/&lt;外网端口&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn # 修改我
 sed -i &quot;s/&lt;服务器内网IP&gt;/&lt;客户端连接的外网IP&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn  # 修改我
@@ -3065,17 +3088,17 @@ sed -i '2a tun-mtu 1500' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i '3a auth-nocache' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
 sed -i &quot;s/1194/&lt;外网端口&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn                   # 修改我
 sed -i &quot;s/&lt;服务器内网IP&gt;/&lt;客户端连接的外网IP&gt;/&quot; $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn  # 修改我
-read -p '是否关闭全局路由，（y）关闭全局路由，仅当客户端匹配下发路由时才走openvpn.[确保服务端没有开启DNS推送，若开启则添加对应的DNS路由]；（n）开启&gt;全局路由，客户端所有流量均走openvpn.[确保服务端开启了DNS推送]：' yn
+read -p '是否关闭全局路由，（y）关闭全局路由，仅当客户端匹配下发路由时才走openvpn.[确保服务端没有开启DNS推送，若开启则添加对应的DNS路由]；（n）开启全局路由，客户端所有流量均走openvpn.[确保服务端开启了DNS推送]：' yn
 [[ $yn == 'y' ]] &amp;&amp; sed -i '/redirect-gateway def1/d' $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn
-mkdir -pv $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
-mv /root/ovpn-data/pki/private/$&#123;CLIENTNAME&#125;.key $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
-mv /root/ovpn-data/pki/issued/$&#123;CLIENTNAME&#125;.crt $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
-mv $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;
-cd $&#123;OVPN_DATA&#125;/users/
+mkdir -pv /root/users/$&#123;CLIENTNAME&#125;
+cp $&#123;OVPN_DATA&#125;/pki/private/$&#123;CLIENTNAME&#125;.key /root/users/$&#123;CLIENTNAME&#125;
+cp $&#123;OVPN_DATA&#125;/pki/issued/$&#123;CLIENTNAME&#125;.crt /root/users/$&#123;CLIENTNAME&#125;
+cp $&#123;OVPN_DATA&#125;/$&#123;CLIENTNAME&#125;.ovpn /root/users/$&#123;CLIENTNAME&#125;
+cd /root/users/
 tar zcf $&#123;CLIENTNAME&#125;.tar.gz $&#123;CLIENTNAME&#125;
 echo &quot;`pwd`/$&#123;CLIENTNAME&#125;.tar.gz&quot;
 echo &quot;################################################&quot;
-cat $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;/$&#123;CLIENTNAME&#125;.ovpn
+cat /root/users/$&#123;CLIENTNAME&#125;/$&#123;CLIENTNAME&#125;.ovpn
 #sz $&#123;CLIENTNAME&#125;.tar.gz
 </code></pre>
 <h2 id="删除用户脚本">删除用户脚本</h2>
@@ -3083,15 +3106,16 @@ cat $&#123;OVPN_DATA&#125;/users/$&#123;CLIENTNAME&#125;/$&#123;CLIENTNAME&#125;
 # bash xxx.sh &lt;用户名&gt;
 [[ -z $1 ]] &amp;&amp; exit
 CLIENTNAME=$1
-#read -p '输入用户名（字母组成）:' CLIENTNAME
 OVPN_DATA=&quot;/root/ovpn-data&quot;
-rm -rf /root/ovpn-data/pki/private/$&#123;CLIENTNAME&#125;.key*
-rm -rf /root/ovpn-data/pki/reqs/$&#123;CLIENTNAME&#125;.req
-rm -rf /root/ovpn-data/pki/issued/$&#123;CLIENTNAME&#125;.crt
-sed -i &quot;/$&#123;CLIENTNAME&#125;/d&quot; /root/ovpn-data/pki/index.txt
-cd /root/ovpn-data/users
+docker run --rm -it -v $OVPN_DATA:/etc/openvpn kylemanna/openvpn ovpn_revokeclient $&#123;CLIENTNAME&#125; remove
+cd /root/users
 rm -rf $&#123;CLIENTNAME&#125;
 rm -f $&#123;CLIENTNAME&#125;.tar.gz
+</code></pre>
+<h2 id="列出用户">列出用户</h2>
+<pre><code class="language-bash">#!/bin/bash
+OVPN_DATA=&quot;/root/ovpn-data&quot;
+docker run --rm -it -v $OVPN_DATA:/etc/openvpn kylemanna/openvpn ovpn_listclients
 </code></pre>
 
 </div>
